@@ -78,10 +78,10 @@ const contentRoutes: RouteProps[] = [
 	},
 
 
-	{ path: authPages.loginPage.to, element: <LoginPage /> },
+	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	{ path: authPages.profilePage.to, element: <ProfilePage /> },
 	{ path: authPages.resetPage.to, element: <ResetPage /> },
-	{ path: authPages.signUpPage.to, element: <SignupPage /> },
+	// { path: authPages.signUpPage.to, element: <SignupPage /> },
 
 	{ path: '*', element: <NotFoundPage /> },
 ];
