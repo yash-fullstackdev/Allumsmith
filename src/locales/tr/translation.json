@@ -1,0 +1,16 @@
+{
+	"DemoPages": "Demo sayfalar",
+	"item": {
+		"itemA": "Öğe A",
+		"itemB": "Öğe B"
+	},
+	"theme": {
+		"dark": "Koyu",
+		"light": "Açık",
+		"system": "Sistem"
+	},
+	"Day": "Gün",
+	"Week": "Hafta",
+	"Month": "Ay",
+	"List": "Liste"
+}
