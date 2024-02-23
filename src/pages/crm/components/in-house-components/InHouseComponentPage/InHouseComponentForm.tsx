@@ -6,10 +6,13 @@ import Label from '../../../../../components/form/Label';
 import Input from '../../../../../components/form/Input';
 import { useFormik } from 'formik';
 import { post } from '../../../../../utils/api-helper.util';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { PathRoutes } from '../../../../../utils/routes/enum';
 
 const AddproductForm = () => {
 	const [formSubmitted, setFormSubmitted] = useState(false);
 	const [entries, setEntries] = useState([{ name: '', hsn: '', thickness: 0, length: 0, weight: 0 }]);
+	const navigate = useNavigate()
 
 	const addProductToDatabase = async (values: any) => {
 		console.log('values', values);
@@ -49,6 +52,8 @@ const AddproductForm = () => {
 
 			const results = await Promise.all(promises);
 			console.log('Results:', results);
+			navigate(PathRoutes.product)
+
 		} catch (error) {
 			console.error("Error Adding Product", error);
 		}
