@@ -142,7 +142,7 @@ const ProductListPage = () => {
 		columnHelper.display({
 			cell: (info) => (
 				<div className='font-bold'>
-
+					{/* 
 					<Link to={PathRoutes.add_product}>
 						<Button>
 							<svg
@@ -159,7 +159,7 @@ const ProductListPage = () => {
 								/>
 							</svg>
 						</Button>{' '}
-					</Link>
+					</Link> */}
 
 
 					<Button

@@ -217,7 +217,7 @@ const AddproductForm = () => {
 									<CreatableSelect
 										id={`weight-${index}`}
 										name={`weight-${index}`}
-										options={dropDownValues && dropDownValues?.weight?.map((value: any) => ({ value, label: value.toString() }))}
+										options={dropDownValues && dropDownValues?.weight?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
 										onChange={(selectedOption: any) => {
 											const updatedEntries: any = [...entries];
 											updatedEntries[index].weight = parseFloat(selectedOption.value) || 0;
