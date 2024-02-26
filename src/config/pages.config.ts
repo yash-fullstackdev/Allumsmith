@@ -24,8 +24,21 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-purchase-order',
 		},
+		
 	},
-
+	vendorPage: {
+		listPage: {
+			id: 'vendorsPage',
+			to: '/vendor',
+			text: 'Vendor',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-vendor',
+		},
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {

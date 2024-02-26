@@ -13,7 +13,7 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 
 const AddproductForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', }]);
+  const [entries, setEntries] = useState<any>([{ product: '', requiredQuantity: '', }]);
   const [id, setId] = useState(0);
   const [vendorId, setVendorId] = useState('');
   const [vendorData, setVendorData] = useState([])
@@ -46,7 +46,7 @@ const AddproductForm = () => {
   });
 
   const handleAddEntry = () => {
-    setEntries([...entries, { product: '', quantity: '', }]);
+    setEntries([...entries, { product: '', requiredQuantity: '', }]);
   };
 
   const handleSaveEntries = async () => {
@@ -244,10 +244,10 @@ const AddproductForm = () => {
                       type='number'
                       id={`hsn-${index}`}
                       name={`hsn-${index}`}
-                      value={entry.quantity}
+                      value={entry.requiredQuantity}
                       onChange={(e) => {
                         const updatedEntries = [...entries];
-                        updatedEntries[index].quantity = e.target.value;
+                        updatedEntries[index].requiredQuantity = e.target.value;
                         setEntries(updatedEntries);
                       }}
                     />
@@ -258,7 +258,7 @@ const AddproductForm = () => {
               </>
             ))}
           </div>
-          <div className='flex mt-2 gap-2 mt-10'>
+          <div className='flex mt-2 gap-2 '>
             <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
               Add Entry
             </Button>

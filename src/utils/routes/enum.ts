@@ -3,4 +3,6 @@ export enum PathRoutes {
 	add_product = '/add-product',
 	purchase_order = '/purchase-order',
 	add_purchase_order = '/add-purchase-order',
+	vendor = '/vendor',
+	add_vendor = '/add-vendor'
 }

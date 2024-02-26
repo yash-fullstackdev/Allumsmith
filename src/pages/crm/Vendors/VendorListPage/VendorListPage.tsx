@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import { useEffect, useState } from 'react';
 import {
@@ -14,7 +16,6 @@ import { Link } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
-import { appPages } from '../../../../config/pages.config';
 import Card, {
     CardBody,
     CardHeader,
@@ -22,37 +23,32 @@ import Card, {
     CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
 import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
 
-import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../components/form/FieldWrap';
+
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import VendorProductList from '../VendorProductList/VendorProductList';
+
+
 
 const columnHelper = createColumnHelper<any>();
 
 
-const PurchaseOrderListPage = () => {
+const VendorListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [purchaseOrderList, setPurchaseOrderList] = useState<any[]>([]);
-    const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
+    const [vendorsList, setVendorsList] = useState<any[]>([]);
     const [vendorId, setVendorId] = useState('')
-    const [productsArray, setProductsArray] = useState<any>([]);
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const { data: purchaseOrderList } = await get(`/purchase-order`);
-            setPurchaseOrderList(purchaseOrderList);
+            const { data: vendorList } = await get(`/vendors`);
+            setVendorsList(vendorList);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -66,13 +62,13 @@ const PurchaseOrderListPage = () => {
         fetchData();
     }, [])
 
-    console.log("Purchase Order List", purchaseOrderList)
+    console.log("Vendor List", vendorsList)
     const handleClickDelete = async (id: any) => {
         try {
-            const { data: allUsers } = await deleted(`/purchase-order/${id}`);
-            console.log("allUsers", allUsers)
+            const { data: vendor } = await deleted(`/vendors/${id}`);
+            console.log("vendor", vendor)
         } catch (error: any) {
-            console.error('Error fetching users:', error.message);
+            console.error('Error fetching Vendors:', error);
             setIsLoading(false);
         } finally {
             setIsLoading(false);
@@ -81,50 +77,63 @@ const PurchaseOrderListPage = () => {
     }
 
     const columns = [
-        columnHelper.accessor('id', {
-            cell: (info) => (
 
-                <div className=''>{`${info.getValue()}`}</div>
-
-            ),
-            header: 'id',
-
-        }),
         columnHelper.accessor('name', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.row.original.vendor.name}`}
+                    {`${info.getValue()}`}
                 </div>
 
             ),
             header: 'Name',
         }),
+        columnHelper.accessor('email', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Email',
+        }),
+        columnHelper.accessor('addressLine1', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Address',
+        }),
         columnHelper.accessor('phone', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.row.original.vendor.phone}`}</div>
+                    {`${info.getValue()}`}
+                </div>
+
             ),
             header: 'Phone',
         }),
-        columnHelper.accessor('email', {
+        columnHelper.accessor('company', {
             cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
 
-                <div className=''>{`${info.row.original.vendor.email}`}</div>
             ),
-            header: 'Email',
+            header: 'Company',
         }),
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setVendorProductModal(true),
-                                setVendorId(info.row.original._id);
-                            setProductsArray(info.row.original.products)
+                            setVendorId(info.row.original._id);
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -162,7 +171,7 @@ const PurchaseOrderListPage = () => {
     ];
 
     const table = useReactTable({
-        data: purchaseOrderList && purchaseOrderList,
+        data: vendorsList,
         columns,
         state: {
             sorting,
@@ -178,12 +187,12 @@ const PurchaseOrderListPage = () => {
 
 
     return (
-        <PageWrapper name='Product List'>
+        <PageWrapper name='Vendor List'>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Purchase Order</CardTitle>
+                            <CardTitle>All Vendors</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
@@ -193,9 +202,9 @@ const PurchaseOrderListPage = () => {
                         </CardHeaderChild>
 
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_purchase_order}`}>
+                            <Link to={`${PathRoutes.add_vendor}`}>
                                 <Button variant='solid' icon='HeroPlus'>
-                                    New Purchase Order
+                                    New Vendor
                                 </Button>
                             </Link>
                         </CardHeaderChild>
@@ -216,22 +225,12 @@ const PurchaseOrderListPage = () => {
                 </Card>
 
             </Container>
-            <Modal isOpen={vedorProductModal} setIsOpen={setVendorProductModal} isScrollable fullScreen>
-                <ModalHeader
-                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-                // onClick={() => formik.resetForm()}
-                >
-                    Add Vendor
-                </ModalHeader>
-                <ModalBody>
-                    <VendorProductList purchaseOrderList={vendorId} productsArray={productsArray} />
-                </ModalBody>
-            </Modal>
+
 
         </PageWrapper>
     )
 
 };
 
-export default PurchaseOrderListPage;
+export default VendorListPage;
 

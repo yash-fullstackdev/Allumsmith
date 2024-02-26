@@ -29,9 +29,8 @@ import { get } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 
 
-const VendorProductList = ({ purchaseOrderList }: any) => {
+const VendorProductList = ({ purchaseOrderList, productsArray }: any) => {
 
-    console.log("?????purchaseOrderList", purchaseOrderList)
     const [sorting, setSorting] = useState<SortingState>([]);
     const [productListData, setProductListData] = useState()
 
@@ -58,6 +57,7 @@ const VendorProductList = ({ purchaseOrderList }: any) => {
     useEffect(() => {
         getPurchaseOrderList();
     }, [])
+    console.log("Products array", productsArray)
     const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
@@ -68,7 +68,7 @@ const VendorProductList = ({ purchaseOrderList }: any) => {
             header: 'Name',
 
         }),
-        columnHelper.accessor('quantity', {
+        columnHelper.accessor('product.productCode', {
             cell: (info) => (
 
                 <div className=''>
@@ -76,37 +76,24 @@ const VendorProductList = ({ purchaseOrderList }: any) => {
                 </div>
 
             ),
-            header: 'Quantity',
+            header: 'Product Code',
         }),
-        // columnHelper.accessor('length', {
-        //     cell: (info) => (
+        columnHelper.accessor('status', {
+            cell: (info) => (
 
-        //         <div className=''>
-        //             {`${info.getValue()}`}
-        //         </div>
-        //     ),
-        //     header: 'Length',
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
 
-        // }),
-        // columnHelper.accessor('thickness', {
-        //     cell: (info) => (
+            ),
+            header: 'Status',
+        }),
 
-        //         <div className=''>{`${info.getValue()}`}</div>
-        //     ),
-        //     header: 'Thickness',
-        // }),
-        // columnHelper.accessor('weight', {
-        //     cell: (info) => (
-
-        //         <div className=''>{`${info.getValue()}`}</div>
-        //     ),
-        //     header: 'Weight',
-        // }),
 
 
     ];
     const table = useReactTable({
-        data: purchaseOrderList && purchaseOrderList[0].products,
+        data: productsArray,
         columns,
         state: {
             sorting,
@@ -121,8 +108,8 @@ const VendorProductList = ({ purchaseOrderList }: any) => {
 
     return (
         <PageWrapper name='Product List'>
-            <>siv</>
-            {/* <Container>
+
+            <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
@@ -144,7 +131,7 @@ const VendorProductList = ({ purchaseOrderList }: any) => {
                     </CardBody>
                     <TableCardFooterTemplate table={table} />
                 </Card>
-            </Container> */}
+            </Container>
 
         </PageWrapper>
     )

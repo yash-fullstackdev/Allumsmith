@@ -6,6 +6,8 @@ import ProductListPage from '../pages/crm/user/ProductListPage/ProductListPage';
 import AddProductPage from '../pages/crm/user/ProductPage/AddProductPage';
 import PurchaseOrderListPage from '../pages/crm/PurchaseOrder/PurchaseOrderListPage/PurchaseOrderListPage';
 import PurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
+import VendorListPage from '../pages/crm/Vendors/VendorListPage/VendorListPage';
+import VendorPage from '../pages/crm/Vendors/VendorPage/VendorPage';
 
 /**
  * UI
@@ -42,7 +44,14 @@ const contentRoutes: RouteProps[] = [
 		path: `${appPages.purchaseOrderPage.editPageLink.to}`,
 		element: <PurchaseOrderPage />,
 	},
-
+	{
+		path: `${appPages.vendorPage.listPage.to}`,
+		element: <VendorListPage />,
+	},
+	{
+		path: `${appPages.vendorPage.editPageLink.to}`,
+		element: <VendorPage />,
+	},
 
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },

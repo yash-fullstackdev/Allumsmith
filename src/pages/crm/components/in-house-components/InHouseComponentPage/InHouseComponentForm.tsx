@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import React, { useState } from 'react';
 import Button from '../../../../../components/ui/Button';
 import Card, { CardBody } from '../../../../../components/ui/Card';
@@ -11,7 +10,7 @@ import { PathRoutes } from '../../../../../utils/routes/enum';
 
 const AddproductForm = () => {
 	const [formSubmitted, setFormSubmitted] = useState(false);
-	const [entries, setEntries] = useState([{ name: '', hsn: '', thickness: 0, length: 0, weight: 0 }]);
+	const [entries, setEntries] = useState([{ name: '', hsn: '', proudctCode: null, thickness: null, length: null, weight: null }]);
 	const navigate = useNavigate()
 
 	const addProductToDatabase = async (values: any) => {
@@ -40,10 +39,12 @@ const AddproductForm = () => {
 	});
 
 	const handleAddEntry = () => {
-		setEntries([...entries, { name: '', hsn: '', thickness: 0, length: 0, weight: 0 }]);
+		setEntries([...entries, { name: '', hsn: '', proudctCode: null, thickness: null, length: null, weight: null }]);
 	};
 
 	const handleSaveEntries = async () => {
+
+		console.log("entries", entries)
 		try {
 			const promises = entries.map(async (entry) => {
 				const { data } = await post("/products", entry);
@@ -149,6 +150,24 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-2'>
 									<Label htmlFor={`thickness-${index}`}>
+										Product Code
+									</Label>
+									<Input
+										id={`productCode-${index}`}
+										name={`productCode-${index}`}
+										type='number'
+										min={0}
+										value={entry.proudctCode as any}
+										onChange={(e) => {
+											const updatedEntries: any = [...entries];
+											updatedEntries[index].proudctCode = parseFloat(e.target.value) || 0;
+											setEntries(updatedEntries);
+										}}
+									/>
+									{/* ... Error handling for thickness field */}
+								</div>
+								<div className='col-span-12 lg:col-span-1'>
+									<Label htmlFor={`thickness-${index}`}>
 										Thickness
 									</Label>
 									<Input
@@ -156,16 +175,16 @@ const AddproductForm = () => {
 										name={`thickness-${index}`}
 										type='number'
 										min={0}
-										value={entry.thickness}
+										value={entry.thickness as any}
 										onChange={(e) => {
-											const updatedEntries = [...entries];
+											const updatedEntries: any = [...entries];
 											updatedEntries[index].thickness = parseFloat(e.target.value) || 0;
 											setEntries(updatedEntries);
 										}}
 									/>
 									{/* ... Error handling for thickness field */}
 								</div>
-								<div className='col-span-12 lg:col-span-2'>
+								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`length-${index}`}>
 										Length
 									</Label>
@@ -174,16 +193,16 @@ const AddproductForm = () => {
 										name={`length-${index}`}
 										type='number'
 										min={0}
-										value={entry.length}
+										value={entry.length as any}
 										onChange={(e) => {
-											const updatedEntries = [...entries];
+											const updatedEntries: any = [...entries];
 											updatedEntries[index].length = parseFloat(e.target.value) || 0;
 											setEntries(updatedEntries);
 										}}
 									/>
 									{/* ... Error handling for length field */}
 								</div>
-								<div className='col-span-12 lg:col-span-2'>
+								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`weight-${index}`}>
 										Weight
 									</Label>
@@ -192,9 +211,9 @@ const AddproductForm = () => {
 										name={`weight-${index}`}
 										type='number'
 										min={0}
-										value={entry.weight}
+										value={entry.weight as any}
 										onChange={(e) => {
-											const updatedEntries = [...entries];
+											const updatedEntries: any = [...entries];
 											updatedEntries[index].weight = parseFloat(e.target.value) || 0;
 											setEntries(updatedEntries);
 										}}
