@@ -120,7 +120,7 @@ const BranchesListPage = () => {
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             setVendorId(info.row.original._id);
                         }}
@@ -130,7 +130,7 @@ const BranchesListPage = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
 
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);

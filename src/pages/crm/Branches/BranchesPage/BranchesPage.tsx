@@ -105,7 +105,7 @@ const BranchesPage = () => {
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='address_line1'>
-                                                    Address 1
+                                                    Address Line 1
                                                 </Label>
                                                 <Input
                                                     id="address_line1"
