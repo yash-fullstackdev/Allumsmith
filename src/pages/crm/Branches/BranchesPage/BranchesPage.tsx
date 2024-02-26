@@ -1,5 +1,3 @@
-// import React from 'react'
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { post } from "../../../../utils/api-helper.util";
@@ -14,18 +12,18 @@ import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "..
 import Container from "../../../../components/layouts/Container/Container";
 
 
-const VendorPage = () => {
+const BranchesPage = () => {
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
-        phone: '',
-        gstNumber: '',
-        company: '',
-        addressLine1: '',
-        addressLine2: '',
+        address_line1: '',
+        address_line2: '',
         city: '',
         state: '',
         zipcode: '',
+        type: '',
+        phone: '',
+        contact_name: '',
+        contact_phone: '',
         isArchive: false
     });
 
@@ -41,17 +39,17 @@ const VendorPage = () => {
 
 
 
-    const addVendorToDatabase = async () => {
+    const addBranchesToDatabase = async () => {
 
         console.log("entries", formData)
         try {
-            const vendor = await post('/vendors', formData);
-            console.log("Vendor", vendor)
+            const branches = await post('/branches', formData);
+            console.log("Branches", branches)
         } catch (error: any) {
             console.error("Error Saving Vendor", error)
         }
         finally {
-            navigate(PathRoutes.vendor);
+            navigate(PathRoutes.branches);
         }
 
     };
@@ -59,13 +57,13 @@ const VendorPage = () => {
 
 
     return (
-        <PageWrapper name='ADD Vendor' isProtectedRoute={true}>
+        <PageWrapper name='ADD Branches' isProtectedRoute={true}>
             <Subheader>
                 <SubheaderLeft>
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigate(`${PathRoutes.vendor}`)}
+                        onClick={() => navigate(`${PathRoutes.branches}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
@@ -87,12 +85,12 @@ const VendorPage = () => {
                                                     className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
 
                                                 >
-                                                    Add Vendor
+                                                    Add Branches
                                                 </Button>
                                             </div>
                                         </div>
 
-                                        <div className='mt-2 grid grid-cols-12 gap-2'>
+                                        <div className='mt-5 grid grid-cols-12 gap-2'>
                                             <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='name'>
                                                     Name
@@ -106,71 +104,23 @@ const VendorPage = () => {
                                                 {/* ... Error handling for name field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='email'>
-                                                    Email
+                                                <Label htmlFor='address_line1'>
+                                                    Address 1
                                                 </Label>
                                                 <Input
-                                                    id="email"
-                                                    name="email"
-                                                    value={formData.email}
+                                                    id="address_line1"
+                                                    name="address_line1"
+                                                    value={formData.address_line1}
                                                     onChange={handleChange}
                                                 />
-                                                {/* ... Error handling for email field */}
+                                                {/* ... Error handling for addressline1 field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='phone'>
-                                                    Phone
-                                                </Label>
+                                                <Label htmlFor='address_line2'>Address Line 2</Label>
                                                 <Input
-                                                    id="phone"
-                                                    name="phone"
-                                                    value={formData.phone}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for phone field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='gstNumber'>
-                                                    GST Number
-                                                </Label>
-                                                <Input
-                                                    id="gstNumber"
-                                                    name="gstNumber"
-                                                    value={formData.gstNumber}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for GST Number field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='company'>
-                                                    Company
-                                                </Label>
-                                                <Input
-                                                    id="company"
-                                                    name="company"
-                                                    value={formData.company}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for company field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='addressLine1'>
-                                                    Address Line 1
-                                                </Label>
-                                                <Input
-                                                    id="addressLine1"
-                                                    name="addressLine1"
-                                                    value={formData.addressLine1}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for addressLine1 field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='addressLine2'>Address Line 2</Label>
-                                                <Input
-                                                    id="addressLine2"
-                                                    name="addressLine2"
-                                                    value={formData.addressLine2}
+                                                    id="address_line2"
+                                                    name="address_line2"
+                                                    value={formData.address_line2}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for addressLine2 field */}
@@ -212,6 +162,57 @@ const VendorPage = () => {
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='type'>
+                                                    Type
+                                                </Label>
+                                                <Input
+                                                    id="type"
+                                                    name="type"
+                                                    value={formData.type}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for GST Number field */}
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='phone'>
+                                                    Phone
+                                                </Label>
+                                                <Input
+                                                    id="phone"
+                                                    name="phone"
+                                                    value={formData.phone}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for phone field */}
+                                            </div>
+
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='contact_name'>
+                                                    Contact Name
+                                                </Label>
+                                                <Input
+                                                    id="contact_name"
+                                                    name="contact_name"
+                                                    value={formData.contact_name}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for company field */}
+                                            </div>
+
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='contact_phone'>
+                                                    Contact Phone
+                                                </Label>
+                                                <Input
+                                                    id="contact_phone"
+                                                    name="contact_phone"
+                                                    value={formData.contact_phone}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for company field */}
+                                            </div>
+
+                                            <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='isArchive'>Is Archive</Label>
                                                 <Checkbox
                                                     id="isArchive"
@@ -225,10 +226,10 @@ const VendorPage = () => {
                                         </div>
 
 
-                                        <div className='flex mt-2 gap-2'>
+                                        <div className='flex mt-4 gap-2'>
 
-                                            <Button variant='solid' color='blue' type='button' onClick={addVendorToDatabase}>
-                                                Save Vendor
+                                            <Button variant='solid' color='blue' type='button' onClick={addBranchesToDatabase}>
+                                                Save Branch
                                             </Button>
                                         </div>
                                     </CardBody>
@@ -242,4 +243,4 @@ const VendorPage = () => {
     );
 };
 
-export default VendorPage;
+export default BranchesPage;

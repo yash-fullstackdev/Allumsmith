@@ -78,6 +78,16 @@ const VendorProductList = ({ purchaseOrderList, productsArray }: any) => {
             ),
             header: 'Product Code',
         }),
+        columnHelper.accessor('requiredQuantity', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
         columnHelper.accessor('status', {
             cell: (info) => (
 
