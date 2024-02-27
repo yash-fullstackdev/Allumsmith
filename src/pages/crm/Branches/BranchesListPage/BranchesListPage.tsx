@@ -30,6 +30,9 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import EditVendorModal from '../../Vendors/VendorPage/EditVendorModal';
+import EditBranchModal from '../BranchesPage/EditBranchModal';
 
 
 
@@ -40,7 +43,8 @@ const BranchesListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [branchesList, setBranchesList] = useState<any[]>([]);
-    const [vendorId, setVendorId] = useState('')
+    const [branchId, setBranchId] = useState('')
+    const [isEditModal, setIsEditModal] = useState(false)
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -120,17 +124,27 @@ const BranchesListPage = () => {
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
-                    {/* <Button
+                    <Button
                         onClick={() => {
-                            setVendorId(info.row.original._id);
+                            setIsEditModal(true)
+                            setBranchId(info.row.original._id);
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth='1.5'
+                            stroke='currentColor'
+                            className='h-6 w-6'>
+                            <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
+                            />
                         </svg>
 
-                    </Button> */}
+                    </Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);
@@ -214,7 +228,17 @@ const BranchesListPage = () => {
                 </Card>
 
             </Container>
-
+            <Modal isOpen={isEditModal} setIsOpen={setIsEditModal} isScrollable fullScreen='2xl'>
+                <ModalHeader
+                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                // onClick={() => formik.resetForm()}
+                >
+                    Edit Branch
+                </ModalHeader>
+                <ModalBody>
+                    <EditBranchModal branchId={branchId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
+                </ModalBody>
+            </Modal>
 
         </PageWrapper>
     )

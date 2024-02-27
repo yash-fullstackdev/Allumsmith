@@ -33,6 +33,8 @@ import FieldWrap from '../../../../components/form/FieldWrap';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import EditProductPage from '../ProductPage/EditProductModal';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -44,8 +46,8 @@ const ProductListPage = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [apiData, setApiData] = useState<any[]>([]);
-
-
+	const [editModal, setEditModal] = useState<boolean>(false);
+	const [editProductId, setEditProductId] = useState<any>('')
 
 
 	const fetchData = async () => {
@@ -141,27 +143,26 @@ const ProductListPage = () => {
 		}),
 		columnHelper.display({
 			cell: (info) => (
-				<div className='font-bold'>
-					{/* 
-					<Link to={PathRoutes.add_product}>
-						<Button>
-							<svg
-								xmlns='http://www.w3.org/2000/svg'
-								fill='none'
-								viewBox='0 0 24 24'
-								strokeWidth='1.5'
-								stroke='currentColor'
-								className='h-6 w-6'>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-								/>
-							</svg>
-						</Button>{' '}
-					</Link> */}
-
-
+				<div className='font-bold flex'>
+					<Button onClick={() => {
+						setEditModal(true)
+						setEditProductId(info.row.original._id)
+					}
+					}>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'
+							strokeWidth='1.5'
+							stroke='currentColor'
+							className='h-6 w-6'>
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
+							/>
+						</svg>
+					</Button>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -270,7 +271,17 @@ const ProductListPage = () => {
 					<TableCardFooterTemplate table={table} />
 				</Card>
 			</Container>
-
+			<Modal isOpen={editModal} setIsOpen={setEditModal} isScrollable fullScreen='2xl'>
+				<ModalHeader
+					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+				// onClick={() => formik.resetForm()}
+				>
+					Edit Product
+				</ModalHeader>
+				<ModalBody>
+					<EditProductPage editProductId={editProductId} setEditModal={setEditModal} fetchData={fetchData} />
+				</ModalBody>
+			</Modal>
 		</PageWrapper>
 	)
 
