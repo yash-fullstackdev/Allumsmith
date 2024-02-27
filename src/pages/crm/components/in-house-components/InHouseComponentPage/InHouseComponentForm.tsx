@@ -10,7 +10,7 @@ import { PathRoutes } from '../../../../../utils/routes/enum';
 import CreatableSelect from 'react-select/creatable'
 const AddproductForm = () => {
 	const [formSubmitted, setFormSubmitted] = useState(false);
-	const [entries, setEntries] = useState([{ name: '', hsn: '', productCode: null, thickness: null, length: null, weight: null }]);
+	const [entries, setEntries] = useState([{ name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
 	const [dropDownValues, setDropDownValues] = useState<any>({});
 	const navigate = useNavigate()
 
@@ -40,26 +40,26 @@ const AddproductForm = () => {
 	});
 
 	const handleAddEntry = () => {
-		setEntries([...entries, { name: '', hsn: '', productCode: null, thickness: null, length: null, weight: null }]);
+		setEntries([...entries, { name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
 	};
 
 	const handleSaveEntries = async () => {
 
 		console.log("entries", entries)
 
-		try {
-			const promises = entries.map(async (entry) => {
-				const { data } = await post("/products", entry);
-				return data;
-			});
+		// try {
+		// 	const promises = entries.map(async (entry) => {
+		// 		const { data } = await post("/products", entry);
+		// 		return data;
+		// 	});
 
-			const results = await Promise.all(promises);
-			console.log('Results:', results);
-			navigate(PathRoutes.product)
+		// 	const results = await Promise.all(promises);
+		// 	console.log('Results:', results);
+		// 	navigate(PathRoutes.product)
 
-		} catch (error) {
-			console.error("Error Adding Product", error);
-		}
+		// } catch (error) {
+		// 	console.error("Error Adding Product", error);
+		// }
 	};
 
 	const getDropDownValues = async () => {
@@ -127,7 +127,7 @@ const AddproductForm = () => {
 									</div>
 								)}
 							</div>
-							<div key={index} className='mt-2 grid grid-cols-10 gap-1'>
+							<div key={index} className='mt-2 grid grid-cols-12 gap-1'>
 
 								<div className='col-span-12 lg:col-span-2'>
 									<Label htmlFor={`name-${index}`}>
@@ -180,6 +180,24 @@ const AddproductForm = () => {
 									/>
 									{/* ... Error handling for thickness field */}
 								</div>
+								<div className='col-span-12 lg:col-span-2'>
+									<Label htmlFor={`rate-${index}`}>
+										Rate
+									</Label>
+									<Input
+										id={`rate-${index}`}
+										name={`rate-${index}`}
+										type='number'
+										min={0}
+										value={entry.rate as any}
+										onChange={(e) => {
+											const updatedEntries: any = [...entries];
+											updatedEntries[index].rate = parseFloat(e.target.value) || 0;
+											setEntries(updatedEntries);
+										}}
+									/>
+									{/* ... Error handling for thickness field */}
+								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`thickness-${index}`}>
 										Thickness
@@ -187,7 +205,7 @@ const AddproductForm = () => {
 									<CreatableSelect
 										id={`thickness-${index}`}
 										name={`thickness-${index}`}
-										options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value.toString() }))}
+										options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
 										onChange={(selectedOption: any) => {
 											const updatedEntries: any = [...entries];
 											updatedEntries[index].thickness = parseFloat(selectedOption.value) || 0;
@@ -202,7 +220,7 @@ const AddproductForm = () => {
 									<CreatableSelect
 										id={`length-${index}`}
 										name={`length-${index}`}
-										options={dropDownValues && dropDownValues?.length?.map((value: any) => ({ value, label: value.toString() }))}
+										options={dropDownValues && dropDownValues?.length?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
 										onChange={(selectedOption: any) => {
 											const updatedEntries: any = [...entries];
 											updatedEntries[index].length = parseFloat(selectedOption.value) || 0;
