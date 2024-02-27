@@ -7,6 +7,9 @@ import Input from "../../../../components/form/Input";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Container from "../../../../components/layouts/Container/Container";
 import Checkbox from "../../../../components/form/Checkbox";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { PathRoutes } from "../../../../utils/routes/enum";
 
 const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
     const [formData, setFormData] = useState<any>({
@@ -16,13 +19,10 @@ const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
         city: '',
         state: '',
         zipcode: '',
-        type: '',
         phone: '',
         contact_name: '',
         contact_phone: '',
-        isArchive: false
     });
-
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
         setFormData((prevState: any) => ({
@@ -34,8 +34,8 @@ const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
     const fetchBranchById = async () => {
         try {
             const branchData = await get(`/branches/${branchId}`);
-            const { name, address_line1, address_line2, city, state, zipcode, type, phone, contact_name, contact_phone, isArchive } = branchData.data;
-            setFormData({ name, address_line1, address_line2, city, state, zipcode, type, phone, contact_name, contact_phone, isArchive });
+            const { name, address_line1, address_line2, city, state, zipcode, phone, contact_name, contact_phone } = branchData.data;
+            setFormData({ name, address_line1, address_line2, city, state, zipcode, phone, contact_name, contact_phone });
             console.log("Branch Data", branchData.data);
         } catch (error) {
             console.error("Error fetching branch data:", error);
@@ -50,9 +50,11 @@ const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
         console.log("entries", formData);
         try {
             const editedBranch = await put(`/branches/${branchId}`, formData);
-            console.log("edited Branch", editedBranch)
+            console.log("edited Branch", editedBranch);
+            toast.success('Branch edited Successfully!')
         } catch (error: any) {
-            console.error("Error Saving Branch", error)
+            console.error("Error updatin Branch", error);
+            toast.error('Error updating Branch', error);
         }
         finally {
             setIsEditModal(false);
@@ -130,17 +132,7 @@ const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='type'>
-                                    Type
-                                </Label>
-                                <Input
-                                    id="type"
-                                    name="type"
-                                    value={formData.type}
-                                    onChange={handleChange}
-                                />
-                            </div>
+
                             <div className='col-span-12 lg:col-span-4'>
                                 <Label htmlFor='phone'>
                                     Phone
@@ -174,15 +166,7 @@ const EditBranchModal = ({ branchId, setIsEditModal, fetchData }: any) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='isArchive'>Is Archive</Label>
-                                <Checkbox
-                                    id="isArchive"
-                                    name="isArchive"
-                                    checked={formData.isArchive}
-                                    onChange={handleChange}
-                                />
-                            </div>
+
                         </div>
 
                         <div className='flex mt-4 gap-2'>

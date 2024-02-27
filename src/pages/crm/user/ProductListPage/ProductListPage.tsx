@@ -27,14 +27,12 @@ import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
-
-import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../components/form/FieldWrap';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import EditProductPage from '../ProductPage/EditProductModal';
+import { toast } from 'react-toastify';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -68,16 +66,17 @@ const ProductListPage = () => {
 	useEffect(() => {
 		fetchData();
 	}, [])
-	console.log("called")
 
 
 	const handleClickDelete = async (id: any) => {
 		console.log("id", id)
 		try {
-			const { data: allUsers } = await deleted(`/products/${id}`);
-			console.log("allUsers", allUsers)
+			const { data: products } = await deleted(`/products/${id}`);
+			console.log("products", products);
+			toast.success('Product deleted Successfully !');
 		} catch (error: any) {
-			console.error('Error fetching users:', error.message);
+			console.error('Error deleting product:', error.message);
+			toast.error('Error deleting Product', error);
 			setIsLoading(false);
 		} finally {
 			setIsLoading(false);
@@ -208,33 +207,6 @@ const ProductListPage = () => {
 
 	return (
 		<PageWrapper name='Product List'>
-			{/* <Subheader>
-                <SubheaderLeft>
-                    <FieldWrap
-                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-                        lastSuffix={
-                            globalFilter && (
-                                <Icon
-                                    icon='HeroXMark'
-                                    color='red'
-                                    className='mx-2 cursor-pointer'
-                                    onClick={() => {
-                                        setGlobalFilter('');
-                                    }}
-                                />
-                            )
-                        }>
-                        <Input
-                            className='pl-8'
-                            id='example'
-                            name='example'
-                            placeholder='Search...'
-                            value={globalFilter ?? ''}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
-                        />
-                    </FieldWrap>
-                </SubheaderLeft>
-            </Subheader> */}
 			<Container>
 				<Card className='h-full'>
 					<CardHeader>

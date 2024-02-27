@@ -8,6 +8,7 @@ import Input from "../../../../components/form/Input";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Container from "../../../../components/layouts/Container/Container";
 import Checkbox from "../../../../components/form/Checkbox";
+import { toast } from "react-toastify";
 
 const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
   const [formData, setFormData] = useState<any>({
@@ -21,7 +22,6 @@ const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
     city: '',
     state: '',
     zipcode: '',
-    isArchive: false
   });
   const navigate = useNavigate();
 
@@ -36,8 +36,8 @@ const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
   const fetchVendorById = async () => {
     try {
       const vendorData = await get(`/vendors/${vendorId}`);
-      const { name, email, phone, gstNumber, company, addressLine1, addressLine2, city, state, zipcode, isArchive } = vendorData.data;
-      setFormData({ name, email, phone, gstNumber, company, addressLine1, addressLine2, city, state, zipcode, isArchive });
+      const { name, email, phone, gstNumber, company, addressLine1, addressLine2, city, state, zipcode } = vendorData.data;
+      setFormData({ name, email, phone, gstNumber, company, addressLine1, addressLine2, city, state, zipcode });
     } catch (error) {
       console.error("Error fetching vendor data:", error);
     }
@@ -52,8 +52,10 @@ const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
     try {
       const editedVendor = await put(`/vendors/${vendorId}`, formData);
       console.log("edited Vendor", editedVendor)
+      toast.success("Vendor edited Successfully!")
     } catch (error: any) {
-      console.error("Error Saving Vendor", error)
+      console.error("Error Updating Vendor", error);
+      toast.error('Error Updating Vendor', error)
     }
     finally {
       // navigate(PathRoutes.vendor);
@@ -176,15 +178,7 @@ const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className='col-span-12 lg:col-span-4'>
-                <Label htmlFor='isArchive'>Is Archive</Label>
-                <Checkbox
-                  id="isArchive"
-                  name="isArchive"
-                  checked={formData.isArchive}
-                  onChange={handleChange}
-                />
-              </div>
+
             </div>
 
             <div className='flex mt-4 gap-2'>

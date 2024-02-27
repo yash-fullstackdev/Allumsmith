@@ -34,6 +34,7 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import EditVendorModal from '../VendorPage/EditVendorModal';
+import { toast } from 'react-toastify';
 
 
 
@@ -65,13 +66,14 @@ const VendorListPage = () => {
         fetchData();
     }, [])
 
-    console.log("Vendor List", vendorsList)
     const handleClickDelete = async (id: any) => {
         try {
             const { data: vendor } = await deleted(`/vendors/${id}`);
-            console.log("vendor", vendor)
+            console.log("vendor", vendor);
+            toast.success(`Vendor deleted successfully!`);
         } catch (error: any) {
             console.error('Error fetching Vendors:', error);
+            toast.error('Error deleting Vendor', error);
             setIsLoading(false);
         } finally {
             setIsLoading(false);

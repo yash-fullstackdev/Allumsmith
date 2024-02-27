@@ -10,6 +10,7 @@ import Checkbox from "../../../../components/form/Checkbox";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Container from "../../../../components/layouts/Container/Container";
+import { toast } from "react-toastify";
 
 
 const BranchesPage = () => {
@@ -20,11 +21,10 @@ const BranchesPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        type: '',
         phone: '',
         contact_name: '',
         contact_phone: '',
-        isArchive: false
+
     });
 
     const handleChange = (e: any) => {
@@ -44,9 +44,11 @@ const BranchesPage = () => {
         console.log("entries", formData)
         try {
             const branches = await post('/branches', formData);
-            console.log("Branches", branches)
+            console.log("Branches", branches);
+            toast.success('Branch added Successfully!')
         } catch (error: any) {
-            console.error("Error Saving Vendor", error)
+            console.error("Error Saving Branch", error)
+            toast.error('Error Saving Branch', error)
         }
         finally {
             navigate(PathRoutes.branches);
@@ -90,7 +92,7 @@ const BranchesPage = () => {
                                             </div>
                                         </div>
 
-                                        <div className='mt-5 grid grid-cols-12 gap-2'>
+                                        <div className='mt-5 grid grid-cols-10 gap-2'>
                                             <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='name'>
                                                     Name
@@ -161,18 +163,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='type'>
-                                                    Type
-                                                </Label>
-                                                <Input
-                                                    id="type"
-                                                    name="type"
-                                                    value={formData.type}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for GST Number field */}
-                                            </div>
+
                                             <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='phone'>
                                                     Phone
@@ -212,17 +203,6 @@ const BranchesPage = () => {
                                                 {/* ... Error handling for company field */}
                                             </div>
 
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='isArchive'>Is Archive</Label>
-                                                <Checkbox
-                                                    id="isArchive"
-                                                    name="isArchive"
-
-                                                    checked={formData.isArchive}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for isArchive field */}
-                                            </div>
                                         </div>
 
 

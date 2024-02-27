@@ -12,6 +12,7 @@ import Checkbox from "../../../../components/form/Checkbox";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Container from "../../../../components/layouts/Container/Container";
+import { toast } from "react-toastify";
 
 
 const VendorPage = () => {
@@ -26,7 +27,6 @@ const VendorPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        isArchive: false
     });
 
     const handleChange = (e: any) => {
@@ -46,7 +46,8 @@ const VendorPage = () => {
         console.log("entries", formData)
         try {
             const vendor = await post('/vendors', formData);
-            console.log("Vendor", vendor)
+            console.log("Vendor", vendor);
+            toast.success('Vendor added Successfully!')
         } catch (error: any) {
             console.error("Error Saving Vendor", error)
         }
@@ -211,17 +212,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='isArchive'>Is Archive</Label>
-                                                <Checkbox
-                                                    id="isArchive"
-                                                    name="isArchive"
 
-                                                    checked={formData.isArchive}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for isArchive field */}
-                                            </div>
                                         </div>
 
 

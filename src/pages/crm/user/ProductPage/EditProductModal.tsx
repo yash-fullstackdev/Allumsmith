@@ -9,6 +9,7 @@ import Input from "../../../../components/form/Input";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Container from "../../../../components/layouts/Container/Container";
 import CreatableSelect from 'react-select/creatable';
+import { toast } from "react-toastify";
 
 const EditProductModal = ({ editProductId, setEditModal, fetchData }: any) => {
     const [formData, setFormData] = useState<any>({
@@ -59,9 +60,11 @@ const EditProductModal = ({ editProductId, setEditModal, fetchData }: any) => {
         console.log("entries", formData);
         try {
             const editedProduct = await put(`/products/${editProductId}`, formData);
-            console.log("edited Product", editedProduct)
+            console.log("edited Product", editedProduct);
+            toast.success(`Product Updated Successfully`)
         } catch (error: any) {
             console.error("Error Saving Product", error)
+            toast.error("Error Adding Products", error);
         }
         finally {
             navigate(PathRoutes.product);

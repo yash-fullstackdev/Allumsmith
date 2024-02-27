@@ -9,6 +9,7 @@ import FooterRouter from '../components/router/FooterRouter';
 import useFontSize from '../hooks/useFontSize';
 import getOS from '../utils/getOS.util';
 import { Router, useLocation, useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 	// const navigate = useNavigate();

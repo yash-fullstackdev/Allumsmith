@@ -8,56 +8,29 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
 
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
+import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
+import Container from '../../../../../components/layouts/Container/Container';
 import Card, {
     CardBody,
     CardHeader,
     CardHeaderChild,
     CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
+} from '../../../../../components/ui/Card';
 import TableTemplate, {
     TableCardFooterTemplate,
-} from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
-import { PathRoutes } from '../../../../utils/routes/enum';
-import { get } from '../../../../utils/api-helper.util';
+} from '../../../../../templates/common/TableParts.template';
+import Badge from '../../../../../components/ui/Badge';
 
 const columnHelper = createColumnHelper<any>();
 
 
-const VendorProductList = ({ purchaseOrderList, productsArray }: any) => {
+const ProductList = ({ productsArray }: any) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [productListData, setProductListData] = useState()
-
-
-    console.log("productListData", productListData)
 
 
 
-    const getPurchaseOrderList = async () => {
-        // setIsLoading(true);
-        try {
-            const { data: allUsers } = await get(`/purchase-order/${purchaseOrderList}`);
-            setProductListData(allUsers);
-            // setIsLoading(false);
-        } catch (error: any) {
-            console.error('Error fetching users:', error.message);
-            // setIsLoading(false);
-        } finally {
-            // setIsLoading(false);
-        }
-    };
-
-
-    useEffect(() => {
-        getPurchaseOrderList();
-    }, [])
-    console.log("Products array", productsArray)
     const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
@@ -148,5 +121,5 @@ const VendorProductList = ({ purchaseOrderList, productsArray }: any) => {
 
 };
 
-export default VendorProductList;
+export default ProductList;
 

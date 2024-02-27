@@ -8,6 +8,7 @@ import { get, post } from '../../../../../utils/api-helper.util';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../../utils/routes/enum';
 import CreatableSelect from 'react-select/creatable'
+import { toast } from 'react-toastify';
 const AddproductForm = () => {
 	const [formSubmitted, setFormSubmitted] = useState(false);
 	const [entries, setEntries] = useState([{ name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
@@ -18,6 +19,7 @@ const AddproductForm = () => {
 		console.log('values', values);
 		try {
 			const { data } = await post("/products", values);
+
 			console.log("data", data)
 		} catch (error) {
 			console.error("Error Adding Product", error);
@@ -47,19 +49,21 @@ const AddproductForm = () => {
 
 		console.log("entries", entries)
 
-		// try {
-		// 	const promises = entries.map(async (entry) => {
-		// 		const { data } = await post("/products", entry);
-		// 		return data;
-		// 	});
+		try {
+			const promises = entries.map(async (entry) => {
+				const { data } = await post("/products", entry);
+				return data;
+			});
 
-		// 	const results = await Promise.all(promises);
-		// 	console.log('Results:', results);
-		// 	navigate(PathRoutes.product)
+			const results = await Promise.all(promises);
+			console.log('Results:', results);
+			toast.success("Product added Successfully!")
+			navigate(PathRoutes.product)
 
-		// } catch (error) {
-		// 	console.error("Error Adding Product", error);
-		// }
+		} catch (error: any) {
+			console.error("Error Adding Product", error);
+			toast.error("Error Adding Products", error);
+		}
 	};
 
 	const getDropDownValues = async () => {
@@ -80,7 +84,6 @@ const AddproductForm = () => {
 	useEffect(() => {
 		getDropDownValues();
 	}, [])
-	console.log("DD Values", dropDownValues)
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
 			<Card>

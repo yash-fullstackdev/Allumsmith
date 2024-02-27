@@ -52,6 +52,19 @@ export const appPages: any = {
 			to: '/add-branches',
 		},
 	},
+	colorsPage: {
+		listPage: {
+			id: 'colorsPage',
+			to: '/colors',
+			text: 'Colors',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-colors',
+		},
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {

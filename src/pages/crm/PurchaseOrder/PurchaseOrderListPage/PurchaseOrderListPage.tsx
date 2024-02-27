@@ -1,7 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
 import {
-    CellContext,
     createColumnHelper,
     getCoreRowModel,
     getFilteredRowModel,
@@ -14,7 +13,6 @@ import { Link } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
-import { appPages } from '../../../../config/pages.config';
 import Card, {
     CardBody,
     CardHeader,
@@ -22,20 +20,16 @@ import Card, {
     CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
 import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
-
-import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../components/form/FieldWrap';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import VendorProductList from '../VendorProductList/VendorProductList';
+import VendorProductList from './ProductList/ProductList';
+import { toast } from 'react-toastify';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -45,7 +39,6 @@ const PurchaseOrderListPage = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [purchaseOrderList, setPurchaseOrderList] = useState<any[]>([]);
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
-    const [vendorId, setVendorId] = useState('')
     const [productsArray, setProductsArray] = useState<any>([]);
 
     const fetchData = async () => {
@@ -66,14 +59,16 @@ const PurchaseOrderListPage = () => {
         fetchData();
     }, [])
 
-    console.log("Purchase Order List", purchaseOrderList)
     const handleClickDelete = async (id: any) => {
+        console.log('Id', id);
         try {
             const { data: allUsers } = await deleted(`/purchase-order/${id}`);
-            console.log("allUsers", allUsers)
+            console.log("allUsers", allUsers);
+            toast.success('Purchase Order  deleted Successfully!')
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
             setIsLoading(false);
+            toast.error('Error deleting Purchase Order', error);
         } finally {
             setIsLoading(false);
             fetchData();
@@ -81,20 +76,11 @@ const PurchaseOrderListPage = () => {
     }
 
     const columns = [
-        columnHelper.accessor('id', {
-            cell: (info) => (
-
-                <div className=''>{`${info.getValue()}`}</div>
-
-            ),
-            header: 'id',
-
-        }),
         columnHelper.accessor('name', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.row.original.vendor.name}`}
+                    {`${info?.row?.original?.vendor?.name}`}
                 </div>
 
             ),
@@ -105,7 +91,7 @@ const PurchaseOrderListPage = () => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.row.original.vendor.phone}`}</div>
+                    {`${info?.row?.original?.vendor?.phone}`}</div>
             ),
             header: 'Phone',
         }),
@@ -113,7 +99,7 @@ const PurchaseOrderListPage = () => {
             cell: (info) => (
 
 
-                <div className=''>{`${info.row.original.vendor.email}`}</div>
+                <div className=''>{`${info?.row?.original?.vendor?.email}`}</div>
             ),
             header: 'Email',
         }),
@@ -123,8 +109,7 @@ const PurchaseOrderListPage = () => {
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
-                                setVendorId(info.row.original._id);
-                            setProductsArray(info.row.original.products)
+                                setProductsArray(info?.row?.original?.products)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -224,7 +209,7 @@ const PurchaseOrderListPage = () => {
                     Add Vendor
                 </ModalHeader>
                 <ModalBody>
-                    <VendorProductList purchaseOrderList={vendorId} productsArray={productsArray} />
+                    <VendorProductList productsArray={productsArray} />
                 </ModalBody>
             </Modal>
 

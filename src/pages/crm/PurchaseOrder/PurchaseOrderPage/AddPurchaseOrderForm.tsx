@@ -9,6 +9,7 @@ import Input from '../../../../components/form/Input';
 import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
+import { toast } from 'react-toastify';
 
 
 const AddproductForm = () => {
@@ -58,9 +59,11 @@ const AddproductForm = () => {
     try {
       const { data } = await post("/purchase-order", finalValues);
       console.log("data", data)
+      toast.success('Purchase Order Created Successfully!')
     }
-    catch (error) {
+    catch (error: any) {
       console.error("Error Adding Product", error);
+      toast.error('Error Creating Purchase Order', error);
     } finally {
       navigate(PathRoutes.purchase_order)
     }
@@ -116,20 +119,6 @@ const AddproductForm = () => {
             </div>
           </div>
           <div>
-            <div className='col-span-4 lg:col-span-4 mt-10'>
-              <Label htmlFor='componentID'>
-                Id
-                <span className='ml-1 text-red-500'>*</span>
-              </Label>
-              <Input
-                id='id'
-                name='id'
-                value={id}
-                onChange={(e: any) => setId(e.target.value)}
-
-              />
-
-            </div>
             <div className='col-span-4 lg:col-span-4 mt-5'>
               <Label htmlFor='vendorName'>
                 Vendor

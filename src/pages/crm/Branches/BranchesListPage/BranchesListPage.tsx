@@ -33,6 +33,7 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import EditVendorModal from '../../Vendors/VendorPage/EditVendorModal';
 import EditBranchModal from '../BranchesPage/EditBranchModal';
+import { toast } from 'react-toastify';
 
 
 
@@ -64,14 +65,15 @@ const BranchesListPage = () => {
         fetchData();
     }, [])
 
-    console.log("Branches List", branchesList)
     const handleClickDelete = async (id: any) => {
         try {
             const { data: branches } = await deleted(`/branches/${id}`);
             console.log("branches", branches)
+            toast.success('Branch deleted Successfully');
         } catch (error: any) {
-            console.error('Error fetching Branches:', error);
+            console.error('Error deleted Branches:', error);
             setIsLoading(false);
+            toast.error('Error deleting Branch', error);
         } finally {
             setIsLoading(false);
             fetchData();
