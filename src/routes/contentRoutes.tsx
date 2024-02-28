@@ -12,6 +12,9 @@ import BranchesListPage from '../pages/crm/Branches/BranchesListPage/BranchesLis
 import BranchesPage from '../pages/crm/Branches/BranchesPage/BranchesPage';
 import ColorsListPage from '../pages/crm/Colors/ColorsListPage/ColorsListPage';
 import ColorsPage from '../pages/crm/Colors/ColorsPage/ColorsPage';
+import UnderConstructionPage from '../pages/UnderConstruction.page';
+import InventoryListPage from '../pages/crm/Inventory/InventoryListPage/InventoryListPage';
+import InventoryPage from '../pages/crm/Inventory/InventoryPage/InventoryPage';
 
 /**
  * UI
@@ -63,6 +66,14 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.branchesPage.editPageLink.to}`,
 		element: <BranchesPage />,
+	},
+	{
+		path: `${appPages.inventoryPage.listPage.to}`,
+		element: <InventoryListPage />,
+	},
+	{
+		path: `${appPages.inventoryPage.editPageLink.to}`,
+		element: <InventoryPage />,
 	},
 	{
 		path: `${appPages.colorsPage.listPage.to}`,

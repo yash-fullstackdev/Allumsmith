@@ -64,6 +64,20 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-colors',
 		},
+
+	},
+	inventoryPage: {
+		listPage: {
+			id: 'inventoryPage',
+			to: '/inventory',
+			text: 'Inventory',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-inventory',
+		},
 	},
 	projectAppPages: {
 		subPages: {

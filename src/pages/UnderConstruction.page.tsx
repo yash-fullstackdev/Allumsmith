@@ -14,9 +14,7 @@ const UnderConstructionPage = () => {
 						</div>
 						<div className='flex basis-full justify-center'>
 							<span className='text-zinc-500'>
-								We are working to publish the page as soon as possible, if you want
-								to support us, you can buy it now and share your suggestions with
-								us.
+								We are working to publish the page as soon as possible
 							</span>
 						</div>
 					</div>
