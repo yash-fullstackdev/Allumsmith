@@ -25,6 +25,7 @@ import Select from '../../../../components/form/Select';
 import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
+import Input from '../../../../components/form/Input';
 
 
 
@@ -42,8 +43,8 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [isNewPurchaseEntry, setIsNewPurchaseEntry] = useState(false);
-
-
+    const [collapsible, setCollapsible] = useState(false)
+    const [collapsibleEntryList, setCollapsibleEntryList] = useState(false)
     const handleReceivedQuantityChange = (id: string, value: string) => {
         setEditedData((prevData) => ({
             ...prevData,
@@ -119,7 +120,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                 </div>
             ),
             header: 'Pending Quantity',
-            enableHiding: isNewPurchaseEntry
+            // enableHiding: true
 
         }),
 
@@ -132,6 +133,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         onChange={(e) =>
                             handleReceivedQuantityChange(info.row.id, e.target.value)
                         }
+                        disabled={!isNewPurchaseEntry}
                     />
                 </div>
             ),
@@ -153,6 +155,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                 [id]: e.target.value,
                             }));
                         }}
+                        disabled={!isNewPurchaseEntry}
                     >
                         {branchesData &&
                             branchesData.length > 0 &&
@@ -279,6 +282,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
     const handleNewPurchaseEntry = () => {
         setIsNewPurchaseEntry(true);
+        console.log('asdsd', isNewPurchaseEntry)
     };
 
     return (
@@ -289,7 +293,12 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                     <Card className='h-full'>
                         <CardHeader>
                             <CardHeaderChild>
-                                <CardTitle>Purchased Products List</CardTitle>
+                                <CardTitle
+                                    className='cursor-pointer '
+                                    onClick={() =>
+                                        setCollapsible(!collapsible)
+                                    }
+                                >Purchased Products List</CardTitle>
                                 <Badge
                                     variant='outline'
                                     className='border-transparent px-4 '
@@ -297,29 +306,38 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                     {table.getFilteredRowModel().rows.length} items
                                 </Badge>
                             </CardHeaderChild>
-                            <Button variant='solid' icon='HeroPlus'>
-                                New Purchase Entry
-                            </Button>
+                            <Collapse isOpen={!collapsible}>
+                                <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
+                                    New Purchase Entry
+                                </Button>
+                            </Collapse>
                         </CardHeader>
-                        <CardBody className='overflow-auto'>
+                        <Collapse isOpen={!collapsible}>
+                            <CardBody className='overflow-auto'>
 
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                            />
-                        </CardBody>
-                        <TableCardFooterTemplate table={table} />
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={table}
+                                />
+                            </CardBody>
+
+                            <TableCardFooterTemplate table={table} />
+                        </Collapse>
                     </Card>
                 </Container>
-            </PageWrapper>
+            </PageWrapper >
 
 
-            <PageWrapper name='Product List'>
+            <PageWrapper>
                 <Container>
                     <Card className='h-full'>
                         <CardHeader>
                             <CardHeaderChild>
-                                <CardTitle>Purchased Entry List</CardTitle>
+                                <CardTitle
+                                    className='cursor-pointer'
+                                    onClick={() =>
+                                        setCollapsibleEntryList(!collapsibleEntryList)
+                                    }>Purchased Entry List</CardTitle>
                                 <Badge
                                     variant='outline'
                                     className='border-transparent px-4 '
@@ -328,14 +346,16 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                 </Badge>
                             </CardHeaderChild>
                         </CardHeader>
-                        <CardBody className='overflow-auto'>
+                        <Collapse isOpen={!collapsibleEntryList}>
+                            <CardBody className='overflow-auto'>
 
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={purchaseEntryTable}
-                            />
-                        </CardBody>
-                        <TableCardFooterTemplate table={purchaseEntryTable} />
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={purchaseEntryTable}
+                                />
+                            </CardBody>
+                            <TableCardFooterTemplate table={purchaseEntryTable} />
+                        </Collapse>
                     </Card>
                 </Container>
             </PageWrapper>
