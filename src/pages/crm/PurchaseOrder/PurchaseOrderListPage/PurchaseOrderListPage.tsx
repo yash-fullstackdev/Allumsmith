@@ -43,9 +43,10 @@ const PurchaseOrderListPage = () => {
     const [productsArray, setProductsArray] = useState<any>([]);
     const [vendorId, setVenorId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
+    const [vendorInfo, setVendorInfo] = useState<any>()
 
 
-    console.log("productsArray", productsArray)
+    console.log("vendorInfo", vendorInfo)
 
 
 
@@ -129,7 +130,8 @@ const PurchaseOrderListPage = () => {
                         onClick={() => {
                             setVendorProductModal(true),
                                 setProductsArray(info?.row?.original?.products),
-                                setVenorId(info?.row?.original?._id)
+                                setVenorId(info?.row?.original?._id),
+                                setVendorInfo(info?.row?.original)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -227,7 +229,27 @@ const PurchaseOrderListPage = () => {
                         className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                     // onClick={() => formik.resetForm()}
                     >
-                        Purchase Order
+                        <div>
+                            <h2>
+                                Vendor Name: {vendorInfo?.vendor?.name}
+                            </h2>
+                            <h4>
+                                Phone Number: {vendorInfo?.vendor?.phone}
+                            </h4>
+                            <div>
+                                <h4>
+                                    email: {vendorInfo?.vendor?.email}
+                                </h4>
+                            </div>
+                            <h4>
+                                GST Number: {vendorInfo?.vendor?.gstNumber}
+
+                            </h4>
+
+                        </div>
+
+
+
                     </ModalHeader>
                     <ModalBody>
                         {/* <VendorProductList productsArray={productsArray} vendorId={vendorId} branchesData={branchesData} /> */}
