@@ -230,23 +230,23 @@ const PurchaseOrderListPage = () => {
                     // onClick={() => formik.resetForm()}
                     >
                         <div>
-                            <h2>
+                            <h2 className="italic capitalize text-xl">
                                 Vendor Name: {vendorInfo?.vendor?.name}
                             </h2>
-                            <h4>
+                            <h4 className="italic text-sm mt-2 text-gray-500">
                                 Phone Number: {vendorInfo?.vendor?.phone}
                             </h4>
                             <div>
-                                <h4>
+                                <h4 className="italic text-sm text-gray-500">
                                     email: {vendorInfo?.vendor?.email}
                                 </h4>
                             </div>
-                            <h4>
+                            <h4 className="italic text-sm text-gray-500">
                                 GST Number: {vendorInfo?.vendor?.gstNumber}
-
                             </h4>
-
                         </div>
+
+
 
 
 

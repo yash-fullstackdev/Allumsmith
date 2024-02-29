@@ -26,6 +26,7 @@ import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
+import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
 
 
 
@@ -43,12 +44,20 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [isNewPurchaseEntry, setIsNewPurchaseEntry] = useState(false);
-    const [collapsible, setCollapsible] = useState(false)
-    const [collapsibleEntryList, setCollapsibleEntryList] = useState(false)
+    const [collapseAll, setCollapseAll] = useState<boolean>(false);
+    // const [collapsible, setCollapsible] = useState(true)
+    // const [collapsibleEntryList, setCollapsibleEntryList] = useState(true)
+    const [accordionStates, setAccordionStates] = useState({
+        collapsible: false,
+        collapsibleEntryList: false,
+
+    });
+
     const handleReceivedQuantityChange = (id: string, value: string) => {
         setEditedData((prevData) => ({
             ...prevData,
             [id]: {
+                ...prevData[id], // Preserve other properties of the row
                 receivedQuantity: value,
                 branch: selectedBranches[id] ?? selectedBranches,
             },
@@ -145,14 +154,14 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                 // console.log("info", info)
                 <div className=''>
                     <Select
-                        id={`branch-${info.row.original._id}`}
-                        name={`branch-${info.row.original._id}`}
-                        value={selectedBranches[id] ?? selectedBranches}
+                        id={`branch-${info.row.id}`}
+                        name={`branch-${info.row.id}`}
+                        value={selectedBranches[info.row.id] ?? selectedBranches[info.row.id]}
                         placeholder='Select branch'
                         onChange={(e: any) => {
                             setSelectedBranches((prevBranches: any) => ({
                                 ...prevBranches,
-                                [id]: e.target.value,
+                                [info.row.id]: e.target.value,
                             }));
                         }}
                         disabled={!isNewPurchaseEntry}
@@ -282,37 +291,82 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
     const handleNewPurchaseEntry = () => {
         setIsNewPurchaseEntry(true);
-        console.log('asdsd', isNewPurchaseEntry)
+
+    };
+    const collapseAllAccordians = () => {
+        setAccordionStates({
+            collapsible: !collapseAll,
+            collapsibleEntryList: !collapseAll
+        });
+        setCollapseAll(!collapseAll);
     };
 
     return (
 
-        <>
+        <div>
             <PageWrapper name='Product List'>
+                <SubheaderRight>
+                    <div className='col-span-1'>
+                        <Button
+                            variant='solid'
+                            color='emerald'
+                            className='mr-5 mt-4'
+                            onClick={() => collapseAllAccordians()}
+                        >
+
+                            {!collapseAll ? 'Collapse All Information' : 'Expand All Information'}
+                        </Button>
+                    </div>
+                </SubheaderRight>
                 <Container>
-                    <Card className='h-full'>
-                        <CardHeader>
-                            <CardHeaderChild>
-                                <CardTitle
-                                    className='cursor-pointer '
-                                    onClick={() =>
-                                        setCollapsible(!collapsible)
-                                    }
-                                >Purchased Products List</CardTitle>
-                                <Badge
-                                    variant='outline'
-                                    className='border-transparent px-4 '
-                                    rounded='rounded-full'>
-                                    {table.getFilteredRowModel().rows.length} items
-                                </Badge>
-                            </CardHeaderChild>
-                            <Collapse isOpen={!collapsible}>
-                                <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
-                                    New Purchase Entry
-                                </Button>
+                    <Card >
+                        <CardBody>
+                            <div className='flex'>
+                                <div className='bold w-full'>
+                                    <Button
+                                        variant='outlined'
+                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                        onClick={() =>
+                                            setAccordionStates({
+                                                ...accordionStates,
+                                                collapsible: !accordionStates.collapsible,
+                                            })
+                                        }
+                                        rightIcon={
+                                            !accordionStates.collapsible
+                                                ? 'HeroChevronUp'
+                                                : 'HeroChevronDown'
+                                        }>
+                                        Purchased Products List
+                                    </Button>
+                                </div>
+                            </div>
+
+
+                            <Collapse isOpen={!accordionStates.collapsible}>
+                                <div className="flex justify-end mt-5 ">
+                                    <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
+                                        New Purchase Entry
+                                    </Button>
+                                </div>
                             </Collapse>
-                        </CardHeader>
-                        <Collapse isOpen={!collapsible}>
+                        </CardBody>
+
+
+                        <Collapse isOpen={!accordionStates.collapsible}>
+                            <CardHeader>
+                                <CardHeaderChild>
+                                    <CardTitle>
+                                        Purchased Products List
+                                    </CardTitle>
+                                    <Badge
+                                        variant='outline'
+                                        className='border-transparent px-4 '
+                                        rounded='rounded-full'>
+                                        {table.getFilteredRowModel().rows.length} items
+                                    </Badge>
+                                </CardHeaderChild>
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
 
                                 <TableTemplate
@@ -326,27 +380,45 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                     </Card>
                 </Container>
             </PageWrapper >
-
-
             <PageWrapper>
                 <Container>
-                    <Card className='h-full'>
-                        <CardHeader>
-                            <CardHeaderChild>
-                                <CardTitle
-                                    className='cursor-pointer'
-                                    onClick={() =>
-                                        setCollapsibleEntryList(!collapsibleEntryList)
-                                    }>Purchased Entry List</CardTitle>
-                                <Badge
-                                    variant='outline'
-                                    className='border-transparent px-4 '
-                                    rounded='rounded-full'>
-                                    {purchaseEntryTable.getFilteredRowModel().rows.length} items
-                                </Badge>
-                            </CardHeaderChild>
-                        </CardHeader>
-                        <Collapse isOpen={!collapsibleEntryList}>
+                    <Card>
+                        <CardBody>
+                            <div className='flex'>
+                                <div className='bold w-full'>
+                                    <Button
+                                        variant='outlined'
+                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                        onClick={() =>
+                                            setAccordionStates({
+                                                ...accordionStates,
+                                                collapsibleEntryList: !accordionStates.collapsibleEntryList,
+                                            })
+                                        }
+                                        rightIcon={
+                                            !accordionStates.collapsibleEntryList
+                                                ? 'HeroChevronUp'
+                                                : 'HeroChevronDown'
+                                        }>
+                                        Purchased Entry List
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardBody>
+                        <Collapse isOpen={!accordionStates.collapsibleEntryList}>
+                            <CardHeader className='mt-5'>
+                                <CardHeaderChild>
+                                    <CardTitle
+
+                                    >Purchased Entry List</CardTitle>
+                                    <Badge
+                                        variant='outline'
+                                        className='border-transparent px-4 '
+                                        rounded='rounded-full'>
+                                        {purchaseEntryTable.getFilteredRowModel().rows.length} items
+                                    </Badge>
+                                </CardHeaderChild>
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
 
                                 <TableTemplate
@@ -361,7 +433,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             </PageWrapper>
 
 
-        </>
+        </div>
     )
 
 };
