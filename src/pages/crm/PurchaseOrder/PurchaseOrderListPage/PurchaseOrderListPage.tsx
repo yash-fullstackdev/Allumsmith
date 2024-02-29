@@ -30,6 +30,7 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import VendorProductList from './ProductList/ProductList';
 import { toast } from 'react-toastify';
+import PurchaseEntryDetail from './PurchaseEntryDetail';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -40,6 +41,13 @@ const PurchaseOrderListPage = () => {
     const [purchaseOrderList, setPurchaseOrderList] = useState<any[]>([]);
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
     const [productsArray, setProductsArray] = useState<any>([]);
+    const [vendorId, setVenorId] = useState()
+    const [branchesData, setBranchesData] = useState<any>()
+
+
+    console.log("productsArray", productsArray)
+
+
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -55,8 +63,19 @@ const PurchaseOrderListPage = () => {
         }
     };
 
+    const fetchBranchData = async () => {
+        try {
+            const { data: allBranchesData } = await get(`/branches`);
+            setBranchesData(allBranchesData)
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+        } finally {
+        }
+    };
+
     useEffect(() => {
         fetchData();
+        fetchBranchData()
     }, [])
 
     const handleClickDelete = async (id: any) => {
@@ -109,7 +128,8 @@ const PurchaseOrderListPage = () => {
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
-                                setProductsArray(info?.row?.original?.products)
+                                setProductsArray(info?.row?.original?.products),
+                                setVenorId(info?.row?.original?._id)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -120,7 +140,7 @@ const PurchaseOrderListPage = () => {
                     </Button>
                     <Button
                         onClick={() => {
-                            handleClickDelete(info.row.original._id);
+                            handleClickDelete(info?.row?.original?._id);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -163,57 +183,60 @@ const PurchaseOrderListPage = () => {
 
 
     return (
-        <PageWrapper name='Product List'>
-            <Container>
-                <Card className='h-full'>
-                    <CardHeader>
-                        <CardHeaderChild>
-                            <CardTitle>All Purchase Order</CardTitle>
-                            <Badge
-                                variant='outline'
-                                className='border-transparent px-4 '
-                                rounded='rounded-full'>
-                                {table.getFilteredRowModel().rows.length} items
-                            </Badge>
-                        </CardHeaderChild>
+        <>
+            <PageWrapper name='Product List'>
+                <Container>
+                    <Card className='h-full'>
+                        <CardHeader>
+                            <CardHeaderChild>
+                                <CardTitle>All Purchase Order</CardTitle>
+                                <Badge
+                                    variant='outline'
+                                    className='border-transparent px-4 '
+                                    rounded='rounded-full'>
+                                    {table.getFilteredRowModel().rows.length} items
+                                </Badge>
+                            </CardHeaderChild>
 
-                        <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_purchase_order}`}>
-                                <Button variant='solid' icon='HeroPlus'>
-                                    New Purchase Order
-                                </Button>
-                            </Link>
-                        </CardHeaderChild>
+                            <CardHeaderChild>
+                                <Link to={`${PathRoutes.add_purchase_order}`}>
+                                    <Button variant='solid' icon='HeroPlus'>
+                                        New Purchase Order
+                                    </Button>
+                                </Link>
+                            </CardHeaderChild>
 
-                    </CardHeader>
-                    <CardBody className='overflow-auto'>
-                        {!isLoading && (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                            />
-                        )}
-                        <div className='flex justify-center'>
-                            {isLoading && <LoaderDotsCommon />}
-                        </div>
-                    </CardBody>
-                    <TableCardFooterTemplate table={table} />
-                </Card>
+                        </CardHeader>
+                        <CardBody className='overflow-auto'>
+                            {!isLoading && (
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={table}
+                                />
+                            )}
+                            <div className='flex justify-center'>
+                                {isLoading && <LoaderDotsCommon />}
+                            </div>
+                        </CardBody>
+                        <TableCardFooterTemplate table={table} />
+                    </Card>
 
-            </Container>
-            <Modal isOpen={vedorProductModal} setIsOpen={setVendorProductModal} isScrollable fullScreen>
-                <ModalHeader
-                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-                // onClick={() => formik.resetForm()}
-                >
-                    Add Vendor
-                </ModalHeader>
-                <ModalBody>
-                    <VendorProductList productsArray={productsArray} />
-                </ModalBody>
-            </Modal>
+                </Container>
+                <Modal isOpen={vedorProductModal} setIsOpen={setVendorProductModal} isScrollable fullScreen>
+                    <ModalHeader
+                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                    // onClick={() => formik.resetForm()}
+                    >
+                        Purchase Order
+                    </ModalHeader>
+                    <ModalBody>
+                        {/* <VendorProductList productsArray={productsArray} vendorId={vendorId} branchesData={branchesData} /> */}
+                        <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} productsArray={productsArray} />
+                    </ModalBody>
+                </Modal>
 
-        </PageWrapper>
+            </PageWrapper>
+        </>
     )
 
 };

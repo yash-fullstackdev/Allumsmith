@@ -24,8 +24,20 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-purchase-order',
 		},
-		
 	},
+	// purchaseEntry: {
+	// 	listPage: {
+	// 		id: 'purchaseEntry',
+	// 		to: '/purchase-entry',
+	// 		text: 'Purchase Entry',
+	// 		// icon: 'HeroQueueList',
+	// 		icon: 'HeroUserCircle',
+	// 	},
+	// 	editPageLink: {
+	// 		id: 'editPageLink',
+	// 		to: '/add-purchase-entry',
+	// 	},
+	// },
 	vendorPage: {
 		listPage: {
 			id: 'vendorsPage',
@@ -64,7 +76,6 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-colors',
 		},
-
 	},
 	inventoryPage: {
 		listPage: {
