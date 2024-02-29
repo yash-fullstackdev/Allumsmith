@@ -141,7 +141,9 @@ const InventoryListPage = () => {
                                 </Table>
                             </TableContainer>
                         ) : (
-                            <LoaderDotsCommon />
+                            <div className='flex justify-center'>
+                                <LoaderDotsCommon />
+                            </div>
                         )}
                     </CardBody>
                 </Card>

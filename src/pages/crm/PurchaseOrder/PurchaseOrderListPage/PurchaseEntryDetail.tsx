@@ -65,28 +65,28 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
     };
 
     const handleSave = async () => {
-        const saveData = table.getFilteredRowModel().rows.map((row: any) => ({
+        const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             product: row.original.product._id,
             receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
-            branch: selectedBranches,
+            branch: selectedBranches[index],
         }));
 
         // You can now use the 'saveData' as needed, such as sending it to the server.
         console.log('Save Data:', poId, saveData);
-        // try {
+        try {
 
-        //     const products = saveData
-        //     const final = { products }
-        //     const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
-        //     console.log("Branches", branches);
-        //     toast.success('product added to inventory')
-        // } catch (error: any) {
-        //     console.error("Error Saving Branch", error)
-        //     toast.error('Error Saving Branch', error)
-        // }
-        // finally {
-        //     // navigate(PathRoutes.branches);
-        // }
+            const products = saveData
+            const final = { products }
+            const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
+            console.log("Branches", branches);
+            toast.success('product added to inventory')
+        } catch (error: any) {
+            console.error("Error Saving Branch", error)
+            toast.error('Error Saving Branch', error)
+        }
+        finally {
+            // navigate(PathRoutes.branches);
+        }
 
     };
 
@@ -189,17 +189,17 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             ),
             header: 'Status',
         }),
-        columnHelper.display({
-            cell: () => (
-                <div className='font-bold'>
-                    <Button onClick={handleSave}>
-                        SAVE
-                    </Button>
-                </div>
-            ),
-            header: 'Actions',
-            size: 80,
-        }),
+        // columnHelper.display({
+        //     cell: () => (
+        //         <div className='font-bold'>
+        //             <Button onClick={handleSave}>
+        //                 SAVE
+        //             </Button>
+        //         </div>
+        //     ),
+        //     header: 'Actions',
+        //     size: 80,
+        // }),
 
     ];
     const table = useReactTable({
@@ -337,7 +337,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                                 ? 'HeroChevronUp'
                                                 : 'HeroChevronDown'
                                         }>
-                                        Purchased Products List
+                                        <h2 className='text-gray-700'> Purchased Products List </h2>
                                     </Button>
                                 </div>
                             </div>
@@ -356,15 +356,15 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         <Collapse isOpen={!accordionStates.collapsible}>
                             <CardHeader>
                                 <CardHeaderChild>
-                                    <CardTitle>
+                                    {/* <CardTitle>
                                         Purchased Products List
-                                    </CardTitle>
-                                    <Badge
+                                    </CardTitle> */}
+                                    {/* <Badge
                                         variant='outline'
                                         className='border-transparent px-4 '
                                         rounded='rounded-full'>
                                         {table.getFilteredRowModel().rows.length} items
-                                    </Badge>
+                                    </Badge> */}
                                 </CardHeaderChild>
                             </CardHeader>
                             <CardBody className='overflow-auto'>
@@ -376,6 +376,12 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                             </CardBody>
 
                             <TableCardFooterTemplate table={table} />
+                            <div style={{ display: "flex", justifyContent: "end", marginRight: "100px", marginTop: "20px" }}>
+
+                                <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
+                                    SAVE Purchase Entry
+                                </Button>
+                            </div>
                         </Collapse>
                     </Card>
                 </Container>
@@ -400,7 +406,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                                 ? 'HeroChevronUp'
                                                 : 'HeroChevronDown'
                                         }>
-                                        Purchased Entry List
+                                        <h2 className='text-gray-700'>Purchased Entry List</h2>
                                     </Button>
                                 </div>
                             </div>
@@ -408,7 +414,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         <Collapse isOpen={!accordionStates.collapsibleEntryList}>
                             <CardHeader className='mt-5'>
                                 <CardHeaderChild>
-                                    <CardTitle
+                                    {/* <CardTitle
 
                                     >Purchased Entry List</CardTitle>
                                     <Badge
@@ -416,7 +422,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                         className='border-transparent px-4 '
                                         rounded='rounded-full'>
                                         {purchaseEntryTable.getFilteredRowModel().rows.length} items
-                                    </Badge>
+                                    </Badge> */}
                                 </CardHeaderChild>
                             </CardHeader>
                             <CardBody className='overflow-auto'>
@@ -433,7 +439,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             </PageWrapper>
 
 
-        </div>
+        </div >
     )
 
 };

@@ -195,13 +195,13 @@ const ProductList = ({ productsArray, vendorId }: any) => {
                     <Card className='h-full'>
                         <CardHeader>
                             <CardHeaderChild>
-                                <CardTitle>Purchased Entry List</CardTitle>
+                                {/* <CardTitle>Purchased Entry List</CardTitle>
                                 <Badge
                                     variant='outline'
                                     className='border-transparent px-4 '
                                     rounded='rounded-full'>
                                     {purchaseEntryTable.getFilteredRowModel().rows.length} items
-                                </Badge>
+                                </Badge> */}
                             </CardHeaderChild>
                         </CardHeader>
                         <CardBody className='overflow-auto'>
