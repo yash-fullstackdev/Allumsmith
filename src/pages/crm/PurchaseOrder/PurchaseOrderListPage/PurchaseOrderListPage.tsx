@@ -40,7 +40,6 @@ const PurchaseOrderListPage = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [purchaseOrderList, setPurchaseOrderList] = useState<any[]>([]);
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
-    const [productsArray, setProductsArray] = useState<any>([]);
     const [vendorId, setVenorId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
     const [vendorInfo, setVendorInfo] = useState<any>()
@@ -129,7 +128,6 @@ const PurchaseOrderListPage = () => {
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
-                                setProductsArray(info?.row?.original?.products),
                                 setVenorId(info?.row?.original?._id),
                                 setVendorInfo(info?.row?.original)
                         }}
@@ -227,7 +225,6 @@ const PurchaseOrderListPage = () => {
                 <Modal isOpen={vedorProductModal} setIsOpen={setVendorProductModal} isScrollable fullScreen>
                     <ModalHeader
                         className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-                    // onClick={() => formik.resetForm()}
                     >
                         <div>
                             <h2 className="italic capitalize text-xl">
@@ -252,8 +249,7 @@ const PurchaseOrderListPage = () => {
 
                     </ModalHeader>
                     <ModalBody>
-                        {/* <VendorProductList productsArray={productsArray} vendorId={vendorId} branchesData={branchesData} /> */}
-                        <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} productsArray={productsArray} />
+                        <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} />
                     </ModalBody>
                 </Modal>
 

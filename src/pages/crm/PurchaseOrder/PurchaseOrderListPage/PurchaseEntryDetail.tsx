@@ -33,50 +33,59 @@ import { SubheaderRight } from '../../../../components/layouts/Subheader/Subhead
 const columnHelper = createColumnHelper<any>();
 
 
-const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
+const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
-    console.log("productsArray", productsArray)
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editedData, setEditedData] = useState<{ [key: string]: any }>({});
-    // const [branchesData, setBranchesData] = useState<any>()
     const [selectedBranches, setSelectedBranches] = useState<any>({});
-
+    const [purchaseOrderData, setPurchaseOrderData] = useState<any>([])
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [isNewPurchaseEntry, setIsNewPurchaseEntry] = useState(false);
     const [collapseAll, setCollapseAll] = useState<boolean>(false);
-    // const [collapsible, setCollapsible] = useState(true)
-    // const [collapsibleEntryList, setCollapsibleEntryList] = useState(true)
     const [accordionStates, setAccordionStates] = useState({
         collapsible: false,
         collapsibleEntryList: false,
 
     });
 
+    const getPurchaseOrderByid = async () => {
+
+        try {
+            const { data: allPurchaseOrderById } = await get(`/purchase-order/${poId}`);
+            setPurchaseOrderData(allPurchaseOrderById);
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+        } finally {
+        }
+    };
+
     const handleReceivedQuantityChange = (id: string, value: string) => {
         setEditedData((prevData) => ({
             ...prevData,
             [id]: {
-                ...prevData[id], // Preserve other properties of the row
+                ...prevData[id],
                 receivedQuantity: value,
-                branch: selectedBranches[id] ?? selectedBranches,
             },
         }));
-    };
+    }
 
+    const handleBranchChange = (id: string, branchId: string) => {
+        setSelectedBranches((prevBranches: any) => ({
+            ...prevBranches,
+            [id]: branchId,
+        }));
+    };
     const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
-
                 <div className=''>{`${info.getValue()}`}</div>
-
             ),
             header: 'Product Name',
 
         }),
         columnHelper.accessor('product.productCode', {
             cell: (info) => (
-
                 <div className=''>
                     {`${info.getValue()}`}
                 </div>
@@ -95,10 +104,10 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             header: 'Requried Quanity',
         }),
 
-        columnHelper.accessor('pendingQuantity', {
+        columnHelper.accessor(row => `${row.requiredQuantity - row.receivedQuantity}`, {
             cell: (info) => (
                 <div className=''>
-                    {info?.cell?.row?.original?.requiredQuantity - info?.cell?.row?.original?.receivedQuantity}
+                    {`${info.getValue()}`}
                 </div>
             ),
             header: 'Pending Quantity',
@@ -124,14 +133,14 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
         columnHelper.accessor('receivedQuantity', {
             cell: (info) => (
                 <div className=''>
-                    <input
+                    <Input
                         type='number'
                         value={editedData[info.row.id]?.receivedQuantity ?? info.getValue()}
-                        onChange={(e) =>
-                            handleReceivedQuantityChange(info.row.id, e.target.value)
-                        }
+                        onChange={(e) => handleReceivedQuantityChange(info.row.id, e.target.value)}
                         disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
+                        name="receivedQuantity"
                     />
+
                 </div>
             ),
             header: 'Received Quantity',
@@ -203,14 +212,13 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                 <div className=''>
                     {`${info.getValue()}`}
                 </div>
-
             ),
             header: 'Status',
         }),
 
     ];
     const table = useReactTable({
-        data: productsArray && productsArray,
+        data: purchaseOrderData?.products || [],
         columns,
         state: {
             sorting,
@@ -232,14 +240,10 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
         }
     };
 
-
-
     useEffect(() => {
         getPurchaseEntryData()
+        getPurchaseOrderByid()
     }, [])
-
-
-
 
     const purchaseEntryColumns = [
         columnHelper.accessor('products', {
@@ -252,7 +256,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             ),
             header: 'Name',
         }),
-        columnHelper.accessor('products', {
+        columnHelper.accessor('recivedquanity', {
             cell: (info) => (
                 <div>
                     {info?.row?.original?.products.map((product: any, index: number) => (
@@ -263,7 +267,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             header: 'Received Quantity',
         }),
 
-        columnHelper.accessor('products', {
+        columnHelper.accessor('branch', {
             cell: (info) => (
                 <div>
                     {info?.row?.original?.products.map((product: any, index: number) => (
@@ -308,20 +312,22 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             requiredQuantity: parseFloat(row.original.requiredQuantity), // Ensure requiredQuantity is converted to number
             branch: selectedBranches[index],
         }));
-
         try {
-            const invalidEntries = saveData.filter((entry: any) => entry.receivedQuantity > entry.requiredQuantity);
-            if (invalidEntries.length > 0) {
+            const invalidEntries = purchaseOrderData?.products?.some((entry: any, index: number) =>
+                (entry.requiredQuantity - entry.receivedQuantity) < saveData[index]?.receivedQuantity
+            );
+            if (invalidEntries) {
                 toast.error('Received quantity cannot be greater than required quantity for some products');
-                console.log("invalid entries", invalidEntries); // Log invalid entries for debugging
                 return;
             }
 
-            const products = saveData;
-            const final = { products };
-            const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
+            const products = saveData
+            const final = { products }
+            const finalUpdatedvalues = JSON.parse(JSON.stringify(final))
+            const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, finalUpdatedvalues);
             console.log("Branches", branches);
             toast.success('Product added to inventory');
+            getPurchaseOrderByid()
             getPurchaseEntryData();
         } catch (error: any) {
             console.error("Error Saving Branch", error);
@@ -414,7 +420,6 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
 
     return (
-
         <div>
             <PageWrapper name='Product List'>
                 <SubheaderRight>
@@ -532,7 +537,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                         </CardBody>
                                     ) :
                                     <div style={{ textAlign: 'center' }}>
-                                        No Records Available
+                                        No Purchase Entry Records Available
                                     </div>
                             }
                         </Collapse>
