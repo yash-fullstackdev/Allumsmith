@@ -339,11 +339,10 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
                             <Collapse isOpen={!accordionStates.collapsible}>
                                 <div className="flex justify-end mt-5 ">
-                                    {purchaseOrderData && purchaseOrderData?.length > 0 ? (
-                                        <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
-                                            New Purchase Entry
-                                        </Button>
-                                    ) : <></>}
+                                    <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
+                                        New Purchase Entry
+                                    </Button>
+
                                 </div>
                             </Collapse>
                         </CardBody>
