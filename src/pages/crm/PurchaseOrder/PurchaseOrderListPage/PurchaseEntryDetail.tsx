@@ -339,34 +339,38 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
                             <Collapse isOpen={!accordionStates.collapsible}>
                                 <div className="flex justify-end mt-5 ">
-                                    <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
-                                        New Purchase Entry
-                                    </Button>
+                                    {purchaseOrderData && purchaseOrderData?.length > 0 ? (
+                                        <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
+                                            New Purchase Entry
+                                        </Button>
+                                    ) : <></>}
                                 </div>
                             </Collapse>
                         </CardBody>
 
 
                         <Collapse isOpen={!accordionStates.collapsible}>
-                            <CardHeader>
-                                <CardHeaderChild>
-                                </CardHeaderChild>
-                            </CardHeader>
-                            <CardBody className='overflow-auto'>
+                            {purchaseOrderData && purchaseOrderData?.length > 0 ? (
+                                <>
+                                    <CardBody className='overflow-auto'>
+                                        <TableTemplate
+                                            className='table-fixed max-md:min-w-[70rem]'
+                                            table={table}
+                                        />
 
-                                <TableTemplate
-                                    className='table-fixed max-md:min-w-[70rem]'
-                                    table={table}
-                                />
-                            </CardBody>
+                                    </CardBody>
 
-                            <TableCardFooterTemplate table={table} />
-                            <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
+                                    <TableCardFooterTemplate table={table} />
+                                    <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
 
-                                <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
-                                    SAVE Purchase Entry
-                                </Button>
-                            </div>
+                                        <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
+                                            SAVE Purchase Entry
+                                        </Button>
+                                    </div>
+                                </>
+                            ) : (<div style={{ textAlign: 'center' }}>
+                                ALL PRODUCTS STATUS ARE COMPLETED FOR THIS PO
+                            </div>)}
                         </Collapse>
                     </Card>
                 </Container>
