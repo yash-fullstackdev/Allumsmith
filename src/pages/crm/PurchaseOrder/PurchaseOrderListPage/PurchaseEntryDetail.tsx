@@ -350,27 +350,25 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
 
                         <Collapse isOpen={!accordionStates.collapsible}>
-                            {purchaseOrderData && purchaseOrderData?.length > 0 ? (
-                                <>
-                                    <CardBody className='overflow-auto'>
-                                        <TableTemplate
-                                            className='table-fixed max-md:min-w-[70rem]'
-                                            table={table}
-                                        />
 
-                                    </CardBody>
+                            <>
+                                <CardBody className='overflow-auto'>
+                                    <TableTemplate
+                                        className='table-fixed max-md:min-w-[70rem]'
+                                        table={table}
+                                    />
 
-                                    <TableCardFooterTemplate table={table} />
-                                    <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
+                                </CardBody>
 
-                                        <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
-                                            SAVE Purchase Entry
-                                        </Button>
-                                    </div>
-                                </>
-                            ) : (<div style={{ textAlign: 'center' }}>
-                                ALL PRODUCTS STATUS ARE COMPLETED FOR THIS PO
-                            </div>)}
+                                <TableCardFooterTemplate table={table} />
+                                <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
+
+                                    <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
+                                        SAVE Purchase Entry
+                                    </Button>
+                                </div>
+                            </>
+
                         </Collapse>
                     </Card>
                 </Container>
