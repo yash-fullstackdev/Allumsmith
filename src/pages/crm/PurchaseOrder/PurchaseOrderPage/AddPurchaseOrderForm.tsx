@@ -50,24 +50,37 @@ const AddproductForm = () => {
     setEntries([...entries, { product: '', requiredQuantity: '', }]);
   };
 
+
+
   const handleSaveEntries = async () => {
+    const duplicateProductIds = entries
+      .map((entry: any) => entry.product)
+      .filter((productId: any, index: any, array: any) => array.indexOf(productId) !== index);
+    console.log("duplicateProductIds", duplicateProductIds)
+    if (duplicateProductIds.length > 0) {
+      toast.error('You have selected the same product more than once');
+      return;
+    }
     const finalValues = {
       id,
       vendor: vendorId,
       products: entries
-    }
+    };
+    console.log("final values", finalValues);
     try {
       const { data } = await post("/purchase-order", finalValues);
-      console.log("data", data)
-      toast.success('Purchase Order Created Successfully!')
-    }
-    catch (error: any) {
+      console.log("data", data);
+      toast.success('Purchase Order Created Successfully!');
+      navigate(PathRoutes.purchase_order);
+    } catch (error: any) {
       console.error("Error Adding Product", error);
       toast.error('Error Creating Purchase Order', error);
     } finally {
       navigate(PathRoutes.purchase_order)
     }
+
   };
+
   console.log('vendorData', vendorId)
   const handleDeleteProduct = (index: any) => {
     const newProduct = [...entries]
@@ -184,26 +197,6 @@ const AddproductForm = () => {
                       Products
                       <span className='ml-1 text-red-500'>*</span>
                     </Label>
-
-                    {/* <Select
-                    id={`product-${index}`}
-                    name={`product-${index}`}
-                    value={entry.name}
-                    onChange={(e: any) => {
-                      console.log("e", e.target._id)
-                      const updatedEntries = [...entries];
-                      updatedEntries[index].product = e.target.value;
-
-                      console.log("updatedEntries", updatedEntries)
-                      setEntries(updatedEntries);
-                    }}
-                  >
-                    {productListData.map((data: any) => (
-                      <option key={data.id} value={data._id}>
-                        {data.name}
-                      </option>
-                    ))}
-                  </Select> */}
                     <Select
                       placeholder='Select Product'
                       id={`product-${index}`}
