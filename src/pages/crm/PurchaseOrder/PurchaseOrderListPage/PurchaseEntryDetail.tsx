@@ -64,33 +64,6 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
         }));
     };
 
-    const handleSave = async () => {
-        const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
-            product: row.original.product._id,
-            receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
-            branch: selectedBranches[index],
-        }));
-
-        // You can now use the 'saveData' as needed, such as sending it to the server.
-        console.log('Save Data:', poId, saveData);
-        try {
-
-            const products = saveData
-            const final = { products }
-            const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
-            console.log("Branches", branches);
-            toast.success('product added to inventory')
-        } catch (error: any) {
-            console.error("Error Saving Branch", error)
-            toast.error('Error Saving Branch', error)
-        }
-        finally {
-            // navigate(PathRoutes.branches);
-        }
-
-    };
-
-    const id = ''
     const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
@@ -189,17 +162,6 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
             ),
             header: 'Status',
         }),
-        // columnHelper.display({
-        //     cell: () => (
-        //         <div className='font-bold'>
-        //             <Button onClick={handleSave}>
-        //                 SAVE
-        //             </Button>
-        //         </div>
-        //     ),
-        //     header: 'Actions',
-        //     size: 80,
-        // }),
 
     ];
     const table = useReactTable({
@@ -208,12 +170,8 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
         state: {
             sorting,
         },
-        // onSortingChange: setSorting,
         enableGlobalFilter: true,
         getCoreRowModel: getCoreRowModel(),
-        // getFilteredRowModel: getFilteredRowModel(),
-        // getSortedRowModel: getSortedRowModel(),
-        // getPaginationRowModel: getPaginationRowModel(),
     });
 
 
@@ -241,37 +199,35 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
     const purchaseEntryColumns = [
         columnHelper.accessor('products', {
             cell: (info) => (
-
-                < div className='' > {`${info?.row?.original?.products[0]?.product?.name}`}</div>
-
+                <div>
+                    {info?.row?.original?.products.map((product: any, index: number) => (
+                        <div key={index}>{product.product.name}</div>
+                    ))}
+                </div>
             ),
             header: 'Name',
-
         }),
-        columnHelper.accessor('requiredQuantity', {
+        columnHelper.accessor('products', {
             cell: (info) => (
-
-                < div className='' > {`${info?.row?.original?.products[0]?.receivedQuantity}`}</div>
-
+                <div>
+                    {info?.row?.original?.products.map((product: any, index: number) => (
+                        <div key={index}>{product.receivedQuantity}</div>
+                    ))}
+                </div>
             ),
-            header: 'Recived Quantity',
+            header: 'Received Quantity',
         }),
-        columnHelper.accessor('requiredQuantity', {
-            cell: (info) => (
-                < div className='' >{`${info?.row?.original?.products[0]?.receivedQuantity}`}</div>
-            ),
-            header: 'Quantity',
-        }),
-        columnHelper.accessor('branch', {
-            cell: (info) => (
 
-                < div className='' >{`${info?.row?.original?.products[0]?.branch.name}`}</div>
+        columnHelper.accessor('products', {
+            cell: (info) => (
+                <div>
+                    {info?.row?.original?.products.map((product: any, index: number) => (
+                        <div key={index}>{product.branch.name}</div>
+                    ))}
+                </div>
             ),
             header: 'Branch',
         }),
-
-
-
     ];
 
 
@@ -300,6 +256,31 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
         });
         setCollapseAll(!collapseAll);
     };
+    const handleSave = async () => {
+        const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
+            product: row.original.product._id,
+            receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
+            branch: selectedBranches[index],
+        }));
+
+        try {
+
+            const products = saveData
+            const final = { products }
+            const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
+            console.log("Branches", branches);
+            toast.success('product added to inventory')
+            getPurchaseEntryData()
+        } catch (error: any) {
+            console.error("Error Saving Branch", error)
+            toast.error('Error Saving Branch', error)
+        }
+        finally {
+            // navigate(PathRoutes.branches);
+        }
+
+    };
+
 
     return (
 
@@ -356,15 +337,6 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         <Collapse isOpen={!accordionStates.collapsible}>
                             <CardHeader>
                                 <CardHeaderChild>
-                                    {/* <CardTitle>
-                                        Purchased Products List
-                                    </CardTitle> */}
-                                    {/* <Badge
-                                        variant='outline'
-                                        className='border-transparent px-4 '
-                                        rounded='rounded-full'>
-                                        {table.getFilteredRowModel().rows.length} items
-                                    </Badge> */}
                                 </CardHeaderChild>
                             </CardHeader>
                             <CardBody className='overflow-auto'>
@@ -414,25 +386,24 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         <Collapse isOpen={!accordionStates.collapsibleEntryList}>
                             <CardHeader className='mt-5'>
                                 <CardHeaderChild>
-                                    {/* <CardTitle
-
-                                    >Purchased Entry List</CardTitle>
-                                    <Badge
-                                        variant='outline'
-                                        className='border-transparent px-4 '
-                                        rounded='rounded-full'>
-                                        {purchaseEntryTable.getFilteredRowModel().rows.length} items
-                                    </Badge> */}
                                 </CardHeaderChild>
                             </CardHeader>
-                            <CardBody className='overflow-auto'>
+                            {
+                                purchaseEntry?.length > 0 ?
+                                    (
+                                        <CardBody className='overflow-auto'>
 
-                                <TableTemplate
-                                    className='table-fixed max-md:min-w-[70rem]'
-                                    table={purchaseEntryTable}
-                                />
-                            </CardBody>
-                            <TableCardFooterTemplate table={purchaseEntryTable} />
+                                            <TableTemplate
+                                                className='table-fixed max-md:min-w-[70rem]'
+                                                table={purchaseEntryTable}
+                                            />
+                                            <TableCardFooterTemplate table={purchaseEntryTable} />
+                                        </CardBody>
+                                    ) :
+                                    <div style={{ textAlign: 'center' }}>
+                                        No Records Available
+                                    </div>
+                            }
                         </Collapse>
                     </Card>
                 </Container>
