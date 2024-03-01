@@ -106,6 +106,21 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
 
         }),
 
+        // columnHelper.accessor('receivedQuantity', {
+        //     cell: (info) => (
+        //         <div className=''>
+        //             <input
+        //                 type='number'
+        //                 value={editedData[info.row.id]?.receivedQuantity ?? info.getValue()}
+        //                 onChange={(e) =>
+        //                     handleReceivedQuantityChange(info.row.id, e.target.value)
+        //                 }
+        //                 disabled={!isNewPurchaseEntry}
+        //             />
+        //         </div>
+        //     ),
+        //     header: 'Received Quantity',
+        // }),
         columnHelper.accessor('receivedQuantity', {
             cell: (info) => (
                 <div className=''>
@@ -115,16 +130,46 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                         onChange={(e) =>
                             handleReceivedQuantityChange(info.row.id, e.target.value)
                         }
-                        disabled={!isNewPurchaseEntry}
+                        disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
                     />
                 </div>
             ),
             header: 'Received Quantity',
         }),
+
+        // columnHelper.accessor('selectBranch', {
+        //     cell: (info) => (
+
+        //         // console.log("info", info)
+        //         <div className=''>
+        //             <Select
+        //                 id={`branch-${info.row.id}`}
+        //                 name={`branch-${info.row.id}`}
+        //                 value={selectedBranches[info.row.id] ?? selectedBranches[info.row.id]}
+        //                 placeholder='Select branch'
+        //                 onChange={(e: any) => {
+        //                     setSelectedBranches((prevBranches: any) => ({
+        //                         ...prevBranches,
+        //                         [info.row.id]: e.target.value,
+        //                     }));
+        //                 }}
+        //                 disabled={!isNewPurchaseEntry}
+        //             >
+        //                 {branchesData &&
+        //                     branchesData.length > 0 &&
+        //                     branchesData?.map((data: any) => (
+        //                         <option key={data._id} value={data._id}>
+        //                             {data.name}
+        //                         </option>
+        //                     ))}
+        //             </Select>
+
+        //         </div>
+        //     ),
+        //     header: 'Select Branch',
+        // }),
         columnHelper.accessor('selectBranch', {
             cell: (info) => (
-
-                // console.log("info", info)
                 <div className=''>
                     <Select
                         id={`branch-${info.row.id}`}
@@ -137,7 +182,7 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                 [info.row.id]: e.target.value,
                             }));
                         }}
-                        disabled={!isNewPurchaseEntry}
+                        disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
                     >
                         {branchesData &&
                             branchesData.length > 0 &&
@@ -147,11 +192,11 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
                                 </option>
                             ))}
                     </Select>
-
                 </div>
             ),
             header: 'Select Branch',
         }),
+
         columnHelper.accessor('status', {
             cell: (info) => (
 
@@ -259,27 +304,113 @@ const PurchaseEntryDetail = ({ productsArray, branchesData, poId }: any) => {
     const handleSave = async () => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             product: row.original.product._id,
-            receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
+            receivedQuantity: parseFloat(editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity),
+            requiredQuantity: parseFloat(row.original.requiredQuantity), // Ensure requiredQuantity is converted to number
             branch: selectedBranches[index],
         }));
 
         try {
+            const invalidEntries = saveData.filter((entry: any) => entry.receivedQuantity > entry.requiredQuantity);
+            if (invalidEntries.length > 0) {
+                toast.error('Received quantity cannot be greater than required quantity for some products');
+                console.log("invalid entries", invalidEntries); // Log invalid entries for debugging
+                return;
+            }
 
-            const products = saveData
-            const final = { products }
+            const products = saveData;
+            const final = { products };
             const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, final);
             console.log("Branches", branches);
-            toast.success('product added to inventory')
-            getPurchaseEntryData()
+            toast.success('Product added to inventory');
+            getPurchaseEntryData();
         } catch (error: any) {
-            console.error("Error Saving Branch", error)
-            toast.error('Error Saving Branch', error)
+            console.error("Error Saving Branch", error);
+            toast.error('Error Saving Branch', error);
         }
         finally {
             // navigate(PathRoutes.branches);
         }
-
     };
+
+    // const handleSave = async () => {
+    //     const saveData = table.getFilteredRowModel().rows.reduce((accumulator: any[], row: any) => {
+    //         if (row.original.status !== 'completed') {
+    //             accumulator.push({
+    //                 product: row.original.product._id,
+    //                 receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
+    //                 branch: selectedBranches[row.id],
+    //             });
+    //         }
+    //         return accumulator;
+    //     }, []);
+
+    //     try {
+    //         const invalidEntries = saveData.filter((entry: any) => entry.receivedQuantity > entry.requiredQuantity);
+    //         if (invalidEntries.length > 0) {
+    //             toast.error('Received quantity cannot be greater than required quantity for some products');
+    //             return;
+    //         }
+
+    //         if (saveData.length === 0) {
+    //             toast.error('All Products Data status has completed');
+    //             return;
+    //         }
+
+    //         console.log("saveData", saveData, saveData.length);
+
+    //         const branches = await post(`/purchase-order/registerPurchaseEntry/${poId}`, { products: saveData });
+    //         console.log("Branches", branches);
+    //         toast.success('Product added to inventory');
+    //         getPurchaseEntryData();
+    //     } catch (error: any) {
+    //         console.error("Error Saving Branch", error)
+    //         toast.error('Error Saving Branch', error)
+    //     }
+    //     finally {
+    //         // navigate(PathRoutes.branches);
+    //     }
+    // };
+
+
+
+
+
+    //     const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
+    //         product: row.original.product._id,
+    //         receivedQuantity: parseFloat(editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity),
+    //         branch: selectedBranches[index],
+    //     }));
+
+    //     try {
+    //         // Additional validation for received quantity
+    //         const invalidEntries = saveData.filter((entry: any) => entry.receivedQuantity > entry.requiredQuantity);
+    //         if (invalidEntries.length > 0) {
+    //             toast.error('Received quantity cannot be greater than required quantity for some products');
+    //             return;
+    //         }
+
+    //         // Ensure that products field is an array
+    //         const formattedData = saveData.map(entry => ({ products: [entry] }));
+
+    //         // Perform API call to save data
+    //         const response = await post(`/purchase-order/registerPurchaseEntry/${poId}`, formattedData);
+
+    //         if (response.statusCode === 400) {
+    //             // Handle the error response from the server
+    //             toast.error(response.message[0]);
+    //         } else if (response.status === 'success') {
+    //             toast.success('Purchase entry saved successfully');
+    //             getPurchaseEntryData(); // Refresh data if necessary
+    //         } else {
+    //             toast.error('Failed to save purchase entry');
+    //         }
+    //     } catch (error: any) {
+    //         console.error("Error Saving Branch", error);
+    //         // Show error toast message
+    //         toast.error('Error saving purchase entry');
+    //     }
+    // };
+
 
 
     return (
