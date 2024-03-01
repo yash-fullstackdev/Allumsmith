@@ -88,15 +88,15 @@ const InventoryListPage = () => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Branch Name</TableCell>
-                                    <TableCell>Quantity</TableCell>
+                                    <TableCell><h5>Branch Name</h5></TableCell>
+                                    <TableCell><h5>Quantity</h5></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {branches.map((branch: any) => (
                                     <TableRow key={branch.branchId}>
-                                        <TableCell>{branch.branchName}</TableCell>
-                                        <TableCell>{branch.quantity}</TableCell>
+                                        <TableCell><h6>{branch.branchName}</h6></TableCell>
+                                        <TableCell><h6>{branch.quantity}</h6></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -113,7 +113,7 @@ const InventoryListPage = () => {
                 <Card>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Inventory</CardTitle>
+                            <CardTitle><h1>All Inventory</h1></CardTitle>
                         </CardHeaderChild>
 
                     </CardHeader>
@@ -123,16 +123,20 @@ const InventoryListPage = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Product Name</TableCell>
-                                            <TableCell>Total Quantity</TableCell>
+                                            <TableCell><h3> Product Name</h3></TableCell>
+                                            <TableCell><h3>Total Quantity</h3></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {productsArray.map((item: any) => (
                                             <React.Fragment key={item.productId}>
                                                 <TableRow onClick={() => handleProductClick(item.productId)}>
-                                                    <TableCell className='cursor-pointer'>{item.productName}</TableCell>
-                                                    <TableCell>{item.totalQuantity}</TableCell>
+                                                    <TableCell className='cursor-pointer'><h4> {item.productName} <Button rightIcon={
+                                                        item.expanded ?
+                                                            'HeroChevronUp'
+                                                            : 'HeroChevronDown'
+                                                    } /></h4></TableCell>
+                                                    <TableCell><h4>{item.totalQuantity}</h4></TableCell>
                                                 </TableRow>
                                                 {item.expanded && renderBranches(item.branches)}
                                             </React.Fragment>
