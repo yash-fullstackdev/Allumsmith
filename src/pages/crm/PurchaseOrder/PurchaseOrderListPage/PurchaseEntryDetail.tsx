@@ -264,7 +264,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         }));
         const UpdatedEntries: any = saveData.filter(entry => entry.ProductStaus !== 'completed');
         try {
-            const invalidEntries = purchaseOrderData?.products?.some((entry: any, index: number) =>
+            const invalidEntries = purchaseOrderData?.products?.some((entry: any) =>
                 (entry.requiredQuantity - entry.receivedQuantity) < UpdatedEntries?.receivedQuantity
             );
             if (invalidEntries) {
