@@ -7,9 +7,11 @@ export enum PathRoutes {
 	add_vendor = '/add-vendor',
 	branches = '/branches',
 	add_branches = '/add-branches',
-	inventory= '/inventory',
+	inventory = '/inventory',
 	inventoryList = '/inventory-list',
-	add_inventory='/add-inventory',
-	colors='/colors',
-	add_colors='/add-colors'
+	add_inventory = '/add-inventory',
+	colors = '/colors',
+	add_colors = '/add-colors',
+	customer = '/customer',
+	add_customer = '/add-customer',
 }

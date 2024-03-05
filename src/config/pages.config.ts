@@ -51,6 +51,19 @@ export const appPages: any = {
 			to: '/add-vendor',
 		},
 	},
+	customerPage: {
+		listPage: {
+			id: 'customerPage',
+			to: '/customer',
+			text: 'Customer',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-customer',
+		},
+	},
 	branchesPage: {
 		listPage: {
 			id: 'branchesPage',

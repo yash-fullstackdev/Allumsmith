@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { PathRoutes } from '../../../../utils/routes/enum';
 import { get } from '../../../../utils/api-helper.util';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
@@ -11,20 +9,20 @@ import Card, {
     CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 import _ from 'lodash';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import StockActionModal from '../StockActionModal/StockActionModal';
 
 const InventoryListPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [inventoryList, setInventoryList] = useState<any>([]);
     const [productsArray, setProductsArray] = useState<any>([]);
+    const [stockActionModal, setStockActionModal] = useState<any>()
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+
 
     useEffect(() => {
         if (inventoryList.length > 0) {
@@ -41,10 +39,7 @@ const InventoryListPage = () => {
                         quantity: item.quantity,
                     };
                 }).filter(Boolean);
-
-                // Calculate total quantity for the product
                 const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
-
                 return {
                     productId,
                     productName: productData[0].product.name,
@@ -80,6 +75,12 @@ const InventoryListPage = () => {
         setProductsArray(updatedProductsArray);
     };
 
+
+
+    useEffect(() => {
+        fetchData();
+    }, [stockActionModal]);
+
     const renderBranches = (branches: any) => {
         return (
             <TableRow>
@@ -93,7 +94,7 @@ const InventoryListPage = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {branches.map((branch: any) => (
+                                {branches && branches.map((branch: any) => (
                                     <TableRow key={branch.branchId}>
                                         <TableCell><h6>{branch.branchName}</h6></TableCell>
                                         <TableCell><h6>{branch.quantity}</h6></TableCell>
@@ -115,6 +116,9 @@ const InventoryListPage = () => {
                         <CardHeaderChild>
                             <CardTitle><h1>All Inventory</h1></CardTitle>
                         </CardHeaderChild>
+                        <Button variant='solid' icon='HeroPlus' onClick={() => setStockActionModal(true)}>
+                            Stock Action
+                        </Button>
 
                     </CardHeader>
                     <CardBody>
@@ -151,7 +155,18 @@ const InventoryListPage = () => {
                         )}
                     </CardBody>
                 </Card>
+                <Modal isOpen={stockActionModal} setIsOpen={setStockActionModal} isScrollable fullScreen='2xl'>
+                    <ModalHeader
+                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                    >
+                        Stock Action
+                    </ModalHeader>
+                    <ModalBody>
+                        <StockActionModal SetStockActionModal={() => setStockActionModal(false)} />
+                    </ModalBody>
+                </Modal>
             </Container>
+
         </PageWrapper>
     );
 };

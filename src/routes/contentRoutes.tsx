@@ -15,6 +15,8 @@ import ColorsPage from '../pages/crm/Colors/ColorsPage/ColorsPage';
 import UnderConstructionPage from '../pages/UnderConstruction.page';
 import InventoryListPage from '../pages/crm/Inventory/InventoryListPage/InventoryListPage';
 import InventoryPage from '../pages/crm/Inventory/InventoryPage/InventoryPage';
+import CustomerListPage from '../pages/crm/Customer/CustomerListPage/CustomerListPage';
+import CustomerPage from '../pages/crm/Customer/CustomerPage/CustomerPage';
 // import PurchaseEntryListPage from '../pages/crm/PurchaseEntry/PurchaseEntryList';
 
 /**
@@ -61,8 +63,16 @@ const contentRoutes: RouteProps[] = [
 		element: <VendorListPage />,
 	},
 	{
+		path: `${appPages.customerPage.listPage.to}`,
+		element: <CustomerListPage />,
+	},
+	{
 		path: `${appPages.vendorPage.editPageLink.to}`,
 		element: <VendorPage />,
+	},
+	{
+		path: `${appPages.customerPage.editPageLink.to}`,
+		element: <CustomerPage />,
 	},
 	{
 		path: `${appPages.branchesPage.listPage.to}`,

@@ -125,7 +125,6 @@ const AddproductForm = () => {
               <Button
                 variant='outlined'
                 className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
               >
                 Add Purchase Order
               </Button>
@@ -155,9 +154,6 @@ const AddproductForm = () => {
                     </option>
                   ))}
               </Select>
-
-
-
 
             </div>
             {entries.map((entry: any, index: any) => (
@@ -210,8 +206,7 @@ const AddproductForm = () => {
                     >
                       {productListData.map((data: any) => (
                         <option key={data._id} value={data._id}>  {/* Set value to product ID */}
-                          {data.name}
-
+                          {data.name} ({data.productCode})
                         </option>
                       ))}
                     </Select>
