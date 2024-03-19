@@ -1,4 +1,3 @@
-import React, { lazy } from 'react';
 import { RouteProps } from 'react-router-dom';
 import { appPages, authPages } from '../config/pages.config';
 import NotFoundPage from '../pages/NotFound.page';
@@ -12,27 +11,12 @@ import BranchesListPage from '../pages/crm/Branches/BranchesListPage/BranchesLis
 import BranchesPage from '../pages/crm/Branches/BranchesPage/BranchesPage';
 import ColorsListPage from '../pages/crm/Colors/ColorsListPage/ColorsListPage';
 import ColorsPage from '../pages/crm/Colors/ColorsPage/ColorsPage';
-import UnderConstructionPage from '../pages/UnderConstruction.page';
 import InventoryListPage from '../pages/crm/Inventory/InventoryListPage/InventoryListPage';
 import InventoryPage from '../pages/crm/Inventory/InventoryPage/InventoryPage';
 import CustomerListPage from '../pages/crm/Customer/CustomerListPage/CustomerListPage';
 import CustomerPage from '../pages/crm/Customer/CustomerPage/CustomerPage';
-// import PurchaseEntryListPage from '../pages/crm/PurchaseEntry/PurchaseEntryList';
-
-/**
- * UI
- */
-
-
-/**
- * Icons
- */
-
-
-// ADDED
-
-
-
+import CoatingListPage from '../pages/crm/Coating/CoatingListPage/CoatingListPage';
+import CoatingPage from '../pages/crm/Coating/CoatingPage/CoatingPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -97,6 +81,14 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.colorsPage.editPageLink.to}`,
 		element: <ColorsPage />,
+	},
+	{
+		path: `${appPages.coatingPage.listPage.to}`,
+		element: <CoatingListPage />,
+	},
+	{
+		path: `${appPages.coatingPage.editPageLink.to}`,
+		element: <CoatingPage />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },

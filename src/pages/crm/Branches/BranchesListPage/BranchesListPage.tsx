@@ -1,7 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
 import {
-    CellContext,
     createColumnHelper,
     getCoreRowModel,
     getFilteredRowModel,
@@ -11,7 +10,6 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -25,13 +23,10 @@ import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
-
-
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import EditVendorModal from '../../Vendors/VendorPage/EditVendorModal';
 import EditBranchModal from '../BranchesPage/EditBranchModal';
 import { toast } from 'react-toastify';
 

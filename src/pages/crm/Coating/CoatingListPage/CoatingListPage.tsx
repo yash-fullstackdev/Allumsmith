@@ -10,7 +10,6 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -29,24 +28,24 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
-import EditColorModal from '../ColorsPage/EditColorModal';
+import EditColorModal from '../CoatingPage/EditCoatingModal';
 
 
 
 const columnHelper = createColumnHelper<any>();
 
 
-const ColorsListPage = () => {
+const CoatingListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [colorsList, setColorsList] = useState<any[]>([]);
     const [colorId, setColorId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false)
 
-    const fetchData = async () => {
+    const fetchCoatingData = async () => {
         setIsLoading(true);
         try {
-            const { data: colorsList } = await get(`/colors`);
+            const { data: colorsList } = await get(`/coatings`);
             setColorsList(colorsList);
             setIsLoading(false);
         } catch (error: any) {
@@ -58,7 +57,7 @@ const ColorsListPage = () => {
     };
 
     useEffect(() => {
-        fetchData();
+        fetchCoatingData();
     }, [])
     const handleClickDelete = async (id: any) => {
         try {
@@ -71,7 +70,7 @@ const ColorsListPage = () => {
             toast.error('Error deleting Color', error);
         } finally {
             setIsLoading(false);
-            fetchData();
+            fetchCoatingData();
         }
     }
 
@@ -166,15 +165,13 @@ const ColorsListPage = () => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-
-
     return (
         <PageWrapper name='Inventory List'>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Colors</CardTitle>
+                            <CardTitle>All Coating</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
@@ -184,9 +181,9 @@ const ColorsListPage = () => {
                         </CardHeaderChild>
 
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_colors}`}>
+                            <Link to={`${PathRoutes.add_coating}`}>
                                 <Button variant='solid' icon='HeroPlus'>
-                                    New Color
+                                    New Coating
                                 </Button>
                             </Link>
                         </CardHeaderChild>
@@ -215,7 +212,7 @@ const ColorsListPage = () => {
                     Edit Color
                 </ModalHeader>
                 <ModalBody>
-                    <EditColorModal colorId={colorId} fetchData={fetchData} setIsEditModal={setIsEditModal} />
+                    <EditColorModal colorId={colorId} fetchData={fetchCoatingData} setIsEditModal={setIsEditModal} />
                 </ModalBody>
             </Modal>
 
@@ -224,5 +221,5 @@ const ColorsListPage = () => {
 
 };
 
-export default ColorsListPage;
+export default CoatingListPage;
 

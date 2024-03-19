@@ -90,6 +90,20 @@ export const appPages: any = {
 			to: '/add-colors',
 		},
 	},
+	coatingPage: {
+		listPage: {
+			id: 'coatingPage',
+			to: '/coating',
+			text: 'Coating',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-coating',
+		},
+	},
+
 	inventoryPage: {
 		listPage: {
 			id: 'inventoryPage',

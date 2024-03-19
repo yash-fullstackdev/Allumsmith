@@ -8,7 +8,6 @@ import Card, { CardBody } from "../../../../components/ui/Card";
 import Button from "../../../../components/ui/Button";
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/Input";
-import Checkbox from "../../../../components/form/Checkbox";
 import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Container from "../../../../components/layouts/Container/Container";

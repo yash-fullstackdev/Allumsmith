@@ -12,6 +12,8 @@ export enum PathRoutes {
 	add_inventory = '/add-inventory',
 	colors = '/colors',
 	add_colors = '/add-colors',
+	coating = '/coating',
+	add_coating = '/add-coating',
 	customer = '/customer',
 	add_customer = '/add-customer',
 }

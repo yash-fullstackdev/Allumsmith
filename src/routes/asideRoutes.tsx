@@ -7,7 +7,6 @@ const asideRoutes: RouteProps[] = [
 	{ path: authPages.loginPage.to, element: null },
 	{ path: authPages.resetPage.to, element: null },
 	{ path: authPages.signUpPage.to, element: null },
-
 	{ path: '*', element: <DefaultAsideTemplate /> },
 ];
 
