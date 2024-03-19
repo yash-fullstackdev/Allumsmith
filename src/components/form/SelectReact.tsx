@@ -16,11 +16,11 @@ export type TSelectDimension = 'sm' | 'default' | 'lg' | 'xl';
 
 type TSelectOption =
 	| {
-			value: string;
-			label: string;
-			isFixed?: boolean;
-			isDisabled?: boolean;
-	  }
+		value: string;
+		label: string;
+		isFixed?: boolean;
+		isDisabled?: boolean;
+	}
 	| undefined;
 export type TSelectOptions = TSelectOption[];
 export type TSelectGroups = GroupBase<TSelectOption>[];
@@ -38,6 +38,7 @@ interface ISelectReactProps extends TReactSelect, Partial<IValidationBaseProps> 
 	rounded?: TRounded;
 	dimension?: TSelectDimension;
 	variant?: TSelectVariant;
+	defaultValue?: any
 }
 const SelectReact: FC<ISelectReactProps> = (props) => {
 	const {
@@ -54,6 +55,7 @@ const SelectReact: FC<ISelectReactProps> = (props) => {
 		isValid,
 		isTouched,
 		invalidFeedback,
+		defaultValue,
 		...rest
 	} = props;
 

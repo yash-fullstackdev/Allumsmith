@@ -1,66 +1,80 @@
-import { useNavigate } from "react-router-dom";
-import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
-import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
-import Button from "../../../../components/ui/Button";
-import Container from "../../../../components/layouts/Container/Container";
-import Card, { CardBody } from "../../../../components/ui/Card";
-import { PathRoutes } from "../../../../utils/routes/enum";
-import Label from "../../../../components/form/Label";
-import Input from "../../../../components/form/Input";
-import { get, post } from "../../../../utils/api-helper.util";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
+import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
+import Button from '../../../../components/ui/Button';
+import Container from '../../../../components/layouts/Container/Container';
+import Card, { CardBody } from '../../../../components/ui/Card';
+import Label from '../../../../components/form/Label';
+import Input from '../../../../components/form/Input';
+import SelectReact from '../../../../components/form/SelectReact';
+import { get, post } from '../../../../utils/api-helper.util';
+import { PathRoutes } from '../../../../utils/routes/enum';
+import { toast } from 'react-toastify';
 
 const CoatingPage = () => {
     const navigate = useNavigate();
-    const [entries, setEntries] = useState([{ name: '', code: '' }]);
-    const [colorData, setColorData] = useState<any>([])
-    const handleAddEntry = () => {
-        setEntries([...entries, { name: '', code: '' }]);
-    };
-
-
-    const getAllcolors = async () => {
-        try {
-            const allColorsList = await get('/colors')
-            setColorData(allColorsList)
-        } catch {
-            console.log("error")
-        }
-    }
+    const [formData, setFormData] = useState({
+        name: '',
+        code: '',
+        rate: '',
+        colors: [],
+    });
+    const [colorData, setColorData] = useState([]);
 
     useEffect(() => {
-        getAllcolors()
-    }, [])
+        getAllColors();
+    }, []);
 
-
-    console.log("colorData", colorData.data)
-
-    const handleSaveEntries = async () => {
-
-        console.log("entries", entries)
-
+    const getAllColors = async () => {
         try {
-            const promises = entries.map(async (entry) => {
-                const { data } = await post("/colors", entry);
-                return data;
-            });
-
-            const results = await Promise.all(promises);
-            toast.success("Colors added Successfully!")
-            navigate(PathRoutes.colors)
-
-        } catch (error: any) {
-            console.error("Error Adding Color", error);
-            toast.error("Error Adding Colors", error);
+            const response = await get('/colors');
+            setColorData(response.data);
+        } catch (error) {
+            console.log("Error fetching color data:", error);
         }
     };
 
-    const handleDeleteColor = (index: any) => {
-        const newProduct = [...entries]
-        newProduct.splice(index, 1)
-        setEntries(newProduct)
+    const handleChange = (e: any) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const optionsGroup = [];
+    if (Array.isArray(colorData) && colorData.length > 0) {
+        const options = colorData.map((color: any) => ({
+            value: color._id,
+            label: color.name
+        }));
+        optionsGroup.push({
+            label: 'Colors',
+            options: options
+        });
+    } else {
+        console.error('Invalid or empty color data.');
     }
+
+    const addCoatingToDatabase = async () => {
+        console.log('FormData', formData)
+        try {
+            const data = {
+                code: formData.code,
+                colors: formData.colors,
+                name: formData.name,
+                rate: parseInt(formData.rate),
+            };
+            const response = await post('/coatings', data);
+            console.log("Response:", response);
+            toast.success('Data saved Successfully!');
+            navigate(PathRoutes.vendor);
+        } catch (error) {
+            console.error("Error Saving Data:", error);
+            toast.error('Failed to save data. Please try again.');
+        }
+    };
 
     return (
         <PageWrapper name='ADD Colors' isProtectedRoute={true}>
@@ -75,7 +89,6 @@ const CoatingPage = () => {
                     </Button>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
@@ -89,88 +102,68 @@ const CoatingPage = () => {
                                                 <Button
                                                     variant='outlined'
                                                     className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
                                                 >
                                                     Add Coating
                                                 </Button>
                                             </div>
                                         </div>
+                                        <div className='mt-2 grid grid-cols-12 gap-2'>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='name'>
+                                                    Name
+                                                </Label>
+                                                <Input
+                                                    id="name"
+                                                    name="name"
+                                                    value={formData.name}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='code'>
+                                                    Code
+                                                </Label>
+                                                <Input
+                                                    id="code"
+                                                    name="code"
+                                                    value={formData.code}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='rate'>
+                                                    Rate
+                                                </Label>
+                                                <Input
+                                                    id="rate"
+                                                    name="rate"
+                                                    value={formData.rate}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='Colors'>
+                                                    Colors
+                                                </Label>
+                                                <SelectReact
+                                                    name='colors'
+                                                    options={optionsGroup[0]?.options}
+                                                    isMulti
+                                                    menuPlacement='auto'
+                                                    onChange={(selectedOptions: any) => {
+                                                        const selectedValues = selectedOptions.map((option: any) => option.value);
+                                                        setFormData(prevState => ({
+                                                            ...prevState,
+                                                            colors: selectedValues
+                                                        }));
+                                                    }}
+                                                />
 
-                                        {entries.map((entry, index) => (
-                                            <>
-                                                <div className='flex items-end justify-end mt-2'>
-                                                    {entries.length > 1 && (
-                                                        <div className='flex items-end justify-end'>
-                                                            <Button
-                                                                type='button'
-                                                                onClick={() => handleDeleteColor(index)}
-                                                                variant='outlined'
-                                                                color='red'
-                                                            // isDisable={!privileges.canWrite()}
-                                                            >
-                                                                <svg
-                                                                    xmlns='http://www.w3.org/2000/svg'
-                                                                    fill='none'
-                                                                    viewBox='0 0 24 24'
-                                                                    strokeWidth='1.5'
-                                                                    stroke='currentColor'
-                                                                    data-slot='icon'
-                                                                    className='h-6 w-6'>
-                                                                    <path
-                                                                        strokeLinecap='round'
-                                                                        strokeLinejoin='round'
-                                                                        d='M6 18 18 6M6 6l12 12'
-                                                                    />
-                                                                </svg>
-                                                            </Button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
 
-                                                    <div className='col-span-12 lg:col-span-2'>
-                                                        <Label htmlFor={`name-${index}`}>
-                                                            Name
-                                                        </Label>
-                                                        <Input
-                                                            id={`name-${index}`}
-                                                            name={`name-${index}`}
-                                                            value={entry.name}
-                                                            onChange={(e) => {
-                                                                const updatedEntries = [...entries];
-                                                                updatedEntries[index].name = e.target.value;
-                                                                setEntries(updatedEntries);
-                                                            }}
-                                                        />
-                                                        {/* ... Error handling for name field */}
-                                                    </div>
-                                                    <div className='col-span-12 lg:col-span-2'>
-                                                        <Label htmlFor={`code-${index}`}>
-                                                            Code
-                                                        </Label>
-                                                        <Input
-                                                            id={`code-${index}`}
-                                                            name={`code-${index}`}
-                                                            value={entry.code}
-                                                            type="number"
-                                                            onChange={(e) => {
-                                                                const updatedEntries = [...entries];
-                                                                updatedEntries[index].code = e.target.value;
-                                                                setEntries(updatedEntries);
-                                                            }}
-                                                        />
-                                                        {/* ... Error handling for hsn field */}
-                                                    </div>
-
-                                                </div>
-                                            </>
-                                        ))}
+                                            </div>
+                                        </div>
                                         <div className='flex mt-2 gap-2'>
-                                            <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
-                                                Add Entry
-                                            </Button>
-
-                                            <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}>
+                                            <Button variant='solid' color='blue' type='button' onClick={addCoatingToDatabase}>
                                                 Save Entries
                                             </Button>
                                         </div>

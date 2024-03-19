@@ -29,6 +29,8 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import EditColorModal from '../CoatingPage/EditCoatingModal';
+import EditCoatingModal from '../CoatingPage/EditCoatingModal';
+import CoatingColors from './CoatingColors';
 
 
 
@@ -38,15 +40,16 @@ const columnHelper = createColumnHelper<any>();
 const CoatingListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [colorsList, setColorsList] = useState<any[]>([]);
-    const [colorId, setColorId] = useState('')
+    const [coatingList, setCoatingList] = useState<any[]>([]);
+    const [coatingId, setCoatingId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false)
-
+    const [colorModal, setColorModal] = useState<boolean>(false)
+    const [colors, setColors] = useState<any>([]);
     const fetchCoatingData = async () => {
         setIsLoading(true);
         try {
-            const { data: colorsList } = await get(`/coatings`);
-            setColorsList(colorsList);
+            const { data: coatingList } = await get(`/coatings`);
+            setCoatingList(coatingList);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -61,19 +64,18 @@ const CoatingListPage = () => {
     }, [])
     const handleClickDelete = async (id: any) => {
         try {
-            const { data: colors } = await deleted(`/colors/${id}`);
-            console.log("colors", colors)
-            toast.success('Color deleted Successfully');
+            const { data: coating } = await deleted(`/coatings/${id}`);
+            console.log("coating", coating)
+            toast.success('Coating deleted Successfully');
         } catch (error: any) {
-            console.error('Error deleted Color:', error);
+            console.error('Error deleted Coating:', error);
             setIsLoading(false);
-            toast.error('Error deleting Color', error);
+            toast.error('Error deleting Coating', error);
         } finally {
             setIsLoading(false);
             fetchCoatingData();
         }
     }
-
     const columns = [
 
         columnHelper.accessor('name', {
@@ -97,15 +99,37 @@ const CoatingListPage = () => {
             header: 'Code',
         }),
 
+        columnHelper.accessor('rate', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Rate',
+        }),
 
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
+                            setColorModal(true);
+                            setColors(info.row.original.colors);
+                        }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+
+                    </Button>
+                    <Button
+                        onClick={() => {
                             setIsEditModal(true)
-                            setColorId(info.row.original._id);
+                            setCoatingId(info.row.original._id);
+
                         }}
                     >
                         <svg
@@ -152,7 +176,7 @@ const CoatingListPage = () => {
     ];
 
     const table = useReactTable({
-        data: colorsList,
+        data: coatingList,
         columns,
         state: {
             sorting,
@@ -212,10 +236,19 @@ const CoatingListPage = () => {
                     Edit Color
                 </ModalHeader>
                 <ModalBody>
-                    <EditColorModal colorId={colorId} fetchData={fetchCoatingData} setIsEditModal={setIsEditModal} />
+                    <EditCoatingModal coatingId={coatingId} fetchData={fetchCoatingData} setIsEditModal={setIsEditModal} />
                 </ModalBody>
             </Modal>
-
+            <Modal isOpen={colorModal} setIsOpen={setColorModal} isScrollable fullScreen>
+                <ModalHeader
+                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                >
+                    Colors
+                </ModalHeader>
+                <ModalBody>
+                    <CoatingColors colors={colors} />
+                </ModalBody>
+            </Modal>
         </PageWrapper>
     )
 
