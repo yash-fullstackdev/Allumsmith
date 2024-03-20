@@ -68,7 +68,7 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
     } else {
         console.error('Invalid or empty color data.');
     }
-    
+
     const fetchCoatingById = async () => {
         try {
             const coatingData = await get(`/coatings/${coatingId}`);
@@ -105,22 +105,37 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
 
 
 
+    // const handleSelectChange = (selectedOptions: any) => {
+    //     const selectedValues = selectedOptions.map((option: any) => option.value);
+    //     console.log("🚀 ~ handleSelectChange ~ selectedValues:", selectedValues);
+
+    //     setFormData((prevState: any) => ({
+    //         ...prevState,
+    //         colors: selectedValues || []
+    //     }));
+
+    //     const newColors = selectedOptions.map(({ value, label }: ColorOption) => ({ value, label }));
+    //     setExistingColors(newColors);
+    // };
     const handleSelectChange = (selectedOptions: any) => {
-        const selectedValues = selectedOptions.map((option: any) => option.value);
-        console.log("🚀 ~ handleSelectChange ~ selectedValues:", selectedValues);
-    
-        setFormData((prevState: any) => ({
-            ...prevState, 
-            colors: selectedValues || []
+        const selectedValues = selectedOptions.map((option: any) => ({
+            _id: option.value,
+            name: option.label
         }));
-    
-        const newColors = selectedOptions.map(({ value, label }:ColorOption) => ({ value, label }));
-        setExistingColors(newColors);
+        setExistingColors(selectedValues);
+        setFormData((prevState: any) => ({
+            ...prevState,
+            colors: selectedValues.map((color: any) => color._id)
+        }));
     };
-    
-    
-    
- console.log(existingColors,"formData1")
+
+    console.log("Color Options", colorOptions);
+    console.log("Existing Colors", existingColors);
+    const filteredOptions = colorOptions.filter(option =>
+        existingColors.some((color: any) => color._id === option.value)
+    );
+    console.log("Filtered Options", filteredOptions);
+    console.log(existingColors, "formData1")
     return (
         <PageWrapper name='Edit Coating' isProtectedRoute={true}>
             <Container className='flex shrink-0 grow basis-auto flex-col '>
@@ -181,15 +196,9 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
                                 /> */}
                                 <ReactSelect
                                     name='colors'
-                                    // defaultValue={existingColors.map((color: any) => ({
-                                    //     value: color._id,
-                                    //     label: color.name
-                                    // }))}
-                                    value={existingColors.map((color:any, index:any)=>({
-                                        value: color._id || index,
-                                        label: color.name
-                                       })      
-                                 )}
+                                    value={colorOptions.filter(option =>
+                                        existingColors.some((color: any) => color._id === option.value)
+                                    )}
                                     options={colorOptions}
                                     isMulti
                                     menuPlacement='auto'

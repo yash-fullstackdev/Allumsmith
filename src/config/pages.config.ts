@@ -103,6 +103,19 @@ export const appPages: any = {
 			to: '/add-coating',
 		},
 	},
+	jobsPage: {
+		listPage: {
+			id: 'jobsPage',
+			to: '/jobs',
+			text: 'Jobs',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-jobs',
+		},
+	},
 
 	inventoryPage: {
 		listPage: {

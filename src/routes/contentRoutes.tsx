@@ -17,6 +17,8 @@ import CustomerListPage from '../pages/crm/Customer/CustomerListPage/CustomerLis
 import CustomerPage from '../pages/crm/Customer/CustomerPage/CustomerPage';
 import CoatingListPage from '../pages/crm/Coating/CoatingListPage/CoatingListPage';
 import CoatingPage from '../pages/crm/Coating/CoatingPage/CoatingPage';
+import JobsListPage from '../pages/crm/Jobs/JobsListPage/JobsListPage';
+import JobsPage from '../pages/crm/Jobs/JobsPage/JobsPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -89,6 +91,14 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.coatingPage.editPageLink.to}`,
 		element: <CoatingPage />,
+	},
+	{
+		path: `${appPages.jobsPage.listPage.to}`,
+		element: <JobsListPage />,
+	},
+	{
+		path: `${appPages.jobsPage.editPageLink.to}`,
+		element: <JobsPage />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },

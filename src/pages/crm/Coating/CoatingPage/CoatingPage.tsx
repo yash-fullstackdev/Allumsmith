@@ -69,7 +69,7 @@ const CoatingPage = () => {
             const response = await post('/coatings', data);
             console.log("Response:", response);
             toast.success('Data saved Successfully!');
-            navigate(PathRoutes.vendor);
+            navigate(PathRoutes.coating);
         } catch (error) {
             console.error("Error Saving Data:", error);
             toast.error('Failed to save data. Please try again.');
@@ -83,7 +83,7 @@ const CoatingPage = () => {
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigate(`${PathRoutes.colors}`)}
+                        onClick={() => navigate(`${PathRoutes.coating}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
