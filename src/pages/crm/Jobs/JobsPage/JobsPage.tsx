@@ -26,15 +26,18 @@ const JobsPage = () => {
 
 
 
-    const getInventoryDetails = async () => {
+    const getProductDetails = async () => {
         try {
-            const { data } = await get('/inventory');
-            const productsWithData = data.filter((item: any) => item.product);
+            const { data } = await get('/products');
+            console.log('Data of Products', data);
+            const productsWithData = data.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
             console.error("Error Fetching Products", error);
         }
     }
+
+
     const getBranchDetails = async () => {
         try {
             const { data } = await get('/branches');
@@ -53,7 +56,7 @@ const JobsPage = () => {
         }
     }
     useEffect(() => {
-        getInventoryDetails();
+        getProductDetails();
         getBranchDetails();
         getCoatingDetails();
 
@@ -229,8 +232,8 @@ const JobsPage = () => {
                                                                         }}
                                                                     >
                                                                         {productsData.map((item: any) => (
-                                                                            <option key={item.product._id} value={item.product._id}>
-                                                                                {item.product.name}
+                                                                            <option key={item._id} value={item._id}>
+                                                                                {item.name}
                                                                             </option>
                                                                         ))}
                                                                     </Select>
