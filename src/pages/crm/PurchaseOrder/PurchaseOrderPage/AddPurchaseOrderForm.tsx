@@ -10,6 +10,7 @@ import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { toast } from 'react-toastify';
+import SelectReact from '../../../../components/form/SelectReact';
 
 
 const AddproductForm = () => {
@@ -18,7 +19,7 @@ const AddproductForm = () => {
   const [id, setId] = useState(0);
   const [vendorId, setVendorId] = useState('');
   const [vendorData, setVendorData] = useState([])
-  const [productListData, setProductListData] = useState([])
+  const [productListData, setProductListData] = useState<any>([])
   const [products, setProducts] = useState()
   const navigate = useNavigate()
   const addProductToDatabase = async (values: any) => {
@@ -154,6 +155,11 @@ const AddproductForm = () => {
                     </option>
                   ))}
               </Select>
+              {/* <SelectReact
+                options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
+                value={{ value: vendorId, label: vendorId }}
+                onChange={(selectedOption: any) => setVendorId(selectedOption.value)} // Update vendor ID
+                name='vendorName' /> */}
 
             </div>
             {entries.map((entry: any, index: any) => (
@@ -193,7 +199,7 @@ const AddproductForm = () => {
                       Products
                       <span className='ml-1 text-red-500'>*</span>
                     </Label>
-                    <Select
+                    {/* <Select
                       placeholder='Select Product'
                       id={`product-${index}`}
                       name={`product-${index}`}
@@ -205,11 +211,28 @@ const AddproductForm = () => {
                       }}
                     >
                       {productListData.map((data: any) => (
-                        <option key={data._id} value={data._id}>  {/* Set value to product ID */}
+                        <option key={data._id} value={data._id}>  
                           {data.name} ({data.productCode})
                         </option>
                       ))}
-                    </Select>
+                    </Select> */}
+                    <SelectReact
+                      id={`product-${index}`}
+                      name={`product-${index}`}
+                      options={productListData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode})` }))}
+                      value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.name }}
+                      onChange={(selectedOption: any) => {
+                        const selectedProductName = productListData.find((product: any) => product._id === selectedOption.value)?.name;
+                        const updatedEntries = [...entries];
+                        updatedEntries[index].product = selectedOption.value;
+                        setEntries(updatedEntries);
+                        const dropdown: any = document.getElementById(`product-${index}`);
+                        if (dropdown) {
+                          dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                        }
+                      }}
+                    />
+
 
                   </div>
                   <div className='col-span-12 lg:col-span-2'>

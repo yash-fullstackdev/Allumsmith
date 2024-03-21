@@ -11,7 +11,15 @@ import Checkbox from "../../../../components/form/Checkbox";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { PathRoutes } from "../../../../utils/routes/enum";
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue, ActionMeta } from 'react-select'
+import { color } from "framer-motion";
+import SelectReact from "../../../../components/form/SelectReact";
+
+// Define the ColorOption interface
+interface ColorOption {
+    value: any;
+    label: any;
+}
 
 const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
     const [formData, setFormData] = useState<any>({
@@ -20,9 +28,10 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
         rate: '',
         colors: [],
     });
-    const [colorOptions, setColorOptions] = useState([]);
-    const [existingColors, setExistingColors] = useState<any[]>([]);
+    const [colorOptions, setColorOptions] = useState<ColorOption[]>([]);
+    const [existingColors, setExistingColors] = useState<ColorOption[]>([]);
     useEffect(() => {
+        console.log("🚀 ~ EditCoatingModal ~ formData:", formData)
         getAllColors();
     }, []);
 
@@ -47,18 +56,18 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
     };
     const optionsGroup: any = [];
     if (Array.isArray(colorOptions) && colorOptions.length > 0) {
-        const options = colorOptions.map((color: any) => ({
-            value: color._id,
-            label: color.name
-        }));
+        // const options = colorOptions.map((color: any) => ({
+        //     value: color._id,
+        //     label: color.name
+        // }));
+        // console.log("🚀 ~ options ~ options:", options)
         optionsGroup.push({
             label: 'Colors',
-            options: options
+            options: colorOptions
         });
     } else {
         console.error('Invalid or empty color data.');
     }
-
 
     const fetchCoatingById = async () => {
         try {
@@ -75,9 +84,7 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
     useEffect(() => {
         fetchCoatingById();
     }, []);
-    console.log("entries", formData);
     const editCoatingData = async () => {
-        console.log("entries", formData);
         try {
             const editedBranch = await put(`/coatings/${coatingId}`, formData);
             console.log("edited Coating", editedBranch);
@@ -95,17 +102,40 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
         value: color._id,
         label: color.name
     }));
-    console.log('Selected Options', selectedOptions)
 
+
+
+    // const handleSelectChange = (selectedOptions: any) => {
+    //     const selectedValues = selectedOptions.map((option: any) => option.value);
+    //     console.log("🚀 ~ handleSelectChange ~ selectedValues:", selectedValues);
+
+    //     setFormData((prevState: any) => ({
+    //         ...prevState,
+    //         colors: selectedValues || []
+    //     }));
+
+    //     const newColors = selectedOptions.map(({ value, label }: ColorOption) => ({ value, label }));
+    //     setExistingColors(newColors);
+    // };
     const handleSelectChange = (selectedOptions: any) => {
-        const selectedValues = selectedOptions.map((option: any) => option.value);
+        const selectedValues = selectedOptions.map((option: any) => ({
+            _id: option.value,
+            name: option.label
+        }));
+        setExistingColors(selectedValues);
         setFormData((prevState: any) => ({
             ...prevState,
-            colors: selectedValues
+            colors: selectedValues.map((color: any) => color._id)
         }));
     };
 
-
+    console.log("Color Options", colorOptions);
+    console.log("Existing Colors", existingColors);
+    const filteredOptions = colorOptions.filter(option =>
+        existingColors.some((color: any) => color._id === option.value)
+    );
+    console.log("Filtered Options", filteredOptions);
+    console.log(existingColors, "formData1")
     return (
         <PageWrapper name='Edit Coating' isProtectedRoute={true}>
             <Container className='flex shrink-0 grow basis-auto flex-col '>
@@ -150,32 +180,16 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
                                 <Label htmlFor='Colors'>
                                     Colors
                                 </Label>
-                                {/* <SelectReact
+                                <SelectReact
                                     name='colors'
-                                    options={optionsGroup[0]?.options}
-                                    isMulti
-                                    defaultValue={selectedOptions}
-                                    menuPlacement='auto'
-                                    onChange={(value: any) => {
-                                        const selectedValues = value.map((option: any) => option.value);
-                                        setFormData((prevState: any) => ({
-                                            ...prevState,
-                                            colors: selectedValues
-                                        }));
-                                    }}
-                                /> */}
-                                <ReactSelect
-                                    name='colors'
-                                    value={existingColors.map((color: any) => ({
-                                        value: color._id,
-                                        label: color.name
-                                    }))}
+                                    value={colorOptions.filter(option =>
+                                        existingColors.some((color: any) => color._id === option.value)
+                                    )}
                                     options={colorOptions}
                                     isMulti
                                     menuPlacement='auto'
                                     onChange={handleSelectChange}
                                 />
-
 
                             </div>
 

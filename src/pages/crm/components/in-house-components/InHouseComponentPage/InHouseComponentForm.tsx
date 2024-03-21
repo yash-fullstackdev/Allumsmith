@@ -69,7 +69,7 @@ const AddproductForm = () => {
 	const getDropDownValues = async () => {
 		try {
 			const dropDownData = await get('/products/getDistinctValues');
-			setDropDownValues(dropDownData.data || { thickness: [], length: [], weight: [] }); // Ensure dropDownData.data is an object, otherwise set an empty object with arrays
+			setDropDownValues(dropDownData.data || { thickness: [], length: [], weight: [] });
 		} catch (error) {
 			console.log("Error", error);
 		}
@@ -110,7 +110,6 @@ const AddproductForm = () => {
 											onClick={() => handleDeleteProduct(index)}
 											variant='outlined'
 											color='red'
-										// isDisable={!privileges.canWrite()}
 										>
 											<svg
 												xmlns='http://www.w3.org/2000/svg'
@@ -163,7 +162,6 @@ const AddproductForm = () => {
 											setEntries(updatedEntries);
 										}}
 									/>
-									{/* ... Error handling for hsn field */}
 								</div>
 								<div className='col-span-12 lg:col-span-2'>
 									<Label htmlFor={`productCode-${index}`}>
@@ -203,7 +201,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`thickness-${index}`}>
-										Thickness
+										Weight
 									</Label>
 									<CreatableSelect
 										id={`thickness-${index}`}
@@ -233,7 +231,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`weight-${index}`}>
-										Weight
+										Thickness
 									</Label>
 									<CreatableSelect
 										id={`weight-${index}`}
