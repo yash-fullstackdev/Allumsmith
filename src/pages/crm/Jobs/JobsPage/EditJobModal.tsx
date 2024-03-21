@@ -70,10 +70,10 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
     const getJobById = async () => {
         try {
             const jobData = await get(`/jobs/${jobId}`);
-            const { branch, batch } = jobData.data;
+            const { name, branch, batch } = jobData.data;
             setEntries(batch);
             setBranchId(branch);
-
+            setName(name);
 
         } catch (error) {
             console.error("Error fetching Job Data:", error);
@@ -296,7 +296,7 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                                                         updatedEntries[index].coating = e.target.value;
                                                                         setEntries(updatedEntries);
                                                                         updateColorOptions(coatingId);
-                                                                        setCoatingId(coatingId);
+
                                                                     }}
                                                                 >
                                                                     {coatingData.map((coating: any) => (
@@ -308,27 +308,26 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                                             </div>
                                                             <div className='col-span-12 lg:col-span-3'>
                                                                 <Label htmlFor={`hsn-${index}`}>
-                                                                    Color {entry.color}
+                                                                    Color
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
 
                                                                 <Select
-                                                                    // placeholder={entry.color}
+                                                                    placeholder={entry.color ? getColorName(entry.color, index) : ''}
                                                                     id={`color-${index}`}
                                                                     name={`color-${index}`}
-                                                                    defaultValue={entry.color ? getColorName(entry.color, index) : ''}
-                                                                    value={entry.color ? getColorName(entry.color, index) : ''}
+
+                                                                    value={entry.color}
                                                                     onChange={(e: any) => {
                                                                         const updatedEntries = [...entries];
                                                                         updatedEntries[index].color = e.target.value;
                                                                         setEntries(updatedEntries);
                                                                     }}
                                                                 >
-                                                                    {colorData?.map((color: any) => (
+                                                                    {colorData.map((color: any) => (
                                                                         <option key={color._id} value={color._id}>
                                                                             {color.name}
                                                                         </option>
-
                                                                     ))}
                                                                 </Select>
                                                             </div>

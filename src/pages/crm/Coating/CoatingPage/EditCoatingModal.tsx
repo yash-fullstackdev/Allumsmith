@@ -180,21 +180,7 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
                                 <Label htmlFor='Colors'>
                                     Colors
                                 </Label>
-                                {/* <SelectReact
-                                    name='colors'
-                                    options={optionsGroup[0]?.options}
-                                    isMulti
-                                    defaultValue={selectedOptions}
-                                    menuPlacement='auto'
-                                    onChange={(value: any) => {
-                                        const selectedValues = value.map((option: any) => option.value);
-                                        setFormData((prevState: any) => ({
-                                            ...prevState,
-                                            colors: selectedValues
-                                        }));
-                                    }}
-                                /> */}
-                                <ReactSelect
+                                <SelectReact
                                     name='colors'
                                     value={colorOptions.filter(option =>
                                         existingColors.some((color: any) => color._id === option.value)
@@ -204,6 +190,7 @@ const EditCoatingModal = ({ coatingId, setIsEditModal, fetchData }: any) => {
                                     menuPlacement='auto'
                                     onChange={handleSelectChange}
                                 />
+
                             </div>
 
 

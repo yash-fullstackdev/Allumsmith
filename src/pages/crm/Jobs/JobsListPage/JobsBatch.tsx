@@ -39,10 +39,9 @@ const JobsBatch = ({ batch }: any) => {
     const [sorting, setSorting] = useState<SortingState>([]);
 
 
-
     const columns = [
 
-        columnHelper.accessor('product', {
+        columnHelper.accessor('product.name', {
             cell: (info) => (
 
                 <div className=''>
@@ -62,7 +61,7 @@ const JobsBatch = ({ batch }: any) => {
             ),
             header: 'Quantity',
         }),
-        columnHelper.accessor('coating', {
+        columnHelper.accessor('coating.name', {
             cell: (info) => (
 
                 <div className=''>
@@ -72,7 +71,7 @@ const JobsBatch = ({ batch }: any) => {
             ),
             header: 'Coating',
         }),
-        columnHelper.accessor('color', {
+        columnHelper.accessor('color.name', {
             cell: (info) => (
 
                 <div className=''>
