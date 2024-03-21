@@ -9,7 +9,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -41,6 +41,8 @@ const BranchesListPage = () => {
     const [branchesList, setBranchesList] = useState<any[]>([]);
     const [branchId, setBranchId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false)
+
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -123,8 +125,7 @@ const BranchesListPage = () => {
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setIsEditModal(true)
-                            setBranchId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_branches}/${info.row.original._id}`)
                         }}
                     >
                         <svg

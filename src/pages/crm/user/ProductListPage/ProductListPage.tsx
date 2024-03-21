@@ -9,7 +9,7 @@ import {
 	SortingState,
 	useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
@@ -46,7 +46,7 @@ const ProductListPage = () => {
 	const [apiData, setApiData] = useState<any[]>([]);
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editProductId, setEditProductId] = useState<any>('')
-
+	const navigate = useNavigate();
 
 	const fetchData = async () => {
 		setIsLoading(true);
@@ -144,8 +144,7 @@ const ProductListPage = () => {
 			cell: (info) => (
 				<div className='font-bold flex'>
 					<Button onClick={() => {
-						setEditModal(true)
-						setEditProductId(info.row.original._id)
+						navigate(`${PathRoutes.edit_product}/${info.row.original._id}`)
 					}
 					}>
 						<svg

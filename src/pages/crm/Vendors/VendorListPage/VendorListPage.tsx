@@ -12,7 +12,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
@@ -48,6 +48,7 @@ const VendorListPage = () => {
     const [vendorId, setVendorId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
 
+    const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -138,8 +139,7 @@ const VendorListPage = () => {
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setIsEditModal(true);
-                            setVendorId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_vendor}/${info.row.original._id}`)
                         }}
                     >
                         <svg

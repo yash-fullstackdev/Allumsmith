@@ -7,10 +7,15 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
+		addPageLink:{
+			id:'addPageLink',
+			to:'/add-product'
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-product',
+			to: '/edit-product',
 		},
+
 	},
 	purchaseOrderPage: {
 		listPage: {
@@ -46,9 +51,13 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
+		addPageLink:{
+			id:'addPageLink',
+			to:'/add-vendor'
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-vendor',
+			to: '/edit-vendor',
 		},
 	},
 	customerPage: {
@@ -72,9 +81,13 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
+		addPageLink:{
+			id: 'addPageLink',
+			to: '/add-branches',
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-branches',
+			to: '/edit-branches',
 		},
 	},
 	colorsPage: {

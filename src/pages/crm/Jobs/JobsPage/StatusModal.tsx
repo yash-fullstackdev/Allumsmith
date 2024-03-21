@@ -40,12 +40,14 @@ const StatusModal = ({ status, setStatus, jobId, setStatusModal, fetchData }: an
                         placeholder='Select Status'
                         name='status'
                         value={status}
-                        onChange={handleStatusChange} // Call handleStatusChange on value change
+                        onChange={handleStatusChange}
                     >
+                        <option value='' disabled >Select Status</option>
                         <option value='In_Progress'>In Progress</option>
                         <option value='Pending'>Pending</option>
                         <option value='Completed'>Completed</option>
                     </Select>
+
                 </div>
                 <div>
                     <Button variant='solid' color='blue' type='button' onClick={handleSubmit}>

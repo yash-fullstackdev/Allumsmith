@@ -19,6 +19,9 @@ import CoatingListPage from '../pages/crm/Coating/CoatingListPage/CoatingListPag
 import CoatingPage from '../pages/crm/Coating/CoatingPage/CoatingPage';
 import JobsListPage from '../pages/crm/Jobs/JobsListPage/JobsListPage';
 import JobsPage from '../pages/crm/Jobs/JobsPage/JobsPage';
+import EditProductPage from '../pages/crm/user/ProductPage/EditProductPage';
+import EditVendorPage from '../pages/crm/Vendors/VendorPage/EditVendorPage';
+import EditBranchPage from '../pages/crm/Branches/BranchesPage/EditBranchPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -29,8 +32,12 @@ const contentRoutes: RouteProps[] = [
 	},
 
 	{
-		path: `${appPages.productPage.editPageLink.to}`,
+		path: `${appPages.productPage.addPageLink.to}`,
 		element: <AddProductPage />,
+	},
+	{
+		path: `${appPages.productPage.editPageLink.to}/:id`,
+		element: <EditProductPage />,
 	},
 	{
 		path: `${appPages.purchaseOrderPage.listPage.to}`,
@@ -53,8 +60,12 @@ const contentRoutes: RouteProps[] = [
 		element: <CustomerListPage />,
 	},
 	{
-		path: `${appPages.vendorPage.editPageLink.to}`,
+		path: `${appPages.vendorPage.addPageLink.to}`,
 		element: <VendorPage />,
+	},
+	{
+		path: `${appPages.vendorPage.editPageLink.to}/:id`,
+		element: <EditVendorPage />,
 	},
 	{
 		path: `${appPages.customerPage.editPageLink.to}`,
@@ -65,8 +76,12 @@ const contentRoutes: RouteProps[] = [
 		element: <BranchesListPage />,
 	},
 	{
-		path: `${appPages.branchesPage.editPageLink.to}`,
+		path: `${appPages.branchesPage.addPageLink.to}`,
 		element: <BranchesPage />,
+	},
+	{
+		path: `${appPages.branchesPage.editPageLink.to}/:id`,
+		element: <EditBranchPage />,
 	},
 	{
 		path: `${appPages.inventoryPage.listPage.to}`,
