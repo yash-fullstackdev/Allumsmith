@@ -11,7 +11,7 @@ import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import { toast } from 'react-toastify';
-
+import { Switch } from '@mui/material';
 
 const JobsPage = () => {
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
@@ -22,9 +22,10 @@ const JobsPage = () => {
     const [colorData, setColorData] = useState([]);
     const [branchId, setBranchId] = useState('');
     const navigate = useNavigate();
-
-
-
+    const [productTransfer, setProductTransfer] = useState(false)
+    const [product,setProduct] = useState('');
+    const [length,setLength] = useState('');
+    
 
     const getProductDetails = async () => {
         try {
@@ -36,7 +37,6 @@ const JobsPage = () => {
             console.error("Error Fetching Products", error);
         }
     }
-
 
     const getBranchDetails = async () => {
         try {
@@ -63,10 +63,8 @@ const JobsPage = () => {
     }, []);
 
     const handleAddEntry = () => {
-        setEntries([...entries, { product: '', quantity: '', coating: '', color: '' }]);
+        setEntries([...entries, { product: '', quantity: '', coating: '', color: '',length: '' }]);
     };
-
-
 
     const handleSaveEntries = async () => {
         const updatedEntries = entries.map((entry: any) => ({
@@ -79,13 +77,12 @@ const JobsPage = () => {
             branch: branchId,
             batch: updatedEntries,
         };
-        console.log("final values", finalValues);
         try {
             const { data } = await post('/jobs', finalValues);
+            console.log("🚀 ~ handleSaveEntries ~ data:", data)
             toast.success('Job Created Successfully!');
 
         } catch (error: any) {
-            console.error("Error Adding Job", error);
             toast.error('Error Creating Job', error);
         } finally {
             navigate(PathRoutes.jobs)
@@ -98,10 +95,6 @@ const JobsPage = () => {
         newProduct.splice(index, 1)
         setEntries(newProduct)
     }
-
-
-
-
 
     const updateColorOptions = (coatingId: any) => {
         const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
@@ -123,6 +116,9 @@ const JobsPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
+                    <div className='flex items-center justify-center' >
+                        <h4>Add by List of Products</h4>  <Switch {...Label} checked={productTransfer} onClick={() => setProductTransfer(!productTransfer)} /><h4> Add by Product </h4>
+                    </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
 
@@ -214,7 +210,7 @@ const JobsPage = () => {
                                                                 )}
                                                             </div>
                                                             <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
-
+                                                            {!productTransfer ? (<>
                                                                 <div className='col-span-12 lg:col-span-3'>
                                                                     <Label htmlFor={`name-${index}`}>
                                                                         Products
@@ -239,6 +235,63 @@ const JobsPage = () => {
                                                                     </Select>
 
                                                                 </div>
+                                                                {entry.product && (
+    <div className='col-span-12 lg:col-span-3'>
+        {/* Add your additional input fields here */}
+        {/* For example, you can add an input field for quantity */}
+        <Label htmlFor={`length-${index}`}>
+            Length 
+            <span className='ml-1 text-red-500'>*</span>
+        </Label>
+        <Input
+            type='number'
+            id={`length-${index}`}
+            name={`length-${index}`}
+            value={productsData.find((item: any) => item._id === entry.product)?.length || ''}
+        />
+    </div>
+)}
+                                                            </>
+                                                               ) : (<>
+                                                               <div className='col-span-12 lg:col-span-3'>
+                                        <Label htmlFor={`product`}>
+                                            Product
+                                            <span className='ml-1 text-red-500'>*</span>
+                                        </Label>
+                                        <Input
+                                            type='text'
+                                            id={`product`}
+                                            name={`product`}
+                                            value={entry.product}
+                                                                        onChange={(e) => {
+                                                                            const updatedEntries = [...entries];
+                                                                            updatedEntries[index].product = e.target.value;
+                                                                            setEntries(updatedEntries);
+                                                                        }}
+                                        />
+                                        {/* ... Error handling for hsn field */}
+                                    </div>
+                                    <div className='col-span-12 lg:col-span-3'>
+                                        <Label htmlFor={`length`}>
+                                            Length
+                                            <span className='ml-1 text-red-500'>*</span>
+                                        </Label>
+                                        <Input
+                                            type='number'
+                                            id={`length`}
+                                            name={`length`}
+                                            value={entry.length}
+                                            onChange={(e) => {
+                                                const updatedEntries = [...entries];
+                                                updatedEntries[index].length = e.target.value;
+                                                setEntries(updatedEntries);
+                                                                                                            }}
+                                        />
+                                        {/* ... Error handling for hsn field */}
+                                    </div>
+
+                                                               
+                                                           </>) }
                                                                 <div className='col-span-12 lg:col-span-3'>
                                                                     <Label htmlFor={`hsn-${index}`}>
                                                                         Quantity
