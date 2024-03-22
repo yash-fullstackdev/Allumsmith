@@ -22,6 +22,8 @@ import JobsPage from '../pages/crm/Jobs/JobsPage/JobsPage';
 import EditProductPage from '../pages/crm/user/ProductPage/EditProductPage';
 import EditVendorPage from '../pages/crm/Vendors/VendorPage/EditVendorPage';
 import EditBranchPage from '../pages/crm/Branches/BranchesPage/EditBranchPage';
+import EditColorPage from '../pages/crm/Colors/ColorsPage/EditColorPage';
+import EditCoatingPage from '../pages/crm/Coating/CoatingPage/EditCoatingPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -96,16 +98,24 @@ const contentRoutes: RouteProps[] = [
 		element: <ColorsListPage />,
 	},
 	{
-		path: `${appPages.colorsPage.editPageLink.to}`,
+		path: `${appPages.colorsPage.addPageLink.to}`,
 		element: <ColorsPage />,
+	},
+	{
+		path: `${appPages.colorsPage.editPageLink.to}/:id`,
+		element: <EditColorPage />,
 	},
 	{
 		path: `${appPages.coatingPage.listPage.to}`,
 		element: <CoatingListPage />,
 	},
 	{
-		path: `${appPages.coatingPage.editPageLink.to}`,
+		path: `${appPages.coatingPage.addPageLink.to}`,
 		element: <CoatingPage />,
+	},
+	{
+		path: `${appPages.coatingPage.editPageLink.to}/:id`,
+		element: <EditCoatingPage />,
 	},
 	{
 		path: `${appPages.jobsPage.listPage.to}`,

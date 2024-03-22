@@ -9,7 +9,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -38,6 +38,7 @@ const columnHelper = createColumnHelper<any>();
 
 
 const CoatingListPage = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [coatingList, setCoatingList] = useState<any[]>([]);
@@ -126,10 +127,13 @@ const CoatingListPage = () => {
 
                     </Button>
                     <Button
-                        onClick={() => {
-                            setIsEditModal(true)
-                            setCoatingId(info.row.original._id);
+                        // onClick={() => {
+                        //     setIsEditModal(true)
+                        //     setCoatingId(info.row.original._id);
 
+                        // }}
+                        onClick={() => {
+                            navigate(`${PathRoutes.edit_coating}/${info.row.original._id}`)
                         }}
                     >
                         <svg

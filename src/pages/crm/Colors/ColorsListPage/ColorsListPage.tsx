@@ -29,6 +29,7 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import EditColorModal from '../ColorsPage/EditColorModal';
 
 
@@ -37,6 +38,7 @@ const columnHelper = createColumnHelper<any>();
 
 
 const ColorsListPage = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [colorsList, setColorsList] = useState<any[]>([]);
@@ -104,9 +106,12 @@ const ColorsListPage = () => {
             cell: (info) => (
                 <div className='font-bold'>
                     <Button
+                        // onClick={() => {
+                        //     setIsEditModal(true)
+                        //     setColorId(info.row.original._id);
+                        // }}
                         onClick={() => {
-                            setIsEditModal(true)
-                            setColorId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_colors}/${info.row.original._id}`)
                         }}
                     >
                         <svg

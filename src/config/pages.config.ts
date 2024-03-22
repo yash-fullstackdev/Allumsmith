@@ -65,7 +65,7 @@ export const appPages: any = {
 			id: 'customerPage',
 			to: '/customer',
 			text: 'Customer',
-			// icon: 'HeroQueueList',
+			// icon: 'HeroQueueList',p
 			icon: 'HeroUserCircle',
 		},
 		editPageLink: {
@@ -98,10 +98,18 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
-		editPageLink: {
-			id: 'editPageLink',
+		addPageLink:{
+			id: 'addPageLink',
 			to: '/add-colors',
 		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-colors',
+		},
+		// editPageLink: {
+		// 	id: 'editPageLink',
+		// 	to: '/add-colors',
+		// },
 	},
 	coatingPage: {
 		listPage: {
@@ -111,9 +119,13 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-coating',
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-coating',
+			to: '/edit-coating',
 		},
 	},
 	jobsPage: {
