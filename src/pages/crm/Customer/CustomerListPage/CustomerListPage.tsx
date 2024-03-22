@@ -11,7 +11,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -43,6 +43,7 @@ const CustomerListPage = () => {
     const [customerId, setCustomerId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
 
+    const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -133,8 +134,7 @@ const CustomerListPage = () => {
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setIsEditModal(true);
-                            setCustomerId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_customer}/${info.row.original._id}`)
                         }}
                     >
                         <svg

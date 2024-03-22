@@ -24,6 +24,7 @@ import EditVendorPage from '../pages/crm/Vendors/VendorPage/EditVendorPage';
 import EditBranchPage from '../pages/crm/Branches/BranchesPage/EditBranchPage';
 import EditColorPage from '../pages/crm/Colors/ColorsPage/EditColorPage';
 import EditCoatingPage from '../pages/crm/Coating/CoatingPage/EditCoatingPage';
+import EditCustomerPage from '../pages/crm/Customer/CustomerPage/EditCustomerPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -70,8 +71,12 @@ const contentRoutes: RouteProps[] = [
 		element: <EditVendorPage />,
 	},
 	{
-		path: `${appPages.customerPage.editPageLink.to}`,
+		path: `${appPages.customerPage.addPageLink.to}`,
 		element: <CustomerPage />,
+	},
+	{
+		path: `${appPages.customerPage.editPageLink.to}/:id`,
+		element: <EditCustomerPage />,
 	},
 	{
 		path: `${appPages.branchesPage.listPage.to}`,

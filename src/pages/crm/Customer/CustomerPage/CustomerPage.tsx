@@ -14,7 +14,7 @@ import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
 
 
-const CusomerPage = () => {
+const CustomerPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -66,7 +66,7 @@ const CusomerPage = () => {
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigate(`${PathRoutes.vendor}`)}
+                        onClick={() => navigate(`${PathRoutes.customer}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
@@ -245,4 +245,4 @@ const CusomerPage = () => {
     );
 };
 
-export default CusomerPage;
+export default CustomerPage;

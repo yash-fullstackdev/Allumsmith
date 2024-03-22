@@ -11,7 +11,7 @@ const StatusModal = ({ status, setStatus, jobId, setStatusModal, fetchData }: an
     console.log(jobId)
     const updateStatus = async () => {
         try {
-            const { data } = await put(`/jobs/${jobId}`, { status });
+            const { data } = await put(`/jobs/${jobId}/updateJobStatus`, { status });
             toast.success('Status Updated Successfully')
         } catch (error) {
             console.error('Error Updating Status', error)
@@ -43,9 +43,9 @@ const StatusModal = ({ status, setStatus, jobId, setStatusModal, fetchData }: an
                         onChange={handleStatusChange}
                     >
                         <option value='' disabled >Select Status</option>
-                        <option value='In_Progress'>In Progress</option>
-                        <option value='Pending'>Pending</option>
-                        <option value='Completed'>Completed</option>
+                        <option value='in_progress'>In Progress</option>
+                        <option value='pending'>Pending</option>
+                        <option value='completed'>Completed</option>
                     </Select>
 
                 </div>

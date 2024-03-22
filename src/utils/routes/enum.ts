@@ -20,6 +20,7 @@ export enum PathRoutes {
 	add_coating = '/add-coating',
 	edit_coating = "/edit-coating",
 	customer = '/customer',
+	edit_customer = '/edit-customer',
 	add_customer = '/add-customer',
 	jobs = '/jobs',
 	add_jobs = '/add-jobs'

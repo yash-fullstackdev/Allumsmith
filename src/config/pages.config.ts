@@ -30,19 +30,7 @@ export const appPages: any = {
 			to: '/add-purchase-order',
 		},
 	},
-	// purchaseEntry: {
-	// 	listPage: {
-	// 		id: 'purchaseEntry',
-	// 		to: '/purchase-entry',
-	// 		text: 'Purchase Entry',
-	// 		// icon: 'HeroQueueList',
-	// 		icon: 'HeroUserCircle',
-	// 	},
-	// 	editPageLink: {
-	// 		id: 'editPageLink',
-	// 		to: '/add-purchase-entry',
-	// 	},
-	// },
+	
 	vendorPage: {
 		listPage: {
 			id: 'vendorsPage',
@@ -68,9 +56,13 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',p
 			icon: 'HeroUserCircle',
 		},
+		addPageLink:{
+			id: 'addPageLink',
+			to: '/add-customer',
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-customer',
+			to: '/edit-customer',
 		},
 	},
 	branchesPage: {
