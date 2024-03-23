@@ -25,6 +25,7 @@ import EditBranchPage from '../pages/crm/Branches/BranchesPage/EditBranchPage';
 import EditColorPage from '../pages/crm/Colors/ColorsPage/EditColorPage';
 import EditCoatingPage from '../pages/crm/Coating/CoatingPage/EditCoatingPage';
 import EditCustomerPage from '../pages/crm/Customer/CustomerPage/EditCustomerPage';
+import FinishInventoryListPage from '../pages/crm/FinishInventory/FInishInventoryListPage/FinishInventoryListPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -97,6 +98,11 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.inventoryPage.editPageLink.to}`,
 		element: <InventoryPage />,
+	},
+
+	{
+		path: `${appPages.finishInventory.listPage.to}`,
+		element: <FinishInventoryListPage />,
 	},
 	{
 		path: `${appPages.colorsPage.listPage.to}`,

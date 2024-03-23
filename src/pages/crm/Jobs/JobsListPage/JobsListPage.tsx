@@ -85,7 +85,6 @@ const JobsListPage = () => {
             fetchData();
         }
     }
-    console.log('Job List', jobsList)
     const columns = [
 
         columnHelper.accessor((row) => row.name, {
@@ -143,7 +142,7 @@ const JobsListPage = () => {
                         </svg>
 
                     </Button>
-                    {/* <Button
+                    <Button
                         onClick={() => {
                             setIsEditModal(true)
                             setJobId(info.row.original._id);
@@ -163,7 +162,7 @@ const JobsListPage = () => {
                             />
                         </svg>
 
-                    </Button> */}
+                    </Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);

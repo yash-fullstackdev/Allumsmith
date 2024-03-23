@@ -242,7 +242,7 @@ const JobsPage = () => {
                                                                         >
                                                                             {productsData.map((item: any) => (
                                                                                 <option key={item._id} value={item._id}>
-                                                                                    {item.name}
+                                                                                    {`${item.name} (${item.productCode})`}
                                                                                 </option>
                                                                             ))}
                                                                         </Select>

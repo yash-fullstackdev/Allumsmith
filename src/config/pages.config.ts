@@ -147,6 +147,19 @@ export const appPages: any = {
 			to: '/add-inventory',
 		},
 	},
+	finishInventory:{
+		listPage: {
+			id: 'finishInventory',
+			to: '/finish-inventory',
+			text: 'Finish Inventory',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-inventory',
+		},
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {
