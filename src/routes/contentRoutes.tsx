@@ -5,6 +5,7 @@ import ProductListPage from '../pages/crm/user/ProductListPage/ProductListPage';
 import AddProductPage from '../pages/crm/user/ProductPage/AddProductPage';
 import PurchaseOrderListPage from '../pages/crm/PurchaseOrder/PurchaseOrderListPage/PurchaseOrderListPage';
 import PurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
+import CustomerOrderPage from '../pages/crm/CustomerOrder/CustomerOrderPage/AddCustomerOrderPage';
 import VendorListPage from '../pages/crm/Vendors/VendorListPage/VendorListPage';
 import VendorPage from '../pages/crm/Vendors/VendorPage/VendorPage';
 import BranchesListPage from '../pages/crm/Branches/BranchesListPage/BranchesListPage';
@@ -26,6 +27,7 @@ import EditColorPage from '../pages/crm/Colors/ColorsPage/EditColorPage';
 import EditCoatingPage from '../pages/crm/Coating/CoatingPage/EditCoatingPage';
 import EditCustomerPage from '../pages/crm/Customer/CustomerPage/EditCustomerPage';
 import FinishInventoryListPage from '../pages/crm/FinishInventory/FInishInventoryListPage/FinishInventoryListPage';
+import CustomerOrderListPage from '../pages/crm/CustomerOrder/CustomerOrderListPage/CustomerOrderListPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -51,6 +53,15 @@ const contentRoutes: RouteProps[] = [
 		path: `${appPages.purchaseOrderPage.editPageLink.to}`,
 		element: <PurchaseOrderPage />,
 	},
+	{
+		path: `${appPages.customerOrderPage.listPage.to}`,
+		element: <CustomerOrderListPage />,
+	},
+	{
+		path: `${appPages.customerOrderPage.addPageLink.to}`,
+		element: <CustomerOrderPage />,
+	},
+
 	// {
 	// 	path: `${appPages.purchaseEntry.listPage.to}`,
 	// 	element: <PurchaseEntryListPage />,
@@ -75,6 +86,7 @@ const contentRoutes: RouteProps[] = [
 		path: `${appPages.customerPage.addPageLink.to}`,
 		element: <CustomerPage />,
 	},
+
 	{
 		path: `${appPages.customerPage.editPageLink.to}/:id`,
 		element: <EditCustomerPage />,

@@ -212,7 +212,7 @@ const CustomerListPage = () => {
                         </CardHeaderChild>
 
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_vendor}`}>
+                            <Link to={`${PathRoutes.add_customer}`}>
                                 <Button variant='solid' icon='HeroPlus'>
                                     New Customer
                                 </Button>

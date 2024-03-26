@@ -3,7 +3,7 @@ import { config } from '@fullcalendar/core/internal';
 
 let axiosInstance: AxiosInstance;
 axiosInstance = axios.create({
-	baseURL: import.meta.env.VITE_APP_API_ENDPOINT,
+	baseURL: 'http://localhost:3000',
 	// headers: {
 	// 	// Verify CORS issue
 	// 	'Access-Control-Allow-Origin': 'origin',

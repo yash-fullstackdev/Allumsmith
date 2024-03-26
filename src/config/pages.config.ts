@@ -7,15 +7,14 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
-		addPageLink:{
-			id:'addPageLink',
-			to:'/add-product'
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-product',
 		},
 		editPageLink: {
 			id: 'editPageLink',
 			to: '/edit-product',
 		},
-
 	},
 	purchaseOrderPage: {
 		listPage: {
@@ -30,7 +29,7 @@ export const appPages: any = {
 			to: '/add-purchase-order',
 		},
 	},
-	
+
 	vendorPage: {
 		listPage: {
 			id: 'vendorsPage',
@@ -39,9 +38,9 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
-		addPageLink:{
-			id:'addPageLink',
-			to:'/add-vendor'
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-vendor',
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -56,7 +55,7 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',p
 			icon: 'HeroUserCircle',
 		},
-		addPageLink:{
+		addPageLink: {
 			id: 'addPageLink',
 			to: '/add-customer',
 		},
@@ -73,7 +72,7 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
-		addPageLink:{
+		addPageLink: {
 			id: 'addPageLink',
 			to: '/add-branches',
 		},
@@ -90,7 +89,7 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
-		addPageLink:{
+		addPageLink: {
 			id: 'addPageLink',
 			to: '/add-colors',
 		},
@@ -134,6 +133,24 @@ export const appPages: any = {
 		},
 	},
 
+	customerOrderPage: {
+		listPage: {
+			id: 'customerOrderPage',
+			to: '/customer-order',
+			text: 'Customer Order',
+			// icon: 'HeroQueueList',p
+			icon: 'HeroUserCircle',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-customer-order',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-customer-order',
+		},
+	},
+
 	inventoryPage: {
 		listPage: {
 			id: 'inventoryPage',
@@ -147,7 +164,7 @@ export const appPages: any = {
 			to: '/add-inventory',
 		},
 	},
-	finishInventory:{
+	finishInventory: {
 		listPage: {
 			id: 'finishInventory',
 			to: '/finish-inventory',

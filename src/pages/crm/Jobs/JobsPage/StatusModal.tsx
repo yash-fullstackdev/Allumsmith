@@ -45,7 +45,7 @@ const StatusModal = ({ status, setStatus, jobId, setStatusModal, fetchData }: an
                         <option value='' disabled >Select Status</option>
                         <option value='in_progress'>In Progress</option>
                         <option value='pending'>Pending</option>
-                        <option value='completed'>Completed</option>
+                        <option value='completed'>completed</option>
                     </Select>
 
                 </div>
