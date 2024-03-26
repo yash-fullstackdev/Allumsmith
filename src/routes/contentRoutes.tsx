@@ -16,6 +16,9 @@ import InventoryListPage from '../pages/crm/Inventory/InventoryListPage/Inventor
 import InventoryPage from '../pages/crm/Inventory/InventoryPage/InventoryPage';
 import CustomerListPage from '../pages/crm/Customer/CustomerListPage/CustomerListPage';
 import CustomerPage from '../pages/crm/Customer/CustomerPage/CustomerPage';
+import WorkerListPage from '../pages/crm/Worker/WorkerListPage/WorkerListPage';
+import WorkerPage from '../pages/crm/Worker/WorkerPage/WorkerPage';
+import EditWorkerPage from '../pages/crm/Worker/WorkerPage/EditWorkerPage';
 import CoatingListPage from '../pages/crm/Coating/CoatingListPage/CoatingListPage';
 import CoatingPage from '../pages/crm/Coating/CoatingPage/CoatingPage';
 import JobsListPage from '../pages/crm/Jobs/JobsListPage/JobsListPage';
@@ -73,6 +76,18 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.customerPage.listPage.to}`,
 		element: <CustomerListPage />,
+	},
+	{
+		path: `${appPages.workerPage.listPage.to}`,
+		element: <WorkerListPage />,
+	},
+	{
+		path: `${appPages.workerPage.editPageLink.to}/:id`,
+		element: <EditWorkerPage />,
+	},
+	{
+		path: `${appPages.workerPage.addPageLink.to}`,
+		element: <WorkerPage />,
 	},
 	{
 		path: `${appPages.vendorPage.addPageLink.to}`,

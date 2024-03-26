@@ -24,6 +24,9 @@ export enum PathRoutes {
 	customer = '/customer',
 	edit_customer = '/edit-customer',
 	add_customer = '/add-customer',
+	worker = '/worker',
+	edit_worker = '/edit-worker',
+	add_worker = '/add-worker',
 	jobs = '/jobs',
 	add_jobs = '/add-jobs',
 }

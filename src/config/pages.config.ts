@@ -64,6 +64,23 @@ export const appPages: any = {
 			to: '/edit-customer',
 		},
 	},
+	workerPage: {
+		listPage: {
+			id: 'workerPage',
+			to: '/worker',
+			text: 'Worker',
+			// icon: 'HeroQueueList',p
+			icon: 'HeroUserCircle',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-worker',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-worker',
+		},
+	},
 	branchesPage: {
 		listPage: {
 			id: 'branchesPage',
