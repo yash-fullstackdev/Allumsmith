@@ -21,42 +21,71 @@ const FinishInventoryListPage = () => {
     const [inventoryList, setInventoryList] = useState<any>([]);
     const [productsArray, setProductsArray] = useState<any>([]);
     const [stockActionModal, setStockActionModal] = useState<any>()
+    const [isExpanded, setIsExpanded] = useState<{ activeIndex: number | null, state: boolean }>({
+        activeIndex: null,
+        state: false
+    });
+    const [isExpandedCoating, setIsExpandedCoating] = useState(false);
 
+    const data = [
+        {
+            _id: "84sd512asdy89456",
+            name: "handle",
+            total_quantity: "40",
+            coating: [{
+                name: "preminum",
+                variants: [{ color: "red", quantity: 30 }, { color: "green", quantity: 20 }]
+            },
+            {
+                name: "wooden",
+                variants: [{ color: "red", quantity: 20 }, { color: "green", quantity: 50 }]
 
+            }
+            ]
+        },
+        {
+            _id: "84sd512asdy8547",
+            name: "lock",
+            total_quantity: "40",
+            coating: [{
+                name: "coating",
+                variants: [{ color: "orange", quantity: 30 }, { color: "green", quantity: 20 }]
+            },
+            {
+                name: "wooden",
+                variants: [{ color: "red", quantity: 20 }, { color: "green", quantity: 50 }]
+
+            }
+            ]
+        }
+    ]
 
     useEffect(() => {
         if (inventoryList.length > 0) {
-            const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
+            const groupedData = _.groupBy(inventoryList, (item: any) => item?._id);
             const resultArray = Object.keys(groupedData).map((productId) => {
                 const productData = groupedData[productId];
-                if (!productData[0]?.product) return null;
-
-                const branches = productData.map((item) => {
-                    if (!item.branch || !item.branch._id || !item.branch.name) return null;
+                const coating = productData.map((item) => {
+                    if (!item._id) return null;
                     return {
-                        branchId: item.branch._id,
-                        branchName: item.branch.name,
-                        quantity: item.quantity,
-                    };
-                }).filter(Boolean);
-                const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
-                return {
-                    productId,
-                    productName: productData[0].product.name,
-                    totalQuantity,
-                    branches,
-                };
-            }).filter(Boolean);
-
+                        product_id: item._id,
+                        productName: item.name,
+                        total_quantity: item.total_quantity,
+                        coating: item.coating,
+                    }
+                })
+                return coating;
+            })
             setProductsArray(resultArray);
+
         }
-    }, [inventoryList]);
+    }, [])
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const { data: inventoryList } = await get(`/inventory`);
-            setInventoryList(inventoryList);
+            // const { data: data } = await get(`/inventory`);
+            setInventoryList(data);
         } catch (error: any) {
             console.error('Error fetching inventory:', error.message);
         } finally {
@@ -64,24 +93,23 @@ const FinishInventoryListPage = () => {
         }
     };
 
-    const handleProductClick = (productId: any) => {
-        // Toggle expanded state for the product
-        const updatedProductsArray = productsArray.map((item: any) => {
-            if (item.productId === productId) {
-                return { ...item, expanded: !item.expanded };
-            }
-            return item;
-        });
-        setProductsArray(updatedProductsArray);
+    const handleProductClick = (index: any) => {
+        setIsExpanded((prevState: any) => ({
+            ...prevState,
+            activeIndex: index,
+            state: !prevState.state
+        }));
     };
 
-
+    const handleCoatingClick = () => {
+        setIsExpandedCoating(!isExpandedCoating);
+    };
 
     useEffect(() => {
         fetchData();
     }, [stockActionModal]);
 
-    const renderBranches = (branches: any) => {
+    const renderCoating = (coatingDeatil: any) => {
         return (
             <TableRow>
                 <TableCell colSpan={3}>
@@ -89,16 +117,47 @@ const FinishInventoryListPage = () => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><h5>Branch Name</h5></TableCell>
+                                    <TableCell><h5>Color</h5></TableCell>
                                     <TableCell><h5>Quantity</h5></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {branches && branches.map((branch: any) => (
-                                    <TableRow key={branch.branchId}>
-                                        <TableCell><h6>{branch.branchName}</h6></TableCell>
-                                        <TableCell><h6>{branch.quantity}</h6></TableCell>
-                                    </TableRow>
+                                {coatingDeatil.map((coatingVarinats: any, index: number) => (
+                                    <>
+                                        <TableRow key={index}>
+                                            <TableCell ><h6>{coatingVarinats.color}</h6></TableCell>
+                                            <TableCell ><h6>{coatingVarinats.quantity}</h6></TableCell>
+                                        </TableRow>
+                                    </>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </TableCell>
+            </TableRow>
+        );
+    };
+    console.log(isExpanded, "isExpnaded")
+    const renderProduct = (coating: any) => {
+        return (
+            <TableRow>
+                <TableCell colSpan={3}>
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><h5>Coating Name</h5></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {coating.map((coatingName: any, index: number) => (
+                                    <React.Fragment>
+                                        <TableRow key={index} className='cursor-pointer' onClick={handleCoatingClick}>
+                                            <TableCell ><h6>{coatingName.name}</h6></TableCell>
+                                            <Button rightIcon={isExpandedCoating ? 'HeroChevronUp' : 'HeroChevronDown'} />
+                                        </TableRow>
+                                        {isExpandedCoating && renderCoating(coatingName.variants)}
+                                    </React.Fragment>
                                 ))}
                             </TableBody>
                         </Table>
@@ -132,17 +191,22 @@ const FinishInventoryListPage = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {productsArray.map((item: any) => (
-                                            <React.Fragment key={item.productId}>
-                                                <TableRow onClick={() => handleProductClick(item.productId)}>
-                                                    <TableCell className='cursor-pointer'><h4> {item.productName} <Button rightIcon={
-                                                        item.expanded ?
-                                                            'HeroChevronUp'
-                                                            : 'HeroChevronDown'
-                                                    } /></h4></TableCell>
-                                                    <TableCell><h4>{item.totalQuantity}</h4></TableCell>
-                                                </TableRow>
-                                                {item.expanded && renderBranches(item.branches)}
+                                        {productsArray.map((item: any, index: any) => (
+                                            <React.Fragment key={index}>
+                                                {Array.isArray(item) && item.map((subItem: any, subIndex: any) => (
+                                                    <React.Fragment key={subItem.product_id}>
+                                                        <TableRow onClick={() => handleProductClick(index)}>
+                                                            <TableCell className='cursor-pointer' >
+                                                                <h4>{subItem.productName}</h4>
+                                                                <Button rightIcon={isExpanded.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <h4>{subItem.total_quantity}</h4>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                        {isExpanded.state && renderProduct(subItem.coating)}
+                                                    </React.Fragment>
+                                                ))}
                                             </React.Fragment>
                                         ))}
                                     </TableBody>
