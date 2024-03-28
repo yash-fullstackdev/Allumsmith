@@ -5,12 +5,11 @@ import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "..
 import Button from "../../../../components/ui/Button";
 import { PathRoutes } from "../../../../utils/routes/enum";
 import Container from "../../../../components/layouts/Container/Container";
-import AddPurchaseOrderForm from "./AddCustomerOrderForm";
+import AddCustomerOrderForm from "./AddCustomerOrderForm";
 
 
 const AddCustomerOrderPage = () => {
 
-    console.log("called")
     const navigation = useNavigate();
 
     const handleFiles = async (event: any) => {
@@ -37,30 +36,19 @@ const AddCustomerOrderPage = () => {
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigation(`${PathRoutes.purchase_order}`)}
+                        onClick={() => navigation(`${PathRoutes.customer_order}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-                {/* <SubheaderRight>
-                    <div className='col-span-1'>
-                        <input
-                            type={"file"}
-                            id={"csvFileInput"}
-                            accept=".csv"
-                            onChange={handleFiles}
 
-                        />
-                    </div>
-                    <Button variant='solid' onClick={handleFiles}>Add File</Button>
-                </SubheaderRight> */}
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
                     <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
                         <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                            <AddPurchaseOrderForm />
+                            <AddCustomerOrderForm />
                         </div>
                     </div>
                 </div>

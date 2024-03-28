@@ -33,7 +33,7 @@ import { SubheaderRight } from '../../../../components/layouts/Subheader/Subhead
 const columnHelper = createColumnHelper<any>();
 
 
-const CustomerEntryDetail = ({ branchesData, poId }: any) => {
+const CustomerOrderDetail = ({ customerId }: any) => {
 
 
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -41,7 +41,6 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
     const [selectedBranches, setSelectedBranches] = useState<any>({});
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>()
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
-    const [isNewPurchaseEntry, setIsNewPurchaseEntry] = useState(false);
     const [collapseAll, setCollapseAll] = useState<boolean>(false);
     const [accordionStates, setAccordionStates] = useState({
         collapsible: false,
@@ -49,10 +48,11 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
 
     });
 
+
     const getPurchaseOrderByid = async () => {
 
         try {
-            const { data: allPurchaseOrderById } = await get(`/purchase-order/${poId}`);
+            const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
             setPurchaseOrderData(allPurchaseOrderById);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -60,15 +60,6 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
         }
     };
 
-    const handleReceivedQuantityChange = (id: string, value: string) => {
-        setEditedData((prevData) => ({
-            ...prevData,
-            [id]: {
-                ...prevData[id],
-                receivedQuantity: value,
-            },
-        }));
-    }
 
 
     const columns = [
@@ -79,16 +70,21 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
             header: 'Product Name',
 
         }),
-        columnHelper.accessor('product.productCode', {
+        columnHelper.accessor("coating.name", {
             cell: (info) => (
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
+                <div className=''>{`${info.getValue() || '-'} `}</div>
             ),
-            header: 'Product Code',
+            header: 'Coating Name',
+
         }),
-        columnHelper.accessor('requiredQuantity', {
+        columnHelper.accessor("color.name", {
+            cell: (info) => (
+                <div className=''>{`${info.getValue() || '-'}`}</div>
+            ),
+            header: 'Color Name',
+
+        }),
+        columnHelper.accessor('quantity', {
             cell: (info) => (
 
                 <div className=''>
@@ -99,61 +95,6 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
             header: 'Requried Quanity',
         }),
 
-        columnHelper.accessor(row => `${row.requiredQuantity - row.receivedQuantity}`, {
-            cell: (info) => (
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-            ),
-            header: 'Pending Quantity',
-            // enableHiding: true
-
-        }),
-
-        columnHelper.accessor('receivedQuantity', {
-            cell: (info) => (
-                <div className=''>
-                    <Input
-                        type='number'
-                        value={editedData[info.row.id]?.receivedQuantity}
-                        onChange={(e) => handleReceivedQuantityChange(info.row.id, e.target.value)}
-                        disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
-                        name="receivedQuantity"
-                    />
-
-                </div>
-            ),
-            header: 'Received Quantity',
-        }),
-
-        columnHelper.accessor('selectBranch', {
-            cell: (info) => (
-                <div className=''>
-                    <Select
-                        id={`branch-${info.row.id}`}
-                        name={`branch-${info.row.id}`}
-                        value={selectedBranches[info.row.id] ?? selectedBranches[info.row.id]}
-                        placeholder='Select branch'
-                        onChange={(e: any) => {
-                            setSelectedBranches((prevBranches: any) => ({
-                                ...prevBranches,
-                                [info.row.id]: e.target.value,
-                            }));
-                        }}
-                        disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
-                    >
-                        {branchesData &&
-                            branchesData.length > 0 &&
-                            branchesData?.map((data: any) => (
-                                <option key={data._id} value={data._id}>
-                                    {data.name}
-                                </option>
-                            ))}
-                    </Select>
-                </div>
-            ),
-            header: 'Select Branch',
-        }),
 
         columnHelper.accessor('status', {
             cell: (info) => (
@@ -167,7 +108,7 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
 
     ];
     const table = useReactTable({
-        data: purchaseOrderData?.products || [],
+        data: purchaseOrderData?.entries || [],
         columns,
         state: {
             sorting,
@@ -180,7 +121,7 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
     const getPurchaseEntryData = async () => {
 
         try {
-            const { data: allProductList } = await get(`/purchase-order/purchaseEntry/${poId}`);
+            const { data: allProductList } = await get(`/purchase-order/purchaseEntry/${customerId}`);
             setPurchaseEntry(allProductList);
             purchaseEntryTable.setGlobalFilter(allProductList)
         } catch (error: any) {
@@ -243,10 +184,7 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    const handleNewPurchaseEntry = () => {
-        setIsNewPurchaseEntry(true);
 
-    };
     const collapseAllAccordians = () => {
         setAccordionStates({
             collapsible: !collapseAll,
@@ -279,13 +217,12 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
             const products = UpdatedEntries
             const final = { products }
             const finalUpdatedvalues = JSON.parse(JSON.stringify(final))
-            const savePurchaseEntry = await post(`/purchase-order/registerPurchaseEntry/${poId}`, finalUpdatedvalues);
+            const savePurchaseEntry = await post(`/purchase-order/registerPurchaseEntry/${customerId}`, finalUpdatedvalues);
             console.log("savePurchaseEntry", savePurchaseEntry);
             toast.success('Product added to inventory');
             getPurchaseOrderByid()
             getPurchaseEntryData();
             setEditedData({})
-            setIsNewPurchaseEntry(false)
 
         } catch (error: any) {
             console.error("Error Saving Branch", error);
@@ -331,20 +268,13 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
                                                 ? 'HeroChevronUp'
                                                 : 'HeroChevronDown'
                                         }>
-                                        <h2 className='text-gray-700'> Purchased Products List </h2>
+                                        <h2 className='text-gray-700'> Customer Order Products List </h2>
                                     </Button>
                                 </div>
                             </div>
 
 
-                            <Collapse isOpen={!accordionStates.collapsible}>
-                                <div className="flex justify-end mt-5 ">
-                                    <Button variant='solid' icon='HeroPlus' onClick={() => { handleNewPurchaseEntry() }}>
-                                        New Purchase Entry
-                                    </Button>
 
-                                </div>
-                            </Collapse>
                         </CardBody>
 
 
@@ -360,68 +290,12 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
                                 </CardBody>
 
                                 <TableCardFooterTemplate table={table} />
-                                <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
-
-                                    <Button variant='solid' isDisable={!isNewPurchaseEntry} onClick={handleSave} >
-                                        SAVE Purchase Entry
-                                    </Button>
-                                </div>
                             </>
 
                         </Collapse>
                     </Card>
                 </Container>
             </PageWrapper >
-            <PageWrapper>
-                <Container>
-                    <Card>
-                        <CardBody>
-                            <div className='flex'>
-                                <div className='bold w-full'>
-                                    <Button
-                                        variant='outlined'
-                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                                        onClick={() =>
-                                            setAccordionStates({
-                                                ...accordionStates,
-                                                collapsibleEntryList: !accordionStates.collapsibleEntryList,
-                                            })
-                                        }
-                                        rightIcon={
-                                            !accordionStates.collapsibleEntryList
-                                                ? 'HeroChevronUp'
-                                                : 'HeroChevronDown'
-                                        }>
-                                        <h2 className='text-gray-700'>Purchased Entry List</h2>
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardBody>
-                        <Collapse isOpen={!accordionStates.collapsibleEntryList}>
-                            <CardHeader className='mt-5'>
-                                <CardHeaderChild>
-                                </CardHeaderChild>
-                            </CardHeader>
-                            {
-                                purchaseEntry?.length > 0 ?
-                                    (
-                                        <CardBody className='overflow-auto'>
-
-                                            <TableTemplate
-                                                className='table-fixed max-md:min-w-[70rem]'
-                                                table={purchaseEntryTable}
-                                            />
-                                            <TableCardFooterTemplate table={purchaseEntryTable} />
-                                        </CardBody>
-                                    ) :
-                                    <div style={{ textAlign: 'center' }}>
-                                        No Purchase Entry Records Available
-                                    </div>
-                            }
-                        </Collapse>
-                    </Card>
-                </Container>
-            </PageWrapper>
 
 
         </div >
@@ -429,5 +303,5 @@ const CustomerEntryDetail = ({ branchesData, poId }: any) => {
 
 };
 
-export default CustomerEntryDetail;
+export default CustomerOrderDetail;
 

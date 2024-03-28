@@ -193,7 +193,7 @@ const FinishInventoryListPage = () => {
                                     <TableBody>
                                         {productsArray.map((item: any, index: any) => (
                                             <React.Fragment key={index}>
-                                                {Array.isArray(item) && item.map((subItem: any, subIndex: any) => (
+                                                {Array.isArray(item) && item.map((subItem: any,) => (
                                                     <React.Fragment key={subItem.product_id}>
                                                         <TableRow onClick={() => handleProductClick(index)}>
                                                             <TableCell className='cursor-pointer' >
