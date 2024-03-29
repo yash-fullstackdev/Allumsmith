@@ -27,6 +27,7 @@ import TableTemplate, {
 import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
+import { get } from '../../../../utils/api-helper.util';
 
 
 
@@ -34,14 +35,24 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 const columnHelper = createColumnHelper<any>();
 
 
-const JobsBatch = ({ batch }: any) => {
+const JobsBatch = ({ batch, jobId }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [jobDataById, setJobDataById] = useState<any>({});
     const [sorting, setSorting] = useState<SortingState>([]);
+    console.log('Id', jobId);
 
+    const getJobById = async () => {
+        const { data } = await get(`/jobs/${jobId}`);
+        setJobDataById(data);
+    }
 
+    useEffect(() => {
+        getJobById();
+    }, [])
+    console.log('Job By Id', jobDataById.batch)
     const columns = [
 
-        columnHelper.accessor('product.name', {
+        columnHelper.accessor('coEntry.customer', {
             cell: (info) => (
 
                 <div className=''>
@@ -49,44 +60,11 @@ const JobsBatch = ({ batch }: any) => {
                 </div>
 
             ),
-            header: 'Product',
+            header: 'Customer Name',
         }),
-        columnHelper.accessor('quantity', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Quantity',
-        }),
-        columnHelper.accessor('coating.name', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Coating',
-        }),
-        columnHelper.accessor('color.name', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Color',
-        }),
-
-
-
-
 
     ];
+
 
     const table = useReactTable({
         data: batch,
@@ -104,6 +82,8 @@ const JobsBatch = ({ batch }: any) => {
 
 
 
+
+
     return (
         <PageWrapper name='Jobs List'>
             <Container>
@@ -115,7 +95,7 @@ const JobsBatch = ({ batch }: any) => {
                                 variant='outline'
                                 className='border-transparent px-4 '
                                 rounded='rounded-full'>
-                                {table.getFilteredRowModel().rows.length} items
+                                {table?.getFilteredRowModel()?.rows?.length} items
                             </Badge>
                         </CardHeaderChild>
 

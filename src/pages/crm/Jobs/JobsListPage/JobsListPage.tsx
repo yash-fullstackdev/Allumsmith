@@ -85,6 +85,7 @@ const JobsListPage = () => {
             fetchData();
         }
     }
+    console.log('JobList', jobsList)
     const columns = [
 
         columnHelper.accessor((row) => row.name, {
@@ -133,7 +134,7 @@ const JobsListPage = () => {
                     <Button
                         onClick={() => {
                             setBatchModal(true);
-                            setBatch(info.row.original.batch);
+                            setJobId(info.row.original._id)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -293,7 +294,7 @@ const JobsListPage = () => {
                     All Batch
                 </ModalHeader>
                 <ModalBody>
-                    <JobsBatch batch={batch} />
+                    <JobsBatch batch={batch} jobId={jobId} />
                 </ModalBody>
             </Modal>
             <Modal isOpen={statusModal} setIsOpen={setStatusModal} isScrollable fullScreen="lg">

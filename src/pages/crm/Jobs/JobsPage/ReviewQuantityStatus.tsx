@@ -7,6 +7,8 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import { post } from '../../../../utils/api-helper.util';
+import { useNavigate } from 'react-router-dom';
+import { PathRoutes } from '../../../../utils/routes/enum';
 
 const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
     console.log("processReviewData", processReviewData)
@@ -17,6 +19,7 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
     console.log("Products Ids for Review", productIds)
     console.log('Quantity Specific', quantityInSpecificBranch);
 
+    const navigate = useNavigate();
     useEffect(() => {
         if (processReviewData && processReviewData.batch) {
             const totalQuantityInSpecificBranch = processReviewData.batch.reduce((total: any, batch: any) => {
@@ -77,6 +80,69 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
         setQuantityInSpecificBranch(totalQuantityInSpecificBranch);
     };
 
+    // const handleSaveEntries = async () => {
+    //     try {
+    //         // Calculate the total quantity of each product across all batches
+    //         const totalProductQuantities: { [productId: string]: number } = {};
+    //         processReviewData.batch.forEach((batch: any, batchIndex: number) => {
+    //             batch.products.forEach((product: any, productIndex: number) => {
+    //                 const productId = product.product.id;
+    //                 const quantityInBatch = productQuantities[`${batchIndex}-${productIndex}`] || product.quantity;
+    //                 totalProductQuantities[productId] = (totalProductQuantities[productId] || 0) + quantityInBatch;
+    //             });
+    //         });
+
+    //         // Check if the total quantity of any product exceeds the quantity in branch
+    //         const isQuantityExceededBatch = Object.entries(totalProductQuantities).some(([productId, totalQuantity]) => {
+    //             const quantityInBranch = productQuantityDetails.find((item: any) => item?._id === productId)?.quantity || 0;
+    //             return totalQuantity > quantityInBranch;
+    //         });
+
+    //         if (isQuantityExceededBatch) {
+    //             toast.error('Total quantity of products exceeds the quantity in branch');
+    //             return;
+    //         }
+
+    //         // Check if the total quantity of any self product exceeds the quantity in branch
+    //         const isQuantityExceededSelfProducts = processReviewData.selfProducts.some((selfProduct: any) => {
+    //             const quantityInBranch = productQuantityDetails.find((item: any) => item?._id === selfProduct.product.id)?.quantity || 0;
+    //             return selfProduct.quantity > quantityInBranch;
+    //         });
+
+    //         if (isQuantityExceededSelfProducts) {
+    //             toast.error('Total quantity of self products exceeds the quantity in branch');
+    //             return;
+    //         }
+
+    //         // Prepare the data to be saved
+    //         const dataToSave = {
+    //             name: processReviewData.name,
+    //             branch: processReviewData.branchId.id,
+    //             batch: processReviewData.batch.map((batch: any) => ({
+    //                 coEntry: batch.coEntry,
+    //                 products: batch.products.map((product: any) => ({
+    //                     product: product.product.id,
+    //                     quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,
+    //                     coating: product.coating.id,
+    //                     color: product.color.id
+    //                 }))
+    //             })),
+    //             selfProducts: processReviewData.selfProducts.map((product: any) => ({
+    //                 product: product.product.id,
+    //                 quantity: Number(product.quantity),
+    //                 coating: product.coating.id,
+    //                 color: product.color.id
+    //             }))
+    //         };
+
+    //         console.log('Data to save:', dataToSave);
+
+    //         const jobData = await post('/jobs', dataToSave);
+
+    //     } catch (error) {
+    //         console.error('Error saving data:', error);
+    //     }
+    // };
     const handleSaveEntries = async () => {
         try {
             // Calculate the total quantity of each product across all batches
@@ -100,19 +166,8 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
                 return;
             }
 
-            // Check if the total quantity of any self product exceeds the quantity in branch
-            const isQuantityExceededSelfProducts = processReviewData.selfProducts.some((selfProduct: any) => {
-                const quantityInBranch = productQuantityDetails.find((item: any) => item?._id === selfProduct.product.id)?.quantity || 0;
-                return selfProduct.quantity > quantityInBranch;
-            });
-
-            if (isQuantityExceededSelfProducts) {
-                toast.error('Total quantity of self products exceeds the quantity in branch');
-                return;
-            }
-
             // Prepare the data to be saved
-            const dataToSave = {
+            const dataToSave: any = {
                 name: processReviewData.name,
                 branch: processReviewData.branchId.id,
                 batch: processReviewData.batch.map((batch: any) => ({
@@ -124,27 +179,34 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
                         color: product.color.id
                     }))
                 })),
-                selfProducts: processReviewData.selfProducts.map((product: any) => ({
+            };
+
+            // Add selfProducts only if it exists
+            if (processReviewData.selfProducts && processReviewData.selfProducts.length > 0) {
+                dataToSave.selfProducts = processReviewData.selfProducts.map((product: any) => ({
                     product: product.product.id,
                     quantity: Number(product.quantity),
                     coating: product.coating.id,
                     color: product.color.id
-                }))
-            };
+                }));
+            }
 
             console.log('Data to save:', dataToSave);
 
             const jobData = await post('/jobs', dataToSave);
-
+            toast.success('Job Created Successfully')
         } catch (error) {
             console.error('Error saving data:', error);
+        }
+        finally {
+            navigate(PathRoutes.jobs)
         }
     };
 
 
     const handleSelfProductQuantityChange = (selfProductIndex: number, newValue: number) => {
-        const updatedSelfProducts = [...processReviewData.selfProducts]; // Make a copy of the selfProducts array
-        updatedSelfProducts[selfProductIndex] = { ...updatedSelfProducts[selfProductIndex], quantity: newValue }; // Update the quantity of the specific self product
+        const updatedSelfProducts = [...processReviewData.selfProducts];
+        updatedSelfProducts[selfProductIndex] = { ...updatedSelfProducts[selfProductIndex], quantity: newValue };
         setProcessReviewData((prevData: any) => ({
             ...prevData,
             selfProducts: updatedSelfProducts
@@ -220,8 +282,8 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
                                                 ))}
                                             </div>
                                         ))}
-                                        <h2 className='text-lg font-semibold mt-4'>Self Products</h2>
-                                        {processReviewData.selfProducts.map((selfProduct: any, selfProductIndex: number) => (
+                                        {processReviewData && processReviewData.selfProducts && <h2 className='text-lg font-semibold mt-4'>Self Products</h2>}
+                                        {processReviewData && processReviewData.selfProducts && processReviewData.selfProducts.map((selfProduct: any, selfProductIndex: number) => (
                                             <div key={selfProductIndex}>
                                                 <div className='col-span-12 lg:col-span-12 flex items-center gap-2'>
                                                     <div className='mt-2'>

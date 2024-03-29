@@ -108,61 +108,126 @@ const JobsPage = () => {
     //     setQuantityStatusModal(true);
     // }
     console.log('Entries', entries)
+    // const handleReviewProcess = async () => {
+    //     // Create batches for customer orders
+    //     const regularBatches = customerOrders.map((order: any) => ({
+    //         coEntry: order.name.id,
+    //         products: order.products.map((product: any) => ({
+    //             product: { id: product.product._id, name: product.product.name },
+    //             pendingQuantity: product.quantity,
+    //             quantity: Number(product.pickQuantity),
+    //             coating: { id: product?.coating?._id, name: product?.coating?.name },
+    //             color: { id: product?.color?._id, name: product?.color?.name }
+
+    //         }))
+    //     }));
+
+    //     // Create a batch for self products
+    //     const selfProducts = entries.map((entry: any) => ({
+    //         product: { id: entry.product.id, name: entry.product.name }, // Include both id and name for the self product
+    //         quantity: entry.quantity,
+    //         coating: { id: entry.coating.id, name: entry.coating.name },
+    //         color: { id: entry.color.id, name: entry.color.name }
+    //     }));
+    //     const allProductIds = [
+    //         ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
+    //         ...selfProducts.map((selfProduct: any) => selfProduct.product.id) // Add product IDs from self products
+    //     ];
+    //     const finalValues = {
+    //         name,
+    //         branchId: { id: branchId.id, name: branchId.name },
+    //         batch: [...regularBatches],
+    //         selfProducts
+    //     };
+
+    //     setProcessReviewData(finalValues);
+
+    //     const reviewQuantityFromBranch = {
+    //         branchId: branchId.id,
+    //         products: allProductIds
+    //     }
+    //     console.log('Reviww Qty', reviewQuantityFromBranch)
+    //     setQuantityStatusModal(true);
+    //     // try {
+
+    //     //     const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch)
+    //     //     console.log('reviewProducts', reviewProducts.data);
+    //     //     const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
+    //     //         _id: reviewProduct.product._id,
+    //     //         name: reviewProduct.product.name,
+    //     //         quantity: reviewProduct.quantity
+    //     //     }));
+    //     //     setProductQuantityDetails(formattedProducts)
+    //     // } catch (error) {
+    //     //     console.log('Error', error);
+    //     // }
+    // };
+
     const handleReviewProcess = async () => {
         // Create batches for customer orders
         const regularBatches = customerOrders.map((order: any) => ({
             coEntry: order.name.id,
             products: order.products.map((product: any) => ({
+                productId: product.product._id, // Include product ID
                 product: { id: product.product._id, name: product.product.name },
                 pendingQuantity: product.quantity,
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
                 color: { id: product?.color?._id, name: product?.color?.name }
-
             }))
         }));
 
-        // Create a batch for self products
-        const selfProducts = entries.map((entry: any) => ({
-            product: { id: entry.product.id, name: entry.product.name }, // Include both id and name for the self product
-            quantity: entry.quantity,
-            coating: { id: entry.coating.id, name: entry.coating.name },
-            color: { id: entry.color.id, name: entry.color.name }
-        }));
-        const allProductIds = [
-            ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
-            ...selfProducts.map((selfProduct: any) => selfProduct.product.id) // Add product IDs from self products
-        ];
-        const finalValues = {
+        // Construct finalValues object without selfProducts if no self products are present
+        const finalValues: any = {
             name,
             branchId: { id: branchId.id, name: branchId.name },
             batch: [...regularBatches],
-            selfProducts
         };
 
+        // Check if there are any self products present
+        const hasSelfProducts = entries.some((entry: any) => entry.product.name !== undefined);
+
+        if (hasSelfProducts) {
+            // Filter out self products with undefined product name
+            const validSelfProducts = entries.filter((entry: any) => entry.product.name !== undefined);
+
+            // Create a batch for self products
+            finalValues.selfProducts = validSelfProducts.map((entry: any) => ({
+                productId: entry.product.id, // Include product ID
+                product: { id: entry.product.id, name: entry.product.name },
+                quantity: entry.quantity,
+                coating: { id: entry.coating.id, name: entry.coating.name },
+                color: { id: entry.color.id, name: entry.color.name }
+            }));
+        }
+
         setProcessReviewData(finalValues);
+
+        const allProductIds = [
+            ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
+            ...(finalValues.selfProducts || []).map((selfProduct: any) => selfProduct.productId) // Use productId for self products
+        ];
 
         const reviewQuantityFromBranch = {
             branchId: branchId.id,
             products: allProductIds
-        }
-        console.log('Reviww Qty', reviewQuantityFromBranch)
+        };
+
+        console.log('Review Qty', reviewQuantityFromBranch);
         setQuantityStatusModal(true);
         try {
-
-            const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch)
+            const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch);
             console.log('reviewProducts', reviewProducts.data);
             const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
                 _id: reviewProduct.product._id,
                 name: reviewProduct.product.name,
                 quantity: reviewProduct.quantity
             }));
-            setProductQuantityDetails(formattedProducts)
+            setProductQuantityDetails(formattedProducts);
         } catch (error) {
             console.log('Error', error);
         }
     };
-
 
 
 
