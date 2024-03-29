@@ -29,4 +29,5 @@ export enum PathRoutes {
 	add_worker = '/add-worker',
 	jobs = '/jobs',
 	add_jobs = '/add-jobs',
+	powder = '/powder',
 }

@@ -81,6 +81,15 @@ export const appPages: any = {
 			to: '/edit-worker',
 		},
 	},
+	powderPage: {
+		listPage: {
+			id: 'powderPage',
+			to: '/powder',
+			text: 'Powder',
+			// icon: 'HeroQueueList',p
+			icon: 'HeroUserCircle',
+		}
+	},
 	branchesPage: {
 		listPage: {
 			id: 'branchesPage',

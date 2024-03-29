@@ -31,6 +31,7 @@ import EditCoatingPage from '../pages/crm/Coating/CoatingPage/EditCoatingPage';
 import EditCustomerPage from '../pages/crm/Customer/CustomerPage/EditCustomerPage';
 import FinishInventoryListPage from '../pages/crm/FinishInventory/FInishInventoryListPage/FinishInventoryListPage';
 import CustomerOrderListPage from '../pages/crm/CustomerOrder/CustomerOrderListPage/CustomerOrderListPage';
+import PowderPage from '../pages/crm/Powder/PowderPage/PowderPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -162,6 +163,10 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.jobsPage.editPageLink.to}`,
 		element: <JobsPage />,
+	},
+	{
+		path: `${appPages.powderPage.listPage.to}`,
+		element: <PowderPage />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },
