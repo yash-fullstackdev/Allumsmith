@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import Moment from 'moment';
+// import Moment from 'moment';
 import {
     createColumnHelper,
     getCoreRowModel,
@@ -234,14 +234,15 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             header: 'Branch',
         }),
 
-        columnHelper.accessor('date', {
-            cell: (info) => (
-                <div>
-                     {Moment(info.row?.original?.createdAt).format('DD-MM-YYYY')}
-                </div>
-            ),
-            header: 'Date',
-        }),
+        // columnHelper.accessor('date', {
+        //     cell: (info) => (
+        //         <div>
+        //             {/* {Moment(info.row?.original?.createdAt).format('DD-MM-YYYY')} */}
+        //             console.log('Info')
+        //         </div>
+        //     ),
+        //     header: 'Date',
+        // }),
     ];
 
 
