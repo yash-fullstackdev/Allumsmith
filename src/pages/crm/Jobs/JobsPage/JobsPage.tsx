@@ -9,25 +9,28 @@ import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
-import { toast } from 'react-toastify';
-import { Switch } from '@mui/material';
+import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
+import Collapse from '../../../../components/utils/Collapse';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import ReviewQuantityStatus from './ReviewQuantityStatus';
+import SelfProducts from './SelfProducts';
 
 const JobsPage = () => {
-    const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
     const [name, setName] = useState('');
     const [branchData, setBranchData] = useState<any>([])
     const [coatingData, setCoatingData] = useState<any>([])
     const [productsData, setProductsData] = useState<any>([]);
-    const [colorData, setColorData] = useState([]);
-    const [branchId, setBranchId] = useState('');
+    const [branchId, setBranchId] = useState({ id: "", name: '' });
+    const [customerOrders, setCustomerOrders] = useState<any>([{ name: '', products: [] }]);
     const navigate = useNavigate();
-    const [productTransfer, setProductTransfer] = useState(false)
-    const [product, setProduct] = useState('');
-    const [length, setLength] = useState('');
-    const [colorDataList, setColorDataList] = useState<Array<any>>([]);
-
-
+    const [selectedCustomerOrderData, setSelectedCustomerOrderData] = useState<any>(null);
+    const [collapsible, setCollapsible] = useState<boolean[]>(customerOrders.map(() => false));
+    const [customerOrderData, setCustomerOrderData] = useState<any>([]);
+    const [quantityStatusModal, setQuantityStatusModal] = useState<boolean>(false);
+    const [productIdsForReview, setProductIdsForReview] = useState<string[]>([]);
+    const [processReviewData, setProcessReviewData] = useState<any>({});
+    const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
+    const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
@@ -38,7 +41,15 @@ const JobsPage = () => {
             console.error("Error Fetching Products", error);
         }
     }
-
+    const getCustomerOrderDetails = async () => {
+        try {
+            const { data } = await get('/customer-order');
+            setCustomerOrderData(data);
+        } catch (error) {
+            console.error('Error Fetching Customer Order');
+        }
+    }
+    console.log('Custoemr Order Data', customerOrderData)
     const getBranchDetails = async () => {
         try {
             const { data } = await get('/branches');
@@ -47,7 +58,6 @@ const JobsPage = () => {
             console.error("Error Fetching Branch", error);
         }
     }
-
     const getCoatingDetails = async () => {
         try {
             const { data } = await get('/coatings');
@@ -57,66 +67,129 @@ const JobsPage = () => {
         }
     }
     useEffect(() => {
+        getCustomerOrderDetails();
         getProductDetails();
         getBranchDetails();
         getCoatingDetails();
 
     }, []);
+    console.log('Customer ORder Data 139', customerOrderData)
 
-    const handleAddEntry = () => {
-        setEntries([...entries, { product: '', quantity: '', coating: '', color: '', length: '' }]);
-    };
+    // const handleReviewProcess = async () => {
+    //     const batch = customerOrders.map((order: any) => ({
+    //         name: order.name.id,
 
-    const handleSaveEntries = async () => {
-        const updatedEntries = entries.map((entry: any) => ({
-            ...entry,
-            quantity: Number(entry.quantity)
-        }));
-        const finalValues = {
-            // status: "pending",
-            name,
-            branch: branchId,
-            batch: updatedEntries,
-        };
-        try {
-            const { data } = await post('/jobs', finalValues);
-            console.log("🚀 ~ handleSaveEntries ~ data:", data)
-            toast.success('Job Created Successfully!');
+    //         products: order.products.map((product: any) => ({
+    //             product: { id: product.product._id, name: product.product.name },
+    //             quantity: Number(product.pickQuantity),
+    //             coating: { id: product?.coating?._id, name: product?.coating?.name },
+    //             color: { id: product?.color?._id, name: product?.color?.name }
 
-        } catch (error: any) {
-            toast.error('Error Creating Job', error);
-        } finally {
-            navigate(PathRoutes.jobs)
-        }
-
-    };
-
-    const handleDeleteProduct = (index: any) => {
-        const newProduct = [...entries]
-        newProduct.splice(index, 1)
-        setEntries(newProduct)
-    }
-
-    // const updateColorOptions = (coatingId: any) => {
-    //     const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
-    //     if (selectedCoating) {
-    //         setColorData(selectedCoating.colors);
-    //     } else {
-    //         setColorData([]);
+    //         }))
+    //     }));
+    //     const selfProducts = entries.map((entry: any) => ({
+    //         product: entry.product,
+    //         quantity: entry.quantity,
+    //         coating: entry.coating,
+    //         color: entry.color
+    //     }));
+    //     const finalValues = {
+    //         name,
+    //         branchId: branchId.id,
+    //         batch,
+    //         // selfProducts
     //     }
+    //     setProcessReviewData(finalValues);
+    //     const uniqueProductIds = customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id));
+    //     const distinctProductIds: any = Array.from(new Set(uniqueProductIds));
+    //     setProductIdsForReview(distinctProductIds);
+
+
+    //     setQuantityStatusModal(true);
     // }
-    const updateColorOptions = (coatingId: any, entryIndex: number) => {
-        const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
-        if (selectedCoating) {
-            const newColorDataList = [...colorDataList];
-            newColorDataList[entryIndex] = selectedCoating.colors;
-            setColorDataList(newColorDataList);
-        } else {
-            const newColorDataList = [...colorDataList];
-            newColorDataList[entryIndex] = [];
-            setColorDataList(newColorDataList);
+    console.log('Entries', entries)
+    const handleReviewProcess = async () => {
+        // Create batches for customer orders
+        const regularBatches = customerOrders.map((order: any) => ({
+            coEntry: order.name.id,
+            products: order.products.map((product: any) => ({
+                product: { id: product.product._id, name: product.product.name },
+                pendingQuantity: product.quantity,
+                quantity: Number(product.pickQuantity),
+                coating: { id: product?.coating?._id, name: product?.coating?.name },
+                color: { id: product?.color?._id, name: product?.color?.name }
+
+            }))
+        }));
+
+        // Create a batch for self products
+        const selfProducts = entries.map((entry: any) => ({
+            product: { id: entry.product.id, name: entry.product.name }, // Include both id and name for the self product
+            quantity: entry.quantity,
+            coating: { id: entry.coating.id, name: entry.coating.name },
+            color: { id: entry.color.id, name: entry.color.name }
+        }));
+        const allProductIds = [
+            ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
+            ...selfProducts.map((selfProduct: any) => selfProduct.product.id) // Add product IDs from self products
+        ];
+        const finalValues = {
+            name,
+            branchId: { id: branchId.id, name: branchId.name },
+            batch: [...regularBatches],
+            selfProducts
+        };
+
+        setProcessReviewData(finalValues);
+
+        const reviewQuantityFromBranch = {
+            branchId: branchId.id,
+            products: allProductIds
+        }
+        console.log('Reviww Qty', reviewQuantityFromBranch)
+        setQuantityStatusModal(true);
+        try {
+
+            const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch)
+            console.log('reviewProducts', reviewProducts.data);
+            const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
+                _id: reviewProduct.product._id,
+                name: reviewProduct.product.name,
+                quantity: reviewProduct.quantity
+            }));
+            setProductQuantityDetails(formattedProducts)
+        } catch (error) {
+            console.log('Error', error);
         }
     };
+
+
+
+
+    console.log('Customer Order List', selectedCustomerOrderData)
+    const handleAddCustomerOrder = () => {
+        setCustomerOrders([...customerOrders, { name: '', products: [] }]);
+    };
+
+    const handleDeleteCustomerOrder = (index: any) => {
+        const updatedCustomerOrders = [...customerOrders];
+        updatedCustomerOrders.splice(index, 1);
+        setCustomerOrders(updatedCustomerOrders);
+    };
+
+
+
+    const toggleCollapse = (index: number) => {
+        const updatedCollapsible = [...collapsible];
+        updatedCollapsible[index] = !updatedCollapsible[index];
+        setCollapsible(updatedCollapsible);
+    };
+
+    console.log('Customer Order Data', customerOrders)
+    const handleDeleteEntry = (indexToDelete: number) => {
+        setEntries((prevEntries: any) => prevEntries.filter((_: any, index: number) => index !== indexToDelete));
+    };
+
 
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -129,12 +202,19 @@ const JobsPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
-                    <div className='flex items-center justify-center' >
-                        <h4>Add by List of Products</h4>  <Switch {...Label} checked={productTransfer} onClick={() => setProductTransfer(!productTransfer)} /><h4> Add by Product </h4>
-                    </div>
+
                     <SubheaderSeparator />
                 </SubheaderLeft>
+                <SubheaderRight >
 
+                    <Button
+                        variant='solid'
+                        color='blue'
+                        onClick={handleReviewProcess}
+                    >
+                        Review Process
+                    </Button>
+                </SubheaderRight>
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
@@ -178,220 +258,36 @@ const JobsPage = () => {
                                                     <Select
                                                         id={`branch`}
                                                         name={`branch`}
-                                                        value={branchId}
-                                                        onChange={(e) => setBranchId(e.target.value)}
+                                                        value={branchId.id}
+                                                        placeholder='Select Branch'
+                                                        onChange={(e) => {
+                                                            const selectedBranchId = e.target.value;
+                                                            const selectedBranchName = e.target.options[e.target.selectedIndex].text;
+                                                            setBranchId({ id: selectedBranchId, name: selectedBranchName });
+                                                        }}
                                                     >
-                                                        <option value="">Select Branch</option>
                                                         {branchData.map((branch: any) => (
                                                             <option key={branch._id} value={branch._id}>
                                                                 {branch.name}
                                                             </option>
                                                         ))}
                                                     </Select>
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-6 mt-3'>
+                                                    <Button
 
+                                                        variant='outline'
+                                                        color='zinc'
+                                                        size='lg'
+                                                        className='w-64'
+                                                        onClick={handleAddCustomerOrder}
+                                                    >
+                                                        Add Customer Order
+                                                    </Button>
 
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-12'>
-                                                    {entries.map((entry: any, index: any) => (
-                                                        <>
-                                                            <div className='flex items-end justify-end mt-2'>
-                                                                {entries.length > 1 && (
-                                                                    <div className='flex items-end justify-end'>
-                                                                        <Button
-                                                                            type='button'
-                                                                            onClick={() => handleDeleteProduct(index)}
-                                                                            variant='outlined'
-                                                                            color='red'
-                                                                        // isDisable={!privileges.canWrite()}
-                                                                        >
-                                                                            <svg
-                                                                                xmlns='http://www.w3.org/2000/svg'
-                                                                                fill='none'
-                                                                                viewBox='0 0 24 24'
-                                                                                strokeWidth='1.5'
-                                                                                stroke='currentColor'
-                                                                                data-slot='icon'
-                                                                                className='h-6 w-6'>
-                                                                                <path
-                                                                                    strokeLinecap='round'
-                                                                                    strokeLinejoin='round'
-                                                                                    d='M6 18 18 6M6 6l12 12'
-                                                                                />
-                                                                            </svg>
-                                                                        </Button>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
-                                                                {!productTransfer ? (<>
-                                                                    <div className='col-span-12 lg:col-span-3'>
-                                                                        <Label htmlFor={`name-${index}`}>
-                                                                            Products
-                                                                            <span className='ml-1 text-red-500'>*</span>
-                                                                        </Label>
-                                                                        <Select
-                                                                            placeholder='Select Product'
-                                                                            id={`product`}
-                                                                            name={`product`}
-                                                                            value={entry.product}
-                                                                            onChange={(e) => {
-                                                                                const updatedEntries = [...entries];
-                                                                                updatedEntries[index].product = e.target.value;
-                                                                                setEntries(updatedEntries);
-                                                                            }}
-                                                                        >
-                                                                            {productsData.map((item: any) => (
-                                                                                <option key={item._id} value={item._id}>
-                                                                                    {`${item.name} (${item.productCode})`}
-                                                                                </option>
-                                                                            ))}
-                                                                        </Select>
-
-                                                                    </div>
-                                                                    {entry.product && (
-                                                                        <div className='col-span-12 lg:col-span-3'>
-                                                                            {/* Add your additional input fields here */}
-                                                                            {/* For example, you can add an input field for quantity */}
-                                                                            <Label htmlFor={`length-${index}`}>
-                                                                                Length
-                                                                                <span className='ml-1 text-red-500'>*</span>
-                                                                            </Label>
-                                                                            <Input
-                                                                                type='number'
-                                                                                id={`length-${index}`}
-                                                                                name={`length-${index}`}
-                                                                                value={productsData.find((item: any) => item._id === entry.product)?.length || ''}
-                                                                            />
-                                                                        </div>
-                                                                    )}
-                                                                </>
-                                                                ) : (<>
-                                                                    <div className='col-span-12 lg:col-span-3'>
-                                                                        <Label htmlFor={`product`}>
-                                                                            Product
-                                                                            <span className='ml-1 text-red-500'>*</span>
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`product`}
-                                                                            name={`product`}
-                                                                            value={entry.product}
-                                                                            onChange={(e) => {
-                                                                                const updatedEntries = [...entries];
-                                                                                updatedEntries[index].product = e.target.value;
-                                                                                setEntries(updatedEntries);
-                                                                            }}
-                                                                        />
-                                                                        {/* ... Error handling for hsn field */}
-                                                                    </div>
-                                                                    <div className='col-span-12 lg:col-span-3'>
-                                                                        <Label htmlFor={`length`}>
-                                                                            Length
-                                                                            <span className='ml-1 text-red-500'>*</span>
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='number'
-                                                                            id={`length`}
-                                                                            name={`length`}
-                                                                            value={entry.length}
-                                                                            onChange={(e) => {
-                                                                                const updatedEntries = [...entries];
-                                                                                updatedEntries[index].length = e.target.value;
-                                                                                setEntries(updatedEntries);
-                                                                            }}
-                                                                        />
-                                                                        {/* ... Error handling for hsn field */}
-                                                                    </div>
-
-
-                                                                </>)}
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor={`hsn-${index}`}>
-                                                                        Quantity
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='number'
-                                                                        id={`hsn-${index}`}
-                                                                        name={`hsn-${index}`}
-                                                                        value={entry.quantity}
-                                                                        onChange={(e) => {
-                                                                            const updatedEntries = [...entries];
-                                                                            updatedEntries[index].quantity = e.target.value;
-                                                                            setEntries(updatedEntries);
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor={`hsn-${index}`}>
-                                                                        Coating
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Select
-                                                                        placeholder='Select Coating'
-                                                                        id={`coating-${index}`}
-                                                                        name={`coating-${index}`}
-                                                                        value={entry.coating}
-                                                                        onChange={(e: any) => {
-                                                                            const coatingId = e.target.value;
-                                                                            const updatedEntries = [...entries];
-                                                                            updatedEntries[index].coating = coatingId;
-                                                                            setEntries(updatedEntries);
-                                                                            updateColorOptions(coatingId, index);
-                                                                        }}
-                                                                    >
-                                                                        {coatingData.map((coating: any) => (
-                                                                            <option key={coating._id} value={coating._id}>
-                                                                                {coating.name}
-                                                                            </option>
-                                                                        ))}
-                                                                    </Select>
-                                                                </div>
-                                                                {entry.coating &&
-                                                                    (<div className='col-span-12 lg:col-span-3'>
-                                                                        <Label htmlFor={`hsn-${index}`}>
-                                                                            Color
-                                                                            <span className='ml-1 text-red-500'>*</span>
-                                                                        </Label>
-                                                                        <Select
-                                                                            placeholder='Select Color'
-                                                                            id={`color-${index}`}
-                                                                            name={`color-${index}`}
-                                                                            value={entry.color}
-                                                                            onChange={(e: any) => {
-                                                                                const updatedEntries = [...entries];
-                                                                                updatedEntries[index].color = e.target.value;
-                                                                                setEntries(updatedEntries);
-                                                                            }}
-                                                                        >
-                                                                            {/* Use color data specific to the entry */}
-                                                                            {colorDataList[index]?.map((color: any) => (
-                                                                                <option key={color._id} value={color._id}>
-                                                                                    {color.name}
-                                                                                </option>
-                                                                            ))}
-                                                                        </Select>
-                                                                    </div>)}
-
-                                                            </div>
-
-                                                        </>
-                                                    ))}
-                                                    <div className='flex mt-2 gap-2 '>
-                                                        <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
-                                                            Add Entry
-                                                        </Button>
-                                                        <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
-                                                            Save Entries
-                                                        </Button>
-                                                    </div>
-                                                </div>
-
                                             </div>
-
-
                                         </div>
-
                                     </CardBody>
                                 </Card>
                             </div >
@@ -399,7 +295,257 @@ const JobsPage = () => {
                     </div>
                 </div>
             </Container>
-        </PageWrapper>
+
+            {customerOrders.map((order: any, index: any) => (
+
+                <div className='flex h-full flex-wrap content-start'>
+                    <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
+                        <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                            <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                                <Card>
+                                    <CardBody>
+                                        <div className='flex'>
+                                            <div className='bold w-full'>
+                                                <Button
+                                                    variant='outlined'
+                                                    className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                                    rightIcon={
+                                                        !collapsible[index]
+                                                            ? 'HeroChevronUp'
+                                                            : 'HeroChevronDown'
+                                                    }
+                                                    onClick={() => toggleCollapse(index)}
+                                                >
+                                                    Customer Order Data
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <Collapse isOpen={!collapsible[index]}>
+                                            <div>
+
+                                                <div className='flex items-end justify-end mt-2'>
+                                                    {customerOrders.length > 1 && (
+                                                        <div className='flex items-end justify-end'>
+                                                            <Button
+                                                                type='button'
+                                                                onClick={() => handleDeleteCustomerOrder(index)}
+                                                                variant='outlined'
+                                                                color='red'
+                                                            >
+                                                                <svg
+                                                                    xmlns='http://www.w3.org/2000/svg'
+                                                                    fill='none'
+                                                                    viewBox='0 0 24 24'
+                                                                    strokeWidth='1.5'
+                                                                    stroke='currentColor'
+                                                                    data-slot='icon'
+                                                                    className='h-6 w-6'>
+                                                                    <path
+                                                                        strokeLinecap='round'
+                                                                        strokeLinejoin='round'
+                                                                        d='M6 18 18 6M6 6l12 12'
+                                                                    />
+                                                                </svg>
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className='mt-2 grid grid-cols-12 gap-1'>
+
+                                                    <div key={index} className='col-span-12 lg:col-span-4'>
+                                                        <Label htmlFor={`customerOrder${index}`}>
+                                                            Customer Order {index + 1}
+                                                            <span className='ml-1 text-red-500'>*</span>
+                                                        </Label>
+                                                        <Select
+                                                            id={`customerOrder${index}`}
+                                                            name={`customerOrder${index}`}
+                                                            value={order._id}
+                                                            placeholder='Select Customer Order'
+                                                            onChange={(e) => {
+                                                                console.log('order name', order.name.name)
+                                                                const selectedOrderId = e.target.value;
+                                                                const selectedOrderName = e.target.options[e.target.selectedIndex].text;
+                                                                const updatedOrders = customerOrders.map((orderItem: any, idx: any) => {
+                                                                    if (idx === index) {
+                                                                        return {
+                                                                            ...orderItem,
+                                                                            name: { id: selectedOrderId, name: selectedOrderName },
+                                                                            products: customerOrderData?.find((co: any) => co.customer.name === selectedOrderName)?.entries || [],
+                                                                        };
+                                                                    }
+                                                                    return orderItem;
+                                                                });
+                                                                setCustomerOrders(updatedOrders);
+                                                                setSelectedCustomerOrderData(selectedOrderId); // Set the selected order ID
+                                                            }}
+                                                        >
+                                                            {customerOrderData?.map((co: any) => {
+                                                                return (
+                                                                    <option key={co._id} value={co._id}>
+                                                                        {co.customer.name}
+                                                                    </option>
+                                                                );
+                                                            })}
+                                                        </Select>
+
+                                                    </div>
+
+                                                    {order.products.map((product: any, productIndex: any) => (
+                                                        <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
+
+
+                                                            <div className='row-span-2'>
+                                                                <Label htmlFor={`product${productIndex}`}>
+                                                                    Product {productIndex + 1}
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`product${productIndex}`}
+                                                                    name={`product${productIndex}`}
+                                                                    value={product.product.name}
+                                                                    disabled
+                                                                />
+                                                            </div>
+                                                            <div className='row-span-2'>
+                                                                <Label htmlFor={`quantity${productIndex}`}>
+                                                                    Pending Quantity
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`quantity${productIndex}`}
+                                                                    name={`quantity${productIndex}`}
+                                                                    value={product.quantity}
+
+                                                                />
+                                                            </div>
+                                                            <div className='row-span-2'>
+                                                                <Label htmlFor={`pickQuantity${productIndex}`}>
+                                                                    Pick Quantity
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`pickQuantity${productIndex}`}
+                                                                    name={`pickQuantity${productIndex}`}
+                                                                    value={product.pickQuantity}
+                                                                    onChange={(e) => {
+                                                                        const updatedProduct = { ...product, pickQuantity: e.target.value };
+                                                                        const updatedProducts = [...order.products];
+                                                                        updatedProducts[productIndex] = updatedProduct;
+                                                                        const updatedOrders = [...customerOrders];
+                                                                        updatedOrders[index].products = updatedProducts;
+                                                                        setCustomerOrders(updatedOrders);
+                                                                    }}
+                                                                />
+                                                            </div>
+
+                                                            <div className='row-span-2'>
+
+                                                                <Label htmlFor={`coating${productIndex}`}>
+                                                                    Coating
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`coating${productIndex}`}
+                                                                    name={`coating${productIndex}`}
+                                                                    value={product?.coating?.name}
+                                                                    disabled
+                                                                />
+                                                            </div>
+                                                            <div className='row-span-2'>
+                                                                <Label htmlFor={`color${productIndex}`}>
+                                                                    Color
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`color${productIndex}`}
+                                                                    name={`color${productIndex}`}
+                                                                    value={product?.color?.name}
+                                                                    disabled
+                                                                />
+                                                            </div>
+
+                                                            <div className='row-span-2'>
+                                                                <Button
+                                                                    variant='outlined'
+                                                                    color='red'
+                                                                    onClick={() => {
+                                                                        const updatedProducts = [...order.products];
+                                                                        updatedProducts.splice(productIndex, 1);
+                                                                        const updatedOrders = [...customerOrders];
+                                                                        updatedOrders[index].products = updatedProducts;
+                                                                        setCustomerOrders(updatedOrders);
+                                                                    }}
+                                                                >
+                                                                    <svg
+                                                                        xmlns='http://www.w3.org/2000/svg'
+                                                                        fill='none'
+                                                                        viewBox='0 0 24 24'
+                                                                        strokeWidth='1.5'
+                                                                        stroke='currentColor'
+                                                                        data-slot='icon'
+                                                                        className='h-6 w-6'>
+                                                                        <path
+                                                                            strokeLinecap='round'
+                                                                            strokeLinejoin='round'
+                                                                            d='M6 18 18 6M6 6l12 12'
+                                                                        />
+                                                                    </svg>
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </Collapse>
+
+                                    </CardBody>
+                                </Card>
+                            </div >
+                        </div>
+                    </div>
+                </div>
+            ))
+            }
+            <div className='flex h-full flex-wrap content-start'>
+                <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
+                    <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                        <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                            <Card>
+                                <CardBody>
+                                    <div className='flex'>
+                                        <div className='bold w-full'>
+                                            <Button
+                                                variant='outlined'
+                                                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+
+
+                                            >
+                                                Self Product Data
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <SelfProducts entries={entries} setEntries={setEntries} />
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </div >
+                    </div>
+                </div>
+            </div>
+            <Modal isOpen={quantityStatusModal} setIsOpen={setQuantityStatusModal} isScrollable fullScreen>
+                <ModalHeader
+                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+
+                >
+                    Edit Status
+                </ModalHeader>
+                <ModalBody>
+                    <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} />
+                </ModalBody>
+            </Modal>
+        </PageWrapper >
     );
 };
 
