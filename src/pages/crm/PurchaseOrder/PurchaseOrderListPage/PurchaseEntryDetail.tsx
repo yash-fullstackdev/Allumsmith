@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Moment from 'moment';
 import {
     createColumnHelper,
     getCoreRowModel,
@@ -27,17 +28,18 @@ import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
 import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
+import { Info } from 'property-information/lib/util/info';
 
 
 
 const columnHelper = createColumnHelper<any>();
-
 
 const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editedData, setEditedData] = useState<{ [key: string]: any }>({});
+    const inputRef = useRef<HTMLInputElement>(null); // Create a ref for the input element
     const [selectedBranches, setSelectedBranches] = useState<any>({});
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>()
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
@@ -70,6 +72,10 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         }));
     }
 
+
+    useEffect(() => {
+
+    }, []);
 
     const columns = [
         columnHelper.accessor('product.name', {
@@ -116,11 +122,12 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
                     <Input
                         type='number'
                         value={editedData[info.row.id]?.receivedQuantity}
-                        onChange={(e) => handleReceivedQuantityChange(info.row.id, e.target.value)}
+                        onChange={(e) => { e.preventDefault(); handleReceivedQuantityChange(info.row.id, e.target.value) }}
                         disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
-                        name="receivedQuantity"
+                        id={`receivedQuantity-${info.row.id}`}
+                        name={`receivedQuantity-${info.row.id}`}
+                        placeholder='Received Quantity'
                     />
-
                 </div>
             ),
             header: 'Received Quantity',
@@ -226,6 +233,15 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             ),
             header: 'Branch',
         }),
+
+        columnHelper.accessor('date', {
+            cell: (info) => (
+                <div>
+                     {Moment(info.row?.original?.createdAt).format('DD-MM-YYYY')}
+                </div>
+            ),
+            header: 'Date',
+        }),
     ];
 
 
@@ -258,7 +274,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             ProductStaus: row.original.status,
             product: row.original.product._id,
-            receivedQuantity: parseFloat(editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity),
+            receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
             requiredQuantity: parseFloat(row.original.requiredQuantity),
             branch: selectedBranches[index],
         }));

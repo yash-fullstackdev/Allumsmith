@@ -25,7 +25,10 @@ const FinishInventoryListPage = () => {
         activeIndex: null,
         state: false
     });
-    const [isExpandedCoating, setIsExpandedCoating] = useState(false);
+    const [isExpandedCoating, setIsExpandedCoating] = useState<{ activeIndex: number | null, state: boolean }>({
+        activeIndex: null,
+        state: false
+    });
 
     const data = [
         {
@@ -101,8 +104,12 @@ const FinishInventoryListPage = () => {
         }));
     };
 
-    const handleCoatingClick = () => {
-        setIsExpandedCoating(!isExpandedCoating);
+    const handleCoatingClick = (index:any) => {
+        setIsExpandedCoating((prevState: any) => ({
+            ...prevState,
+            activeIndex: index,
+            state: !prevState.state
+        }));
     };
 
     useEffect(() => {
@@ -152,11 +159,11 @@ const FinishInventoryListPage = () => {
                             <TableBody>
                                 {coating.map((coatingName: any, index: number) => (
                                     <React.Fragment>
-                                        <TableRow key={index} className='cursor-pointer' onClick={handleCoatingClick}>
+                                        <TableRow key={index} className='cursor-pointer' onClick={()=>handleCoatingClick(index)}>
                                             <TableCell ><h6>{coatingName.name}</h6></TableCell>
-                                            <Button rightIcon={isExpandedCoating ? 'HeroChevronUp' : 'HeroChevronDown'} />
+                                            <Button rightIcon={isExpandedCoating.activeIndex === index && isExpandedCoating.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
                                         </TableRow>
-                                        {isExpandedCoating && renderCoating(coatingName.variants)}
+                                        {isExpandedCoating.activeIndex === index && isExpandedCoating.state && renderCoating(coatingName.variants)}
                                     </React.Fragment>
                                 ))}
                             </TableBody>
@@ -198,13 +205,13 @@ const FinishInventoryListPage = () => {
                                                         <TableRow onClick={() => handleProductClick(index)}>
                                                             <TableCell className='cursor-pointer' >
                                                                 <h4>{subItem.productName}</h4>
-                                                                <Button rightIcon={isExpanded.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
+                                                                <Button rightIcon={isExpanded.activeIndex === index && isExpanded.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
                                                             </TableCell>
                                                             <TableCell>
                                                                 <h4>{subItem.total_quantity}</h4>
                                                             </TableCell>
                                                         </TableRow>
-                                                        {isExpanded.state && renderProduct(subItem.coating)}
+                                                        {isExpanded.activeIndex === index && isExpanded.state && renderProduct(subItem.coating)}
                                                     </React.Fragment>
                                                 ))}
                                             </React.Fragment>

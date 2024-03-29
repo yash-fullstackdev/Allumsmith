@@ -23,10 +23,8 @@ const AddproductForm = () => {
   const [products, setProducts] = useState()
   const navigate = useNavigate()
   const addProductToDatabase = async (values: any) => {
-    console.log('values', values);
     try {
       const { data } = await post("/products", values);
-      console.log("data", data)
     } catch (error) {
       console.error("Error Adding Product", error);
     }
@@ -57,7 +55,6 @@ const AddproductForm = () => {
     const duplicateProductIds = entries
       .map((entry: any) => entry.product)
       .filter((productId: any, index: any, array: any) => array.indexOf(productId) !== index);
-    console.log("duplicateProductIds", duplicateProductIds)
     if (duplicateProductIds.length > 0) {
       toast.error('You have selected the same product more than once');
       return;
@@ -67,14 +64,12 @@ const AddproductForm = () => {
       vendor: vendorId,
       products: entries
     };
-    console.log("final values", finalValues);
+
     try {
       const { data } = await post("/purchase-order", finalValues);
-      console.log("data", data);
       toast.success('Purchase Order Created Successfully!');
       navigate(PathRoutes.purchase_order);
     } catch (error: any) {
-      console.error("Error Adding Product", error);
       toast.error('Error Creating Purchase Order', error);
     } finally {
       navigate(PathRoutes.purchase_order)
@@ -82,7 +77,7 @@ const AddproductForm = () => {
 
   };
 
-  console.log('vendorData', vendorId)
+
   const handleDeleteProduct = (index: any) => {
     const newProduct = [...entries]
     newProduct.splice(index, 1)
@@ -108,7 +103,6 @@ const AddproductForm = () => {
       console.error('Error fetching users:', error.message);
     }
   }
-  console.log("productListData", productListData)
 
 
   useEffect(() => {
@@ -219,8 +213,14 @@ const AddproductForm = () => {
                     <SelectReact
                       id={`product-${index}`}
                       name={`product-${index}`}
-                      options={productListData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode})` }))}
-                      value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.name }}
+                      options={productListData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
+                      // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
+                      value={{
+                        value: entry.product,
+                        label: productListData.find((product:any) => product._id === entry.product)
+                            ? `${productListData.find((product:any) => product._id === entry.product)?.name} (${productListData.find((product:any) => product._id === entry.product)?.productCode}) (${productListData.find((product:any) => product._id === entry.product)?.length})`
+                            : ''
+                    }}
                       onChange={(selectedOption: any) => {
                         const selectedProductName = productListData.find((product: any) => product._id === selectedOption.value)?.name;
                         const updatedEntries = [...entries];
@@ -232,8 +232,6 @@ const AddproductForm = () => {
                         }
                       }}
                     />
-
-
                   </div>
                   <div className='col-span-12 lg:col-span-2'>
                     <Label htmlFor={`hsn-${index}`}>
