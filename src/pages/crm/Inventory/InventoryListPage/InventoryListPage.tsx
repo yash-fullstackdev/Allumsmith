@@ -21,6 +21,8 @@ const InventoryListPage = () => {
     const [inventoryList, setInventoryList] = useState<any>([]);
     const [productsArray, setProductsArray] = useState<any>([]);
     const [stockActionModal, setStockActionModal] = useState<any>()
+    console.log('productsArray??', productsArray);
+
 
 
 
@@ -75,13 +77,14 @@ const InventoryListPage = () => {
         setProductsArray(updatedProductsArray);
     };
 
+    console.log('Inventory K', inventoryList);
 
 
     useEffect(() => {
         fetchData();
     }, [stockActionModal]);
-
     const renderBranches = (branches: any) => {
+        console.log('Branches', branches)
         return (
             <TableRow>
                 <TableCell colSpan={3}>

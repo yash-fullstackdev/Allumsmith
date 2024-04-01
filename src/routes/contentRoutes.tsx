@@ -35,6 +35,7 @@ import PowderPage from '../pages/crm/Powder/PowderPage/PowderPage';
 import InvoiceListPage from '../pages/crm/Invoice/InvoiceListpage/InvoiceListPage';
 import AddInvoice from '../pages/crm/Invoice/InvoicePage/AddInvoice';
 import EditInvoice from '../pages/crm/Invoice/InvoicePage/EditInvoice';
+import EditJobPage from '../pages/crm/Jobs/JobsPage/EditJobPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -164,8 +165,12 @@ const contentRoutes: RouteProps[] = [
 		element: <JobsListPage />,
 	},
 	{
-		path: `${appPages.jobsPage.editPageLink.to}`,
+		path: `${appPages.jobsPage.addPageLink.to}`,
 		element: <JobsPage />,
+	},
+	{
+		path: `${appPages.jobsPage.editPageLink.to}/:id`,
+		element: <EditJobPage />,
 	},
 	{
 		path: `${appPages.powderPage.listPage.to}`,

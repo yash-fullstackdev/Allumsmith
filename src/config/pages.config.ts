@@ -153,9 +153,13 @@ export const appPages: any = {
 			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
+		addPageLink:{
+			id:'addPageLink',
+			to:'/add-jobs'
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-jobs',
+			to: '/edit-jobs',
 		},
 	},
 

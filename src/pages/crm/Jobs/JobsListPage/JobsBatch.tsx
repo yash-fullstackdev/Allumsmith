@@ -35,21 +35,28 @@ import { get } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 
 
-const JobsBatch = ({ batch, jobId }: any) => {
+const JobsBatch = ({ jobId }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [jobDataById, setJobDataById] = useState<any>({});
+    const [jobDataByIdBatch, setJobDataByIdBatch] = useState<any>([])
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [selfProductsById, setSelfProductsById] = useState<any>([]);
+    const [customerData, setCustomerData] = useState<any>({});
     console.log('Id', jobId);
 
     const getJobById = async () => {
         const { data } = await get(`/jobs/${jobId}`);
+        console.log('Data', data);
         setJobDataById(data);
+        setJobDataByIdBatch(data.batch)
+        setSelfProductsById(data.selfProducts);
     }
+
 
     useEffect(() => {
         getJobById();
     }, [])
-    console.log('Job By Id', jobDataById.batch)
+    console.log('Job By Id', jobDataByIdBatch)
     const columns = [
 
         columnHelper.accessor('coEntry.customer', {
@@ -65,10 +72,68 @@ const JobsBatch = ({ batch, jobId }: any) => {
 
     ];
 
+    const selfProductsColumns = [
+
+        columnHelper.accessor('product.name', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Product Name',
+        }),
+        columnHelper.accessor('coating.name', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Coating Name',
+        }),
+        columnHelper.accessor('color.name', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Color Name',
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
+
+    ];
 
     const table = useReactTable({
-        data: batch,
+        data: jobDataByIdBatch,
         columns,
+        state: {
+            sorting,
+        },
+        onSortingChange: setSorting,
+        enableGlobalFilter: true,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+    });
+
+    const selfProducts = useReactTable({
+        data: selfProductsById,
+        columns: selfProductsColumns,
         state: {
             sorting,
         },
@@ -82,15 +147,13 @@ const JobsBatch = ({ batch, jobId }: any) => {
 
 
 
-
-
     return (
         <PageWrapper name='Jobs List'>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Jobs</CardTitle>
+                            <CardTitle>All Batches</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
@@ -115,7 +178,34 @@ const JobsBatch = ({ batch, jobId }: any) => {
                     </CardBody>
                     <TableCardFooterTemplate table={table} />
                 </Card>
+                <Card className='h-full'>
+                    <CardHeader>
+                        <CardHeaderChild>
+                            <CardTitle>All Self Products</CardTitle>
+                            <Badge
+                                variant='outline'
+                                className='border-transparent px-4 '
+                                rounded='rounded-full'>
+                                {selfProducts?.getFilteredRowModel()?.rows?.length} items
+                            </Badge>
+                        </CardHeaderChild>
 
+
+
+                    </CardHeader>
+                    <CardBody className='overflow-auto'>
+                        {!isLoading && (
+                            <TableTemplate
+                                className='table-fixed max-md:min-w-[70rem]'
+                                table={selfProducts}
+                            />
+                        )}
+                        <div className='flex justify-center'>
+                            {isLoading && <LoaderDotsCommon />}
+                        </div>
+                    </CardBody>
+                    <TableCardFooterTemplate table={selfProducts} />
+                </Card>
             </Container>
 
         </PageWrapper>
