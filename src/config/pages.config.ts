@@ -203,6 +203,23 @@ export const appPages: any = {
 			to: '/add-inventory',
 		},
 	},
+	invoicePage: {
+		listPage: {
+			id: 'invoice',
+			to: '/invoice-list',
+			text: 'Invoice List',
+			// icon: 'HeroQueueList',
+			icon: 'HeroUserCircle',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-invoice',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-invoice',
+		},
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {

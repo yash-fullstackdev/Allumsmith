@@ -40,6 +40,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
     const [editedData, setEditedData] = useState<{ [key: string]: any }>({});
     const [selectedBranches, setSelectedBranches] = useState<any>({});
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>()
+    console.log("🚀 ~ CustomerOrderDetail ~ purchaseOrderData:", purchaseOrderData)
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [collapseAll, setCollapseAll] = useState<boolean>(false);
     const [accordionStates, setAccordionStates] = useState({

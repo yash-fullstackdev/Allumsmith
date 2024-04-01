@@ -32,6 +32,9 @@ import EditCustomerPage from '../pages/crm/Customer/CustomerPage/EditCustomerPag
 import FinishInventoryListPage from '../pages/crm/FinishInventory/FInishInventoryListPage/FinishInventoryListPage';
 import CustomerOrderListPage from '../pages/crm/CustomerOrder/CustomerOrderListPage/CustomerOrderListPage';
 import PowderPage from '../pages/crm/Powder/PowderPage/PowderPage';
+import InvoiceListPage from '../pages/crm/Invoice/InvoiceListpage/InvoiceListPage';
+import AddInvoice from '../pages/crm/Invoice/InvoicePage/AddInvoice';
+import EditInvoice from '../pages/crm/Invoice/InvoicePage/EditInvoice';
 
 
 const contentRoutes: RouteProps[] = [
@@ -167,6 +170,18 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.powderPage.listPage.to}`,
 		element: <PowderPage />,
+	},
+	{
+		path: `${appPages.invoicePage.listPage.to}`,
+		element: <InvoiceListPage />,
+	},
+	{
+		path: `${appPages.invoicePage.addPageLink.to}`,
+		element: <AddInvoice />,
+	},
+	{
+		path: `${appPages.invoicePage.editPageLink.to}`,
+		element: <EditInvoice />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },
