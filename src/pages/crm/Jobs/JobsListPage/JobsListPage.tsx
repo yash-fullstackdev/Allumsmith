@@ -152,6 +152,7 @@ const JobsListPage = () => {
                             // setJobId(info.row.original._id);
                             navigate(`${PathRoutes.edit_jobs}/${info.row.original._id}`)
                         }}
+                        isDisable={info.row.original.status === 'in_progress' || info.row.original.status === 'completed'}
                     >
                         <svg
                             xmlns='http://www.w3.org/2000/svg'

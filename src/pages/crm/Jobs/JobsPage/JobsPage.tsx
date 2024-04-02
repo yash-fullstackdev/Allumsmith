@@ -33,7 +33,7 @@ const JobsPage = () => {
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
-    const [withMaterial, setWithMaterial] = useState<boolean>(false);
+    const [withMaterial, setWithMaterial] = useState<boolean>(true);
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');

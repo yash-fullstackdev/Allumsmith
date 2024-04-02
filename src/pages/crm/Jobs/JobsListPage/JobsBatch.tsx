@@ -1,219 +1,92 @@
-
-import React from 'react'
-import { useEffect, useState } from 'react';
-import {
-    createColumnHelper,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { get } from '../../../../utils/api-helper.util';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-    CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import TableTemplate, {
-    TableCardFooterTemplate,
-} from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
-import LoaderDotsCommon from '../../../../components/LoaderDots.common';
-import { PathRoutes } from '../../../../utils/routes/enum';
-import { get } from '../../../../utils/api-helper.util';
-
-
-
-
-const columnHelper = createColumnHelper<any>();
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 const JobsBatch = ({ jobId }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [jobDataById, setJobDataById] = useState<any>({});
-    const [jobDataByIdBatch, setJobDataByIdBatch] = useState<any>([])
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [selfProductsById, setSelfProductsById] = useState<any>([]);
-    const [customerData, setCustomerData] = useState<any>({});
-    console.log('Id', jobId);
-
+    const [jobDataByIdBatch, setJobDataByIdBatch] = useState<any>([]);
+    const [customerData, setCustomerData] = useState<any>([]);
+    const [selfProducts, setSelfProducts] = useState<any>([]);
     const getJobById = async () => {
         const { data } = await get(`/jobs/${jobId}`);
-        console.log('Data', data);
-        setJobDataById(data);
-        setJobDataByIdBatch(data.batch)
-        setSelfProductsById(data.selfProducts);
-    }
-
+        setJobDataByIdBatch(data.batch);
+        setSelfProducts(data.selfProducts)
+    };
+    console.log('Job Data By Id', jobDataByIdBatch);
+    const getCustomerDetails = async () => {
+        const { data } = await get('/customers');
+        setCustomerData(data);
+    };
 
     useEffect(() => {
+        getCustomerDetails();
         getJobById();
-    }, [])
-    console.log('Job By Id', jobDataByIdBatch)
-    const columns = [
+    }, []);
 
-        columnHelper.accessor('coEntry.customer', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Customer Name',
-        }),
-
-    ];
-
-    const selfProductsColumns = [
-
-        columnHelper.accessor('product.name', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Product Name',
-        }),
-        columnHelper.accessor('coating.name', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Coating Name',
-        }),
-        columnHelper.accessor('color.name', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Color Name',
-        }),
-        columnHelper.accessor('quantity', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Quantity',
-        }),
-
-    ];
-
-    const table = useReactTable({
-        data: jobDataByIdBatch,
-        columns,
-        state: {
-            sorting,
-        },
-        onSortingChange: setSorting,
-        enableGlobalFilter: true,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-    });
-
-    const selfProducts = useReactTable({
-        data: selfProductsById,
-        columns: selfProductsColumns,
-        state: {
-            sorting,
-        },
-        onSortingChange: setSorting,
-        enableGlobalFilter: true,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-    });
-
-
+    // Function to find customer name by ID
+    const findCustomerName = (customerId: string) => {
+        const customer = customerData.find((c: any) => c._id === customerId);
+        return customer ? customer.name : 'Unknown';
+    };
 
     return (
         <PageWrapper name='Jobs List'>
             <Container>
-                <Card className='h-full'>
-                    <CardHeader>
-                        <CardHeaderChild>
-                            <CardTitle>All Batches</CardTitle>
-                            <Badge
-                                variant='outline'
-                                className='border-transparent px-4 '
-                                rounded='rounded-full'>
-                                {table?.getFilteredRowModel()?.rows?.length} items
-                            </Badge>
-                        </CardHeaderChild>
-
-
-
-                    </CardHeader>
-                    <CardBody className='overflow-auto'>
-                        {!isLoading && (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                            />
-                        )}
-                        <div className='flex justify-center'>
-                            {isLoading && <LoaderDotsCommon />}
-                        </div>
-                    </CardBody>
-                    <TableCardFooterTemplate table={table} />
-                </Card>
-                <Card className='h-full'>
-                    <CardHeader>
-                        <CardHeaderChild>
-                            <CardTitle>All Self Products</CardTitle>
-                            <Badge
-                                variant='outline'
-                                className='border-transparent px-4 '
-                                rounded='rounded-full'>
-                                {selfProducts?.getFilteredRowModel()?.rows?.length} items
-                            </Badge>
-                        </CardHeaderChild>
-
-
-
-                    </CardHeader>
-                    <CardBody className='overflow-auto'>
-                        {!isLoading && selfProducts.getFilteredRowModel().rows.length > 0 ? (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={selfProducts}
-                            />
-                        ) : (
-                            <p className="text-center text-gray-500">No records found</p>
-                        )}
-                        <div className='flex justify-center'>
-                            {isLoading && <LoaderDotsCommon />}
-                        </div>
-                    </CardBody>
-                    <TableCardFooterTemplate table={selfProducts} />
-                </Card>
+                {jobDataByIdBatch.map((batch: any) => (
+                    <TableContainer key={batch.coEntry?.customer} sx={{ marginBottom: '20px' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell colSpan={4}><h2>Customer Name: {findCustomerName(batch.coEntry?.customer)}</h2></TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>Product Name</TableCell>
+                                    <TableCell>Coating</TableCell>
+                                    <TableCell>Color</TableCell>
+                                    <TableCell>Quantity</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {batch.products.map((product: any) => (
+                                    <TableRow key={product._id}>
+                                        <TableCell>{product.product.name}</TableCell>
+                                        <TableCell>{product.coating.name}</TableCell>
+                                        <TableCell>{product.color.name}</TableCell>
+                                        <TableCell>{product.quantity}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                ))}
+                <h1>Self Products</h1>
+                <TableContainer sx={{ marginBottom: '20px' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product Name</TableCell>
+                                <TableCell>Coating</TableCell>
+                                <TableCell>Color</TableCell>
+                                <TableCell>Quantity</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {selfProducts && selfProducts.map((selfProduct: any, index: number) => (
+                                <TableRow key={index}>
+                                    <TableCell>{selfProduct.product.name}</TableCell>
+                                    <TableCell>{selfProduct.coating.name}</TableCell>
+                                    <TableCell>{selfProduct.color.name}</TableCell>
+                                    <TableCell>{selfProduct.quantity}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Container>
-
         </PageWrapper>
-    )
-
+    );
 };
 
 export default JobsBatch;
-

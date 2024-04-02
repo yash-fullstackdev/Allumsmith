@@ -15,41 +15,15 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import _ from 'lodash';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import AdddPowderModal from '../AddPowderModal/AddPowderModal';
+import AddPowderQuantity from '../AddPowderQuantity';
 
 
 const PowderInventoryListPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [powderInventoryList, setPowderInventoryList] = useState<any>([]);
     const [productsArray, setProductsArray] = useState<any>([]);
-    const [addPowderModal, setAddPowderModal] = useState<any>()
-
-    // useEffect(() => {
-    //     if (powderInventoryList.length > 0) {
-    //         const groupedData = _.groupBy(powderInventoryList, (item: any) => item?._id);
-    //         const resultArray = Object.keys(groupedData).map((productId) => {
-    //             const productData = groupedData[productId];
-    //             if (!productData[0]?.name) return null;
-
-    //             const branches = productData.map((item) => {
-    //                 if (!item.branch || !item.branch._id || !item.branch.name) return null;
-    //                 return {
-    //                     branchId: item.branch._id,
-    //                     branchName: item.branch.name,
-    //                     quantity: item.quantity,
-    //                 };
-    //             }).filter(Boolean);
-    //             const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
-    //             return {
-    //                 productId,
-    //                 productName: productData[0].product.name,
-    //                 totalQuantity,
-    //                 branches,
-    //             };
-    //         }).filter(Boolean);
-
-    //         setProductsArray(resultArray);
-    //     }
-    // }, [powderInventoryList]);
+    const [addPowderModal, setAddPowderModal] = useState<any>();
+    const [powderQuantityModal, setPowderQuantityModal] = useState<any>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -64,9 +38,8 @@ const PowderInventoryListPage = () => {
             }
         };
         fetchData();
-    }
-        , []);
-
+    }, []);
+    console.log('Powder INv Ls', powderInventoryList)
     const handleProductClick = (productId: any) => {
         const updatedProductsArray = powderInventoryList.map((item: any) => {
             if (item._id === productId) {
@@ -77,37 +50,13 @@ const PowderInventoryListPage = () => {
         setProductsArray(updatedProductsArray);
     };
 
-
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [stockActionModal]);
-
-    const renderBranches = (powderInventoryList: any) => {
-        return (
-            <TableRow>
-                <TableCell colSpan={3}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><h5>Branch Name</h5></TableCell>
-                                    <TableCell><h5>Quantity</h5></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {powderInventoryList && powderInventoryList.map((branch: any) => (
-                                    <TableRow>
-                                        <TableCell><h6>{branch.branch}</h6></TableCell>
-                                        <TableCell><h6>{branch.quantity}</h6></TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TableCell>
+    const renderBranches = (branches: any[]) => {
+        return branches.map((branch: any, index: number) => (
+            <TableRow key={index}>
+                <TableCell><h6>{branch.branch}</h6></TableCell>
+                <TableCell><h6>{branch.quantity}</h6></TableCell>
             </TableRow>
-        );
+        ));
     };
 
     return (
@@ -118,10 +67,14 @@ const PowderInventoryListPage = () => {
                         <CardHeaderChild>
                             <CardTitle><h1>Powder Inventory</h1></CardTitle>
                         </CardHeaderChild>
-                        <Button variant='solid' icon='HeroPlus' onClick={() => setAddPowderModal(true)}>
-                            Add Powder
-                        </Button>
-
+                        <div className='flex justify-end'>
+                            <Button variant='solid' icon='HeroPlus' onClick={() => setAddPowderModal(true)}>
+                                Add Powder
+                            </Button>
+                            <Button variant='solid' icon='HeroPlus' onClick={() => setPowderQuantityModal(true)}>
+                                Add Powder Quantity
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardBody>
                         {!isLoading ? (
@@ -144,7 +97,9 @@ const PowderInventoryListPage = () => {
                                                     } /></h4></TableCell>
                                                     <TableCell><h4>{item.quantity}</h4></TableCell>
                                                 </TableRow>
-                                                {item.expanded && renderBranches(item)}
+                                                {item.expanded && (
+                                                    renderBranches(item.branches)
+                                                )}
                                             </React.Fragment>
                                         ))}
                                     </TableBody>
@@ -165,6 +120,16 @@ const PowderInventoryListPage = () => {
                     </ModalHeader>
                     <ModalBody>
                         <AdddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} />
+                    </ModalBody>
+                </Modal>
+                <Modal isOpen={powderQuantityModal} setIsOpen={setPowderQuantityModal} isScrollable fullScreen='2xl'>
+                    <ModalHeader
+                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                    >
+                        Add Powder Quantity
+                    </ModalHeader>
+                    <ModalBody>
+                        <AddPowderQuantity />
                     </ModalBody>
                 </Modal>
             </Container>
