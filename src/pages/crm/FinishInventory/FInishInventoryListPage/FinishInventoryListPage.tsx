@@ -1,243 +1,91 @@
-
 import React, { useEffect, useState } from 'react';
-import { get } from '../../../../utils/api-helper.util';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-    CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import LoaderDotsCommon from '../../../../components/LoaderDots.common';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-
+import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import _ from 'lodash';
+import Button from '../../../../components/ui/Button';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import { finishInvList } from '../../../../mocks/db/finishInventoryList.db';
+import { get } from '../../../../utils/api-helper.util';
 
 const FinishInventoryListPage = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [inventoryList, setInventoryList] = useState<any>([]);
-    const [productsArray, setProductsArray] = useState<any>([]);
-    const [stockActionModal, setStockActionModal] = useState<any>()
-    const [isExpanded, setIsExpanded] = useState<{ activeIndex: number | null, state: boolean }>({
-        activeIndex: null,
-        state: false
-    });
-    const [isExpandedCoating, setIsExpandedCoating] = useState<{ activeIndex: number | null, state: boolean }>({
-        activeIndex: null,
-        state: false
-    });
+    const [finishInventoryList, setFinishInventoryList] = useState<any[]>([]);
+    const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
+    const [addFinishModal, setAddFinishModal] = useState<any>();
+    const [finishQuantityModal, setFinishQuantityModal] = useState<any>();
 
-    const data = [
-        {
-            _id: "84sd512asdy89456",
-            name: "handle",
-            total_quantity: "40",
-            coating: [{
-                name: "preminum",
-                variants: [{ color: "red", quantity: 30 }, { color: "green", quantity: 20 }]
-            },
-            {
-                name: "wooden",
-                variants: [{ color: "red", quantity: 20 }, { color: "green", quantity: 50 }]
+    const handleProductClick = (productName: string) => {
+        setExpandedProduct(prevProduct => prevProduct === productName ? null : productName);
+    };
 
-            }
-            ]
-        },
-        {
-            _id: "84sd512asdy8547",
-            name: "lock",
-            total_quantity: "40",
-            coating: [{
-                name: "coating",
-                variants: [{ color: "orange", quantity: 30 }, { color: "green", quantity: 20 }]
-            },
-            {
-                name: "wooden",
-                variants: [{ color: "red", quantity: 20 }, { color: "green", quantity: 50 }]
-
-            }
-            ]
-        }
-    ]
+    const getFinishInventory = async () => {
+        const { data } = await get('/finish_inventory');
+        setFinishInventoryList(data);
+    }
 
     useEffect(() => {
-        if (inventoryList.length > 0) {
-            const groupedData = _.groupBy(inventoryList, (item: any) => item?._id);
-            const resultArray = Object.keys(groupedData).map((productId) => {
-                const productData = groupedData[productId];
-                const coating = productData.map((item) => {
-                    if (!item._id) return null;
-                    return {
-                        product_id: item._id,
-                        productName: item.name,
-                        total_quantity: item.total_quantity,
-                        coating: item.coating,
-                    }
-                })
-                return coating;
-            })
-            setProductsArray(resultArray);
-
-        }
+        getFinishInventory();
     }, [])
 
-    const fetchData = async () => {
-        setIsLoading(true);
-        try {
-            // const { data: data } = await get(`/inventory`);
-            setInventoryList(data);
-        } catch (error: any) {
-            console.error('Error fetching inventory:', error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleProductClick = (index: any) => {
-        setIsExpanded((prevState: any) => ({
-            ...prevState,
-            activeIndex: index,
-            state: !prevState.state
-        }));
-    };
-
-    const handleCoatingClick = (index:any) => {
-        setIsExpandedCoating((prevState: any) => ({
-            ...prevState,
-            activeIndex: index,
-            state: !prevState.state
-        }));
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [stockActionModal]);
-
-    const renderCoating = (coatingDeatil: any) => {
-        return (
-            <TableRow>
-                <TableCell colSpan={3}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><h5>Color</h5></TableCell>
-                                    <TableCell><h5>Quantity</h5></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {coatingDeatil.map((coatingVarinats: any, index: number) => (
-                                    <>
-                                        <TableRow key={index}>
-                                            <TableCell ><h6>{coatingVarinats.color}</h6></TableCell>
-                                            <TableCell ><h6>{coatingVarinats.quantity}</h6></TableCell>
-                                        </TableRow>
-                                    </>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TableCell>
-            </TableRow>
-        );
-    };
-    console.log(isExpanded, "isExpnaded")
-    const renderProduct = (coating: any) => {
-        return (
-            <TableRow>
-                <TableCell colSpan={3}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><h5>Coating Name</h5></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {coating.map((coatingName: any, index: number) => (
-                                    <React.Fragment>
-                                        <TableRow key={index} className='cursor-pointer' onClick={()=>handleCoatingClick(index)}>
-                                            <TableCell ><h6>{coatingName.name}</h6></TableCell>
-                                            <Button rightIcon={isExpandedCoating.activeIndex === index && isExpandedCoating.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
-                                        </TableRow>
-                                        {isExpandedCoating.activeIndex === index && isExpandedCoating.state && renderCoating(coatingName.variants)}
-                                    </React.Fragment>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TableCell>
-            </TableRow>
-        );
-    };
-
     return (
-        <PageWrapper name='Inventory List'>
+        <PageWrapper name='Finish Inventory List'>
             <Container>
                 <Card>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle><h1>Finished Inventory</h1></CardTitle>
+                            <CardTitle><h1>Finish Inventory</h1></CardTitle>
                         </CardHeaderChild>
-                        <Button variant='solid' icon='HeroPlus' onClick={() => setStockActionModal(true)}>
-                            Stock Action
-                        </Button>
-
+                        <div className='flex justify-end'>
+                            <Button variant='solid' icon='HeroPlus' onClick={() => setAddFinishModal(true)}>
+                                Add Finish
+                            </Button>
+                            <Button variant='solid' icon='HeroPlus' onClick={() => setFinishQuantityModal(true)}>
+                                Add Finish Quantity
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardBody>
-                        {!isLoading ? (
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><h3> Product Name</h3></TableCell>
-                                            <TableCell><h3>Total Quantity</h3></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {productsArray.map((item: any, index: any) => (
-                                            <React.Fragment key={index}>
-                                                {Array.isArray(item) && item.map((subItem: any,) => (
-                                                    <React.Fragment key={subItem.product_id}>
-                                                        <TableRow onClick={() => handleProductClick(index)}>
-                                                            <TableCell className='cursor-pointer' >
-                                                                <h4>{subItem.productName}</h4>
-                                                                <Button rightIcon={isExpanded.activeIndex === index && isExpanded.state ? 'HeroChevronUp' : 'HeroChevronDown'} />
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <h4>{subItem.total_quantity}</h4>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                        {isExpanded.activeIndex === index && isExpanded.state && renderProduct(subItem.coating)}
-                                                    </React.Fragment>
-                                                ))}
-                                            </React.Fragment>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        ) : (
-                            <div className='flex justify-center'>
-                                <LoaderDotsCommon />
-                            </div>
-                        )}
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><h3>Product Name</h3></TableCell>
+                                        <TableCell><h3>Total Quantity</h3></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {Object.entries(_.groupBy(finishInventoryList, 'product.name')).map(([productName, items]) => (
+                                        <React.Fragment key={productName}>
+                                            <TableRow onClick={() => handleProductClick(productName)}>
+                                                <TableCell><h4>{productName}</h4></TableCell>
+                                                <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
+                                            </TableRow>
+                                            {expandedProduct === productName && (
+                                                <TableRow>
+                                                    <TableCell><h3>Branch</h3></TableCell>
+                                                    <TableCell><h3>Coating</h3></TableCell>
+                                                    <TableCell><h3>Color</h3></TableCell>
+                                                    <TableCell><h3>Quantity</h3></TableCell>
+                                                </TableRow>
+                                            )}
+                                            {expandedProduct === productName && items.map((item: any) => (
+                                                <TableRow key={item._id}>
+                                                    <TableCell><h4>{item.branch.name}</h4></TableCell>
+                                                    <TableCell><h4>{item.coating.name}</h4></TableCell>
+                                                    <TableCell><h4>{item.color.name}</h4></TableCell>
+                                                    <TableCell><h4>{item.quantity}</h4></TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </React.Fragment>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </CardBody>
                 </Card>
-                <Modal isOpen={stockActionModal} setIsOpen={setStockActionModal} isScrollable fullScreen='2xl'>
-                    <ModalHeader
-                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-                    >
-                        Stock Action
-                    </ModalHeader>
-                    <ModalBody>
-                        Hello
-                    </ModalBody>
-                </Modal>
-            </Container>
 
+            </Container>
         </PageWrapper>
     );
 };
