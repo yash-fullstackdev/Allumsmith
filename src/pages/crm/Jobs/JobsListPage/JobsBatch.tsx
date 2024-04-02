@@ -194,11 +194,13 @@ const JobsBatch = ({ jobId }: any) => {
 
                     </CardHeader>
                     <CardBody className='overflow-auto'>
-                        {!isLoading && (
+                        {!isLoading && selfProducts.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
                                 table={selfProducts}
                             />
+                        ) : (
+                            <p className="text-center text-gray-500">No records found</p>
                         )}
                         <div className='flex justify-center'>
                             {isLoading && <LoaderDotsCommon />}

@@ -4,8 +4,7 @@ export const appPages: any = {
 			id: 'productPage',
 			to: '/product',
 			text: 'Product',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoBox3',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -21,8 +20,7 @@ export const appPages: any = {
 			id: 'purchaseOrderPage',
 			to: '/purchase-order',
 			text: 'Purchase Order',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoCart1',
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -35,7 +33,6 @@ export const appPages: any = {
 			id: 'vendorsPage',
 			to: '/vendor',
 			text: 'Vendor',
-			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
 		},
 		addPageLink: {
@@ -52,8 +49,7 @@ export const appPages: any = {
 			id: 'customerPage',
 			to: '/customer',
 			text: 'Customer',
-			// icon: 'HeroQueueList',p
-			icon: 'HeroUserCircle',
+			icon: 'HeroUsers',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -69,8 +65,7 @@ export const appPages: any = {
 			id: 'workerPage',
 			to: '/worker',
 			text: 'Worker',
-			// icon: 'HeroQueueList',p
-			icon: 'HeroUserCircle',
+			icon: 'HeroUserGroup',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -86,8 +81,7 @@ export const appPages: any = {
 			id: 'powderPage',
 			to: '/powder',
 			text: 'Powder',
-			// icon: 'HeroQueueList',p
-			icon: 'HeroUserCircle',
+			icon: 'DuoOption',
 		}
 	},
 	branchesPage: {
@@ -95,8 +89,7 @@ export const appPages: any = {
 			id: 'branchesPage',
 			to: '/branches',
 			text: 'Branches',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroBuildingOffice2',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -112,8 +105,7 @@ export const appPages: any = {
 			id: 'colorsPage',
 			to: '/colors',
 			text: 'Colors',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoColor',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -133,8 +125,7 @@ export const appPages: any = {
 			id: 'coatingPage',
 			to: '/coating',
 			text: 'Coating',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoBox2',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -150,8 +141,7 @@ export const appPages: any = {
 			id: 'jobsPage',
 			to: '/jobs',
 			text: 'Jobs',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroWrenchScrewdriver',
 		},
 		addPageLink:{
 			id:'addPageLink',
@@ -168,8 +158,7 @@ export const appPages: any = {
 			id: 'customerOrderPage',
 			to: '/customer-order',
 			text: 'Customer Order',
-			// icon: 'HeroQueueList',p
-			icon: 'HeroUserCircle',
+			icon: 'HeroShoppingBag',
 		},
 		addPageLink: {
 			id: 'addPageLink',
@@ -186,8 +175,7 @@ export const appPages: any = {
 			id: 'inventoryPage',
 			to: '/inventory',
 			text: 'Inventory',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroHomeModern',
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -199,8 +187,7 @@ export const appPages: any = {
 			id: 'finishInventory',
 			to: '/finish-inventory',
 			text: 'Finish Inventory',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroTruck',
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -212,8 +199,7 @@ export const appPages: any = {
 			id: 'invoice',
 			to: '/invoice-list',
 			text: 'Invoice List',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroReceiptPercent',
 		},
 		addPageLink: {
 			id: 'addPageLink',
