@@ -283,14 +283,18 @@ const CustomerOrderDetail = ({ customerId }: any) => {
 
                             <>
                                 <CardBody className='overflow-auto'>
-                                    <TableTemplate
-                                        className='table-fixed max-md:min-w-[70rem]'
-                                        table={table}
-                                    />
-
+                                {table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={table}
+                                />
+                                ) : (
+                                    <p className="text-center text-gray-500">No records found</p>
+                                )}
                                 </CardBody>
-
-                                <TableCardFooterTemplate table={table} />
+                                { table.getFilteredRowModel().rows.length > 0 &&
+                                    <TableCardFooterTemplate table={table} />
+                                }
                             </>
 
                         </Collapse>

@@ -37,21 +37,7 @@ const EditWorkerPage = () => {
     const { id } = useParams();
     const fetchWorkerById = async () => {
         try {
-            // const worker = await get(`/workers/${id}`);
-            const worker = {
-                data: {
-                    name: 'John Doe',
-                    email: 'johndoe@example.com',
-                    phone: '1234567890',
-                    company: 'ABC Company',
-                    address_line1: '123 Main St',
-                    address_line2: 'Apt 4B',
-                    city: 'New York',
-                    state: 'NY',
-                    zipcode: '12345',
-                    pancard: 'ABCDE1234F'
-                }
-            }
+            const worker = await get(`/workers/${id}`);
             const { name, email, phone, company, address_line1, address_line2, city, state, zipcode, pancard} = worker.data;
             setFormData({ name, email, phone, company, address_line1, address_line2, city, state, zipcode, pancard});
         } catch (error) {
@@ -66,7 +52,7 @@ const EditWorkerPage = () => {
     const editWorker = async () => {
         console.log("entries", formData);
         try {
-            const editedWorker = await put("/workers", formData, {});
+            const editedWorker = await put(`/workers/${id}`, formData);
             console.log("edited worker", editedWorker)
             toast.success("Worker edited Successfully!")
         } catch (error: any) {

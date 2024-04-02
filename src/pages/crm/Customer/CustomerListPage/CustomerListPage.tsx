@@ -221,17 +221,21 @@ const CustomerListPage = () => {
 
                     </CardHeader>
                     <CardBody className='overflow-auto'>
-                        {!isLoading && (
+                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
                                 table={table}
                             />
+                        ) : (
+                            !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
                         <div className='flex justify-center'>
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                    <TableCardFooterTemplate table={table} />
+                    { table.getFilteredRowModel().rows.length > 0 &&
+                        <TableCardFooterTemplate table={table} />
+                    }
                 </Card>
 
             </Container>
