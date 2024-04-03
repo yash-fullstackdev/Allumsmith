@@ -25,7 +25,6 @@ const SelfProducts = ({ entries, setEntries }: any) => {
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
-            console.log('Data of Products', data);
             const productsWithData = data.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
@@ -146,11 +145,16 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                 }
                                             }}
                                         >
-                                            {productsData.map((item: any) => (
-                                                <option key={item._id} value={item._id}>
-                                                    {`${item.name} (${item.productCode})`}
-                                                </option>
-                                            ))}
+                                            {productsData.map((item: any) => {
+                                                const productId = entries[index]?.product;
+                                                return (
+                                                    <option key={item._id} value={item._id} selected={productId === item._id}>
+                                                        {`${item.name} (${item.productCode})`}
+                                                    </option>
+
+                                                )
+                                            })}
+
                                         </Select>
 
                                     </div>
@@ -205,7 +209,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         name={`coating-${index}`}
                                         value={entry.coating.id} // Assuming entry.coating is an object containing id and name
                                         onChange={(e: any) => {
-                                            const selectedCoatingId = e.target.value;
+                                            const selectedCoatingId = e.target.value || entry.coating.id ;
                                             const selectedCoating = coatingData.find((coating: any) => coating._id === selectedCoatingId);
                                             if (selectedCoating) {
                                                 const updatedEntries = [...entries];
@@ -218,16 +222,22 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                             }
                                         }}
                                     >
-                                        {coatingData.map((coating: any) => (
-                                            <option key={coating._id} value={coating._id}>
-                                                {coating.name}
-                                            </option>
-                                        ))}
+                                        {coatingData.map((coating: any) => {
+                                            const coatingId = entries[index]?.coating;
+                                            return (
+                                                <option key={coating._id} value={coating._id} selected={coatingId === coating._id}>
+                                                    {coating.name}
+                                                </option>
+                                            )
+                                        }
+
+                                        )}
                                     </Select>
 
                                 </div>
                                 {entry.coating &&
-                                    (<div className='col-span-12 lg:col-span-3'>
+                                    (
+                                    <div className='col-span-12 lg:col-span-3'>
                                         <Label htmlFor={`hsn-${index}`}>
                                             Color
                                             <span className='ml-1 text-red-500'>*</span>
@@ -247,14 +257,20 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                 setEntries(updatedEntries);
                                             }}
                                         >
-                                            {colorDataList[index]?.map((color: any) => (
-                                                <option key={color._id} value={color._id}>
-                                                    {color.name}
-                                                </option>
-                                            ))}
+                                            {colorDataList[index]?.map((color: any) => {
+                                                const colorId = entries[index]?.color;
+                                                return (
+                                                    <option key={color._id} value={color._id} selected={colorId === color._id}>
+                                                        {color.name}
+                                                    </option>
+                                                )
+                                            }
+
+                                            )}
                                         </Select>
 
-                                    </div>)}
+                                    </div>
+                                      )} 
 
                             </div>
 

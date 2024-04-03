@@ -21,25 +21,29 @@ const EditJobPage = () => {
     const [coatingData, setCoatingData] = useState<any>([])
     const [productsData, setProductsData] = useState<any>([]);
     const [branchId, setBranchId] = useState({ id: "", name: '' });
-    const [customerOrders, setCustomerOrders] = useState<any>([{ name: '', products: [] }]);
+    const [customerOrders, setCustomerOrders] = useState<any>([{customer_id:'', name: '', products: [] }]);
+    console.log("🚀 ~ EditJobPage ~ customerOrders:", customerOrders)
     const navigate = useNavigate();
     const [selectedCustomerOrderData, setSelectedCustomerOrderData] = useState<any>(null);
     const [collapsible, setCollapsible] = useState<boolean[]>(customerOrders.map(() => false));
     const [customerOrderData, setCustomerOrderData] = useState<any>([]);
+    console.log("🚀 ~ EditJobPage ~ customerOrderData:", customerOrderData)
     const [quantityStatusModal, setQuantityStatusModal] = useState<boolean>(false);
     const [productIdsForReview, setProductIdsForReview] = useState<string[]>([]);
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
     const { id } = useParams();
+    const [branchNameId , setBranchNameId]= useState(' ');
 
     const getJobById = async () => {
         try {
             const { data } = await get(`/jobs/${id}`);
-            console.log('JobDAta', data);
             setName(data.name)
             setBranchId({ id: data.branch, name: '' });
+            setBranchNameId(data.branch)
             const parsedCustomerOrders: any = data.batch.map((batchItem: any) => ({
+                customer_id:batchItem.coEntry.customer,
                 name: batchItem.coEntry._id,
                 products: batchItem.products.map((productItem: any) => ({
                     product: productItem.product,
@@ -60,12 +64,12 @@ const EditJobPage = () => {
         } catch (error) {
             console.error('Error fetching job')
         }
+           
     }
-    console.log('Customer Order', customerOrders)
+
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
-            console.log('Data of Products', data);
             const productsWithData = data.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
@@ -80,14 +84,39 @@ const EditJobPage = () => {
             console.error('Error Fetching Customer Order');
         }
     }
+    // const getBranchDetails = async () => {
+    //     try {
+    //         const { data } = await get('/branches');
+    //         setBranchData(data);
+    //         const branchIdName = data.find((i:any)=>i._id === branchNameId)
+    //         console.log("🚀 ~ getBranchDetails ~ branchIdName:", branchIdName)
+    //         setBranchId({ id: data.branch, name: '' });
+    //     } catch (error) {
+    //         console.error("Error Fetching Branch", error);
+    //     }
+    // }
+
     const getBranchDetails = async () => {
         try {
             const { data } = await get('/branches');
             setBranchData(data);
+            
+            // Assuming branchNameId is defined somewhere in your component
+            const branchIdName = data.find((branch: any) => branch._id === branchNameId);
+    
+            // If branchIdName is found, set the branchId state
+            if (branchIdName && branchIdName.name) {
+                setBranchId({ id: branchIdName._id, name: branchIdName && branchIdName.name });
+            } else {
+                // If branchIdName is not found, set a default value or handle the case accordingly
+                // For example, you can set a default branch or show an error message
+                console.error('Branch not found');
+            }
         } catch (error) {
             console.error("Error Fetching Branch", error);
         }
     }
+    
     const getCoatingDetails = async () => {
         try {
             const { data } = await get('/coatings');
@@ -107,8 +136,10 @@ const EditJobPage = () => {
 
 
     const handleReviewProcess = async () => {
+        const customerIds = customerOrderData.map((i:any) => i.customer._id);
+    
         const regularBatches = customerOrders.map((order: any) => ({
-            coEntry: order.name.id,
+            coEntry: order.customer_id, // Assuming customer_id is the field containing the customer ID in customerOrders
             products: order.products.map((product: any) => ({
                 productId: product.product._id,
                 product: { id: product.product._id, name: product.product.name },
@@ -118,11 +149,27 @@ const EditJobPage = () => {
                 color: { id: product?.color?._id, name: product?.color?.name }
             }))
         }));
+    
+        // Map customer names based on their IDs
+        const customersWithNames = customerIds.map((customerId: string) => {
+            const customer = customerOrderData.find((item: any) => item.customer._id === customerId);
+            return customer ? { id: customerId, name: customer.customer.name } : null;
+        });
+    
         const finalValues: any = {
             name,
             branchId: { id: branchId.id, name: branchId.name },
             batch: [...regularBatches],
         };
+    
+        // Set customer names in regularBatches
+        finalValues.batch.forEach((batch: any) => {
+            const customer = customersWithNames.find((customer: any) => customer.id === batch.coEntry);
+            if (customer) {
+                batch.customerName = customer.name;
+            }
+        });
+    
         const hasSelfProducts = entries.some((entry: any) => entry.product.name !== undefined);
 
         if (hasSelfProducts) {
@@ -138,7 +185,6 @@ const EditJobPage = () => {
         }
 
         setProcessReviewData(finalValues);
-        console.log('Final Values', finalValues)
         const allProductIds = [
             ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
             ...(finalValues.selfProducts || []).map((selfProduct: any) => selfProduct.productId) // Use productId for self products
@@ -149,11 +195,10 @@ const EditJobPage = () => {
             products: allProductIds
         };
 
-        console.log('Review Qty', reviewQuantityFromBranch);
+
         setQuantityStatusModal(true);
         try {
             const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch);
-            console.log('reviewProducts', reviewProducts.data);
             const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
                 _id: reviewProduct.product._id,
                 name: reviewProduct.product.name,
@@ -164,10 +209,68 @@ const EditJobPage = () => {
             console.log('Error', error);
         }
     };
+    
+    // const handleReviewProcess = async () => {
+ 
+    //     const customerIds = customerOrderData.map((i:any) => i.customer._id);
+
+    //     const regularBatches = customerOrders.map((order: any) => ({
+    //         coEntry: order.customer_id,
+    //         products: order.products.map((product: any) => ({
+    //             productId: product.product._id,
+    //             product: { id: product.product._id, name: product.product.name },
+    //             pendingQuantity: product.quantity,
+    //             quantity: Number(product.pickQuantity),
+    //             coating: { id: product?.coating?._id, name: product?.coating?.name },
+    //             color: { id: product?.color?._id, name: product?.color?.name }
+    //         }))
+    //     }));
+    //     const finalValues: any = {
+    //         name,
+    //         branchId: { id: branchId.id, name: branchId.name  },
+    //         batch: [...regularBatches],
+    //     };
+    //     const hasSelfProducts = entries.some((entry: any) => entry.product.name !== undefined);
+
+    //     if (hasSelfProducts) {
+    //         const validSelfProducts = entries.filter((entry: any) => entry.product.name !== undefined);
+
+    //         finalValues.selfProducts = validSelfProducts.map((entry: any) => ({
+    //             productId: entry.product.id, // Include product ID
+    //             product: { id: entry.product.id, name: entry.product.name },
+    //             quantity: entry.quantity,
+    //             coating: { id: entry.coating.id, name: entry.coating.name },
+    //             color: { id: entry.color.id, name: entry.color.name }
+    //         }));
+    //     }
+
+    //     setProcessReviewData(finalValues);
+    //     const allProductIds = [
+    //         ...customerOrders.flatMap((order: any) => order.products.map((product: any) => product.product._id)),
+    //         ...(finalValues.selfProducts || []).map((selfProduct: any) => selfProduct.productId) // Use productId for self products
+    //     ];
+
+    //     const reviewQuantityFromBranch = {
+    //         branchId: branchId.id,
+    //         products: allProductIds
+    //     };
 
 
+    //     setQuantityStatusModal(true);
+    //     try {
+    //         const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch);
+    //         const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
+    //             _id: reviewProduct.product._id,
+    //             name: reviewProduct.product.name,
+    //             quantity: reviewProduct.quantity
+    //         }));
+    //         setProductQuantityDetails(formattedProducts);
+    //     } catch (error) {
+    //         console.log('Error', error);
+    //     }
+    // };
 
-    console.log('Customer Order List', selectedCustomerOrderData)
+
     const handleAddCustomerOrder = () => {
         setCustomerOrders([...customerOrders, { name: '', products: [] }]);
     };
@@ -182,7 +285,7 @@ const EditJobPage = () => {
         updatedCollapsible[index] = !updatedCollapsible[index];
         setCollapsible(updatedCollapsible);
     };
-    console.log('Customer Order Data', customerOrders)
+
     const handleDeleteEntry = (indexToDelete: number) => {
         setEntries((prevEntries: any) => prevEntries.filter((_: any, index: number) => index !== indexToDelete));
     };
@@ -264,7 +367,7 @@ const EditJobPage = () => {
                                                         }}
                                                     >
                                                         {branchData.map((branch: any) => (
-                                                            <option key={branch._id} value={branch._id}>
+                                                            <option key={branch._id} value={branch._id} >
                                                                 {branch.name}
                                                             </option>
                                                         ))}
@@ -354,6 +457,7 @@ const EditJobPage = () => {
                                                             Customer Order {index + 1}
                                                             <span className='ml-1 text-red-500'>*</span>
                                                         </Label>
+                                                        
                                                         <Select
                                                             id={`customerOrder${index}`}
                                                             name={`customerOrder${index}`}
@@ -378,7 +482,7 @@ const EditJobPage = () => {
                                                         >
                                                             {customerOrderData?.map((co: any) => {
                                                                 return (
-                                                                    <option key={co._id} value={co._id}>
+                                                                    <option key={co._id} value={co._id} selected={co.customer._id === order.customer_id} >
                                                                         {co.customer.name}
                                                                     </option>
                                                                 );
@@ -514,8 +618,6 @@ const EditJobPage = () => {
                                             <Button
                                                 variant='outlined'
                                                 className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
-
                                             >
                                                 Self Product Data
                                             </Button>

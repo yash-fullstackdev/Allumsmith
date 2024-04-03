@@ -10,14 +10,10 @@ import { post } from '../../../../utils/api-helper.util';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 
-const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
+const ReviewQuantityStatus = ({  processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
     console.log("processReviewData", processReviewData)
     const [quantityInSpecificBranch, setQuantityInSpecificBranch] = useState<number>(0);
     const [productQuantities, setProductQuantities] = useState<any>({});
-
-    console.log('Process Review Data', processReviewData);
-    console.log("Products Ids for Review", productIds)
-    console.log('Quantity Specific', quantityInSpecificBranch);
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -171,7 +167,7 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
                 name: processReviewData.name,
                 branch: processReviewData.branchId.id,
                 batch: processReviewData.batch.map((batch: any) => ({
-                    coEntry: batch.coEntry,
+                    coEntry: batch.customerName,
                     products: batch.products.map((product: any) => ({
                         product: product.product.id,
                         quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,
@@ -223,10 +219,10 @@ const ReviewQuantityStatus = ({ productIds, processReviewData, setProcessReviewD
                             <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
                                 <Card>
                                     <CardBody>
-                                        <h2 className='text-lg font-semibold mb-2'>Branch Name: {processReviewData.branchId.name}</h2>
+                                        <h2 className='text-lg font-semibold mb-2'>Branch Name: {processReviewData && processReviewData.branchId.name}</h2>
                                         {processReviewData.batch.map((batch: any, batchIndex: number) => (
                                             <div key={batchIndex} className='mt-4'>
-                                                <h2 className='text-lg font-semibold mb-2'>Batch Name: {batch.coEntry}</h2>
+                                                <h2 className='text-lg font-semibold mb-2'>Batch Name: {batch.customerName}</h2>
                                                 {batch.products.map((product: any, productIndex: number) => (
                                                     <div className='col-span-12 lg:col-span-12 flex items-center gap-2' key={productIndex}>
                                                         <div className='mt-2'>
