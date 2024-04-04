@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import _ from 'lodash';
 import { inventoryList } from '../../../../mocks/db/inventoryList.db';
 import Button from '../../../../components/ui/Button';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import AddPowderQuantity from '../AddPowderQuantity';
 import AddPowderModal from '../AddPowderModal/AddPowderModal';
+import { get } from '../../../../utils/api-helper.util';
+import _ from 'lodash';
 
 const PowderInventoryListPage = () => {
-    const [powderInventoryList, setPowderInventoryList] = useState<any[]>(inventoryList);
+    const [powderInventoryList, setPowderInventoryList] = useState<any[]>([]);
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
     const [addPowderModal, setAddPowderModal] = useState<any>();
     const [powderQuantityModal, setPowderQuantityModal] = useState<any>();
@@ -19,6 +20,13 @@ const PowderInventoryListPage = () => {
         setExpandedProduct(prevProduct => prevProduct === productName ? null : productName);
     };
 
+    const getPowderList = async () => {
+        const { data } = await get('/utility_inventory')
+        setPowderInventoryList(data);
+    }
+    useEffect(() => {
+        getPowderList();
+    }, [])
     return (
         <PageWrapper name='Powder Inventory List'>
             <Container>

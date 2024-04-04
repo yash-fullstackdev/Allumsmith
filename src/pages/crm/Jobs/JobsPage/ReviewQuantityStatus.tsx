@@ -10,7 +10,7 @@ import { post } from '../../../../utils/api-helper.util';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 
-const ReviewQuantityStatus = ({  processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
+const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
     console.log("processReviewData", processReviewData)
     const [quantityInSpecificBranch, setQuantityInSpecificBranch] = useState<number>(0);
     const [productQuantities, setProductQuantities] = useState<any>({});
@@ -167,7 +167,7 @@ const ReviewQuantityStatus = ({  processReviewData, setProcessReviewData, produc
                 name: processReviewData.name,
                 branch: processReviewData.branchId.id,
                 batch: processReviewData.batch.map((batch: any) => ({
-                    coEntry: batch.customerName,
+                    coEntry: batch.coEntry,
                     products: batch.products.map((product: any) => ({
                         product: product.product.id,
                         quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,

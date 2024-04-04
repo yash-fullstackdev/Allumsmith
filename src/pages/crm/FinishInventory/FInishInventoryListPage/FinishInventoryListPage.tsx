@@ -36,14 +36,7 @@ const FinishInventoryListPage = () => {
                         <CardHeaderChild>
                             <CardTitle><h1>Finish Inventory</h1></CardTitle>
                         </CardHeaderChild>
-                        <div className='flex justify-end'>
-                            <Button variant='solid' icon='HeroPlus' onClick={() => setAddFinishModal(true)}>
-                                Add Finish
-                            </Button>
-                            <Button variant='solid' icon='HeroPlus' onClick={() => setFinishQuantityModal(true)}>
-                                Add Finish Quantity
-                            </Button>
-                        </div>
+
                     </CardHeader>
                     <CardBody>
                         <TableContainer>
