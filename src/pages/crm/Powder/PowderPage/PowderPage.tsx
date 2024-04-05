@@ -35,7 +35,7 @@ const PowderInventoryListPage = () => {
                         <CardHeaderChild>
                             <CardTitle><h1>Powder Inventory</h1></CardTitle>
                         </CardHeaderChild>
-                        <div className='flex justify-end'>
+                        <div className='flex justify-end gap-5'>
                             <Button variant='solid' icon='HeroPlus' onClick={() => setAddPowderModal(true)}>
                                 Add Powder
                             </Button>
@@ -81,7 +81,7 @@ const PowderInventoryListPage = () => {
                 </Card>
                 <Modal isOpen={addPowderModal} setIsOpen={setAddPowderModal} isScrollable fullScreen='2xl'>
                     <ModalHeader
-                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                        className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold gap-5'
                     >
                         Add Powder
                     </ModalHeader>
@@ -96,7 +96,7 @@ const PowderInventoryListPage = () => {
                         Add Powder Quantity
                     </ModalHeader>
                     <ModalBody>
-                        <AddPowderQuantity />
+                        <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} />
                     </ModalBody>
                 </Modal>
             </Container>

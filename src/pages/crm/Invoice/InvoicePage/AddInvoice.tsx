@@ -59,8 +59,8 @@ const AddInvoice = () => {
 
     const getPurchaseOrderByid = async () => {
         try {
-            const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
-            setPurchaseOrderData(allPurchaseOrderById);
+          const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
+          setPurchaseOrderData(allPurchaseOrderById);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
         } finally {
@@ -308,11 +308,12 @@ const AddInvoice = () => {
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
-                                                                        type='text'
+                                                                        type='number'
                                                                         id={`product${index}`}
                                                                         name={`product${index}`}
                                                                         value={entry?.product?.weight}
-                                                                        disabled
+                                                                        
+                                                                        // disabled
 
                                                                     />
                                                                 </div>
@@ -371,7 +372,8 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingQuantity${index}`}
                                                                         name={`coatingQuantity${index}`}
-                                                                        value={entry?.itemSummay?.map((i: any) => i.coatingQuantity)}
+                                                                // value={entry?.itemSummay?.map((i: any) => i.coatingQuantity)}
+                                                                        value={entry?.itemSummary?.coatingQuantity}
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-3'>
@@ -383,7 +385,8 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`pendingQuantity${index}`}
                                                                         name={`pendingQuantity${index}`}
-                                                                        value={entry?.itemSummay?.map((i: any) => i.pendingQuantity)}
+                                                                        // value={entry?.itemSummay?.map((i: any) => i.pendingQuantity)}
+                                                                        value={entry?.itemSummary?.pendingQuantity}
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-3'>

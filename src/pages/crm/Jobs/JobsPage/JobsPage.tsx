@@ -84,7 +84,7 @@ const JobsPage = () => {
             products: order.products.map((product: any) => ({
                 productId: product.product._id, // Include product ID
                 product: { id: product.product._id, name: product.product.name },
-                pendingQuantity: product.quantity,
+                pendingQuantity:product.pendingQuantity || product.quantity,
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
                 color: { id: product?.color?._id, name: product?.color?.name }

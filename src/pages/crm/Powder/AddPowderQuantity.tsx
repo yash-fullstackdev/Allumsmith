@@ -9,7 +9,7 @@ import Input from "../../../components/form/Input";
 import Button from "../../../components/ui/Button";
 import Select from "../../../components/form/Select";
 
-const AddPowderModal = () => {
+const AddPowderModal = ({ setPowderQuantityModal }: any) => {
     const navigate = useNavigate();
     const [branchData, setBranchData] = useState<any>([]);
     const [powderData, setPowderData] = useState<any>([]);
@@ -42,25 +42,25 @@ const AddPowderModal = () => {
 
     const handleSaveItems = async () => {
         const formData = {
-            powderId: selectedPowder._id,
+            utility: selectedPowder._id,
             powderName: selectedPowder.name,
             powderCode: selectedPowder.code,
-            branchId,
+            branch: branchId,
             quantity,
         }
         console.log('Form Data', formData);
 
-        // try {
-        //     const powder = await post('/utilities', formData);
-        //     toast.success('Powder added Successfully!')
-        //     SetAddPowderModal(false);
-        // } catch (error: any) {
-        //     console.error("Error Saving Powder", error)
-        //     toast.error('Error Saving Powder', error)
-        // }
-        // finally {
-        //     navigate(PathRoutes.powder);
-        // }
+        try {
+            const powder = await post('/utility_inventory/stockaction', formData);
+            toast.success('Powder added Successfully!')
+            setPowderQuantityModal(false);
+        } catch (error: any) {
+            console.error("Error Saving Powder", error)
+            toast.error('Error Saving Powder', error)
+        }
+        finally {
+            navigate(PathRoutes.powder);
+        }
     }
 
     return (
