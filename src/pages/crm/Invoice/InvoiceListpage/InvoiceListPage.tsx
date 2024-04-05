@@ -71,8 +71,9 @@ const InvoiceListPage = () => {
         }
 
     }
-    const handleClickDelete = async () => {
+    const handleClickDelete = async (id:any) => {
         try {
+            const {data} = await deleted(`/invoice/${id}`)
             toast.success('Invoice deleted Successfully');
         } catch (error: any) {
             console.error('Error deleted Invoice:', error);
@@ -80,6 +81,7 @@ const InvoiceListPage = () => {
             toast.error('Error deleting Invoice', error);
         } finally {
             setIsLoading(false);
+            getInvoiceList();
         }
     }
     const columns = [
@@ -153,13 +155,14 @@ const InvoiceListPage = () => {
                         onClick={() => {
                             handleGeneratePDF(info.row.original._id)
                         }}
+                        icon='DuoFile'
                     >
-                        PDF
+                        
 
                     </Button>
                     <Button
                         onClick={() => {
-                            handleClickDelete();
+                            handleClickDelete(info.row.original._id);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'

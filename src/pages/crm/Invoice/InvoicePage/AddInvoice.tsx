@@ -1,30 +1,17 @@
 import { useEffect, useState } from 'react';
 import {
     createColumnHelper,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
 } from '@tanstack/react-table';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
     CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
 } from '../../../../components/ui/Card';
-import TableTemplate, {
-    TableCardFooterTemplate,
-} from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
+
 import { get, post } from '../../../../utils/api-helper.util';
 import Select from '../../../../components/form/Select';
 import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
-import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import Label from '../../../../components/form/Label';
@@ -36,13 +23,15 @@ const columnHelper = createColumnHelper<any>();
 
 const AddInvoice = () => {
     const navigate = useNavigate();
-    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gat: '', tax: '', total_amount: '', finished_weight: '', origin_point: '', delivery_point: '', send_mail: false, }]);
+    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gst: '', tax: '', total_amount: '', finished_weight: '', origin_point: '', delivery_point: '', send_mail: false, }]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [customerList, setCustomerList] = useState<any[]>([]);
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>({});
     const [customerId, setCustomerId] = useState('');
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
-
+    const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
+    const [totalAmount, setTotalAmount] = useState<any>(0);
+    const [amountBeforeTax,setAmountBeforeTax] = useState<any>(0);
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -66,7 +55,8 @@ const AddInvoice = () => {
         } finally {
         }
     };
-
+    console.log('PODATA', purchaseOrderData);
+    
     useEffect(() => {
         getCustomerName()
         getPurchaseOrderByid()
@@ -78,113 +68,169 @@ const AddInvoice = () => {
         setPurchaseOrderData({ ...purchaseOrderData, entries: updatedEntries });
     };
     
-    // const handleSaveEntries = async () => {
-    //     try {
-    //         const deliveredQuantities = Array.isArray(purchaseOrderData.entries) ?
-    //             purchaseOrderData.entries.reduce((acc: any, entry: any) => {
-    //                 if (Array.isArray(entry.itemSummary)) {
-    //                     // Filter out undefined values before mapping
-    //                     const quantities = entry.itemSummary.filter((i: any) => i && i.delivered_quantity !== undefined).map((i: any) => i.delivered_quantity);
-    //                     return acc.concat(quantities);
-    //                 }
-    //                 return acc;
-    //             }, []) : [];
-
-    //         const productEntry = {
-    //             productName: Array.isArray(purchaseOrderData.entries) ?
-    //                 purchaseOrderData.entries.map((entry: any) => entry.product.name) : [],
-    //             productId: Array.isArray(purchaseOrderData.entries) ?
-    //                 purchaseOrderData.entries.map((entry: any) => entry.product._id) : [],
-    //             customerId: purchaseOrderData.customer?._id || '',
-    //             delivered_quantity: deliveredQuantities
-    //         };
-    //     } catch (error) {
-    //         console.error('Error saving data:', error);
-    //     }
-    // };
+    
 
     const handleSendMailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEntries({ ...entries, send_mail: e.target.checked });
     };
 
-    const handleDeliveredQuantityChange = (value: string, index: number,entry:any) => {
-        const newValue = parseInt(value, 10);
-        const coatingQuantity = entry?.itemSummay?.[index]?.coatingQuantity || 0;
-        if (newValue >= coatingQuantity) {
-            alert('Delivered quantity cannot exceed coating quantity');
-            return
-        }
-        
+    const handleDeliveredQuantityChange = (value: any, index: number) => {
+        console.log("New Delivered Quantity:", value);  
+        console.log("Index:", index);
+      
+       
         const updatedDeliveredQuantities = [...deliveredQuantities];
-        updatedDeliveredQuantities[index] = parseFloat(value); // Parse the input value to a number
+        updatedDeliveredQuantities[index] = parseFloat(value);
+        console.log("Updated Delivered Quantities:", updatedDeliveredQuantities); // Log the updated state
         setDeliveredQuantities(updatedDeliveredQuantities);
+        };
+        const handleQuantityAndDiscountChange = (value: any, index: number, field: string) => {
+        setQuantityAndDiscounts(prevQuantityAndDiscounts => {
+            const updatedQuantityAndDiscounts = [...prevQuantityAndDiscounts];
+            const currentItem = updatedQuantityAndDiscounts[index] || {};
+            const updatedItem = {
+                ...currentItem,
+                [field]: value,
+            };
+            updatedQuantityAndDiscounts[index] = updatedItem;
+            return updatedQuantityAndDiscounts;
+        });
     };
+    console.log('PurchaseOrderData', purchaseOrderData);
+    
+ 
 
-    // const handleDeliveredQuantityChange = (value: string, index: number) => {
-    //     // Ensure the entered value is a valid number
-    //     const newValue = parseInt(value, 10);
+    const calculateTotalAmount = () => {
+        let totalSpecificProductPrice = 0;
+        let totalCoatingTotal = 0;
+    
+        purchaseOrderData.entries.forEach((entry: any, index: number) => {
+            const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
+            totalSpecificProductPrice += specificProductPrice || 0;
+    
+            const coatingTotal = (entry.product?.coatingWeight || 0) * entry.coating.rate ;
+            console.log('<><></></>',coatingTotal);
+            
+            const discount = parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0;
+            const finalCoatingPrice = coatingTotal * (1 - discount / 100);
+            console.log(finalCoatingPrice);
+            
+            totalCoatingTotal += finalCoatingPrice || 0;
+        });
+    
+        const totalAmount = totalSpecificProductPrice + totalCoatingTotal;
+        console.log('tax', entries.tax);
+        
+        const finalAmount = totalAmount + (totalAmount * (entries.gst/100));
+        console.log('Final Amount', finalAmount);
+        
+        const grandTotal = finalAmount &&  (finalAmount + (finalAmount * (entries.tax/100)));
+        setTotalAmount(grandTotal.toFixed(2));
+    };
+    
+   
+    
+    useEffect(() => {
+        if(purchaseOrderData?.entries?.length > 0){
+        calculateTotalAmount();
+        }
+    }, [purchaseOrderData.entries, entries.gst, entries.tax]);
 
-    //     // Get the current entry from purchaseOrderData.entries
-    //     const updatedEntries = [...purchaseOrderData.entries];
-    //     const entry = updatedEntries[index];
+    
 
-    //     // Get the coating quantity for the current entry
-    //     const coatingQuantity = entry?.itemSummay?.[index]?.coatingQuantity || 0;
-
-    //     // Check if the delivered quantity exceeds the coating quantity
-    //     if (newValue > coatingQuantity) {
-    //         // Notify the user or handle the condition as required
-    //         alert('Delivered quantity cannot exceed coating quantity');
-    //         return;
-    //     }
-
-    //     // Update the delivered quantity for the current entry
-    //     const updatedItemSummary = [...(entry.itemSummay || [])];
-    //     updatedItemSummary[index] = { ...updatedItemSummary[index], delivered_quantity: newValue };
-    //     updatedEntries[index] = { ...entry, itemSummay: updatedItemSummary };
-
-    //     // Update the state with the modified entries
-    //     setPurchaseOrderData({ ...purchaseOrderData, entries: updatedEntries });
-    // };
-
-
+  
     const handleSaveEntries = async () => {
         try {
+            // Calculate total specificProductPrice
+            const totalSpecificProductPrice = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
+                const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
+                return acc + (specificProductPrice || 0);
+            }, 0);
+    
+            // Calculate total coatingTotal
+            const totalCoatingTotal = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
+                const coatingTotal = (entry.product?.coatingWeight || 0) * entry.coating.rate;
+                const totalCoatingPrice = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100);
+                return acc + (totalCoatingPrice || 0);
+            }, 0);
+    
+            // Calculate total amount including specificProductPrice, coatingTotal, and gst
+            // const totalAmount = totalSpecificProductPrice + totalCoatingTotal + parseFloat(entries.gst || 0);
+            let amountBT = 0;
             const payload = {
-                customer_order_id: purchaseOrderData._id || '',
-                customer_id: purchaseOrderData.customer?._id || '',
-                customer_name: purchaseOrderData.customer?.name || '',
-                customer_email: purchaseOrderData.customer?.email || '',
-                customer_number: purchaseOrderData.customer?.phone || '',
-                products: purchaseOrderData.entries.map((entry: any, index: any) => ({
-                    product_id: entry.product._id,
-                    color_id: entry.color?._id || '',
-                    coating_id: entry.coating?._id || '',
-                    delivered_quantity: deliveredQuantities[index] || '',
-                    length: entry.product?.length || '',
-                    rate: entry.product?.rate || ''
-                })),
-                alluminium_rate: entries.alluminium_rate || '',
-                send_mail: entries.send_mail || '',
-                coating_discount: entries.coating_discount || '',
-                customer_discount: entries.customer_discount || '',
-                gst: entries.gst || '',
-                tax: entries.tax || '',
-                total_amount: entries.total_amount || '',
+                customerOrder_id: purchaseOrderData._id || '',
+                customerName: purchaseOrderData.customer?._id || '',
+                customerEmail: purchaseOrderData.customer?.email || '',
+                customerPhone: purchaseOrderData.customer?.phone || '',
+                products: purchaseOrderData.entries.map((entry: any, index: any) => {
+                    const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
+                    const coatingTotal = (entry.product?.coatingWeight || 0) * entry.coating.rate ;
+                    const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
+                    const amount = specificProductPrice + finalCoatingTotal;
+                    amountBT += amount
+                    setAmountBeforeTax(parseFloat(amountBT.toFixed(2)));
+                    return {
+                        product: entry.product._id,
+                        color: entry.color?._id || '',
+                        coating: entry.coating?._id || '',
+                        coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+                        delieveryQuantity: deliveredQuantities[index] || '',
+                        weight: entry?.product?.weight || '',
+                        length: entry.product?.length || '',
+                        rate: entry.product?.rate || '',
+                        specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+                        coatingWeight: parseFloat(entry?.product?.coatingWeight) || '',
+                        coatingRate: entry.coating.rate,
+                        coatingTotal: coatingTotal || 0,
+                        amount:parseFloat(amount.toFixed(2)),
+                    };
+                }),
+                amountBeforeTax: amountBeforeTax || 0,
+                alluminiumRate: entries.alluminium_rate || '',
+                sendMail: entries.send_mail || false,
+                gst: parseFloat(entries.gst) || '',
+                other_tax: parseFloat(entries.tax) || '',
+                totalAmount: parseFloat(totalAmount) || '',
                 finished_weight: entries.finished_weight || '',
                 origin_point: entries.origin_point || '',
                 delivery_point: entries.delivery_point || ''
+                // 
+                // customerOrder_id: purchaseOrderData._id || '',
+                // customerName: purchaseOrderData.customer?._id || '',
+                // customerEmail: purchaseOrderData.customer?.email || '',
+                // customerPhone: purchaseOrderData.customer?.phone || '',
+                // products: purchaseOrderData.entries.map((entry: any, index: any) => ({
+                //     product: entry.product._id,
+                //     color: entry.color?._id || '',
+                //     coating: entry.coating?._id || '',
+                //     delieveryQuantity: deliveredQuantities[index] || '',
+                //     length: entry.product?.length || '',
+                //     rate: entry.product?.rate || '',
+                //     weight: entry.product?.weight || '',
+                //     discount: entry.product?.discount || '',
+                //     amount: entry.product?.amount || '',
+                // })),
+                // alluminiumRate: entries.alluminium_rate || '',
+                // sendMail: entries.send_mail || false,
+                // coatingDiscount: entries.coating_discount || '',
+                // customerDiscount: entries.customer_disco0unt || '',
+                // gst: entries.gst || '',
+                // other_tax: entries.tax || '',
+                // totalAmount: entries.total_amount || '',
+                // finished_weight: entries.finished_weight || '',
+                // origin_point: entries.origin_point || '',
+                // delivery_point: entries.delivery_point || ''
             };
-
-            // Send the payload to the server
-            // const response = await post('/your-server-endpoint', payload);
-            console.log('Response:', payload);
+            console.log('Payload',payload);
+            
+            const respones = await post('/invoice',payload)
+            console.log('Response:', respones);
+            
         } catch (error) {
             console.error('Error saving data:', error);
         }
     };
-
-
+          
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
              <Subheader>
@@ -196,7 +242,6 @@ const AddInvoice = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
-
                     <SubheaderSeparator />
                 </SubheaderLeft>
                 </Subheader>
@@ -243,8 +288,6 @@ const AddInvoice = () => {
                                                     </Select>
                                                 </div>
                                                 <div className='col-span-12 lg:col-span-12'>
-                                                    
-
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
                                                         <div className='flex items-end justify-end mt-2'>
@@ -272,11 +315,10 @@ const AddInvoice = () => {
                                                             </Button>
                                                         </div>
                                                     </div>
-
                                                             <div className='mt-2 grid grid-cols-12 gap-1' key={entry._id}>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="name">
-                                                                        Product Name
+                                                                <div className='col-span-12 lg:col-span-2 '>
+                                                                    <Label htmlFor="name tex" className='!text-sm'>
+                                                                         Name
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -288,9 +330,9 @@ const AddInvoice = () => {
 
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="name">
-                                                                        Product Length
+                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                    <Label htmlFor="name" className='!text-sm'>
+                                                                         Length
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -299,11 +341,10 @@ const AddInvoice = () => {
                                                                         name={`product${index}`}
                                                                         value={entry?.product?.length}
                                                                         disabled
-
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="name">
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="name" className='!text-sm'>
                                                                         Product Weight
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
@@ -312,14 +353,11 @@ const AddInvoice = () => {
                                                                         id={`product${index}`}
                                                                         name={`product${index}`}
                                                                         value={entry?.product?.weight}
-                                                                        
-                                                                        // disabled
-
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="name">
-                                                                        Product Rate
+                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                    <Label htmlFor="name" className='!text-sm'>
+                                                                         Rate
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -336,8 +374,8 @@ const AddInvoice = () => {
 
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor={`coating`}>
+                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                    <Label htmlFor={`coating`} className='!text-sm'>
                                                                         Coating
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
@@ -349,8 +387,51 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor='color'>
+                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                    <Label htmlFor={`coatingRate`} className='!text-sm'>
+                                                                        Coating Rate
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='text'
+                                                                        id={`coatingRate${index}`}
+                                                                        name={`coatingRate${index}`}
+                                                                        value={entry?.coating?.rate}
+                                                                        disabled
+                                                                    />
+                                                                </div>
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="coatingWeight" className='!text-sm'>
+                                                                        Coating Weight
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='text'
+                                                                        id={`coatingWeight${index}`}
+                                                                        name={`coatingWeight${index}`}
+                                                                        value={entry?.product?.coatingWeight}
+                                                                        onChange={(e) => {
+                                                                            const updatedProducts = [...purchaseOrderData.entries]; 
+                                                                            updatedProducts[index] = { ...updatedProducts[index], product: { ...updatedProducts[index].product, coatingWeight: e.target.value } }; 
+                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts }); 
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="coatingDiscount" className='!text-sm'>
+                                                                        Coating Discount
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='number'
+                                                                        id={`coating_discount${index}`}
+                                                                        name={`coating_discount${index}`}
+                                                                        value={quantityAndDiscounts[index]?.coating_discount || ''}
+                                                                        onChange={(e) => handleQuantityAndDiscountChange(e.target.value, index, 'coating_discount')}
+                                                                    />
+                                                                </div>
+                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                    <Label htmlFor='color' className='!text-sm'>
                                                                         Color
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
@@ -363,73 +444,32 @@ const AddInvoice = () => {
                                                                         onChange={(e) => console.log(e)}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="coatingQuantity">
-                                                                        Coating Quantity
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="coatingQuantity" className='!text-sm'>
+                                                                        Available Quantity
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
                                                                         type='text'
                                                                         id={`coatingQuantity${index}`}
                                                                         name={`coatingQuantity${index}`}
-                                                                // value={entry?.itemSummay?.map((i: any) => i.coatingQuantity)}
                                                                         value={entry?.itemSummary?.coatingQuantity}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="pendingQuantity">
-                                                                        Pending Quantity
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='text'
-                                                                        id={`pendingQuantity${index}`}
-                                                                        name={`pendingQuantity${index}`}
-                                                                        // value={entry?.itemSummay?.map((i: any) => i.pendingQuantity)}
-                                                                        value={entry?.itemSummary?.pendingQuantity}
-                                                                    />
-                                                                </div>
-                                                                <div className='col-span-12 lg:col-span-3'>
-                                                                    <Label htmlFor="delivered_quantity">
+                                                                
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="delivered_quantity" className='!text-sm'>
                                                                         Delivered Quantity
                                                                         <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    {/* <Input
-                                                                        key={`delivered_quantity_${index}`}
-                                                                        type='number'
-                                                                        id={`delivered_quantity${index}`}
-                                                                        name={`delivered_quantity${index}`}
-                                                                        value={entry?.itemSummay?.[index]?.delivered_quantity || ''}
-                                                                        onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
-                                                                    /> */}
-
+                                                                    </Label> 
+                                                                    
                                                                     <Input
-                                                                        key={`delivered_quantity_${index}`}
-                                                                        type='number'
-                                                                        id={`delivered_quantity${index}`}
-                                                                        name={`delivered_quantity${index}`}
-                                                                        value={deliveredQuantities[index]}
-                                                                        // onChange={(e) => handleDeliveredQuantityChange(e.target.value, index, entry)}
-                                                                        onChange={(e) => handleDeliveredQuantityChange(e.target.value, index,entry)}
-                                                                    />
-                                                                    {/* <Input
-                                                                        type='number'
-                                                                        id={`delivered_quantity${index}`}
-                                                                        name={`delivered_quantity${index}`}
-                                                                        value={entries.delivered_quantity}
-                                                                         onChange={(e) => setEntries({ ...entries, delivered_quantity: e.target.value })} 
-                                                                          value={entry && Array.isArray(entry.itemSummary) ? entry.itemSummary[index]?.delivered_quantity : ''} 
-                                                                        onChange={(e) => { 
-                                                                          const updatedItemSummary = [...(entry.itemSummary || [])]; // Copy the item summary array or initialize it as an empty array if it's undefined
-                                                                           updatedItemSummary[index] = { ...updatedItemSummary[index], delivered_quantity: e.target.value }; // Update delivered quantity of the specific item
-                                                                            const updatedEntry = { ...entry, itemSummary: updatedItemSummary }; // Update the entry with the modified item summary
-                                                                           const updatedEntries = [...purchaseOrderData.entries]; // Copy the entries array
-                                                                           updatedEntries[index] = updatedEntry; // Update the entry in the entries array
-                                                                          setPurchaseOrderData({ ...purchaseOrderData, entries: updatedEntries }); // Update the state with the modified entries
-                                                                         }}
-                                                                    > */}
-
-
+                                                                    type='number'
+                                                                    id={`delivered_quantity${index}`}
+                                                                    name={`delivered_quantity${index}`}
+                                                                    value={deliveredQuantities[index]} 
+                                                                    onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
+                                                                />
                                                                 </div>
                                                             </div>
                                                             </>);
@@ -470,7 +510,6 @@ const AddInvoice = () => {
                                                                     value={purchaseOrderData && purchaseOrderData.customer.email}
                                                                     name="customer_email"
                                                                     disabled
-
                                                                 />
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
@@ -500,30 +539,6 @@ const AddInvoice = () => {
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
-                                                                    Coating Discount
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='number'
-                                                                    value={entries.coating_discount}
-                                                                    name="coating_discount"
-                                                                    onChange={(e) => setEntries({ ...entries, coating_discount: e.target.value })}
-                                                                />
-                                                            </div>
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Customer Discount
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='number'
-                                                                    value={entries.customer_discount}
-                                                                    name="customer_discount"
-                                                                    onChange={(e) => setEntries({ ...entries, customer_discount: e.target.value })}
-                                                                />
-                                                            </div>
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
                                                                     GST
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
@@ -535,25 +550,25 @@ const AddInvoice = () => {
                                                                 />
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
+                                                                <Label htmlFor='other_tax'>
                                                                     Other Tax
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
                                                                     value={entries.tax}
-                                                                    name="tax"
+                                                                    name="other_tax"
                                                                     onChange={(e) => setEntries({ ...entries, tax: e.target.value })}
                                                                 />
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
+                                                                <Label htmlFor='totalAmount'>
                                                                     Total Amount
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={entries.total_amount}
+                                                                    value={totalAmount}
                                                                     name="total_amount"
                                                                     onChange={(e) => setEntries({ ...entries, total_amount: e.target.value })}
                                                                 />
@@ -610,9 +625,6 @@ const AddInvoice = () => {
                                                             </div>
                                                         </div>
                                                         <div className='flex mt-2 gap-2 '>
-                                                            {/* <Button variant='solid' color='blue' type='button' >
-                                                            Add Entry
-                                                        </Button> */}
                                                             <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}  >
                                                                 Save entries
                                                             </Button>
@@ -624,7 +636,7 @@ const AddInvoice = () => {
                                         </CardBody>
                                     </Card>
                                 </div >
-                            </>) : ""}
+                            </>) : ""}                        
 
 
                         </div>
