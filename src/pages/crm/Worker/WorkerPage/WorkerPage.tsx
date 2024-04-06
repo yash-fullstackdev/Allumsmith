@@ -14,19 +14,18 @@ import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
 
 
-const CustomerPage = () => {
+const WorkerPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
-        gst_number: '',
         company: '',
         address_line1: '',
         address_line2: '',
         city: '',
         state: '',
         zipcode: '',
-        default_discount: ""
+        pancard: ''
     });
 
     const handleChange = (e: any) => {
@@ -41,18 +40,18 @@ const CustomerPage = () => {
 
 
 
-    const createCustomer = async () => {
+    const createWorker = async () => {
 
         console.log("entries", formData)
         try {
-            const customer = await post('/customers', formData);
-            console.log("customer", customer);
-            toast.success('customer added Successfully!')
+            const worker = await post('/workers', formData);
+            console.log("worker", worker);
+            toast.success('worker added Successfully!')
         } catch (error: any) {
-            console.error("Error Saving customer", error)
+            console.error("Error Saving worker", error)
         }
         finally {
-            navigate(PathRoutes.customer);
+            navigate(PathRoutes.worker);
         }
 
     };
@@ -60,13 +59,13 @@ const CustomerPage = () => {
 
 
     return (
-        <PageWrapper name='ADD Customer' isProtectedRoute={true}>
+        <PageWrapper name='ADD Worker' isProtectedRoute={true}>
             <Subheader>
                 <SubheaderLeft>
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigate(`${PathRoutes.customer}`)}
+                        onClick={() => navigate(`${PathRoutes.worker}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
@@ -88,7 +87,7 @@ const CustomerPage = () => {
                                                     className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
 
                                                 >
-                                                    Add Customer
+                                                    Add Worker
                                                 </Button>
                                             </div>
                                         </div>
@@ -129,18 +128,6 @@ const CustomerPage = () => {
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for phone field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='gst_number'>
-                                                    GST Number
-                                                </Label>
-                                                <Input
-                                                    id="gst_number"
-                                                    name="gst_number"
-                                                    value={formData.gst_number}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for GST Number field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
                                                 <Label htmlFor='company'>
@@ -213,13 +200,13 @@ const CustomerPage = () => {
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='default_discount'>
-                                                    Discount (%)
+                                                <Label htmlFor='pancard'>
+                                                    Pan Card
                                                 </Label>
                                                 <Input
-                                                    id="default_discount"
-                                                    name="default_discount"
-                                                    value={formData.default_discount}
+                                                    id="pancard"
+                                                    name="pancard"
+                                                    value={formData.pancard}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
@@ -230,8 +217,8 @@ const CustomerPage = () => {
 
                                         <div className='flex mt-2 gap-2'>
 
-                                            <Button variant='solid' color='blue' type='button' onClick={createCustomer}>
-                                                Save Customer
+                                            <Button variant='solid' color='blue' type='button' onClick={createWorker}>
+                                                Save Worker
                                             </Button>
                                         </div>
                                     </CardBody>
@@ -245,4 +232,4 @@ const CustomerPage = () => {
     );
 };
 
-export default CustomerPage;
+export default WorkerPage;

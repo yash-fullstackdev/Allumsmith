@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import { useEffect, useState } from 'react';
 import {
@@ -9,8 +11,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -29,27 +30,25 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import EditColorModal from '../ColorsPage/EditColorModal';
-
+import EditWorkerModal from '../WorkerPage/EditWorkerModal';
 
 
 const columnHelper = createColumnHelper<any>();
 
 
-const ColorsListPage = () => {
-    const navigate = useNavigate();
+const WorkerListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [colorsList, setColorsList] = useState<any[]>([]);
-    const [colorId, setColorId] = useState('')
-    const [isEditModal, setIsEditModal] = useState(false)
+    const [workerList, setWorkerList] = useState<any[]>([]);
+    const [workerId, setWorkerId] = useState('')
+    const [isEditModal, setIsEditModal] = useState<boolean>(false);
 
+    const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const { data: colorsList } = await get(`/colors`);
-            setColorsList(colorsList);
+            const { data: workerData } = await get(`/workers`);
+            setWorkerList(workerData);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -62,15 +61,16 @@ const ColorsListPage = () => {
     useEffect(() => {
         fetchData();
     }, [])
+
     const handleClickDelete = async (id: any) => {
         try {
-            const { data: colors } = await deleted(`/colors/${id}`);
-            console.log("colors", colors)
-            toast.success('Color deleted Successfully');
+            const { data: worker } = await deleted(`/workers/${id}`);
+            console.log("worker", worker);
+            toast.success(`worker deleted successfully!`);
         } catch (error: any) {
-            console.error('Error deleted Color:', error);
+            console.error('Error fetching workers:', error);
+            toast.error('Error deleting worker', error);
             setIsLoading(false);
-            toast.error('Error deleting Color', error);
         } finally {
             setIsLoading(false);
             fetchData();
@@ -89,7 +89,7 @@ const ColorsListPage = () => {
             ),
             header: 'Name',
         }),
-        columnHelper.accessor('code', {
+        columnHelper.accessor('email', {
             cell: (info) => (
 
                 <div className=''>
@@ -97,21 +97,44 @@ const ColorsListPage = () => {
                 </div>
 
             ),
-            header: 'Code',
+            header: 'Email',
         }),
+        columnHelper.accessor('address_line1', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
 
+            ),
+            header: 'Address',
+        }),
+        columnHelper.accessor('phone', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Phone',
+        }),
+        columnHelper.accessor('company', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Company',
+        }),
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
                     <Button
-                        // onClick={() => {
-                        //     setIsEditModal(true)
-                        //     setColorId(info.row.original._id);
-                        // }}
                         onClick={() => {
-                            navigate(`${PathRoutes.edit_colors}/${info.row.original._id}`)
+                            navigate(`${PathRoutes.edit_worker}/${info.row.original._id}`)
                         }}
                     >
                         <svg
@@ -158,7 +181,7 @@ const ColorsListPage = () => {
     ];
 
     const table = useReactTable({
-        data: colorsList,
+        data: workerList,
         columns,
         state: {
             sorting,
@@ -174,12 +197,12 @@ const ColorsListPage = () => {
 
 
     return (
-        <PageWrapper name='Inventory List'>
+        <PageWrapper name='Worker List'>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Colors</CardTitle>
+                            <CardTitle>All Workers</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
@@ -189,9 +212,9 @@ const ColorsListPage = () => {
                         </CardHeaderChild>
 
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_colors}`}>
+                            <Link to={`${PathRoutes.add_worker}`}>
                                 <Button variant='solid' icon='HeroPlus'>
-                                    New Color
+                                    New Worker
                                 </Button>
                             </Link>
                         </CardHeaderChild>
@@ -221,10 +244,10 @@ const ColorsListPage = () => {
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 // onClick={() => formik.resetForm()}
                 >
-                    Edit Color
+                    Edit Worker
                 </ModalHeader>
                 <ModalBody>
-                    <EditColorModal colorId={colorId} fetchData={fetchData} setIsEditModal={setIsEditModal} />
+                    <EditWorkerModal workerId={workerId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
 
@@ -233,5 +256,4 @@ const ColorsListPage = () => {
 
 };
 
-export default ColorsListPage;
-
+export default WorkerListPage;

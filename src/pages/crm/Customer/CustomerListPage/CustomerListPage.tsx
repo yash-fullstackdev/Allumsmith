@@ -11,7 +11,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -43,6 +43,7 @@ const CustomerListPage = () => {
     const [customerId, setCustomerId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
 
+    const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -133,8 +134,7 @@ const CustomerListPage = () => {
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setIsEditModal(true);
-                            setCustomerId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_customer}/${info.row.original._id}`)
                         }}
                     >
                         <svg
@@ -212,7 +212,7 @@ const CustomerListPage = () => {
                         </CardHeaderChild>
 
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_vendor}`}>
+                            <Link to={`${PathRoutes.add_customer}`}>
                                 <Button variant='solid' icon='HeroPlus'>
                                     New Customer
                                 </Button>
@@ -221,17 +221,21 @@ const CustomerListPage = () => {
 
                     </CardHeader>
                     <CardBody className='overflow-auto'>
-                        {!isLoading && (
+                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
                                 table={table}
                             />
+                        ) : (
+                            !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
                         <div className='flex justify-center'>
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                    <TableCardFooterTemplate table={table} />
+                    { table.getFilteredRowModel().rows.length > 0 &&
+                        <TableCardFooterTemplate table={table} />
+                    }
                 </Card>
 
             </Container>

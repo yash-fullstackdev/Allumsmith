@@ -10,7 +10,6 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -28,78 +27,67 @@ import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import VendorProductList from './ProductList/ProductList';
 import { toast } from 'react-toastify';
-import PurchaseEntryDetail from './PurchaseEntryDetail';
+import CustomerEntryDetail from './CustomerOrderDetail';
 
 const columnHelper = createColumnHelper<any>();
 
 
-const PurchaseOrderListPage = () => {
+const CustomerOrderListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [purchaseOrderList, setPurchaseOrderList] = useState<any[]>([]);
+    const [customerOrderList, setCustomerOrderList] = useState<any[]>([]);
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
-    const [vendorId, setVenorId] = useState()
+    const [customerId, setCustomerId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
     const [vendorInfo, setVendorInfo] = useState<any>()
 
-
+    console.log("customerId", customerId)
     console.log("vendorInfo", vendorInfo)
 
 
 
-    const fetchData = async () => {
+    const fetchCoData = async () => {
         setIsLoading(true);
         try {
-            const { data: purchaseOrderList } = await get(`/purchase-order`);
-            setPurchaseOrderList(purchaseOrderList);
+            const { data: CustomerOrderList } = await get(`/customer-order`);
+            setCustomerOrderList(CustomerOrderList);
             setIsLoading(false);
         } catch (error: any) {
-            console.error('Error fetching users:', error.message);
+            console.error('Error fetching customer data:', error.message);
             setIsLoading(false);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const fetchBranchData = async () => {
-        try {
-            const { data: allBranchesData } = await get(`/branches`);
-            setBranchesData(allBranchesData)
-        } catch (error: any) {
-            console.error('Error fetching users:', error.message);
-        } finally {
-        }
-    };
 
     useEffect(() => {
-        fetchData();
-        fetchBranchData()
+        fetchCoData();
     }, [])
 
     const handleClickDelete = async (id: any) => {
         console.log('Id', id);
         try {
-            const { data: allUsers } = await deleted(`/purchase-order/${id}`);
+            const { data: allUsers } = await deleted(`/customer-order/${id}`);
             console.log("allUsers", allUsers);
-            toast.success('Purchase Order  deleted Successfully!')
+            toast.success('customer Order  deleted Successfully!')
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
             setIsLoading(false);
-            toast.error('Error deleting Purchase Order', error);
+            toast.error('Error deleting customer Order', error);
         } finally {
             setIsLoading(false);
-            fetchData();
+            fetchCoData();
         }
     }
 
     const columns = [
-        columnHelper.accessor('name', {
+        columnHelper.accessor('customer.name', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info?.row?.original?.vendor?.name}`}
+                    {`${info?.row?.original?.customer?.name}`}
                 </div>
 
             ),
@@ -110,7 +98,7 @@ const PurchaseOrderListPage = () => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info?.row?.original?.vendor?.phone}`}</div>
+                    {`${info?.row?.original?.customer?.phone}`}</div>
             ),
             header: 'Phone',
         }),
@@ -118,7 +106,7 @@ const PurchaseOrderListPage = () => {
             cell: (info) => (
 
 
-                <div className=''>{`${info?.row?.original?.vendor?.email}`}</div>
+                <div className=''>{`${info?.row?.original?.customer?.email}`}</div>
             ),
             header: 'Email',
         }),
@@ -128,7 +116,7 @@ const PurchaseOrderListPage = () => {
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
-                                setVenorId(info?.row?.original?._id),
+                                setCustomerId(info?.row?.original?._id),
                                 setVendorInfo(info?.row?.original)
                         }}
                     >
@@ -167,7 +155,7 @@ const PurchaseOrderListPage = () => {
     ];
 
     const table = useReactTable({
-        data: purchaseOrderList && purchaseOrderList,
+        data: customerOrderList && customerOrderList,
         columns,
         state: {
             sorting,
@@ -180,8 +168,6 @@ const PurchaseOrderListPage = () => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-
-
     return (
         <>
             <PageWrapper name='Product List'>
@@ -189,7 +175,7 @@ const PurchaseOrderListPage = () => {
                     <Card className='h-full'>
                         <CardHeader>
                             <CardHeaderChild>
-                                <CardTitle>All Purchase Order</CardTitle>
+                                <CardTitle>All Customer Order</CardTitle>
                                 <Badge
                                     variant='outline'
                                     className='border-transparent px-4 '
@@ -199,9 +185,9 @@ const PurchaseOrderListPage = () => {
                             </CardHeaderChild>
 
                             <CardHeaderChild>
-                                <Link to={`${PathRoutes.add_purchase_order}`}>
+                                <Link to={`${PathRoutes.add_customer_order}`}>
                                     <Button variant='solid' icon='HeroPlus'>
-                                        New Purchase Order
+                                        New Customer Order
                                     </Button>
                                 </Link>
                             </CardHeaderChild>
@@ -220,9 +206,9 @@ const PurchaseOrderListPage = () => {
                                 {isLoading && <LoaderDotsCommon />}
                             </div>
                         </CardBody>
-                       { table.getFilteredRowModel().rows.length > 0 &&
-                       <TableCardFooterTemplate table={table} />
-                       }
+                        { table.getFilteredRowModel().rows.length > 0 &&
+                            <TableCardFooterTemplate table={table} />
+                        }
                     </Card>
 
                 </Container>
@@ -232,36 +218,30 @@ const PurchaseOrderListPage = () => {
                     >
                         <div>
                             <h2 className="italic capitalize text-xl">
-                                Vendor Name: {vendorInfo?.vendor?.name}
+                                Customer Name: {vendorInfo?.customer?.name}
                             </h2>
                             <h4 className="italic text-sm mt-2 text-gray-500">
-                                Phone Number: {vendorInfo?.vendor?.phone}
+                                Phone Number: {vendorInfo?.customer?.phone}
                             </h4>
                             <div>
                                 <h4 className="italic text-sm text-gray-500">
-                                    email: {vendorInfo?.vendor?.email}
+                                    email: {vendorInfo?.customer?.email}
                                 </h4>
                             </div>
-                            <h4 className="italic text-sm text-gray-500">
-                                GST Number: {vendorInfo?.vendor?.gstNumber}
-                            </h4>
+                            {/* <h4 className="italic text-sm text-gray-500">
+                                GST Number: {vendorInfo?.customer?.gstNumber}
+                            </h4> */}
                         </div>
-
-
-
-
-
                     </ModalHeader>
                     <ModalBody>
-                        <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} />
+                        <CustomerEntryDetail customerId={customerId} />
                     </ModalBody>
                 </Modal>
-
             </PageWrapper>
         </>
     )
 
 };
 
-export default PurchaseOrderListPage;
+export default CustomerOrderListPage;
 

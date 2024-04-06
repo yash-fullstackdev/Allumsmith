@@ -4,12 +4,15 @@ export const appPages: any = {
 			id: 'productPage',
 			to: '/product',
 			text: 'Product',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoBox3',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-product',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-product',
+			to: '/edit-product',
 		},
 	},
 	purchaseOrderPage: {
@@ -17,38 +20,28 @@ export const appPages: any = {
 			id: 'purchaseOrderPage',
 			to: '/purchase-order',
 			text: 'Purchase Order',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoCart1',
 		},
 		editPageLink: {
 			id: 'editPageLink',
 			to: '/add-purchase-order',
 		},
 	},
-	// purchaseEntry: {
-	// 	listPage: {
-	// 		id: 'purchaseEntry',
-	// 		to: '/purchase-entry',
-	// 		text: 'Purchase Entry',
-	// 		// icon: 'HeroQueueList',
-	// 		icon: 'HeroUserCircle',
-	// 	},
-	// 	editPageLink: {
-	// 		id: 'editPageLink',
-	// 		to: '/add-purchase-entry',
-	// 	},
-	// },
+
 	vendorPage: {
 		listPage: {
 			id: 'vendorsPage',
 			to: '/vendor',
 			text: 'Vendor',
-			// icon: 'HeroQueueList',
 			icon: 'HeroUserCircle',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-vendor',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-vendor',
+			to: '/edit-vendor',
 		},
 	},
 	customerPage: {
@@ -56,25 +49,55 @@ export const appPages: any = {
 			id: 'customerPage',
 			to: '/customer',
 			text: 'Customer',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroUsers',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-customer',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-customer',
+			to: '/edit-customer',
 		},
+	},
+	workerPage: {
+		listPage: {
+			id: 'workerPage',
+			to: '/worker',
+			text: 'Worker',
+			icon: 'HeroUserGroup',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-worker',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-worker',
+		},
+	},
+	powderPage: {
+		listPage: {
+			id: 'powderPage',
+			to: '/powder',
+			text: 'Powder',
+			icon: 'DuoOption',
+		}
 	},
 	branchesPage: {
 		listPage: {
 			id: 'branchesPage',
 			to: '/branches',
 			text: 'Branches',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroBuildingOffice2',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-branches',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-branches',
+			to: '/edit-branches',
 		},
 	},
 	colorsPage: {
@@ -82,25 +105,35 @@ export const appPages: any = {
 			id: 'colorsPage',
 			to: '/colors',
 			text: 'Colors',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoColor',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-colors',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-colors',
+			to: '/edit-colors',
 		},
+		// editPageLink: {
+		// 	id: 'editPageLink',
+		// 	to: '/add-colors',
+		// },
 	},
 	coatingPage: {
 		listPage: {
 			id: 'coatingPage',
 			to: '/coating',
 			text: 'Coating',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'DuoBox2',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-coating',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-coating',
+			to: '/edit-coating',
 		},
 	},
 	jobsPage: {
@@ -108,12 +141,32 @@ export const appPages: any = {
 			id: 'jobsPage',
 			to: '/jobs',
 			text: 'Jobs',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroWrenchScrewdriver',
+		},
+		addPageLink:{
+			id:'addPageLink',
+			to:'/add-jobs'
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-jobs',
+			to: '/edit-jobs',
+		},
+	},
+
+	customerOrderPage: {
+		listPage: {
+			id: 'customerOrderPage',
+			to: '/customer-order',
+			text: 'Customer Order',
+			icon: 'HeroShoppingBag',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-customer-order',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-customer-order',
 		},
 	},
 
@@ -122,12 +175,39 @@ export const appPages: any = {
 			id: 'inventoryPage',
 			to: '/inventory',
 			text: 'Inventory',
-			// icon: 'HeroQueueList',
-			icon: 'HeroUserCircle',
+			icon: 'HeroHomeModern',
 		},
 		editPageLink: {
 			id: 'editPageLink',
 			to: '/add-inventory',
+		},
+	},
+	finishInventory: {
+		listPage: {
+			id: 'finishInventory',
+			to: '/finish-inventory',
+			text: 'Finish Inventory',
+			icon: 'HeroTruck',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/add-inventory',
+		},
+	},
+	invoicePage: {
+		listPage: {
+			id: 'invoice',
+			to: '/invoice-list',
+			text: 'Invoice List',
+			icon: 'HeroReceiptPercent',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-invoice',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-invoice',
 		},
 	},
 	projectAppPages: {

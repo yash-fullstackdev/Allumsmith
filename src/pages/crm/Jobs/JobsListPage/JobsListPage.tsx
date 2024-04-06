@@ -9,7 +9,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
@@ -54,6 +54,7 @@ const JobsListPage = () => {
     const [globalFilter, setGlobalFilter] = useState<string>('');
     const [statusModal, setStatusModal] = useState<boolean>(false);
     const [status, setStatus] = useState<any>('')
+    const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -85,7 +86,7 @@ const JobsListPage = () => {
             fetchData();
         }
     }
-    console.log('Job List', jobsList)
+    console.log('JobList', jobsList)
     const columns = [
 
         columnHelper.accessor((row) => row.name, {
@@ -127,14 +128,16 @@ const JobsListPage = () => {
                         setStatusModal(true)
                         setStatus(info.row.original.status)
                         setJobId(info.row.original._id)
-                    }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    }}
+                        isDisable={info.row.original.status === 'completed'}
+                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm5.03 4.72a.75.75 0 0 1 0 1.06l-1.72 1.72h10.94a.75.75 0 0 1 0 1.5H10.81l1.72 1.72a.75.75 0 1 1-1.06 1.06l-3-3a.75.75 0 0 1 0-1.06l3-3a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
                         </svg>
                     </Button>
                     <Button
                         onClick={() => {
                             setBatchModal(true);
-                            setBatch(info.row.original.batch);
+                            setJobId(info.row.original._id)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -143,11 +146,13 @@ const JobsListPage = () => {
                         </svg>
 
                     </Button>
-                    {/* <Button
+                    <Button
                         onClick={() => {
-                            setIsEditModal(true)
-                            setJobId(info.row.original._id);
+                            // setIsEditModal(true)
+                            // setJobId(info.row.original._id);
+                            navigate(`${PathRoutes.edit_jobs}/${info.row.original._id}`)
                         }}
+                        isDisable={info.row.original.status === 'in_progress' || info.row.original.status === 'completed'}
                     >
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -163,7 +168,7 @@ const JobsListPage = () => {
                             />
                         </svg>
 
-                    </Button> */}
+                    </Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);
@@ -261,17 +266,21 @@ const JobsListPage = () => {
 
                     </CardHeader>
                     <CardBody className='overflow-auto'>
-                        {!isLoading && (
+                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
                                 table={table}
                             />
+                        ) : (
+                            !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
                         <div className='flex justify-center'>
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                    <TableCardFooterTemplate table={table} />
+                    { table.getFilteredRowModel().rows.length > 0 &&
+                        <TableCardFooterTemplate table={table} />
+                    }
                 </Card>
 
             </Container>
@@ -294,7 +303,7 @@ const JobsListPage = () => {
                     All Batch
                 </ModalHeader>
                 <ModalBody>
-                    <JobsBatch batch={batch} />
+                    <JobsBatch batch={batch} jobId={jobId} />
                 </ModalBody>
             </Modal>
             <Modal isOpen={statusModal} setIsOpen={setStatusModal} isScrollable fullScreen="lg">
