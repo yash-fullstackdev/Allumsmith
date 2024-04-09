@@ -201,7 +201,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`thickness-${index}`}>
-										Weight
+										Thickness
 									</Label>
 									<CreatableSelect
 										id={`thickness-${index}`}
@@ -231,7 +231,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`weight-${index}`}>
-										Thickness
+										Weight
 									</Label>
 									<CreatableSelect
 										id={`weight-${index}`}

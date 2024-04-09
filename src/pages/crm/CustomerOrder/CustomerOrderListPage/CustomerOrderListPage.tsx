@@ -29,6 +29,7 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import CustomerEntryDetail from './CustomerOrderDetail';
+import { post } from '../../../../utils/api-helper.util';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -61,6 +62,26 @@ const CustomerOrderListPage = () => {
         }
     };
 
+    const handleGeneratePDF = async (id: any) => {
+        try {
+            console.log(`PDF GENERATED Sucessfully for ${id}`)
+            const response = await post(`/customer-order/generateReciept/${id}`, {});
+            console.log(response.data.data);
+            if (response && response.status === 201 && response.data && response.data.data) {
+                const pdfData = response.data.data;
+                console.log('PDF DATA', pdfData);
+
+                const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
+
+                window.open(url, '_blank');
+            } else {
+                console.error('Error: PDF data not found in response');
+            }
+        } catch (error) {
+            console.error('Error Generating PDF', error)
+        }
+
+    }
 
     useEffect(() => {
         fetchCoData();
@@ -126,6 +147,14 @@ const CustomerOrderListPage = () => {
                         </svg>
 
                     </Button>
+                    <Button
+                        onClick={() => {
+                            handleGeneratePDF(info.row.original._id)
+                        }}
+                        icon='DuoFile'
+                    />
+                        
+                     
                     <Button
                         onClick={() => {
                             handleClickDelete(info?.row?.original?._id);
