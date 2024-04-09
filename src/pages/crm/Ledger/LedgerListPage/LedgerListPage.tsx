@@ -106,7 +106,7 @@ const LedgerListPage = () => {
         }),
 
         columnHelper.display({
-            cell: (info) => (
+            cell: () => (
                 <div className='font-bold'>
                     <Button
                     >

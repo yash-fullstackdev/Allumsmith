@@ -52,7 +52,7 @@ const LedgerPage = () => {
         customer_id: formData.customer_id,
         transaction_type: formData.transaction_type,
         payment_mode: formData.payment_mode,
-        amount: formData.amount,
+        amount: parseFloat(formData.amount),
         remarks: formData.remarks,
         associated_co: "660fc209aebcddadc63b2a34",
         invoice: "660fc209aebcddadc63b2a34"

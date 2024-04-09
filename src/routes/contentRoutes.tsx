@@ -39,6 +39,7 @@ import EditJobPage from '../pages/crm/Jobs/JobsPage/EditJobPage';
 import LedgerListPage from '../pages/crm/Ledger/LedgerListPage/LedgerListPage';
 import LedgerPage from '../pages/crm/Ledger/LedgerPage/LedgerPage';
 import EditLedgerPag from '../pages/crm/Ledger/LedgerPage/EditLedgerPag';
+import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/EditWithoutMaterial';
 
 
 const contentRoutes: RouteProps[] = [
@@ -174,6 +175,10 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.jobsPage.editPageLink.to}/:id`,
 		element: <EditJobPage />,
+	},
+	{
+		path: `${appPages.jobsPage.editwihtoutPageLink.to}/:id`,
+		element: <EditWithoutMaterial/>,
 	},
 	{
 		path: `${appPages.powderPage.listPage.to}`,

@@ -16,6 +16,8 @@ import ReviewQuantityStatus from './ReviewQuantityStatus';
 import SelfProducts from './SelfProducts';
 import { Switch } from '@mui/material';
 import WithoutMaterialPage from './WithoutMaterialPage';
+import SelectReact from '../../../../components/form/SelectReact';
+import { values } from 'lodash';
 
 const JobsPage = () => {
     const [name, setName] = useState('');
@@ -28,16 +30,18 @@ const JobsPage = () => {
     const [selectedCustomerOrderData, setSelectedCustomerOrderData] = useState<any>(null);
     const [collapsible, setCollapsible] = useState<boolean[]>(customerOrders.map(() => false));
     const [customerOrderData, setCustomerOrderData] = useState<any>([]);
+    console.log("🚀 ~ JobsPage ~ customerOrderData:", customerOrderData.map((i: any) => i.customer.name))
     const [quantityStatusModal, setQuantityStatusModal] = useState<boolean>(false);
     const [productIdsForReview, setProductIdsForReview] = useState<string[]>([]);
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
     const [withMaterial, setWithMaterial] = useState<boolean>(true);
+    const [customerId, setCustomerId] = useState('');
+    const [customerName, setCustomerName] = useState('');
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
-            console.log('Data of Products', data);
             const productsWithData = data.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
@@ -52,7 +56,6 @@ const JobsPage = () => {
             console.error('Error Fetching Customer Order');
         }
     }
-    console.log('Custoemr Order Data', customerOrderData)
     const getBranchDetails = async () => {
         try {
             const { data } = await get('/branches');
@@ -76,7 +79,6 @@ const JobsPage = () => {
         getCoatingDetails();
 
     }, []);
-    console.log('Customer ORder Data 139', customerOrderData)
 
     const handleReviewProcess = async () => {
         const regularBatches = customerOrders.map((order: any) => ({
@@ -84,7 +86,7 @@ const JobsPage = () => {
             products: order.products.map((product: any) => ({
                 productId: product.product._id, // Include product ID
                 product: { id: product.product._id, name: product.product.name },
-                pendingQuantity:product.pendingQuantity || product.quantity,
+                pendingQuantity: product.pendingQuantity || product.quantity,
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
                 color: { id: product?.color?._id, name: product?.color?.name }
@@ -119,11 +121,9 @@ const JobsPage = () => {
             branchId: branchId.id,
             products: allProductIds
         };
-        console.log('Review Qty', reviewQuantityFromBranch);
         setQuantityStatusModal(true);
         try {
             const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch);
-            console.log('reviewProducts', reviewProducts.data);
             const formattedProducts = reviewProducts.data.map((reviewProduct: any) => ({
                 _id: reviewProduct.product._id,
                 name: reviewProduct.product.name,
@@ -134,7 +134,6 @@ const JobsPage = () => {
             console.log('Error', error);
         }
     };
-    console.log('Customer Order List', selectedCustomerOrderData)
     const handleAddCustomerOrder = () => {
         setCustomerOrders([...customerOrders, { name: '', products: [] }]);
     };
@@ -148,7 +147,6 @@ const JobsPage = () => {
         updatedCollapsible[index] = !updatedCollapsible[index];
         setCollapsible(updatedCollapsible);
     };
-    console.log('Customer Order Data', customerOrders)
 
 
     return (
@@ -169,13 +167,13 @@ const JobsPage = () => {
                 </SubheaderLeft>
                 <SubheaderRight >
 
-                    <Button
+                    {withMaterial ? <Button
                         variant='solid'
                         color='blue'
                         onClick={handleReviewProcess}
                     >
                         Review Process
-                    </Button>
+                    </Button> : ""}
                 </SubheaderRight>
             </Subheader>
             {withMaterial ? (
@@ -350,7 +348,6 @@ const JobsPage = () => {
                                                                         );
                                                                     })}
                                                                 </Select>
-
                                                             </div>
 
                                                             {order.products.map((product: any, productIndex: any) => (
@@ -509,33 +506,9 @@ const JobsPage = () => {
                     </Modal>
                 </Container>) :
                 <Container>
-                    <div className='flex h-full flex-wrap content-start'>
-                        <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
-                            <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                                <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                                    <Card>
-                                        <CardBody>
-                                            <div className='flex'>
-                                                <div className='bold w-full'>
-                                                    <Button
-                                                        variant='outlined'
-                                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
-
-                                                    >
-                                                        Without Material Data
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <WithoutMaterialPage entries={entries} setEntries={setEntries} />
-                                            </div>
-                                        </CardBody>
-                                    </Card>
-                                </div >
-                            </div>
-                        </div>
-                    </div>
+                    {/* <div> */}
+                        <WithoutMaterialPage />
+                    {/* </div> */}
                 </Container>}
         </PageWrapper >
     );

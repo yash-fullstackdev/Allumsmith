@@ -151,6 +151,10 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-jobs',
 		},
+		editwihtoutPageLink: {
+			id: 'editwihtoutPageLink',
+			to: '/edit-jobs-withoutmaterial',
+		},
 	},
 
 	customerOrderPage: {

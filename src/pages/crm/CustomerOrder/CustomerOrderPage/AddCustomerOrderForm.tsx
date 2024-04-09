@@ -10,11 +10,16 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { toast } from 'react-toastify';
+import SelectReact from '../../../../components/form/SelectReact';
+import Checkbox from '../../../../components/form/Checkbox';
 
 const AddCustomerOrderForm = () => {
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
+  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
+  console.log("🚀 ~ AddCustomerOrderForm ~ entries:", entries)
   const [customerId, setCustomerId] = useState('');
+  const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([])
+  console.log("🚀 ~ AddCustomerOrderForm ~ customerData:", customerData)
   const [coatingData, setCoatingData] = useState<any>([])
   const [productsData, setProductsData] = useState<any>([]);
   const navigate = useNavigate();
@@ -60,8 +65,12 @@ const AddCustomerOrderForm = () => {
 
   }, []);
 
+  const handleWMChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEntries({ ...entries, withoutMaterial: e.target.checked });
+  };
+
   const handleAddEntry = () => {
-    setEntries([...entries, { product: '', quantity: '', coating: '', color: '', length: '' }]);
+    setEntries([...entries, { product: '', quantity: '', coating: '', color: '', length: '', withoutMaterial: '' }]);
   };
 
   const handleSaveEntries = async () => {
@@ -81,6 +90,7 @@ const AddCustomerOrderForm = () => {
       customer: customerId,
       entries: filteredEntries,
     };
+    console.log("🚀 ~ handleSaveEntries ~ finalValues:", finalValues)
     try {
       const { data } = await post('/customer-order', finalValues);
       console.log("🚀 ~ handleSaveEntries ~ data:", data)
@@ -138,7 +148,7 @@ const AddCustomerOrderForm = () => {
                             Customer
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
-                          <Select
+                          {/* <Select
                             id='customerName'
                             name='customerName'
                             value={customerId}
@@ -155,10 +165,23 @@ const AddCustomerOrderForm = () => {
                                   {data.name}
                                 </option>
                               ))}
-                          </Select>
+                          </Select> */}
+                          <SelectReact
+                            id={`name`}
+                            name={`name`}
+                            options={customerData.map((customer: any) => ({
+                              value: customer._id,
+                              label: customer.name,
+                            }))}
+                            value={{ value: customerId, label: customerName }}
+                            onChange={(selectedOption: any) => {
+                              setCustomerId(selectedOption.value); // Update vendor ID
+                              setCustomerName(selectedOption.label); // Update vendor name
+                            }}
+                          />
                         </div>
                         <div className='col-span-12 lg:col-span-12'>
-                          {entries.map((entry: any, index: any) => (
+                          {entries && entries.map((entry: any, index: any) => (
                             <>
                               <div className='flex items-end justify-end mt-2'>
                                 {entries.length > 1 && (
@@ -194,7 +217,7 @@ const AddCustomerOrderForm = () => {
                                       Products
                                       <span className='ml-1 text-red-500'>*</span>
                                     </Label>
-                                    <Select
+                                    {/* <Select
                                       placeholder='Select Product'
                                       id={`product`}
                                       name={`product`}
@@ -210,7 +233,29 @@ const AddCustomerOrderForm = () => {
                                           {`${item.name} (${item.productCode})`}
                                         </option>
                                       ))}
-                                    </Select>
+                                    </Select> */}
+                                    <SelectReact
+                                      id={`product-${index}`}
+                                      name={`product-${index}`}
+                                      options={productsData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
+                                      // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
+                                      value={{
+                                        value: entry.product,
+                                        label: productsData.find((product: any) => product._id === entry.product)
+                                          ? `${productsData.find((product: any) => product._id === entry.product)?.name} (${productsData.find((product: any) => product._id === entry.product)?.productCode}) (${productsData.find((product: any) => product._id === entry.product)?.length})`
+                                          : ''
+                                      }}
+                                      onChange={(selectedOption: any) => {
+                                        const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
+                                        const updatedEntries = [...entries];
+                                        updatedEntries[index].product = selectedOption.value;
+                                        setEntries(updatedEntries);
+                                        const dropdown: any = document.getElementById(`product-${index}`);
+                                        if (dropdown) {
+                                          dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                                        }
+                                      }}
+                                    />
                                   </div>
                                   {entry.product && (
                                     <div className='col-span-12 lg:col-span-3'>
@@ -314,6 +359,28 @@ const AddCustomerOrderForm = () => {
                                       ))}
                                     </Select>
                                   </div>)}
+
+                                <div className='col-span-12 lg:col-span-3'>
+                                  <Label htmlFor='withoutMaterial'>
+                                    Wihtout Material
+                                    <span className='ml-1 text-red-500'>*</span>
+                                  </Label>
+                                  <Checkbox
+                                    label='Without Material'
+                                    id='withoutMaterial'
+                                    name='withoutMaterial'
+                                    checked={entries[index].withoutMaterial} // Assuming entries is an array of objects
+                                    onChange={(e) => {
+                                      const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
+                                      const updatedEntries = [...entries];
+                                      updatedEntries[index].withoutMaterial = target.checked; // Update with the checked value
+                                      setEntries(updatedEntries);
+                                    }}
+                                  />
+
+
+
+                                </div>
 
                               </div>
 
