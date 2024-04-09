@@ -33,5 +33,8 @@ export enum PathRoutes {
 	powder = '/powder',
 	invoice_list ="/invoice-list",
 	add_invoice="/add-invoice",
-	edit_invoice ="/edit-invoice"
+	edit_invoice ="/edit-invoice",
+	ledger_list = "/ledger-list",
+	add_ledger = "/add-ledger",
+	edit_ledger = "/edit-ledger"
 }

@@ -210,6 +210,22 @@ export const appPages: any = {
 			to: '/edit-invoice',
 		},
 	},
+	ledgerPage: {
+		listPage: {
+			id: 'ledger',
+			to: '/ledger-list',
+			text: 'Ledger List',
+			icon: 'HeroReceiptPercent',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-ledger',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-ledger',
+		},
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {
