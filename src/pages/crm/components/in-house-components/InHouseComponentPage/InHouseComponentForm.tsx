@@ -42,9 +42,20 @@ const AddproductForm = () => {
 	});
 
 	const handleAddEntry = () => {
-		setEntries([...entries, { name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
-	};
-
+		const lastEntry = entries[entries.length - 1];
+		const { hsn, productCode, rate } = lastEntry; 
+		const newEntry = { 
+		  name: '', 
+		  hsn,
+		  rate, 
+		  productCode, 
+		  thickness: null, 
+		  length: null, 
+		  weight: null 
+		};
+		setEntries([...entries, newEntry]);
+	  };
+	  
 	const handleSaveEntries = async () => {
 
 		console.log("entries", entries)

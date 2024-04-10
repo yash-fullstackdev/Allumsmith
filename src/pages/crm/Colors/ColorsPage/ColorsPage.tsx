@@ -10,28 +10,25 @@ import Input from "../../../../components/form/Input";
 import { post } from "../../../../utils/api-helper.util";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { Switch } from "@mui/material";
 
 const ColorsPage = () => {
     const navigate = useNavigate();
     const [entries, setEntries] = useState([{ name: '', code: '' }]);
+    const [colorState, setColorState] = useState<boolean>(true);
     const handleAddEntry = () => {
         setEntries([...entries, { name: '', code: '' }]);
     };
 
-    const handleSaveEntries = async () => {
-
-        console.log("entries", entries)
-
+    const handleSaveEntries = async (type: string) => {
         try {
             const promises = entries.map(async (entry) => {
-                const { data } = await post("/colors", entry);
+                const { data } = await post("/colors", { ...entry, type });
                 return data;
             });
-
             const results = await Promise.all(promises);
-            toast.success("Colors added Successfully!")
-            navigate(PathRoutes.colors)
-
+            toast.success("Colors added Successfully!");
+            navigate(PathRoutes.colors);
         } catch (error: any) {
             console.error("Error Adding Color", error);
             toast.error("Error Adding Colors", error);
@@ -55,6 +52,10 @@ const ColorsPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
+
+                    <div className='flex items-center justify-center ml-4' >
+                        <h4>Coating</h4>  <Switch {...Label} checked={colorState} onClick={() => setColorState(!colorState)} /><h4>Anodize</h4>
+                    </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
 
@@ -152,7 +153,7 @@ const ColorsPage = () => {
                                                 Add Entry
                                             </Button>
 
-                                            <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}>
+                                            <Button variant='solid' color='blue' type='button' onClick={() => handleSaveEntries(colorState ? 'anodize' : 'coating')}>
                                                 Save Entries
                                             </Button>
                                         </div>

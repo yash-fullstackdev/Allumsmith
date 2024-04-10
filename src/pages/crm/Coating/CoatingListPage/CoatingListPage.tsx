@@ -251,7 +251,7 @@ const CoatingListPage = () => {
                 <ModalHeader
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 >
-                    Colors
+                    Coating
                 </ModalHeader>
                 <ModalBody>
                     <CoatingColors colors={colors} />

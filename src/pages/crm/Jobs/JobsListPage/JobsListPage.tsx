@@ -136,12 +136,14 @@ const columnHelper = createColumnHelper<any>();
 const JobsListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [withoutsorting, setWithOutSorting] = useState<SortingState>([]);
     const [jobsList, setJobsList] = useState<any>([]);
     const [jobId, setJobId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false);
     const [batchModal, setBatchModal] = useState<boolean>(false);
     const [batch, setBatch] = useState<any>([]);
     const [globalFilter, setGlobalFilter] = useState<string>('');
+    const [withoutglobalFilter, setWithOutGlobalFilter] = useState<string>('');
     const [statusModal, setStatusModal] = useState<boolean>(false);
     const [status, setStatus] = useState<any>('')
     const [withoutstatusModal, setWithOutStatusModal] = useState<boolean>(false);
@@ -414,10 +416,10 @@ const JobsListPage = () => {
         data: data,
         columns:withoutMaterial,
         state: {
-            sorting,
-            globalFilter,
+            sorting: withoutsorting,
+            globalFilter: withoutglobalFilter,
         },
-        onSortingChange: setSorting,
+        onSortingChange: setWithOutSorting,
         enableGlobalFilter: true,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -553,12 +555,12 @@ const JobsListPage = () => {
                     <FieldWrap
                         firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
                         lastSuffix={
-                            globalFilter && (
+                            withoutglobalFilter && (
                                 <Icon
                                     icon='HeroXMark'
                                     color='red'
                                     className='mx-2 cursor-pointer'
-                                    onClick={() => setGlobalFilter('')}
+                                    onClick={() => setWithOutGlobalFilter('')}
                                 />
                             )
                         }>
@@ -567,8 +569,8 @@ const JobsListPage = () => {
                             id='searchBar'
                             name='searchBar'
                             placeholder='Search...'
-                            value={globalFilter ?? ''}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
+                            value={withoutglobalFilter ?? ''}
+                            onChange={(e) => setWithOutGlobalFilter(e.target.value)}
                         />
                     </FieldWrap>
                 </CardHeaderChild>

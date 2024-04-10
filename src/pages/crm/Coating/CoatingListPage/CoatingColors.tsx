@@ -67,6 +67,16 @@ const CoatingColors = ({ colors }: any) => {
             ),
             header: 'Code',
         }),
+        columnHelper.accessor('type', {
+            cell: (info) => (
+
+                <div className=''>
+                    {info.getValue() !== undefined ? info.getValue() : "Type not add"}
+                </div>
+
+            ),
+            header: 'Type',
+        }),
 
 
 
@@ -93,7 +103,7 @@ const CoatingColors = ({ colors }: any) => {
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>Colors</CardTitle>
+                            <CardTitle>Coating</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
