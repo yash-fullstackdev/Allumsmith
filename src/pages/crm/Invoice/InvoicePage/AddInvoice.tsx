@@ -139,99 +139,8 @@ const AddInvoice = () => {
     
 
   
-    // const handleSaveEntries = async () => {
-    //     try {
-    //         // Calculate total specificProductPrice
-    //         const totalSpecificProductPrice = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
-    //             const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
-    //             return acc + (specificProductPrice || 0);
-    //         }, 0);
-    
-    //         // Calculate total coatingTotal
-    //         const totalCoatingTotal = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
-    //             const coatingTotal = (entry.product?.coatingWeight || 0) * entry.coating.rate;
-    //             const totalCoatingPrice = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100);
-    //             return acc + (totalCoatingPrice || 0);
-    //         }, 0);
-    
-    //         // Calculate total amount including specificProductPrice, coatingTotal, and gst
-    //         // const totalAmount = totalSpecificProductPrice + totalCoatingTotal + parseFloat(entries.gst || 0);
-    //         let amountBT = 0;
-    //         const payload = {
-    //             customerOrder_id: purchaseOrderData._id || '',
-    //             customerName: purchaseOrderData.customer?._id || '',
-    //             customerEmail: purchaseOrderData.customer?.email || '',
-    //             customerPhone: purchaseOrderData.customer?.phone || '',
-    //             products: purchaseOrderData.entries.map((entry: any, index: any) => {
-    //                 const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
-    //                 const coatingTotal = (entry.product?.coatingWeight || 0) * entry.coating.rate ;
-    //                 const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
-    //                 const amount = specificProductPrice + finalCoatingTotal;
-    //                 amountBT += amount
-    //                 setAmountBeforeTax(parseFloat(amountBT.toFixed(2)));
-    //                 return {
-    //                     product: entry.product._id,
-    //                     color: entry.color?._id || '',
-    //                     coating: entry.coating?._id || '',
-    //                     coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
-    //                     delieveryQuantity: deliveredQuantities[index] || '',
-    //                     weight: entry?.product?.weight || '',
-    //                     length: entry.product?.length || '',
-    //                     rate: entry.product?.rate || '',
-    //                     specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
-    //                     coatingWeight: parseFloat(entry?.product?.coatingWeight) || '',
-    //                     coatingRate: entry.coating.rate,
-    //                     coatingTotal: coatingTotal || 0,
-    //                     amount:parseFloat(amount.toFixed(2)),
-    //                 };
-    //             }),
-    //             amountBeforeTax: amountBeforeTax || 0,
-    //             alluminiumRate: entries.alluminium_rate || '',
-    //             sendMail: entries.send_mail || false,
-    //             gst: parseFloat(entries.gst) || '',
-    //             other_tax: parseFloat(entries.tax) || '',
-    //             totalAmount: parseFloat(totalAmount) || '',
-    //             finished_weight: entries.finished_weight || '',
-    //             origin_point: entries.origin_point || '',
-    //             delivery_point: entries.delivery_point || ''
-    //             // 
-    //             // customerOrder_id: purchaseOrderData._id || '',
-    //             // customerName: purchaseOrderData.customer?._id || '',
-    //             // customerEmail: purchaseOrderData.customer?.email || '',
-    //             // customerPhone: purchaseOrderData.customer?.phone || '',
-    //             // products: purchaseOrderData.entries.map((entry: any, index: any) => ({
-    //             //     product: entry.product._id,
-    //             //     color: entry.color?._id || '',
-    //             //     coating: entry.coating?._id || '',
-    //             //     delieveryQuantity: deliveredQuantities[index] || '',
-    //             //     length: entry.product?.length || '',
-    //             //     rate: entry.product?.rate || '',
-    //             //     weight: entry.product?.weight || '',
-    //             //     discount: entry.product?.discount || '',
-    //             //     amount: entry.product?.amount || '',
-    //             // })),
-    //             // alluminiumRate: entries.alluminium_rate || '',
-    //             // sendMail: entries.send_mail || false,
-    //             // coatingDiscount: entries.coating_discount || '',
-    //             // customerDiscount: entries.customer_disco0unt || '',
-    //             // gst: entries.gst || '',
-    //             // other_tax: entries.tax || '',
-    //             // totalAmount: entries.total_amount || '',
-    //             // finished_weight: entries.finished_weight || '',
-    //             // origin_point: entries.origin_point || '',
-    //             // delivery_point: entries.delivery_point || ''
-    //         };
-    //         console.log('Payload',payload);
-            
-    //         // const respones = await post('/invoice',payload)
-    //         // console.log('Response:', respones);
-    //         // navigate(PathRoutes.invoice_list)
-            
-    //     } catch (error) {
-    //         console.error('Error saving data:', error);
-    //     }
-    // };
 
+  
     const handleSaveEntries = async () => {
         let amountBeforeTax = 0; // Initialize amountBeforeTax variable
     
@@ -251,7 +160,7 @@ const AddInvoice = () => {
     
             // Calculate amountBeforeTax
             amountBeforeTax = totalSpecificProductPrice + totalCoatingTotal;
-    
+            
             const payload = {
                 customerOrder_id: purchaseOrderData._id || '',
                 customerName: purchaseOrderData.customer?._id || '',
@@ -265,6 +174,7 @@ const AddInvoice = () => {
     
                     return {
                         product: entry.product._id,
+                        name: entry?.product?.name,
                         color: entry.color?._id || '',
                         coating: entry.coating?._id || '',
                         coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
@@ -277,6 +187,9 @@ const AddInvoice = () => {
                         coatingRate: entry.coating.rate,
                         coatingTotal: coatingTotal || 0,
                         amount:parseFloat(amount.toFixed(2)),
+                        coatingName:entry?.coating?.name,
+                        cgst:parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                        sgst:parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2))
                     };
                 }),
                 amountBeforeTax: parseFloat(amountBeforeTax.toFixed(2)), // Set amountBeforeTax here
@@ -287,7 +200,9 @@ const AddInvoice = () => {
                 totalAmount: parseFloat(totalAmount) || '',
                 finished_weight: entries.finished_weight || '',
                 origin_point: entries.origin_point || '',
-                delivery_point: entries.delivery_point || ''
+                delivery_point: entries.delivery_point || '',
+                
+
             };
             console.log('Payload', payload);
             
@@ -400,7 +315,7 @@ const AddInvoice = () => {
 
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
                                                                          Length
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -425,7 +340,7 @@ const AddInvoice = () => {
                                                                         value={entry?.product?.weight}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
                                                                          Rate
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -444,7 +359,33 @@ const AddInvoice = () => {
 
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="coatingQuantity" className='!text-sm'>
+                                                                        Available Quantity
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='text'
+                                                                        id={`coatingQuantity${index}`}
+                                                                        name={`coatingQuantity${index}`}
+                                                                        value={entry?.itemSummary?.coatingQuantity}
+                                                                    />
+                                                                </div>
+                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="deliveredQuantity" className='!text-sm'>
+                                                                        Delivered Quantity
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                    type='number'
+                                                                    id={`delivered_quantity${index}`}
+                                                                    name={`delivered_quantity${index}`}
+                                                                    value={deliveredQuantities[index]} 
+                                                                    onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
+                                                                />
+                                                                </div>
+                                                                
+                                                                <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coating`} className='!text-sm'>
                                                                         Coating
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -457,7 +398,7 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
                                                                         Coating Rate
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -500,7 +441,7 @@ const AddInvoice = () => {
                                                                         onChange={(e) => handleQuantityAndDiscountChange(e.target.value, index, 'coating_discount')}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-1'>
+                                                                <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor='color' className='!text-sm'>
                                                                         Color
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -514,34 +455,12 @@ const AddInvoice = () => {
                                                                         onChange={(e) => console.log(e)}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="coatingQuantity" className='!text-sm'>
-                                                                        Available Quantity
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='text'
-                                                                        id={`coatingQuantity${index}`}
-                                                                        name={`coatingQuantity${index}`}
-                                                                        value={entry?.itemSummary?.coatingQuantity}
-                                                                    />
-                                                                </div>
+
                                                                 
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="delivered_quantity" className='!text-sm'>
-                                                                        Delivered Quantity
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label> 
-                                                                    
-                                                                    <Input
-                                                                    type='number'
-                                                                    id={`delivered_quantity${index}`}
-                                                                    name={`delivered_quantity${index}`}
-                                                                    value={deliveredQuantities[index]} 
-                                                                    onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
-                                                                />
-                                                                </div>
+                                                               
+
                                                             </div>
+                                                            
                                                             </>);
                                                     })}
                                                 </div>
@@ -595,7 +514,7 @@ const AddInvoice = () => {
 
                                                                 />
                                                             </div>
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                            {/* <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Alluminium Rate
                                                                     <span className='ml-1 text-red-500'>*</span>
@@ -606,10 +525,10 @@ const AddInvoice = () => {
                                                                     name="alluminium_rate"
                                                                     onChange={(e) => setEntries({ ...entries, alluminium_rate: e.target.value })}
                                                                 />
-                                                            </div>
+                                                            </div> */}
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
-                                                                    CGST
+                                                                    GST
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
@@ -621,7 +540,7 @@ const AddInvoice = () => {
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='other_tax'>
-                                                                        SGST
+                                                                        Other Tax
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input

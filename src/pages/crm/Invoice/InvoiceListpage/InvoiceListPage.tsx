@@ -30,6 +30,7 @@ const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import InvoiceCustomerDetail from './InvoiceCustomerDetail';
+// import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const InvoiceListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
