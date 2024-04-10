@@ -15,7 +15,6 @@ import Checkbox from '../../../../components/form/Checkbox';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
-  console.log("🚀 ~ AddCustomerOrderForm ~ entries:", entries)
   const [customerId, setCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([])
@@ -25,6 +24,8 @@ const AddCustomerOrderForm = () => {
   const navigate = useNavigate();
   const [productTransfer, setProductTransfer] = useState(false)
   const [colorDataList, setColorDataList] = useState<Array<any>>([]);
+  const [selectedCoatings, setSelectedCoatings] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string[]>([]);
 
 
   const getProductDetails = async () => {
@@ -69,10 +70,41 @@ const AddCustomerOrderForm = () => {
     setEntries({ ...entries, withoutMaterial: e.target.checked });
   };
 
-  const handleAddEntry = () => {
-    setEntries([...entries, { product: '', quantity: '', coating: '', color: '', length: '', withoutMaterial: '' }]);
-  };
+  // const handleAddEntry = () => {
+  //   setEntries([...entries, { product: '', quantity: '', coating: null, color: '', length: '', withoutMaterial: '' }]);
+  // };
 
+  // const handleAddEntry = () => {
+  //   const lastEntry = entries[entries.length - 1]; // Get the last entry
+  //   const newEntry = {
+  //     product: '', 
+  //     quantity: '', 
+  //     coating: lastEntry.coating || null, // Initialize with the coating of the last entry
+  //     color: lastEntry.color || null, 
+  //     length: '', 
+  //     withoutMaterial: '' 
+  //   }; // Create a new entry with the coating initialized with the value of the last entry
+  //   setEntries([...entries, newEntry]);
+  // };
+  const handleAddEntry = () => {
+    const lastEntry = entries[entries.length - 1];
+    const newEntry = {
+      product: '', 
+      quantity: '', 
+      coating: lastEntry.coating || null, 
+      color: lastEntry.color || null, 
+      length: '', 
+      withoutMaterial: '' 
+    };
+    setEntries([...entries, newEntry]);
+  
+    // Update color options for the new entry based on the selected coating
+    if (lastEntry.coating) {
+      updateColorOptions(lastEntry.coating, entries.length);
+    }
+  };
+  
+  
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
@@ -108,7 +140,49 @@ const AddCustomerOrderForm = () => {
     setEntries(newProduct)
   }
 
+  const handleCoatingChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const coatingId = e.target.value;
+    const updatedEntries = [...entries];
+    updatedEntries[index].coating = coatingId;
+    setEntries(updatedEntries);
+    updateColorOptions(coatingId, index);
+  
+    // Update selected coating value
+    const updatedSelectedCoatings = [...selectedCoatings];
+    updatedSelectedCoatings[index] = coatingId;
+    console.log("🚀 ~ handleCoatingChange ~ updatedSelectedCoatings:", updatedSelectedCoatings)
+    setSelectedCoatings(updatedSelectedCoatings);
+  };
 
+  // const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  //   const colorId = e.target.value;
+  //   const updatedEntries = [...entries];
+  //   updatedEntries[index].color = colorId;
+  //   setEntries(updatedEntries);
+  // };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const colorId = e.target.value;
+    const updatedEntries = [...entries];
+    updatedEntries[index] = {...updatedEntries[index], color: colorId}; // Update the color for the specific entry
+    setEntries(updatedEntries);
+  };
+  
+  
+  
+  
+  // const updateColorOptions = (coatingId: any, entryIndex: number) => {
+  //   const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
+  //   if (selectedCoating) {
+  //     const newColorDataList = [...colorDataList];
+  //     newColorDataList[entryIndex] = selectedCoating.colors;
+  //     setColorDataList(newColorDataList);
+  //   } else {
+  //     const newColorDataList = [...colorDataList];
+  //     newColorDataList[entryIndex] = [];
+  //     setColorDataList(newColorDataList);
+  //   }
+  // };
   const updateColorOptions = (coatingId: any, entryIndex: number) => {
     const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
@@ -121,6 +195,7 @@ const AddCustomerOrderForm = () => {
       setColorDataList(newColorDataList);
     }
   };
+  
 
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -319,14 +394,19 @@ const AddCustomerOrderForm = () => {
                                     placeholder='Select Coating'
                                     id={`coating-${index}`}
                                     name={`coating-${index}`}
-                                    value={entry.coating}
-                                    onChange={(e: any) => {
-                                      const coatingId = e.target.value;
-                                      const updatedEntries = [...entries];
-                                      updatedEntries[index].coating = coatingId;
-                                      setEntries(updatedEntries);
-                                      updateColorOptions(coatingId, index);
-                                    }}
+                                    // value={entry.coating }
+                                    value={entry.coating || selectedCoatings[index]}
+                                    onChange={(e) => handleCoatingChange(e, index)}
+                                    // onChange={(e: any,index:number) => {
+                                    //   const coatingId = e.target.value;
+                                    //   const updatedEntries = [...entries];
+                                    //   updatedEntries[index].coating = coatingId;
+                                    //   setEntries(updatedEntries);
+                                    //   updateColorOptions(coatingId, index);
+                                    //   const updatedSelectedCoatings = [...selectedCoatings];
+                                    //   console.log("🚀 ~ AddCustomerOrderForm ~ updatedSelectedCoatings:", updatedSelectedCoatings[index])
+                                    // }}
+
                                   >
                                     {coatingData.map((coating: any) => (
                                       <option key={coating._id} value={coating._id}>
@@ -345,12 +425,14 @@ const AddCustomerOrderForm = () => {
                                       placeholder='Select Color'
                                       id={`color-${index}`}
                                       name={`color-${index}`}
-                                      value={entry.color}
-                                      onChange={(e: any) => {
-                                        const updatedEntries = [...entries];
-                                        updatedEntries[index].color = e.target.value;
-                                        setEntries(updatedEntries);
-                                      }}
+                                      value={entry.color || selectedColor[index]}
+                                      onChange={(e) => handleColorChange(e, index)}
+                                      // value={entry.color}
+                                      // onChange={(e: any) => {
+                                      //   const updatedEntries = [...entries];
+                                      //   updatedEntries[index].color = e.target.value;
+                                      //   setEntries(updatedEntries);
+                                      // }}
                                     >
                                       {colorDataList[index]?.map((color: any) => (
                                         <option key={color._id} value={color._id}>
@@ -362,7 +444,7 @@ const AddCustomerOrderForm = () => {
 
                                 <div className='col-span-12 lg:col-span-3'>
                                   <Label htmlFor='withoutMaterial'>
-                                    Wihtout Material
+                                    Without Material
                                     <span className='ml-1 text-red-500'>*</span>
                                   </Label>
                                   <Checkbox

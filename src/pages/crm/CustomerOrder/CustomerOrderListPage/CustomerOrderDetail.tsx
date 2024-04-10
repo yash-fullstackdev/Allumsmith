@@ -34,13 +34,10 @@ const columnHelper = createColumnHelper<any>();
 
 
 const CustomerOrderDetail = ({ customerId }: any) => {
-
-
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editedData, setEditedData] = useState<{ [key: string]: any }>({});
     const [selectedBranches, setSelectedBranches] = useState<any>({});
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>()
-    console.log("🚀 ~ CustomerOrderDetail ~ purchaseOrderData:", purchaseOrderData)
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [collapseAll, setCollapseAll] = useState<boolean>(false);
     const [accordionStates, setAccordionStates] = useState({
@@ -100,7 +97,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {info.getValue() !== undefined ? info.getValue() : 0}
                 </div>
 
             ),
@@ -110,7 +107,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {info.getValue() !== undefined ? info.getValue() : 0}
                 </div>
 
             ),
@@ -212,6 +209,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
         });
         setCollapseAll(!collapseAll);
     };
+    
     const handleSave = async () => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             ProductStaus: row.original.status,

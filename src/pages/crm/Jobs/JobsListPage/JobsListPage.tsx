@@ -38,6 +38,7 @@ import EditJobModal from '../JobsPage/EditJobModal';
 import StatusModal from '../JobsPage/StatusModal';
 import Collapse from '../../../../components/utils/Collapse';
 import WithoutJobBatch from '../JobsPage/WithoutMaterial/WithoutJobBatch';
+import WithoutMaterialStatus from '../JobsPage/WithoutMaterial/WithoutMaterialStatus';
 
 const data = [
     {
@@ -143,6 +144,8 @@ const JobsListPage = () => {
     const [globalFilter, setGlobalFilter] = useState<string>('');
     const [statusModal, setStatusModal] = useState<boolean>(false);
     const [status, setStatus] = useState<any>('')
+    const [withoutstatusModal, setWithOutStatusModal] = useState<boolean>(false);
+    const [withoutstatus, setWithOutStatus] = useState<any>('')
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
@@ -334,8 +337,8 @@ const JobsListPage = () => {
             cell: (info) => (
                 <div className='font-bold'>
                     <Button onClick={() => {
-                        setStatusModal(true)
-                        setStatus(info.row.original.status)
+                        setWithOutStatusModal(true)
+                        setWithOutStatus(info.row.original.status)
                         setJobId(info.row.original._id)
                     }}
                         isDisable={info.row.original.status === 'completed'}
@@ -636,12 +639,22 @@ const JobsListPage = () => {
             <Modal isOpen={statusModal} setIsOpen={setStatusModal} isScrollable fullScreen="lg">
                 <ModalHeader
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-
                 >
                     Status
                 </ModalHeader>
                 <ModalBody>
                     <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData} />
+                </ModalBody>
+            </Modal>
+            <Modal isOpen={withoutstatusModal} setIsOpen={setWithOutStatusModal} isScrollable fullScreen="lg">
+                <ModalHeader
+                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+
+                >
+                    Status
+                </ModalHeader>
+                <ModalBody>
+                    <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
 
