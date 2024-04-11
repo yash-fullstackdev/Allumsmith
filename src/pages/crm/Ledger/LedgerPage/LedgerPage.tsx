@@ -8,24 +8,30 @@ import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/Input';
-import { get } from '../../../../utils/api-helper.util';
+import { get, post } from '../../../../utils/api-helper.util';
 import SelectReact from '../../../../components/form/SelectReact';
+import { number } from 'yup';
+import AllInvoice from './AllInvoice';
 
 const optionSelect = [
-  { value: "credit", label: "Credit Card" },
-  { value: "debit", label: "Dedit Card" }
+  { value: "credit", label: "Credit" },
+  { value: "debit", label: "Dedit" }
 ]
 
 const OptionPaymentMode = [
   { value: "cheque", label: "Cheque" },
-  { value: "cash", label: "Cash" }
+  { value: "cash", label: "Cash" },
+  { value: "RTGS", label: "RTGS" },
+  { value: "upi", label: "UPI" },
+
 ]
 
 const LedgerPage = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<any>([]);
-  const [formData, setFormData] = useState({ customer_id: '', customer_name: '', transaction_type: '', payment_mode: '', amount: '', remarks: '' })
-
+  const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', transaction_type: '', payment_mode: '', amount: '', remarks: '', grandTotal:0, paidAmount:0, pendingAmount:0, creditedAmount:0, amountPayable:0 })
+  const [specificCustomerData, setSpecificCustomerData] = useState<any>([]);
+  const [associatedInvoices, setAssociatedInvoices] = useState<any>([]);
   const getCustomerDetails = async () => {
     try {
       const { data } = await get('/customers');
@@ -35,46 +41,62 @@ const LedgerPage = () => {
     }
   }
 
-  const handleSelectChange = (selectedOption: any) => {
-    console.log('Selected Option:', selectedOption);
-  };
-  const handleTransactionChange = (selectedOptiontrans: any) => {
-    console.log('Selected Option:', selectedOptiontrans);
-  };
-  const handlePaymentChange = (selectedOptiontrans: any) => {
-    console.log('Selected Option:', selectedOptiontrans);
-  };
+  // const handleSelectChange = (selectedOption: any) => {
+  //   console.log('Selected Option:', selectedOption);
+  // };
+  // const handleTransactionChange = (selectedOptiontrans: any) => {
+  //   console.log('Selected Option:', selectedOptiontrans);
+  // };
+  // const handlePaymentChange = (selectedOptiontrans: any) => {
+  //   console.log('Selected Option:', selectedOptiontrans);
+  // };
 
   const handleSubmit = async () => {
     try {
       // Gather all form data
       const formDataToSend = {
-        customer_id: formData.customer_id,
+        customer: formData.customer_id,
         transaction_type: formData.transaction_type,
         payment_mode: formData.payment_mode,
-        amount: parseFloat(formData.amount),
+        grandTotal: parseFloat(formData.grandTotal),
         remarks: formData.remarks,
-        associated_co: "660fc209aebcddadc63b2a34",
-        invoice: "660fc209aebcddadc63b2a34"
+        amount_payable:parseFloat(formData.amountPayable),
       };
 
-      // Send formDataToSend to backend or perform other actions
       console.log('Form data to send:', formDataToSend);
-
-      // Optionally, reset form data after successful submission
-      setFormData({
-        customer_id: '',
-        transaction_type: '',
-        payment_mode: '',
-        amount: '',
-        remarks: '',
-        customer_name: ''
-      });
-
+      const {data} = await post('/ledger', formDataToSend);
+      
     } catch (error) {
       console.error('Error submitting form:', error);
     }
   };
+
+  const fetchInvoices = async (customerId: any) => {
+    try {
+      const { data } = await get(`/customers/getAllInvoiceOfCustomer/${customerId}`);
+      setSpecificCustomerData(data);
+      setAssociatedInvoices(data.associatedInvoices);
+      
+      // Calculate grandTotal
+      const totalAmounts = data.associatedInvoices.map((invoice: any) => invoice.totalAmount);
+      const grandTotal = totalAmounts.reduce((acc: number, curr: number) => acc + curr, 0);
+      
+      // Set grandTotal in formData
+      setFormData({ ...formData, grandTotal, customer_id: customerId,paidAmount:data.paid_amount || 0, pendingAmount: data.pending_amount || 0});
+
+    } catch (error) {
+      console.error('Error Fetching Invoices for Customer:', error);
+    }
+  }
+
+  const handleCustomerSelect = (selectedOption:any) => {
+    if (selectedOption && selectedOption.value) {
+      fetchInvoices(selectedOption.value);
+    }
+  };
+
+  console.log('Invoice Data', associatedInvoices);
+  console.log('data', specificCustomerData)
 
   useEffect(() => {
     getCustomerDetails()
@@ -126,14 +148,8 @@ const LedgerPage = () => {
                               value: customer._id,
                               label: customer.name,
                             }))}
-                            value={{ value: formData.customer_id, label: formData.customer_name }}
-                            onChange={(selectedOption) => {
-                              if (selectedOption && 'value' in selectedOption) {
-                                setFormData({ ...formData, customer_id: selectedOption.value, customer_name: selectedOption.label });
-                              }
-                            }}
+                            onChange={handleCustomerSelect}
                           />
-
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
                           <Label htmlFor='transaction_type'>
@@ -202,8 +218,73 @@ const LedgerPage = () => {
                             onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                           />
                         </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='grandTotal'>
+                            Grand Total
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type="number"
+                            id={`grandTotal`}
+                            name={`grandTotal`}
+                            value={formData.grandTotal}
+                            onChange={(e) => setFormData({ ...formData, grandTotal: e.target.value })}
+                          />
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='paidAmount'>
+                            paidAmount
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type="number"
+                            id={`paidAmount`}
+                            name={`paidAmount`}
+                            value={formData.paidAmount}
+                            onChange={(e) => setFormData({ ...formData, paidAmount: e.target.value })}
+                          />
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='pendingAmount'>
+                            pendingAmount
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type="number"
+                            id={`pendingAmount`}
+                            name={`pendingAmount`}
+                            value={formData.pendingAmount}
+                            onChange={(e) => setFormData({ ...formData, pendingAmount: e.target.value })}
+                          />
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='creditedAmount'>
+                            Credited Amount
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type="number"
+                            id={`creditedAmount`}
+                            name={`creditedAmount`}
+                            value={formData.creditedAmount}
+                            onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
+                          />
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='amountPayable'>
+                            Amount Payable
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type="number"
+                            id={`amountPayable`}
+                            name={`amountPayable`}
+                            value={formData.amountPayable}
+                            onChange={(e) => setFormData({ ...formData, amountPayable: e.target.value })}
+                          />
+                        </div>
                       </div>
-                      <Button variant='solid' color='blue' type='submit' onClick={handleSubmit} >
+                      <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={handleSubmit} >
                         Save Entries
                       </Button>
                     </div>
@@ -215,6 +296,7 @@ const LedgerPage = () => {
         </div>
 
       </Container>
+      <AllInvoice associatedInvoices = {associatedInvoices} />
     </PageWrapper>
   )
 }

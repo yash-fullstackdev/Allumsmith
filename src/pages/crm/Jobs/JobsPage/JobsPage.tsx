@@ -148,7 +148,8 @@ const JobsPage = () => {
         setCollapsible(updatedCollapsible);
     };
 
-
+    console.log('Customer Or', customerOrderData);
+    
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
             <Subheader>
@@ -327,17 +328,17 @@ const JobsPage = () => {
                                                                         const selectedOrderId = e.target.value;
                                                                         const selectedOrderName = e.target.options[e.target.selectedIndex].text;
                                                                         const updatedOrders = customerOrders.map((orderItem: any, idx: any) => {
-                                                                            if (idx === index) {
+                                                                            if (idx === index) {   
                                                                                 return {
                                                                                     ...orderItem,
                                                                                     name: { id: selectedOrderId, name: selectedOrderName },
-                                                                                    products: customerOrderData?.find((co: any) => co.customer.name === selectedOrderName)?.entries || [],
+                                                                                    products: customerOrderData?.find((co: any) => co._id === selectedOrderId)?.entries || [],
                                                                                 };
                                                                             }
                                                                             return orderItem;
                                                                         });
                                                                         setCustomerOrders(updatedOrders);
-                                                                        setSelectedCustomerOrderData(selectedOrderId); // Set the selected order ID
+                                                                        setSelectedCustomerOrderData(selectedOrderId); 
                                                                     }}
                                                                 >
                                                                     {customerOrderData?.map((co: any) => {
