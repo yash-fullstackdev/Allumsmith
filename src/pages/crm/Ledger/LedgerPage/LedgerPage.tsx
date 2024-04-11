@@ -29,7 +29,7 @@ const OptionPaymentMode = [
 const LedgerPage = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<any>([]);
-  const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', transaction_type: '', payment_mode: '', amount: '', remarks: '', grandTotal:0, paidAmount:0, pendingAmount:0, creditedAmount:0, amountPayable:0 })
+  const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', payment_mode: '', remarks: '', grandTotal:0, paidAmount:0, pendingAmount:0, creditedAmount:0, amountPayable:0 })
   const [specificCustomerData, setSpecificCustomerData] = useState<any>([]);
   const [associatedInvoices, setAssociatedInvoices] = useState<any>([]);
   const getCustomerDetails = async () => {
@@ -41,22 +41,13 @@ const LedgerPage = () => {
     }
   }
 
-  // const handleSelectChange = (selectedOption: any) => {
-  //   console.log('Selected Option:', selectedOption);
-  // };
-  // const handleTransactionChange = (selectedOptiontrans: any) => {
-  //   console.log('Selected Option:', selectedOptiontrans);
-  // };
-  // const handlePaymentChange = (selectedOptiontrans: any) => {
-  //   console.log('Selected Option:', selectedOptiontrans);
-  // };
+
 
   const handleSubmit = async () => {
     try {
       // Gather all form data
       const formDataToSend = {
         customer: formData.customer_id,
-        transaction_type: formData.transaction_type,
         payment_mode: formData.payment_mode,
         grandTotal: parseFloat(formData.grandTotal),
         remarks: formData.remarks,
@@ -68,6 +59,8 @@ const LedgerPage = () => {
       
     } catch (error) {
       console.error('Error submitting form:', error);
+    }finally{
+      navigate(PathRoutes.ledger_list)
     }
   };
 
@@ -82,7 +75,7 @@ const LedgerPage = () => {
       const grandTotal = totalAmounts.reduce((acc: number, curr: number) => acc + curr, 0);
       
       // Set grandTotal in formData
-      setFormData({ ...formData, grandTotal, customer_id: customerId,paidAmount:data.paid_amount || 0, pendingAmount: data.pending_amount || 0});
+      setFormData({ ...formData, grandTotal, customer_id: customerId,paidAmount:data.paid_amount || 0, pendingAmount: data.pending_amount || 0, creditedAmount:data.credit_amount || 0});
 
     } catch (error) {
       console.error('Error Fetching Invoices for Customer:', error);
@@ -151,40 +144,7 @@ const LedgerPage = () => {
                             onChange={handleCustomerSelect}
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
-                          <Label htmlFor='transaction_type'>
-                            Transaction Type
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <SelectReact
-                            id={`transaction_type`}
-                            name={`transaction_type`}
-                            options={optionSelect.map((trans: any) => ({
-                              value: trans.value,
-                              label: `${trans.label} `,
-                            }))}
-                            value={{ value: formData.transaction_type, label: formData.transaction_type }}
-                            onChange={(selectedOption) => {
-                              if (selectedOption && 'value' in selectedOption) {
-                                setFormData({ ...formData, transaction_type: selectedOption.value });
-                              }
-                            }}
-                          />
-
-                        </div>
-                        <div className='col-span-12 lg:col-span-6'>
-                          <Label htmlFor='amount'>
-                            Amount
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type='text'
-                            id={`amount`}
-                            name={`amount`}
-                            value={formData.amount}
-                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                          />
-                        </div>
+                        
                         <div className='col-span-12 lg:col-span-6'>
                           <Label htmlFor='payment_mode'>
                             Payment Mode
@@ -228,12 +188,13 @@ const LedgerPage = () => {
                             id={`grandTotal`}
                             name={`grandTotal`}
                             value={formData.grandTotal}
-                            onChange={(e) => setFormData({ ...formData, grandTotal: e.target.value })}
+                            // onChange={(e) => setFormData({ ...formData, grandTotal: e.target.value })}
+                            disabled
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
                           <Label htmlFor='paidAmount'>
-                            paidAmount
+                            Paid Amount
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -242,19 +203,22 @@ const LedgerPage = () => {
                             name={`paidAmount`}
                             value={formData.paidAmount}
                             onChange={(e) => setFormData({ ...formData, paidAmount: e.target.value })}
+                            disabled
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
                           <Label htmlFor='pendingAmount'>
-                            pendingAmount
+                            Pending Amount
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
                             type="number"
+                            placeholder='Pending Amount'
                             id={`pendingAmount`}
                             name={`pendingAmount`}
                             value={formData.pendingAmount}
                             onChange={(e) => setFormData({ ...formData, pendingAmount: e.target.value })}
+                            disabled
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
@@ -267,7 +231,8 @@ const LedgerPage = () => {
                             id={`creditedAmount`}
                             name={`creditedAmount`}
                             value={formData.creditedAmount}
-                            onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
+                            disabled
+                            // onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
@@ -277,6 +242,7 @@ const LedgerPage = () => {
                           </Label>
                           <Input
                             type="number"
+                            min={0}
                             id={`amountPayable`}
                             name={`amountPayable`}
                             value={formData.amountPayable}

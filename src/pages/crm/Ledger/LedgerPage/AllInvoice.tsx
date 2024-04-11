@@ -52,8 +52,16 @@ const AllInvoice = ({associatedInvoices}:any) => {
         getInvoiceList();
     }, [])
    
-    const columns = [
+    const columns:any = [
 
+        columnHelper.accessor('Invoice Name', {
+            cell: (cellContext) => (
+                <div className=''>
+                    {`Invoice ${cellContext.row.index + 1}`}
+                </div>
+            ),
+            header: 'Invoice Name',
+        }),
         columnHelper.accessor('totalAmount', {
             cell: (info) => (
 

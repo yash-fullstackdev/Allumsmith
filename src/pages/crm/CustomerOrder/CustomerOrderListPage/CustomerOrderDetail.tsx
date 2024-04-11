@@ -93,7 +93,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
             header: 'Requried Quantity',
         }),
 
-        columnHelper.accessor('itemSummary.pendingQuantity', {
+        columnHelper.accessor('pendingQuantity', {
             cell: (info) => (
 
                 <div className=''>

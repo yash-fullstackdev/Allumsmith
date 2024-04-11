@@ -28,29 +28,20 @@ import {
 import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
-const data = [
-    {
-        "_id": "661397722e9cff111d49af4b",
-        "customer": {
-            "_id": "660bd76021ef370337f5d352",
-            "name": "xyz"
-        },
-        "transaction_type": "debit",
-        "amount": 50000,
-        "payment_mode": "RTGS",
-        "remarks": "nice coating",
-        "associated_co": "660beade319f102ab5a681e4",
-        "invoice": "66100d5810a55e2cf43303f4",
-        "createdAt": "2024-04-08T07:06:26.336Z",
-        "updatedAt": "2024-04-08T07:09:51.984Z",
-        "__v": 0
-    }
-]
+
 
 const LedgerListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [data, setData] = useState<any>([]);
 
+    const getAllLedger = async() =>{
+        const {data} = await get('/ledger');
+        setData(data);
+    }
 
+    useEffect(() =>{
+        getAllLedger();
+    },[])
 
     const columns = [
 
@@ -64,7 +55,7 @@ const LedgerListPage = () => {
             ),
             header: 'Customer Name',
         }),
-        columnHelper.accessor('amount', {
+        columnHelper.accessor('amount_payable', {
             cell: (info) => (
 
                 <div className=''>
@@ -74,16 +65,7 @@ const LedgerListPage = () => {
             ),
             header: 'Amount',
         }),
-        columnHelper.accessor('transaction_type', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue() || 'NA'} `}
-                </div>
-
-            ),
-            header: 'Transction Type',
-        }),
+        
         columnHelper.accessor('payment_mode', {
             cell: (info) => (
 
