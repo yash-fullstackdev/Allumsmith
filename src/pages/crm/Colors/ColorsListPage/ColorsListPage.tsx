@@ -31,6 +31,9 @@ import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import EditColorModal from '../ColorsPage/EditColorModal';
+import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
+import { Switch } from '@mui/material';
+import Label from '../../../../components/form/Label';
 
 
 
@@ -44,12 +47,14 @@ const ColorsListPage = () => {
     const [colorsList, setColorsList] = useState<any[]>([]);
     const [colorId, setColorId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false)
+    const [colorState, setColorState] = useState<boolean>(true);
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data: colorsList } = await get(`/colors`);
             setColorsList(colorsList);
+            filterData(colorsList, colorState);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -59,9 +64,29 @@ const ColorsListPage = () => {
         }
     };
 
+    const handleToggleCoatingState = () => {
+        setColorState(prevState => !prevState);
+    };
+
+    const filterData = (data:any[], isCoating:boolean) => {
+        let filtered;
+        if (isCoating) {
+            filtered = data.filter(item => item.type === 'anodize');
+        } else {
+            filtered = data.filter(item => item.type === 'coating');
+        }
+        setColorsList(filtered);
+    };
+    
+    
+    useEffect(() => {
+        console.log("coatingState:", colorState);
+        filterData(colorsList, colorState);
+    }, [colorState]);
+
     useEffect(() => {
         fetchData();
-    }, [])
+    }, [colorState])
     const handleClickDelete = async (id: any) => {
         try {
             const { data: colors } = await deleted(`/colors/${id}`);
@@ -175,6 +200,14 @@ const ColorsListPage = () => {
 
     return (
         <PageWrapper name='Inventory List'>
+            <Subheader>
+            <SubheaderLeft>
+                    <div className='flex items-center justify-center ml-4' >
+                        <h4>Coating</h4>  <Switch {...Label} checked={colorState} onClick={handleToggleCoatingState} /><h4>Anodize</h4>
+                    </div>
+                    <SubheaderSeparator />
+                </SubheaderLeft>
+            </Subheader>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>

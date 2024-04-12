@@ -39,6 +39,14 @@ const CoatingPage = () => {
         }
     };
 
+    const filteredColors = colorData.filter((color: any) => {
+        if (coatingState) {
+            return color.type === "anodize";
+        } else {
+            return color.type === "coating";
+        }
+    });
+
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
         setFormData(prevState => ({
@@ -48,8 +56,8 @@ const CoatingPage = () => {
     };
 
     const optionsGroup = [];
-    if (Array.isArray(colorData) && colorData.length > 0) {
-        const options = colorData.map((color: any) => ({
+    if (Array.isArray(filteredColors) && filteredColors.length > 0) {
+        const options = filteredColors.map((color: any) => ({
             value: color._id,
             label: color.name
         }));
@@ -60,6 +68,20 @@ const CoatingPage = () => {
     } else {
         console.error('Invalid or empty color data.');
     }
+
+    // const optionsGroup = [];
+    // if (Array.isArray(colorData) && colorData.length > 0) {
+    //     const options = colorData.map((color: any) => ({
+    //         value: color._id,
+    //         label: color.name
+    //     }));
+    //     optionsGroup.push({
+    //         label: 'Colors',
+    //         options: options
+    //     });
+    // } else {
+    //     console.error('Invalid or empty color data.');
+    // }
 
     // const addCoatingToDatabase = async () => {
     //     console.log('FormData', formData)
