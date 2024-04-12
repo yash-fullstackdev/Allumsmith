@@ -69,54 +69,34 @@ const CoatingPage = () => {
         console.error('Invalid or empty color data.');
     }
 
-    // const optionsGroup = [];
-    // if (Array.isArray(colorData) && colorData.length > 0) {
-    //     const options = colorData.map((color: any) => ({
-    //         value: color._id,
-    //         label: color.name
-    //     }));
-    //     optionsGroup.push({
-    //         label: 'Colors',
-    //         options: options
-    //     });
-    // } else {
-    //     console.error('Invalid or empty color data.');
-    // }
-
-    // const addCoatingToDatabase = async () => {
-    //     console.log('FormData', formData)
-    //     try {
-    //         const data = {
-    //             code: formData.code,
-    //             colors: formData.colors,
-    //             name: formData.name,
-    //             rate: parseInt(formData.rate),
-    //         };
-    //         const response = await post('/coatings', data);
-    //         console.log("Response:", response);
-    //         toast.success('Data saved Successfully!');
-    //         navigate(PathRoutes.coating);
-    //     } catch (error) {
-    //         console.error("Error Saving Data:", error);
-    //         toast.error('Failed to save data. Please try again.');
-    //     }
-    // };
 
     const addEntryToDatabase = async (type: string) => {
-        console.log('FormData', formData)
         try {
-            const data = {
-                code: formData.code,
-                colors: formData.colors,
-                name: formData.name,
-                rate: parseInt(formData.rate),
-                mm: parseFloat(formData.mm),
-                type: type // Include type in the payload
-            };
-            const response = await post('/colors', data); // Use the same API endpoint
+            let finalData = {}
+            if (type === "coating") {
+                const data = {
+                    code: formData.code,
+                    colors: formData.colors,
+                    name: formData.name,
+                    rate: parseInt(formData.rate),
+                    type: type // Include type in the payload
+                };
+                finalData = data
+            } else {
+                const data = {
+                    code: formData.code,
+                    colors: formData.colors,
+                    name: formData.name,
+                    rate: parseInt(formData.rate),
+                    mm: parseFloat(formData.mm),
+                    type: type // Include type in the payload
+                };
+                finalData = data
+            }
+            const response = await post('/coatings', finalData);
             console.log("Response:", response);
             toast.success('Data saved Successfully!');
-            navigate(PathRoutes.colors);
+            navigate(PathRoutes.coating);
         } catch (error) {
             console.error("Error Saving Data:", error);
             toast.error('Failed to save data. Please try again.');
