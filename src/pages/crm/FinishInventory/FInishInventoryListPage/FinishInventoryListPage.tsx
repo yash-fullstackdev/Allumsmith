@@ -64,10 +64,10 @@ const FinishInventoryListPage = () => {
                                             )}
                                             {expandedProduct === productName && items.map((item: any) => (
                                                 <TableRow key={item._id}>
-                                                    <TableCell><h4>{item.branch.name}</h4></TableCell>
-                                                    <TableCell><h4>{item.coating.name}</h4></TableCell>
-                                                    <TableCell><h4>{item.color.name}</h4></TableCell>
-                                                    <TableCell><h4>{item.quantity}</h4></TableCell>
+                                                    <TableCell><h4>{item?.branch?.name || "NA"}</h4></TableCell>
+                                                    <TableCell><h4>{item?.coating?.name || "NA"}</h4></TableCell>
+                                                    <TableCell><h4>{item?.color?.name || "NA"}</h4></TableCell>
+                                                    <TableCell><h4>{item?.quantity || "NA"}</h4></TableCell>
                                                 </TableRow>
                                             ))}
                                         </React.Fragment>
