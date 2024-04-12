@@ -136,7 +136,7 @@ const WorkerListPage = () => {
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setAssociatedJobs(info.row.original.associatedJobs)
+                            setAssociatedJobs(info.row.original?._id)
                             setAssociatedJobsModal(true);
                         }}
                     >

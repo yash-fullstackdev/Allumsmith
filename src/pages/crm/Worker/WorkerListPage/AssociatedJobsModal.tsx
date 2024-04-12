@@ -38,9 +38,26 @@ const columnHelper = createColumnHelper<any>();
 const AssociatedJobsModal = ({ associatedJobs }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [workerData, setWorkerData] = useState<any>()
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const { data: workerData } = await get(`/workers/${associatedJobs}`);
+            setWorkerData(workerData);
+            setIsLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    
+    useEffect(() => {
+        fetchData();
+    }, [associatedJobs])
+
 
     const columns = [
 
@@ -52,17 +69,47 @@ const AssociatedJobsModal = ({ associatedJobs }: any) => {
                 </div>
 
             ),
-            header: 'Name',
-        }),
-        
+            header: 'Job Name',
+        },
+        ),
+        columnHelper.accessor('branch.name', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
 
+            ),
+            header: 'Branch Name',
+        },
+        ),
+        columnHelper.accessor('powder.name', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'powder Name',
+        },
+        ),
+        columnHelper.accessor('powderQuantity', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Powder Quantity',
+        },
+        )
 
     ];
 
     const table = useReactTable({
-        data: associatedJobs,
+        data: workerData && workerData?.associatedJobs || [],
         columns,
         state: {
             sorting,
@@ -105,7 +152,7 @@ const AssociatedJobsModal = ({ associatedJobs }: any) => {
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                    { table.getFilteredRowModel().rows.length > 0 &&
+                    {table.getFilteredRowModel().rows.length > 0 &&
                         <TableCardFooterTemplate table={table} />
                     }
                 </Card>
