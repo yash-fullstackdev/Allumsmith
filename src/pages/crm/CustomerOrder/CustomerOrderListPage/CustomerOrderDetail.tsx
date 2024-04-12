@@ -111,7 +111,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
                 </div>
 
             ),
-            header: 'Delivery Quantity',
+            header: 'Delivered Quantity',
         }),
         columnHelper.accessor('status', {
             cell: (info) => (
@@ -209,7 +209,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
         });
         setCollapseAll(!collapseAll);
     };
-    
+
     const handleSave = async () => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             ProductStaus: row.original.status,
@@ -300,16 +300,16 @@ const CustomerOrderDetail = ({ customerId }: any) => {
 
                             <>
                                 <CardBody className='overflow-auto'>
-                                {table.getFilteredRowModel().rows.length > 0 ? (
-                                <TableTemplate
-                                    className='table-fixed max-md:min-w-[70rem]'
-                                    table={table}
-                                />
-                                ) : (
-                                    <p className="text-center text-gray-500">No records found</p>
-                                )}
+                                    {table.getFilteredRowModel().rows.length > 0 ? (
+                                        <TableTemplate
+                                            className='table-fixed max-md:min-w-[70rem]'
+                                            table={table}
+                                        />
+                                    ) : (
+                                        <p className="text-center text-gray-500">No records found</p>
+                                    )}
                                 </CardBody>
-                                { table.getFilteredRowModel().rows.length > 0 &&
+                                {table.getFilteredRowModel().rows.length > 0 &&
                                     <TableCardFooterTemplate table={table} />
                                 }
                             </>

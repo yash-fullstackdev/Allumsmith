@@ -4,13 +4,13 @@ import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapp
 import Container from '../../../../../components/layouts/Container/Container';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-const WithoutJobBatch = ({ jobId }: any) => {
+const WithoutJobBatch = ({ batch, jobId }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [jobDataByIdBatch, setJobDataByIdBatch] = useState<any>([]);
     const [customerData, setCustomerData] = useState<any>([]);
     const [selfProducts, setSelfProducts] = useState<any>([]);
     const getJobById = async () => {
-        const { data } = await get(`/jobs/${jobId}`);
+        const { data } = await get(`/jobwm/${jobId}`);
         setJobDataByIdBatch(data.batch);
         setSelfProducts(data.selfProducts)
     };
@@ -23,7 +23,7 @@ const WithoutJobBatch = ({ jobId }: any) => {
     useEffect(() => {
         getCustomerDetails();
         getJobById();
-    }, []);
+    }, [jobId]);
 
     // Function to find customer name by ID
     const findCustomerName = (customerId: string) => {
@@ -51,7 +51,7 @@ const WithoutJobBatch = ({ jobId }: any) => {
                             <TableBody>
                                 {batch.products.map((product: any) => (
                                     <TableRow key={product._id}>
-                                        <TableCell>{product.product.name}</TableCell>
+                                        <TableCell>{product.product}</TableCell>
                                         <TableCell>{product.coating.name}</TableCell>
                                         <TableCell>{product.color.name}</TableCell>
                                         <TableCell>{product.quantity}</TableCell>

@@ -9,13 +9,31 @@ import Input from '../../../../../components/form/Input';
 
 const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetchData }: any) => {
 
+    const [workerData, setWorkerData] = useState<any>([]);
+    const [worker, setWorker] = useState<any>();
+    const [powderInKgs, setPowderInKgs] = useState<number | string>('');
+    const [powderData, setPowderData] = useState<any>([]);
+    const [powder, setPowder] = useState<any>();
+
     const updateStatus = async () => {
         try {
             let payload: any = { status };
 
-                payload = { ...payload, };
+            if (status === 'completed') {
+                if (!worker) {
+                    throw new Error('Worker is required for completed status');
+                }
+                if (!powderInKgs) {
+                    throw new Error('Powder in kgs is required for completed status');
+                }
+                if (!powder) {
+                    throw new Error('Powder is required for completed status');
+                }
+                payload = { ...payload, worker, powder, powderQuantity: Number(powderInKgs) };
+            }
+
             console.log('Payload', payload);
-            const { data } = await put(`/jobs/${jobId}/updateJobStatus`, payload);
+            const { data } = await put(`/jobwm/${jobId}`, payload);
             toast.success('Status Updated Successfully');
         } catch (error) {
             console.error('Error Updating Status', error);
@@ -25,9 +43,53 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
             fetchData();
         }
     };
+
+
+    const getWorkers = async () => {
+        try {
+            const { data } = await get('/workers');
+            setWorkerData(data);
+        } catch (error) {
+            console.error('Error fetching workers', error);
+            toast.error('Failed to fetch workers');
+        }
+    };
+
+    const getPowderData = async () => {
+        try {
+            const { data } = await get('/utilities');
+            console.log('Powder Data', powderData);
+
+            setPowderData(data);
+        } catch (error) {
+            console.error('Error Fetching Powder', error);
+            toast.error('Failed to fetch Powders');
+        }
+    };
+
+    useEffect(() => {
+        getWorkers();
+        getPowderData();
+    }, []);
+
     const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
+    };
+
+    const handleWorkerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newWorker = event.target.value;
+        setWorker(newWorker);
+    };
+
+    const handlePowderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newPowder = event.target.value;
+        setPowder(newPowder);
+    };
+
+    const handlePowderInKgsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const powder = event.target.value;
+        setPowderInKgs(powder);
     };
 
     const handleSubmit = () => {
@@ -52,6 +114,49 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
                         <option value='completed'>Completed</option>
                     </Select>
                 </div>
+                {status === 'completed' && (
+                    <>
+                        <div className='col-span-6 lg:col-span-3'>
+                            <Label htmlFor='worker'>Worker</Label>
+                            <Select
+                                id='worker'
+                                placeholder='Select Worker'
+                                name='worker'
+                                value={worker}
+                                onChange={handleWorkerChange}
+                            >
+                                {workerData.map((worker: any, index: number) => (
+                                    <option key={index} value={worker._id}>{worker.name}</option>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className='col-span-6 lg:col-span-3'>
+                            <Label htmlFor='powder'>Powder</Label>
+                            <Select
+                                id='powder'
+                                placeholder='Select Powder'
+                                name='powder'
+                                value={powder}
+                                onChange={handlePowderChange}
+                            >
+                                {powderData.map((powder: any, index: number) => (
+                                    <option key={index} value={powder._id}>{powder.name}</option>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className='col-span-6 lg:col-span-3'>
+                            <Label htmlFor='powderInKgs'>Powder (in kgs)</Label>
+                            <Input
+                                type='number'
+                                id='powderInKgs'
+                                name='powderInKgs'
+                                value={powderInKgs}
+                                onChange={handlePowderInKgsChange}
+                                placeholder='Enter powder in kgs'
+                            />
+                        </div>
+                    </>
+                )}
                 <div className='mt-3'>
                     <Button variant='solid' color='blue' type='button' onClick={handleSubmit}>
                         Submit

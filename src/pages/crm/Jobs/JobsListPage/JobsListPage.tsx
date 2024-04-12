@@ -40,95 +40,6 @@ import Collapse from '../../../../components/utils/Collapse';
 import WithoutJobBatch from '../JobsPage/WithoutMaterial/WithoutJobBatch';
 import WithoutMaterialStatus from '../JobsPage/WithoutMaterial/WithoutMaterialStatus';
 
-const data = [
-    {
-      "_id": "66150816b58091900b0577a8",
-      "status": "pending",
-      "batch": [
-        {
-          "coEntry": "66150715d552be361fdf1b8d",
-          "products": [
-            {
-              "product": "testing_1",
-              "quantity": 50,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            }
-          ]
-        }
-      ],
-      "selfProducts": [],
-      "branch": "65ddd17a9cc860ed6000a83f",
-      "name": "test_jobwm",
-      "withoutMaterial": true,
-      "createdAt": "2024-04-09T09:19:18.144Z",
-      "updatedAt": "2024-04-09T09:19:18.144Z",
-      "__v": 0
-    },
-    {
-      "_id": "661527c6817be66699af6662",
-      "status": "pending",
-      "batch": [
-        {
-          "coEntry": "66150715d552be361fdf1b8d",
-          "products": [
-            {
-              "product": "testing_1",
-              "quantity": 50,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            },
-            {
-              "product": "testing_12",
-              "quantity": 50,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            }
-          ]
-        }
-      ],
-      "selfProducts": [],
-      "withoutMaterial": true,
-      "createdAt": "2024-04-09T11:34:30.677Z",
-      "updatedAt": "2024-04-09T11:34:30.677Z",
-      "__v": 0
-    },
-    {
-      "_id": "661528b3817be66699af6687",
-      "status": "pending",
-      "batch": [
-        {
-          "coEntry": "66152363719dd515fbbd8f7c",
-          "products": [
-            {
-              "product": "testing_1",
-              "quantity": 20,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            },
-            {
-              "product": "testing_12",
-              "quantity": 50,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            },
-            {
-              "product": "test_67",
-              "quantity": 67,
-              "coating": "65eefc87d89d7dd26a0698fa",
-              "color": "65f9568731389ebed5e5cd96"
-            }
-          ]
-        }
-      ],
-      "selfProducts": [],
-      "withoutMaterial": true,
-      "createdAt": "2024-04-09T11:38:27.912Z",
-      "updatedAt": "2024-04-09T11:38:27.912Z",
-      "__v": 0
-    }
-  ]
-
 
 const columnHelper = createColumnHelper<any>();
 
@@ -138,6 +49,7 @@ const JobsListPage = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [withoutsorting, setWithOutSorting] = useState<SortingState>([]);
     const [jobsList, setJobsList] = useState<any>([]);
+    const [jobsListjobwm, setJobsListjobwm] = useState<any>([]);
     const [jobId, setJobId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false);
     const [batchModal, setBatchModal] = useState<boolean>(false);
@@ -151,6 +63,8 @@ const JobsListPage = () => {
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
+
+
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -165,11 +79,35 @@ const JobsListPage = () => {
         }
     };
 
+    const fetchDatajobwm = async () => {
+        setIsLoading(true);
+        try {
+            const { data: jobList } = await get(`/jobwm`);
+            setJobsListjobwm(jobList);
+            setIsLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+
+
     useEffect(() => {
         fetchData();
+        fetchDatajobwm()
     }, [])
-    const handleClickDelete = async (id: any) => {
+    const handleClickDelete = async (id: any, value: boolean) => {
+
         try {
+            if (value === true) {
+                console.log("in if true jobwm")
+                const { data: jobs } = await deleted(`/jobwm/${id}`);
+                console.log("jobs", jobs)
+            }
             const { data: jobs } = await deleted(`/jobs/${id}`);
             console.log("jobs", jobs)
             toast.success('Jobs deleted Successfully');
@@ -180,9 +118,9 @@ const JobsListPage = () => {
         } finally {
             setIsLoading(false);
             fetchData();
+            fetchDatajobwm()
         }
     }
-    console.log('JobList', jobsList)
     const columns = [
 
         columnHelper.accessor((row) => row.name, {
@@ -267,7 +205,7 @@ const JobsListPage = () => {
                     </Button>
                     <Button
                         onClick={() => {
-                            handleClickDelete(info.row.original._id);
+                            handleClickDelete(info.row.original._id, false);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -360,7 +298,7 @@ const JobsListPage = () => {
                         </svg>
 
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             // setIsEditModal(true)
                             // setJobId(info.row.original._id);
@@ -382,10 +320,10 @@ const JobsListPage = () => {
                             />
                         </svg>
 
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => {
-                            handleClickDelete(info.row.original._id);
+                            handleClickDelete(info.row.original._id, true);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -413,8 +351,8 @@ const JobsListPage = () => {
 
 
     const withoutdata = useReactTable({
-        data: data,
-        columns:withoutMaterial,
+        data: jobsListjobwm,
+        columns: withoutMaterial,
         state: {
             sorting: withoutsorting,
             globalFilter: withoutglobalFilter,
@@ -459,48 +397,48 @@ const JobsListPage = () => {
                                 }
                                 onClick={() => toggleCollapse(table.getFilteredRowModel().rows.length)}
                             >
-                               <CardHeader>
-                                <CardHeaderChild>
-                                    <CardTitle>With Material Jobs</CardTitle>
-                                    <Badge
-                                        variant='outline'
-                                        className='border-transparent px-4 '
-                                        rounded='rounded-full'>
-                                        {table.getFilteredRowModel().rows.length} items
-                                    </Badge>
-                                </CardHeaderChild>
-                                <CardHeaderChild>
+                                <CardHeader>
+                                    <CardHeaderChild>
+                                        <CardTitle>With Material Jobs</CardTitle>
+                                        <Badge
+                                            variant='outline'
+                                            className='border-transparent px-4 '
+                                            rounded='rounded-full'>
+                                            {table.getFilteredRowModel().rows.length} items
+                                        </Badge>
+                                    </CardHeaderChild>
+                                    <CardHeaderChild>
 
-                                    <FieldWrap
-                                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-                                        lastSuffix={
-                                            globalFilter && (
-                                                <Icon
-                                                    icon='HeroXMark'
-                                                    color='red'
-                                                    className='mx-2 cursor-pointer'
-                                                    onClick={() => setGlobalFilter('')}
-                                                />
-                                            )
-                                        }>
-                                        <Input
-                                            className='pl-8'
-                                            id='searchBar'
-                                            name='searchBar'
-                                            placeholder='Search...'
-                                            value={globalFilter ?? ''}
-                                            onChange={(e) => setGlobalFilter(e.target.value)}
-                                        />
-                                    </FieldWrap>
-                                </CardHeaderChild>
+                                        <FieldWrap
+                                            firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+                                            lastSuffix={
+                                                globalFilter && (
+                                                    <Icon
+                                                        icon='HeroXMark'
+                                                        color='red'
+                                                        className='mx-2 cursor-pointer'
+                                                        onClick={() => setGlobalFilter('')}
+                                                    />
+                                                )
+                                            }>
+                                            <Input
+                                                className='pl-8'
+                                                id='searchBar'
+                                                name='searchBar'
+                                                placeholder='Search...'
+                                                value={globalFilter ?? ''}
+                                                onChange={(e) => setGlobalFilter(e.target.value)}
+                                            />
+                                        </FieldWrap>
+                                    </CardHeaderChild>
 
-                            </CardHeader>
+                                </CardHeader>
                             </Button>
                         </div>
                     </div>
                     <Collapse isOpen={!collapsible[table.getFilteredRowModel().rows.length]}>
                         <div>
-                            
+
                             <CardBody className='overflow-auto'>
                                 {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                                     <TableTemplate
@@ -526,83 +464,82 @@ const JobsListPage = () => {
             {/* start of wihtout material */}
 
             <Container>
+                <Card className='h-full'>
+                    <div className='flex'>
+                        <div className='bold w-full'>
+                            <Button
+                                variant='outlined'
+                                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                rightIcon={
+                                    !collapsible[withoutdata.getFilteredRowModel().rows.length]
+                                        ? 'HeroChevronUp'
+                                        : 'HeroChevronDown'
+                                }
+                                onClick={() => toggleCollapse(withoutdata.getFilteredRowModel().rows.length)}
+                            >
+                                <CardHeader>
+                                    <CardHeaderChild>
+                                        <CardTitle>Without Material Jobs</CardTitle>
+                                        <Badge
+                                            variant='outline'
+                                            className='border-transparent px-4 '
+                                            rounded='rounded-full'>
+                                            {withoutdata.getFilteredRowModel().rows.length} items
+                                        </Badge>
+                                    </CardHeaderChild>
+                                    <CardHeaderChild>
 
-<Card className='h-full'>
-    <div className='flex'>
-        <div className='bold w-full'>
-            <Button
-                variant='outlined'
-                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                rightIcon={
-                    !collapsible[withoutdata.getFilteredRowModel().rows.length]
-                        ? 'HeroChevronUp'
-                        : 'HeroChevronDown'
-                }
-                onClick={() => toggleCollapse(withoutdata.getFilteredRowModel().rows.length)}
-            >
-               <CardHeader>
-                <CardHeaderChild>
-                    <CardTitle>With Out Material Jobs</CardTitle>
-                    <Badge
-                        variant='outline'
-                        className='border-transparent px-4 '
-                        rounded='rounded-full'>
-                        {withoutdata.getFilteredRowModel().rows.length} items
-                    </Badge>
-                </CardHeaderChild>
-                <CardHeaderChild>
+                                        <FieldWrap
+                                            firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+                                            lastSuffix={
+                                                withoutglobalFilter && (
+                                                    <Icon
+                                                        icon='HeroXMark'
+                                                        color='red'
+                                                        className='mx-2 cursor-pointer'
+                                                        onClick={() => setWithOutGlobalFilter('')}
+                                                    />
+                                                )
+                                            }>
+                                            <Input
+                                                className='pl-8'
+                                                id='searchBar'
+                                                name='searchBar'
+                                                placeholder='Search...'
+                                                value={withoutglobalFilter ?? ''}
+                                                onChange={(e) => setWithOutGlobalFilter(e.target.value)}
+                                            />
+                                        </FieldWrap>
+                                    </CardHeaderChild>
 
-                    <FieldWrap
-                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-                        lastSuffix={
-                            withoutglobalFilter && (
-                                <Icon
-                                    icon='HeroXMark'
-                                    color='red'
-                                    className='mx-2 cursor-pointer'
-                                    onClick={() => setWithOutGlobalFilter('')}
-                                />
-                            )
-                        }>
-                        <Input
-                            className='pl-8'
-                            id='searchBar'
-                            name='searchBar'
-                            placeholder='Search...'
-                            value={withoutglobalFilter ?? ''}
-                            onChange={(e) => setWithOutGlobalFilter(e.target.value)}
-                        />
-                    </FieldWrap>
-                </CardHeaderChild>
+                                </CardHeader>
+                            </Button>
+                        </div>
+                    </div>
+                    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
+                        <div>
 
-            </CardHeader>
-            </Button>
-        </div>
-    </div>
-    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
-        <div>
-            
-            <CardBody className='overflow-auto'>
-                {!isLoading && withoutdata.getFilteredRowModel().rows.length > 0 ? (
-                    <TableTemplate
-                        className='table-fixed max-md:min-w-[70rem]'
-                        table={withoutdata}
-                    />
-                ) : (
-                    !isLoading && <p className="text-center text-gray-500">No records found</p>
-                )}
-                <div className='flex justify-center'>
-                    {isLoading && <LoaderDotsCommon />}
-                </div>
-            </CardBody>
-            {withoutdata.getFilteredRowModel().rows.length > 0 &&
-                <TableCardFooterTemplate table={withoutdata} />
-            }
-        </div>
-    </Collapse>
-</Card>
+                            <CardBody className='overflow-auto'>
+                                {!isLoading && withoutdata.getFilteredRowModel().rows.length > 0 ? (
+                                    <TableTemplate
+                                        className='table-fixed max-md:min-w-[70rem]'
+                                        table={withoutdata}
+                                    />
+                                ) : (
+                                    !isLoading && <p className="text-center text-gray-500">No records found</p>
+                                )}
+                                <div className='flex justify-center'>
+                                    {isLoading && <LoaderDotsCommon />}
+                                </div>
+                            </CardBody>
+                            {withoutdata.getFilteredRowModel().rows.length > 0 &&
+                                <TableCardFooterTemplate table={withoutdata} />
+                            }
+                        </div>
+                    </Collapse>
+                </Card>
 
-</Container>
+            </Container>
 
             {/* end of without material */}
             <Modal isOpen={isEditModal} setIsOpen={setIsEditModal} isScrollable fullScreen>
@@ -656,7 +593,8 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} />
+                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId={jobId} setStatusModal={setWithOutStatusModal} fetchData={fetchData} />
+                    {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>
 

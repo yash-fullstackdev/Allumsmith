@@ -128,7 +128,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                             Products
                                             <span className='ml-1 text-red-500'>*</span>
                                         </Label>
-                                        {/* <Select
+                                        <Select
                                             placeholder='Select Product'
                                             id={`product-${index}`}
                                             name={`product-${index}`}
@@ -156,8 +156,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                 )
                                             })}
 
-                                        </Select> */}
-<SelectReact
+                                        </Select>
+                                        {/* <SelectReact
                                             id={`product-${index}`}
                                             name={`product-${index}`}
                                             options={productsData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
@@ -178,7 +178,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                     dropdown.querySelector('.select__single-value').textContent = selectedProductName;
                                                 }
                                             }}
-                                        />
+                                        /> */}
 
 
                                     </div>
@@ -233,7 +233,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         name={`coating-${index}`}
                                         value={entry.coating.id} // Assuming entry.coating is an object containing id and name
                                         onChange={(e: any) => {
-                                            const selectedCoatingId = e.target.value || entry.coating.id ;
+                                            const selectedCoatingId = e.target.value || entry.coating.id;
                                             const selectedCoating = coatingData.find((coating: any) => coating._id === selectedCoatingId);
                                             if (selectedCoating) {
                                                 const updatedEntries = [...entries];
@@ -261,40 +261,40 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                 </div>
                                 {entry.coating &&
                                     (
-                                    <div className='col-span-12 lg:col-span-3'>
-                                        <Label htmlFor={`hsn-${index}`}>
-                                            Color
-                                            <span className='ml-1 text-red-500'>*</span>
-                                        </Label>
-                                        <Select
-                                            placeholder='Select Color'
-                                            id={`color-${index}`}
-                                            name={`color-${index}`}
-                                            value={entry.color.id} // Assuming entry.color is an object containing id and name
-                                            onChange={(e: any) => {
-                                                const selectedColorId = e.target.value;
-                                                const updatedEntries = [...entries];
-                                                updatedEntries[index].color = {
-                                                    id: selectedColorId,
-                                                    name: e.target.selectedOptions[0].text // Assigning the name property
-                                                };
-                                                setEntries(updatedEntries);
-                                            }}
-                                        >
-                                            {colorDataList[index]?.map((color: any) => {
-                                                const colorId = entries[index]?.color;
-                                                return (
-                                                    <option key={color._id} value={color._id} selected={colorId === color._id}>
-                                                        {color.name}
-                                                    </option>
-                                                )
-                                            }
+                                        <div className='col-span-12 lg:col-span-3'>
+                                            <Label htmlFor={`hsn-${index}`}>
+                                                Color
+                                                <span className='ml-1 text-red-500'>*</span>
+                                            </Label>
+                                            <Select
+                                                placeholder='Select Color'
+                                                id={`color-${index}`}
+                                                name={`color-${index}`}
+                                                value={entry.color.id} // Assuming entry.color is an object containing id and name
+                                                onChange={(e: any) => {
+                                                    const selectedColorId = e.target.value;
+                                                    const updatedEntries = [...entries];
+                                                    updatedEntries[index].color = {
+                                                        id: selectedColorId,
+                                                        name: e.target.selectedOptions[0].text // Assigning the name property
+                                                    };
+                                                    setEntries(updatedEntries);
+                                                }}
+                                            >
+                                                {colorDataList[index]?.map((color: any) => {
+                                                    const colorId = entries[index]?.color;
+                                                    return (
+                                                        <option key={color._id} value={color._id} selected={colorId === color._id}>
+                                                            {color.name}
+                                                        </option>
+                                                    )
+                                                }
 
-                                            )}
-                                        </Select>
+                                                )}
+                                            </Select>
 
-                                    </div>
-                                      )} 
+                                        </div>
+                                    )}
 
                             </div>
 

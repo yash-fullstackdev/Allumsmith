@@ -6,9 +6,7 @@ import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/Input';
 import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
-import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 
@@ -17,7 +15,6 @@ const WithoutMaterialPage = () => {
     const [branchData, setBranchData] = useState<any>([])
     const [customerData, setCustomerData] = useState([])
     const [branchId, setBranchId] = useState({ id: "", name: '' });
-    const [customerOrderId, setCustomerOrderId] = useState('')
     const [coatingData, setCoatingData] = useState<any>([])
     const [productsData, setProductsData] = useState<any>([]);
     const navigate = useNavigate();
@@ -82,8 +79,6 @@ const WithoutMaterialPage = () => {
         getProductDetails();
         getCoatingDetails();
         getBranchDetails();
-
-
     }, []);
 
 
@@ -118,7 +113,7 @@ const WithoutMaterialPage = () => {
         const regularBatches = customerOrders.map((order: any) => ({
             coEntry: order.name.id,
             products: order.products.map((product: any) => ({
-                product: product.product.name,
+                product: product.product,
                 quantity: Number(product.quantity),
                 coating: product?.coating?._id,
                 color: product?.color?._id,
@@ -135,9 +130,9 @@ const WithoutMaterialPage = () => {
             const { data } = await post('http://localhost:3000/jobwm', finalValues);
             console.log("🚀 ~ handleSaveEntries ~ data:", data)
             toast.success('Without Material created successfully!');
-          } catch (error: any) {
+        } catch (error: any) {
             toast.error('Error Creating Without Material', error);
-          }
+        }
     };
 
     const handleAddCustomerOrder = () => {
@@ -312,7 +307,7 @@ const WithoutMaterialPage = () => {
                                                                         return {
                                                                             ...orderItem,
                                                                             name: { id: selectedOrderId, name: selectedOrderName },
-                                                                            products: customerOrderData?.find((co: any) => co.customer.name === selectedOrderName)?.entries || [],
+                                                                            products: customerOrderData?.find((co: any) => co.customer.name === selectedOrderName)?.wmproducts || [],
                                                                         };
                                                                     }
                                                                     return orderItem;
@@ -333,8 +328,6 @@ const WithoutMaterialPage = () => {
 
                                                     {order.products.map((product: any, productIndex: any) => (
                                                         <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
-
-
                                                             <div className='row-span-2'>
                                                                 <Label htmlFor={`product${productIndex}`}>
                                                                     Product {productIndex + 1}
@@ -343,7 +336,7 @@ const WithoutMaterialPage = () => {
                                                                     type='text'
                                                                     id={`product${productIndex}`}
                                                                     name={`product${productIndex}`}
-                                                                    value={product.product.name}
+                                                                    value={product.product}
                                                                     disabled
                                                                 />
                                                             </div>
@@ -352,19 +345,19 @@ const WithoutMaterialPage = () => {
                                                                     Quantity
                                                                 </Label>
                                                                 <Input
-                                                                            type='text'
-                                                                            id={`pickQuantity${productIndex}`}
-                                                                            name={`pickQuantity${productIndex}`}
-                                                                            value={product.quantity}
-                                                                            onChange={(e) => {
-                                                                                const updatedProduct = { ...product, quantity: e.target.value };
-                                                                                const updatedProducts = [...order.products];
-                                                                                updatedProducts[productIndex] = updatedProduct;
-                                                                                const updatedOrders = [...customerOrders];
-                                                                                updatedOrders[index].products = updatedProducts;
-                                                                                setCustomerOrders(updatedOrders);
-                                                                            }}
-                                                                        />
+                                                                    type='text'
+                                                                    id={`pickQuantity${productIndex}`}
+                                                                    name={`pickQuantity${productIndex}`}
+                                                                    value={product.quantity}
+                                                                    onChange={(e) => {
+                                                                        const updatedProduct = { ...product, quantity: e.target.value };
+                                                                        const updatedProducts = [...order.products];
+                                                                        updatedProducts[productIndex] = updatedProduct;
+                                                                        const updatedOrders = [...customerOrders];
+                                                                        updatedOrders[index].products = updatedProducts;
+                                                                        setCustomerOrders(updatedOrders);
+                                                                    }}
+                                                                />
                                                             </div>
 
                                                             <div className='row-span-2'>
