@@ -75,6 +75,7 @@ const LedgerPage = () => {
       const grandTotal = totalAmounts.reduce((acc: number, curr: number) => acc + curr, 0);
       
       // Set grandTotal in formData
+      // setFormData({ ...formData, grandTotal:parseFloat(grandTotal.toFixed(2)), customer_id: customerId, paidAmount:parseFloat((data.paid_amount).toFixed(2)) || 0, pendingAmount: data.pending_amount || 0, creditedAmount:parseFloat((data.credit_amount).toFixed(2)) || 0});
       setFormData({ ...formData, grandTotal, customer_id: customerId,paidAmount:data.paid_amount || 0, pendingAmount: data.pending_amount || 0, creditedAmount:data.credit_amount || 0});
 
     } catch (error) {
@@ -187,7 +188,7 @@ const LedgerPage = () => {
                             type="number"
                             id={`grandTotal`}
                             name={`grandTotal`}
-                            value={formData.grandTotal}
+                            value={parseFloat(formData.grandTotal.toFixed(2))}
                             // onChange={(e) => setFormData({ ...formData, grandTotal: e.target.value })}
                             disabled
                           />
@@ -201,7 +202,7 @@ const LedgerPage = () => {
                             type="number"
                             id={`paidAmount`}
                             name={`paidAmount`}
-                            value={formData.paidAmount}
+                            value={parseFloat(formData.paidAmount.toFixed(2))}
                             onChange={(e) => setFormData({ ...formData, paidAmount: e.target.value })}
                             disabled
                           />
@@ -216,7 +217,7 @@ const LedgerPage = () => {
                             placeholder='Pending Amount'
                             id={`pendingAmount`}
                             name={`pendingAmount`}
-                            value={formData.pendingAmount}
+                            value={parseFloat(formData.pendingAmount.toFixed(2))}
                             onChange={(e) => setFormData({ ...formData, pendingAmount: e.target.value })}
                             disabled
                           />
@@ -230,7 +231,7 @@ const LedgerPage = () => {
                             type="number"
                             id={`creditedAmount`}
                             name={`creditedAmount`}
-                            value={formData.creditedAmount}
+                            value={parseFloat(formData.creditedAmount.toFixed(2))}
                             disabled
                             // onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
                           />

@@ -28,21 +28,54 @@ import {
 import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import EditBranchModal from '../../Branches/BranchesPage/EditBranchModal';
+import TransactionListPage from './TransactionListPage';
 
 
 const LedgerListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [data, setData] = useState<any>([]);
+    const [transactionListModal, setTransactionModal] = useState<boolean>(false);
+    const [customerId, setCustomerId] = useState<any>('')
+    const fetchData = async () => {
+		setIsLoading(true);
+		try {
+			const { data } = await get(`/ledger`);
+            
+			setData(data);
+			setIsLoading(false);
+		} catch (error: any) {
+			console.error('Error fetching users:', error.message);
+			setIsLoading(false);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-    const getAllLedger = async() =>{
-        const {data} = await get('/ledger');
-        setData(data);
-    }
 
-    useEffect(() =>{
-        getAllLedger();
-    },[])
+	useEffect(() => {
+		fetchData();
+	}, [])
 
+    console.log('Data', data);
+	const handleClickDelete = async (id: any) => {
+		console.log("id", id)
+		try {
+			const { data: products } = await deleted(`/ledger/${id}`);
+			toast.success('Product deleted Successfully !');
+		} catch (error: any) {
+			console.error('Error deleting product:', error.message);
+			toast.error('Error deleting Product', error);
+			setIsLoading(false);
+		} finally {
+			setIsLoading(false);
+			fetchData();
+		}
+	}
+
+
+   
     const columns = [
 
         columnHelper.accessor('customer.name', {
@@ -55,15 +88,26 @@ const LedgerListPage = () => {
             ),
             header: 'Customer Name',
         }),
-        columnHelper.accessor('amount_payable', {
+        columnHelper.accessor('customer.credit_amount', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue() || 'NA'} `}
+                    {`${info.getValue() || 0} `}
                 </div>
 
             ),
-            header: 'Amount',
+            header: 'Credit Amount',
+        }),
+
+        columnHelper.accessor('customer.pending_amount', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue() || 0} `}
+                </div>
+
+            ),
+            header: 'Pending Amount',
         }),
         
         columnHelper.accessor('payment_mode', {
@@ -88,9 +132,14 @@ const LedgerListPage = () => {
         }),
 
         columnHelper.display({
-            cell: () => (
+            cell: (info) => (
                 <div className='font-bold'>
                     <Button
+                        onClick={() => {
+                            setCustomerId(info.row.original.customer._id)
+                            console.log(info.row.original.customer._id)
+                            setTransactionModal(true)
+                        }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -98,7 +147,9 @@ const LedgerListPage = () => {
                         </svg>
 
                     </Button>
-                    <Button>
+                    <Button 
+                    onClick={() => handleClickDelete(info.row.original._id)}
+                    >
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             fill='none'
@@ -163,6 +214,17 @@ const LedgerListPage = () => {
                     }
                 </Card>
             </Container>
+            <Modal isOpen={transactionListModal} setIsOpen={setTransactionModal} isScrollable fullScreen>
+                <ModalHeader
+                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
+                // onClick={() => formik.resetForm()}
+                >
+                    Edit Branch
+                </ModalHeader>
+                <ModalBody>
+                   <TransactionListPage customerId={customerId}/>
+                </ModalBody>
+            </Modal>
         </PageWrapper>
     )
 }

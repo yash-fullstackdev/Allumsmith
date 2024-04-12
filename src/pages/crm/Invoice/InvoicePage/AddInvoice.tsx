@@ -32,7 +32,6 @@ const AddInvoice = () => {
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
     const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
     const [totalAmount, setTotalAmount] = useState<any>(0);
-    const [amountBeforeTax,setAmountBeforeTax] = useState<any>(0);
     const [branch,setBranch] = useState<any>([]);
     const getCustomerName = async () => {
         setIsLoading(true);
@@ -70,9 +69,7 @@ const AddInvoice = () => {
     };
     
     
-    const handleSendMailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEntries({ ...entries, send_mail: e.target.checked });
-    };
+   
 
     const handleDeliveredQuantityChange = (value: any, index: number) => {
    
@@ -103,7 +100,7 @@ const AddInvoice = () => {
             const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
             totalSpecificProductPrice += specificProductPrice || 0;
     
-            const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry.coating.rate ;
+            const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry?.coating?.rate ;
             
             const discount = parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0;
             const finalCoatingPrice = coatingTotal * (1 - discount / 100);
@@ -210,6 +207,7 @@ const AddInvoice = () => {
             
             const respones = await post('/invoice',payload)
             console.log('Response:', respones);
+            toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
             
         } catch (error) {
@@ -525,18 +523,7 @@ const AddInvoice = () => {
 
                                                                 />
                                                             </div>
-                                                            {/* <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Alluminium Rate
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='number'
-                                                                    value={entries.alluminium_rate}
-                                                                    name="alluminium_rate"
-                                                                    onChange={(e) => setEntries({ ...entries, alluminium_rate: e.target.value })}
-                                                                />
-                                                            </div> */}
+
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     GST
@@ -544,7 +531,7 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={entries.gst || 0}
+                                                                    value={entries.gst }
                                                                     name="gst"
                                                                     onChange={(e) => setEntries({ ...entries, gst: e.target.value })}
                                                                 />
@@ -556,7 +543,7 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={entries.tax || 0}
+                                                                    value={entries.tax}
                                                                     name="other_tax"
                                                                     onChange={(e) => setEntries({ ...entries, tax: e.target.value })}
                                                                 />
@@ -621,20 +608,7 @@ const AddInvoice = () => {
                                                                     onChange={(e) => setEntries({ ...entries, delivery_point: e.target.value })}
                                                                 />
                                                             </div>
-                                                            {/* <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Send Mail
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Checkbox label='Send Mail'
-                                                                    id='send_mail'
-                                                                    name='send_mail'
-                                                                    checked={entries.send_mail}
-                                                                    onChange={handleSendMailChange}
-
-                                                                />
-
-                                                            </div> */}
+                                                            
                                                         </div>
                                                         <div className='flex mt-2 gap-2 '>
                                                             <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}  >
