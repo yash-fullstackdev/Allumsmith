@@ -33,14 +33,14 @@ const PowderInventoryListPage = () => {
                 <Card>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle><h1>Powder Inventory</h1></CardTitle>
+                            <CardTitle><h1>Raw Material Inventory</h1></CardTitle>
                         </CardHeaderChild>
                         <div className='flex justify-end gap-5'>
                             <Button variant='solid' icon='HeroPlus' onClick={() => setAddPowderModal(true)}>
-                                Add Powder
+                                Add Raw Material
                             </Button>
                             <Button variant='solid' icon='HeroPlus' onClick={() => setPowderQuantityModal(true)}>
-                                Add Powder Quantity
+                                Add Raw Material Quantity
                             </Button>
                         </div>
                     </CardHeader>
@@ -86,7 +86,7 @@ const PowderInventoryListPage = () => {
                         Add Powder
                     </ModalHeader>
                     <ModalBody>
-                        <AddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} />
+                        <AddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} getPowderList = {getPowderList}/>
                     </ModalBody>
                 </Modal>
                 <Modal isOpen={powderQuantityModal} setIsOpen={setPowderQuantityModal} isScrollable fullScreen='2xl'>
@@ -96,7 +96,7 @@ const PowderInventoryListPage = () => {
                         Add Powder Quantity
                     </ModalHeader>
                     <ModalBody>
-                        <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} />
+                        <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} getPowderList = {getPowderList} />
                     </ModalBody>
                 </Modal>
             </Container>

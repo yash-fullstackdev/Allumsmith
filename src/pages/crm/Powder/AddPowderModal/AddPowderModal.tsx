@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { PathRoutes } from '../../../../utils/routes/enum';
 
-const AddPowderModal = ({ SetAddPowderModal }: any) => {
+const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
 
     const navigate = useNavigate();
     
@@ -54,7 +54,7 @@ const AddPowderModal = ({ SetAddPowderModal }: any) => {
             toast.error('Error Saving Powder', error)
         }
         finally {
-            navigate(PathRoutes.powder);
+            getPowderList();
         }
     }
 

@@ -9,7 +9,7 @@ import Input from "../../../components/form/Input";
 import Button from "../../../components/ui/Button";
 import Select from "../../../components/form/Select";
 
-const AddPowderModal = ({ setPowderQuantityModal }: any) => {
+const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
     const navigate = useNavigate();
     const [branchData, setBranchData] = useState<any>([]);
     const [powderData, setPowderData] = useState<any>([]);
@@ -59,7 +59,7 @@ const AddPowderModal = ({ setPowderQuantityModal }: any) => {
             toast.error('Error Saving Powder', error)
         }
         finally {
-            navigate(PathRoutes.powder);
+            getPowderList();
         }
     }
 
