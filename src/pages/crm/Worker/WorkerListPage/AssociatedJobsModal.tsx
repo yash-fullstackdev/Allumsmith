@@ -40,7 +40,6 @@ const AssociatedJobsModal = ({ associatedJobs }: any) => {
     const [sorting, setSorting] = useState<SortingState>([]);
 
 
-    console.log('Associated Jobs', associatedJobs);
     
 
     const columns = [
