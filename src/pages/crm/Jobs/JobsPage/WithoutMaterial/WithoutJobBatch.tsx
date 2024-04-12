@@ -5,6 +5,7 @@ import Container from '../../../../../components/layouts/Container/Container';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 const WithoutJobBatch = ({ batch, jobId }: any) => {
+    console.log("batch", batch)
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [jobDataByIdBatch, setJobDataByIdBatch] = useState<any>([]);
     const [customerData, setCustomerData] = useState<any>([]);
