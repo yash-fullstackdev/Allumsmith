@@ -26,7 +26,7 @@ import TableTemplate, {
 import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import { deleted, get } from '../../../../utils/api-helper.util';
+import { deleted, get, post } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import JobsBatch from './JobsBatch';
@@ -95,7 +95,23 @@ const JobsListPage = () => {
 
 
 
+    const generateReceipt  = async(id:any) =>{
+        try{
+        const response = await post(`/jobs/generateJobReceipt/${id}`,{});
+        if (response && response.status === 201 && response.data && response.data.data) {
+            const pdfData = response.data.data;
+            console.log('PDF DATA', pdfData);
 
+            const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
+
+            window.open(url, '_blank');
+        } else {
+            console.error('Error: PDF data not found in response');
+        }
+        }catch(error){
+            toast.error('Error Generating Receipt')
+        }
+    }
     useEffect(() => {
         fetchData();
         fetchDatajobwm()
@@ -181,6 +197,13 @@ const JobsListPage = () => {
 
                     </Button>
                     <Button
+                     icon='DuoFile'  
+                     onClick={() => {generateReceipt(info.row.original._id)}} 
+                    />
+                        
+
+                    
+                    <Button
                         onClick={() => {
                             // setIsEditModal(true)
                             // setJobId(info.row.original._id);
@@ -225,7 +248,7 @@ const JobsListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 140,
         }),
 
 
