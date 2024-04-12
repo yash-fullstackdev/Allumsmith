@@ -79,10 +79,10 @@ export const appPages: any = {
 	powderPage: {
 		listPage: {
 			id: 'powderPage',
-			to: '/powder',
-			text: 'Powder',
+			to: '/raw-material',
+			text: 'Raw material',
 			icon: 'DuoOption',
-		}
+		},
 	},
 	branchesPage: {
 		listPage: {
@@ -143,9 +143,9 @@ export const appPages: any = {
 			text: 'Jobs',
 			icon: 'HeroWrenchScrewdriver',
 		},
-		addPageLink:{
-			id:'addPageLink',
-			to:'/add-jobs'
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-jobs',
 		},
 		editPageLink: {
 			id: 'editPageLink',
