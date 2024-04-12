@@ -30,8 +30,12 @@ export enum PathRoutes {
 	jobs = '/jobs',
 	add_jobs = '/add-jobs',
 	edit_jobs = '/edit-jobs',
-	powder = '/powder',
-	invoice_list ="/invoice-list",
-	add_invoice="/add-invoice",
-	edit_invoice ="/edit-invoice"
+	ediwihtoutmaterial_jobs = '/edit-jobs-withoutmaterial',
+	powder = '/rae-matireal',
+	invoice_list = '/invoice-list',
+	add_invoice = '/add-invoice',
+	edit_invoice = '/edit-invoice',
+	ledger_list = '/ledger-list',
+	add_ledger = '/add-ledger',
+	edit_ledger = '/edit-ledger',
 }

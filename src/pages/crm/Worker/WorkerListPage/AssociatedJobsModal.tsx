@@ -1,5 +1,3 @@
-
-
 import React from 'react'
 import { useEffect, useState } from 'react';
 import {
@@ -30,19 +28,35 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
-import EditColorModal from '../CoatingPage/EditCoatingModal';
-import EditCoatingModal from '../CoatingPage/EditCoatingModal';
+;
 
 
 
 const columnHelper = createColumnHelper<any>();
 
 
-const CoatingColors = ({ colors }: any) => {
+const AssociatedJobsModal = ({ associatedJobs }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [workerData, setWorkerData] = useState<any>()
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const { data: workerData } = await get(`/workers/${associatedJobs}`);
+            setWorkerData(workerData);
+            setIsLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
+        fetchData();
+    }, [associatedJobs])
 
 
     const columns = [
@@ -55,9 +69,10 @@ const CoatingColors = ({ colors }: any) => {
                 </div>
 
             ),
-            header: 'Name',
-        }),
-        columnHelper.accessor('code', {
+            header: 'Job Name',
+        },
+        ),
+        columnHelper.accessor('branch.name', {
             cell: (info) => (
 
                 <div className=''>
@@ -65,26 +80,36 @@ const CoatingColors = ({ colors }: any) => {
                 </div>
 
             ),
-            header: 'Code',
-        }),
-        columnHelper.accessor('type', {
+            header: 'Branch Name',
+        },
+        ),
+        columnHelper.accessor('powder.name', {
             cell: (info) => (
 
                 <div className=''>
-                    {info.getValue() !== undefined ? info.getValue() : "Type not add"}
+                    {`${info.getValue()}`}
                 </div>
 
             ),
-            header: 'Type',
-        }),
+            header: 'powder Name',
+        },
+        ),
+        columnHelper.accessor('powderQuantity', {
+            cell: (info) => (
 
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
 
-
+            ),
+            header: 'Powder Quantity',
+        },
+        )
 
     ];
 
     const table = useReactTable({
-        data: colors,
+        data: workerData && workerData?.associatedJobs || [],
         columns,
         state: {
             sorting,
@@ -98,12 +123,12 @@ const CoatingColors = ({ colors }: any) => {
     });
 
     return (
-        <PageWrapper name='Inventory List'>
+        <PageWrapper>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>Coating</CardTitle>
+                            <CardTitle>Jobs</CardTitle>
                             <Badge
                                 variant='outline'
                                 className='border-transparent px-4 '
@@ -127,7 +152,7 @@ const CoatingColors = ({ colors }: any) => {
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                    { table.getFilteredRowModel().rows.length > 0 &&
+                    {table.getFilteredRowModel().rows.length > 0 &&
                         <TableCardFooterTemplate table={table} />
                     }
                 </Card>
@@ -140,5 +165,5 @@ const CoatingColors = ({ colors }: any) => {
 
 };
 
-export default CoatingColors;
+export default AssociatedJobsModal;
 

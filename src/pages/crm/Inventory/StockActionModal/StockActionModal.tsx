@@ -8,6 +8,7 @@ import Input from '../../../../components/form/Input';
 import Select from '../../../../components/form/Select';
 import { toast } from 'react-toastify';
 import { Switch } from '@mui/material';
+import SelectReact from '../../../../components/form/SelectReact';
 
 
 
@@ -16,7 +17,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
     const [fromBranchId, setFromBranchId] = useState('');
     const [toBranchId, setToBranchId] = useState('');
     const [allBranchData, setAllBranchData] = useState([])
-    const [productListData, setProductListData] = useState([])
+    const [productListData, setProductListData] = useState<any>([])
+    console.log("🚀 ~ StockActionModal ~ productListData:", productListData)
     const [branchTransfer, setBranchTransfer] = useState(false)
     const [actionType, setActionType] = useState("")
 
@@ -246,7 +248,7 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                                             Products
                                             <span className='ml-1 text-red-500'>*</span>
                                         </Label>
-                                        <Select
+                                        {/* <Select
                                             placeholder='Select Product'
                                             id={`product-${index}`}
                                             name={`product-${index}`}
@@ -259,11 +261,33 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                                         >
                                             {productListData.map((data: any) => (
                                                 <option key={data._id} value={data._id}>  {/* Set value to product ID */}
-                                                    {data.name}
+                                        {/* {data.name}
 
                                                 </option>
                                             ))}
-                                        </Select>
+                                        </Select> */}
+                                        <SelectReact
+                                            id={`product-${index}`}
+                                            name={`product-${index}`}
+                                            options={productListData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
+                                            // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
+                                            value={{
+                                                value: entry.product,
+                                                label: productListData.find((product: any) => product._id === entry.product)
+                                                    ? `${productListData.find((product: any) => product._id === entry.product)?.name} (${productListData.find((product: any) => product._id === entry.product)?.productCode}) (${productListData.find((product: any) => product._id === entry.product)?.length})`
+                                                    : ''
+                                            }}
+                                            onChange={(selectedOption: any) => {
+                                                const selectedProductName = productListData.find((product: any) => product._id === selectedOption.value)?.name;
+                                                const updatedEntries = [...entries];
+                                                updatedEntries[index].product = selectedOption.value;
+                                                setEntries(updatedEntries);
+                                                const dropdown: any = document.getElementById(`product-${index}`);
+                                                if (dropdown) {
+                                                    dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                                                }
+                                            }}
+                                        />
 
                                     </div>
                                     <div className='col-span-12 lg:col-span-2'>

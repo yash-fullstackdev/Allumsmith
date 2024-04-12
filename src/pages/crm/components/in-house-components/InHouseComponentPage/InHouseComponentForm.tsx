@@ -42,9 +42,20 @@ const AddproductForm = () => {
 	});
 
 	const handleAddEntry = () => {
-		setEntries([...entries, { name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
-	};
-
+		const lastEntry = entries[entries.length - 1];
+		const { hsn, productCode, rate } = lastEntry; 
+		const newEntry = { 
+		  name: '', 
+		  hsn,
+		  rate, 
+		  productCode, 
+		  thickness: null, 
+		  length: null, 
+		  weight: null 
+		};
+		setEntries([...entries, newEntry]);
+	  };
+	  
 	const handleSaveEntries = async () => {
 
 		console.log("entries", entries)
@@ -201,7 +212,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`thickness-${index}`}>
-										Weight
+										Thickness
 									</Label>
 									<CreatableSelect
 										id={`thickness-${index}`}
@@ -231,7 +242,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-1'>
 									<Label htmlFor={`weight-${index}`}>
-										Thickness
+										Weight
 									</Label>
 									<CreatableSelect
 										id={`weight-${index}`}

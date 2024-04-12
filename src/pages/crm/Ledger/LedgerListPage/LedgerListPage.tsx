@@ -1,17 +1,5 @@
-
-
-import React from 'react'
-import { useEffect, useState } from 'react';
-import {
-    createColumnHelper,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from '@tanstack/react-table';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { get, post } from '../../../../utils/api-helper.util';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -21,36 +9,41 @@ import Card, {
     CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import TableTemplate, {
-    TableCardFooterTemplate,
-} from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
-import LoaderDotsCommon from '../../../../components/LoaderDots.common';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+
+import _ from 'lodash';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import { toast } from 'react-toastify';
-import EditWorkerModal from '../WorkerPage/EditWorkerModal';
-import AssociatedJobsModal from './AssociatedJobsModal';
-
-
+import TableTemplate, { TableCardFooterTemplate } from '../../../../templates/common/TableParts.template';
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+} from '@tanstack/react-table';
+import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
+import { toast } from 'react-toastify';
+import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import EditBranchModal from '../../Branches/BranchesPage/EditBranchModal';
+import TransactionListPage from './TransactionListPage';
 
 
-const WorkerListPage = () => {
+const LedgerListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [workerList, setWorkerList] = useState<any[]>([]);
-    const [workerId, setWorkerId] = useState('')
-    const [isEditModal, setIsEditModal] = useState<boolean>(false);
-    const [associatedJobs, setAssociatedJobs] = useState<any>([]);
-    const [associatedJobsModal, setAssociatedJobsModal] = useState<boolean>(false);
-    const navigate = useNavigate();
+    const [data, setData] = useState<any>([]);
+    const [transactionListModal, setTransactionModal] = useState<boolean>(false);
+    const [customerId, setCustomerId] = useState<any>('')
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const { data: workerData } = await get(`/workers`);
-            setWorkerList(workerData);
+            const { data } = await get(`/ledger`);
+
+            setData(data);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -60,18 +53,20 @@ const WorkerListPage = () => {
         }
     };
 
+
     useEffect(() => {
         fetchData();
     }, [])
 
+    console.log('Data', data);
     const handleClickDelete = async (id: any) => {
+        console.log("id", id)
         try {
-            const { data: worker } = await deleted(`/workers/${id}`);
-            console.log("worker", worker);
-            toast.success(`worker deleted successfully!`);
+            const { data: products } = await deleted(`/ledger/${id}`);
+            toast.success('Product deleted Successfully !');
         } catch (error: any) {
-            console.error('Error fetching workers:', error);
-            toast.error('Error deleting worker', error);
+            console.error('Error deleting product:', error.message);
+            toast.error('Error deleting Product', error);
             setIsLoading(false);
         } finally {
             setIsLoading(false);
@@ -79,65 +74,71 @@ const WorkerListPage = () => {
         }
     }
 
+
+
     const columns = [
 
-        columnHelper.accessor('name', {
+        columnHelper.accessor('customer.name', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {`${info.getValue() || 'NA'} `}
                 </div>
 
             ),
-            header: 'Name',
+            header: 'Customer Name',
         }),
-        columnHelper.accessor('email', {
+        columnHelper.accessor('customer.credit_amount', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {`${(info.getValue() || 0).toFixed(2)} `}
                 </div>
 
             ),
-            header: 'Email',
+            header: 'Credit Amount',
         }),
-        columnHelper.accessor('address_line1', {
+
+        columnHelper.accessor('customer.pending_amount', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {`${info.getValue() || 0} `}
                 </div>
 
             ),
-            header: 'Address',
+            header: 'Pending Amount',
         }),
-        columnHelper.accessor('phone', {
+
+        columnHelper.accessor('payment_mode', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {`${info.getValue() || 'NA'} `}
                 </div>
 
             ),
-            header: 'Phone',
+            header: 'Payment Mode',
         }),
-        columnHelper.accessor('company', {
+        columnHelper.accessor('remarks', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue()}`}
+                    {`${info.getValue() || 'NA'} `}
                 </div>
 
             ),
-            header: 'Company',
+            header: 'Remarks',
         }),
+
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
                     <Button
                         onClick={() => {
-                            setAssociatedJobs(info.row.original?._id)
-                            setAssociatedJobsModal(true);
+                            setCustomerId(info.row.original.customer._id)
+                            console.log(info.row.original.customer._id)
+                            setTransactionModal(true)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -147,29 +148,8 @@ const WorkerListPage = () => {
 
                     </Button>
                     <Button
-                        onClick={() => {
-                            navigate(`${PathRoutes.edit_worker}/${info.row.original._id}`)
-                        }}
+                        onClick={() => handleClickDelete(info.row.original._id)}
                     >
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'>
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-                            />
-                        </svg>
-
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            handleClickDelete(info.row.original._id);
-                        }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             fill='none'
@@ -188,53 +168,38 @@ const WorkerListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 150,
+            size: 80,
         }),
 
 
     ];
-
     const table = useReactTable({
-        data: workerList,
+        data: data,
         columns,
-        state: {
-            sorting,
-        },
-        onSortingChange: setSorting,
         enableGlobalFilter: true,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
-
-
-
     return (
-        <PageWrapper name='Worker List'>
+        <PageWrapper name='Ledger List'>
             <Container>
-                <Card className='h-full'>
+                <Card>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle>All Workers</CardTitle>
-                            <Badge
-                                variant='outline'
-                                className='border-transparent px-4 '
-                                rounded='rounded-full'>
-                                {table.getFilteredRowModel().rows.length} items
-                            </Badge>
+                            <CardTitle><h1>Ledger List</h1></CardTitle>
                         </CardHeaderChild>
-
                         <CardHeaderChild>
-                            <Link to={`${PathRoutes.add_worker}`}>
+                            <Link to={`${PathRoutes.add_ledger}`}>
                                 <Button variant='solid' icon='HeroPlus'>
-                                    New Worker
+                                    New Ledger
                                 </Button>
                             </Link>
                         </CardHeaderChild>
 
                     </CardHeader>
-                    <CardBody className='overflow-auto'>
+                    <CardBody>
                         {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
@@ -243,43 +208,25 @@ const WorkerListPage = () => {
                         ) : (
                             !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
-                        <div className='flex justify-center'>
-                            {isLoading && <LoaderDotsCommon />}
-                        </div>
                     </CardBody>
                     {table.getFilteredRowModel().rows.length > 0 &&
                         <TableCardFooterTemplate table={table} />
                     }
                 </Card>
-
             </Container>
-            <Modal isOpen={isEditModal} setIsOpen={setIsEditModal} isScrollable fullScreen='2xl'>
+            <Modal isOpen={transactionListModal} setIsOpen={setTransactionModal} isScrollable fullScreen>
                 <ModalHeader
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 // onClick={() => formik.resetForm()}
                 >
-                    Edit Worker
+                    Edit Branch
                 </ModalHeader>
                 <ModalBody>
-                    <EditWorkerModal workerId={workerId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
+                    <TransactionListPage customerId={customerId} />
                 </ModalBody>
             </Modal>
-
-            <Modal isOpen={associatedJobsModal} setIsOpen={setAssociatedJobsModal} isScrollable fullScreen>
-                <ModalHeader
-                    className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-
-                >
-                    Associated Jobs
-                </ModalHeader>
-                <ModalBody>
-                    <AssociatedJobsModal associatedJobs={associatedJobs} setAssociatedJobsModal={setAssociatedJobsModal} />
-                </ModalBody>
-            </Modal>
-
         </PageWrapper>
     )
+}
 
-};
-
-export default WorkerListPage;
+export default LedgerListPage

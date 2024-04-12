@@ -10,6 +10,7 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { toast } from 'react-toastify';
+import SelectReact from '../../../../components/form/SelectReact';
 
 const SelfProducts = ({ entries, setEntries }: any) => {
 
@@ -156,6 +157,29 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                             })}
 
                                         </Select>
+                                        {/* <SelectReact
+                                            id={`product-${index}`}
+                                            name={`product-${index}`}
+                                            options={productsData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
+                                            // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
+                                            value={{
+                                                value: entry.product,
+                                                label: productsData.find((product: any) => product._id === entry.product)
+                                                    ? `${productsData.find((product: any) => product._id === entry.product)?.name} (${productsData.find((product: any) => product._id === entry.product)?.productCode}) (${productsData.find((product: any) => product._id === entry.product)?.length})`
+                                                    : ''
+                                            }}
+                                            onChange={(selectedOption: any) => {
+                                                const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
+                                                const updatedEntries = [...entries];
+                                                updatedEntries[index].product = selectedOption.value;
+                                                setEntries(updatedEntries);
+                                                const dropdown: any = document.getElementById(`product-${index}`);
+                                                if (dropdown) {
+                                                    dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                                                }
+                                            }}
+                                        /> */}
+
 
                                     </div>
 
@@ -209,7 +233,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         name={`coating-${index}`}
                                         value={entry.coating.id} // Assuming entry.coating is an object containing id and name
                                         onChange={(e: any) => {
-                                            const selectedCoatingId = e.target.value || entry.coating.id ;
+                                            const selectedCoatingId = e.target.value || entry.coating.id;
                                             const selectedCoating = coatingData.find((coating: any) => coating._id === selectedCoatingId);
                                             if (selectedCoating) {
                                                 const updatedEntries = [...entries];
@@ -237,40 +261,40 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                 </div>
                                 {entry.coating &&
                                     (
-                                    <div className='col-span-12 lg:col-span-3'>
-                                        <Label htmlFor={`hsn-${index}`}>
-                                            Color
-                                            <span className='ml-1 text-red-500'>*</span>
-                                        </Label>
-                                        <Select
-                                            placeholder='Select Color'
-                                            id={`color-${index}`}
-                                            name={`color-${index}`}
-                                            value={entry.color.id} // Assuming entry.color is an object containing id and name
-                                            onChange={(e: any) => {
-                                                const selectedColorId = e.target.value;
-                                                const updatedEntries = [...entries];
-                                                updatedEntries[index].color = {
-                                                    id: selectedColorId,
-                                                    name: e.target.selectedOptions[0].text // Assigning the name property
-                                                };
-                                                setEntries(updatedEntries);
-                                            }}
-                                        >
-                                            {colorDataList[index]?.map((color: any) => {
-                                                const colorId = entries[index]?.color;
-                                                return (
-                                                    <option key={color._id} value={color._id} selected={colorId === color._id}>
-                                                        {color.name}
-                                                    </option>
-                                                )
-                                            }
+                                        <div className='col-span-12 lg:col-span-3'>
+                                            <Label htmlFor={`hsn-${index}`}>
+                                                Color
+                                                <span className='ml-1 text-red-500'>*</span>
+                                            </Label>
+                                            <Select
+                                                placeholder='Select Color'
+                                                id={`color-${index}`}
+                                                name={`color-${index}`}
+                                                value={entry.color.id} // Assuming entry.color is an object containing id and name
+                                                onChange={(e: any) => {
+                                                    const selectedColorId = e.target.value;
+                                                    const updatedEntries = [...entries];
+                                                    updatedEntries[index].color = {
+                                                        id: selectedColorId,
+                                                        name: e.target.selectedOptions[0].text // Assigning the name property
+                                                    };
+                                                    setEntries(updatedEntries);
+                                                }}
+                                            >
+                                                {colorDataList[index]?.map((color: any) => {
+                                                    const colorId = entries[index]?.color;
+                                                    return (
+                                                        <option key={color._id} value={color._id} selected={colorId === color._id}>
+                                                            {color.name}
+                                                        </option>
+                                                    )
+                                                }
 
-                                            )}
-                                        </Select>
+                                                )}
+                                            </Select>
 
-                                    </div>
-                                      )} 
+                                        </div>
+                                    )}
 
                             </div>
 

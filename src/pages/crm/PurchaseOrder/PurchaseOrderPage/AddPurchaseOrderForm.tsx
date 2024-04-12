@@ -18,7 +18,9 @@ const AddproductForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', requiredQuantity: '', }]);
   const [id, setId] = useState(0);
   const [vendorId, setVendorId] = useState('');
+  const [vendorName, setVendorName] = useState('');
   const [vendorData, setVendorData] = useState([])
+  console.log("🚀 ~ AddproductForm ~ vendorData:", vendorData)
   const [productListData, setProductListData] = useState<any>([])
   const [products, setProducts] = useState()
   const navigate = useNavigate()
@@ -131,7 +133,7 @@ const AddproductForm = () => {
                 Vendor
                 <span className='ml-1 text-red-500'>*</span>
               </Label>
-              <Select
+              {/* <Select
                 id='vendorName'
                 name='vendorName'
                 value={vendorId}
@@ -148,12 +150,21 @@ const AddproductForm = () => {
                       {data.name}
                     </option>
                   ))}
-              </Select>
+              </Select> */}
               {/* <SelectReact
                 options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
                 value={{ value: vendorId, label: vendorId }}
                 onChange={(selectedOption: any) => setVendorId(selectedOption.value)} // Update vendor ID
                 name='vendorName' /> */}
+              <SelectReact
+                options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
+                value={{ value: vendorId, label: vendorName }} // Set value to an object containing vendorId and vendorName
+                onChange={(selectedOption: any) => {
+                  setVendorId(selectedOption.value); // Update vendor ID
+                  setVendorName(selectedOption.label); // Update vendor name
+                }}
+                name='vendorName'
+              />
 
             </div>
             {entries.map((entry: any, index: any) => (
@@ -217,10 +228,10 @@ const AddproductForm = () => {
                       // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
                       value={{
                         value: entry.product,
-                        label: productListData.find((product:any) => product._id === entry.product)
-                            ? `${productListData.find((product:any) => product._id === entry.product)?.name} (${productListData.find((product:any) => product._id === entry.product)?.productCode}) (${productListData.find((product:any) => product._id === entry.product)?.length})`
-                            : ''
-                    }}
+                        label: productListData.find((product: any) => product._id === entry.product)
+                          ? `${productListData.find((product: any) => product._id === entry.product)?.name} (${productListData.find((product: any) => product._id === entry.product)?.productCode}) (${productListData.find((product: any) => product._id === entry.product)?.length})`
+                          : ''
+                      }}
                       onChange={(selectedOption: any) => {
                         const selectedProductName = productListData.find((product: any) => product._id === selectedOption.value)?.name;
                         const updatedEntries = [...entries];

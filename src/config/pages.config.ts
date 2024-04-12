@@ -79,10 +79,10 @@ export const appPages: any = {
 	powderPage: {
 		listPage: {
 			id: 'powderPage',
-			to: '/powder',
-			text: 'Powder',
+			to: '/raw-material',
+			text: 'Raw material',
 			icon: 'DuoOption',
-		}
+		},
 	},
 	branchesPage: {
 		listPage: {
@@ -143,13 +143,17 @@ export const appPages: any = {
 			text: 'Jobs',
 			icon: 'HeroWrenchScrewdriver',
 		},
-		addPageLink:{
-			id:'addPageLink',
-			to:'/add-jobs'
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-jobs',
 		},
 		editPageLink: {
 			id: 'editPageLink',
 			to: '/edit-jobs',
+		},
+		editwihtoutPageLink: {
+			id: 'editwihtoutPageLink',
+			to: '/edit-jobs-withoutmaterial',
 		},
 	},
 
@@ -208,6 +212,22 @@ export const appPages: any = {
 		editPageLink: {
 			id: 'editPageLink',
 			to: '/edit-invoice',
+		},
+	},
+	ledgerPage: {
+		listPage: {
+			id: 'ledger',
+			to: '/ledger-list',
+			text: 'Ledger List',
+			icon: 'HeroReceiptPercent',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-ledger',
+		},
+		editPageLink: {
+			id: 'editPageLink',
+			to: '/edit-ledger',
 		},
 	},
 	projectAppPages: {

@@ -10,16 +10,23 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { toast } from 'react-toastify';
+import SelectReact from '../../../../components/form/SelectReact';
+import Checkbox from '../../../../components/form/Checkbox';
+import CreatableSelect from 'react-select/creatable'
 
 const AddCustomerOrderForm = () => {
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
+  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
   const [customerId, setCustomerId] = useState('');
+  const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([])
+  console.log("🚀 ~ AddCustomerOrderForm ~ customerData:", customerData)
   const [coatingData, setCoatingData] = useState<any>([])
   const [productsData, setProductsData] = useState<any>([]);
   const navigate = useNavigate();
   const [productTransfer, setProductTransfer] = useState(false)
   const [colorDataList, setColorDataList] = useState<Array<any>>([]);
+  const [selectedCoatings, setSelectedCoatings] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string[]>([]);
 
 
   const getProductDetails = async () => {
@@ -60,9 +67,44 @@ const AddCustomerOrderForm = () => {
 
   }, []);
 
-  const handleAddEntry = () => {
-    setEntries([...entries, { product: '', quantity: '', coating: '', color: '', length: '' }]);
+  const handleWMChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEntries({ ...entries, withoutMaterial: e.target.checked });
   };
+
+  // const handleAddEntry = () => {
+  //   setEntries([...entries, { product: '', quantity: '', coating: null, color: '', length: '', withoutMaterial: '' }]);
+  // };
+
+  // const handleAddEntry = () => {
+  //   const lastEntry = entries[entries.length - 1]; // Get the last entry
+  //   const newEntry = {
+  //     product: '', 
+  //     quantity: '', 
+  //     coating: lastEntry.coating || null, // Initialize with the coating of the last entry
+  //     color: lastEntry.color || null, 
+  //     length: '', 
+  //     withoutMaterial: '' 
+  //   }; // Create a new entry with the coating initialized with the value of the last entry
+  //   setEntries([...entries, newEntry]);
+  // };
+  const handleAddEntry = () => {
+    const lastEntry = entries[entries.length - 1];
+    const newEntry = {
+      product: '',
+      quantity: '',
+      coating: lastEntry.coating || null,
+      color: lastEntry.color || null,
+      length: '',
+      withoutMaterial: ''
+    };
+    setEntries([...entries, newEntry]);
+
+    // Update color options for the new entry based on the selected coating
+    if (lastEntry.coating) {
+      updateColorOptions(lastEntry.coating, entries.length);
+    }
+  };
+
 
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
@@ -81,6 +123,7 @@ const AddCustomerOrderForm = () => {
       customer: customerId,
       entries: filteredEntries,
     };
+    console.log("🚀 ~ handleSaveEntries ~ finalValues:", finalValues)
     try {
       const { data } = await post('/customer-order', finalValues);
       console.log("🚀 ~ handleSaveEntries ~ data:", data)
@@ -98,7 +141,49 @@ const AddCustomerOrderForm = () => {
     setEntries(newProduct)
   }
 
+  const handleCoatingChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const coatingId = e.target.value;
+    const updatedEntries = [...entries];
+    updatedEntries[index].coating = coatingId;
+    setEntries(updatedEntries);
+    updateColorOptions(coatingId, index);
 
+    // Update selected coating value
+    const updatedSelectedCoatings = [...selectedCoatings];
+    updatedSelectedCoatings[index] = coatingId;
+    console.log("🚀 ~ handleCoatingChange ~ updatedSelectedCoatings:", updatedSelectedCoatings)
+    setSelectedCoatings(updatedSelectedCoatings);
+  };
+
+  // const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  //   const colorId = e.target.value;
+  //   const updatedEntries = [...entries];
+  //   updatedEntries[index].color = colorId;
+  //   setEntries(updatedEntries);
+  // };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const colorId = e.target.value;
+    const updatedEntries = [...entries];
+    updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
+    setEntries(updatedEntries);
+  };
+
+
+
+
+  // const updateColorOptions = (coatingId: any, entryIndex: number) => {
+  //   const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
+  //   if (selectedCoating) {
+  //     const newColorDataList = [...colorDataList];
+  //     newColorDataList[entryIndex] = selectedCoating.colors;
+  //     setColorDataList(newColorDataList);
+  //   } else {
+  //     const newColorDataList = [...colorDataList];
+  //     newColorDataList[entryIndex] = [];
+  //     setColorDataList(newColorDataList);
+  //   }
+  // };
   const updateColorOptions = (coatingId: any, entryIndex: number) => {
     const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
@@ -111,6 +196,7 @@ const AddCustomerOrderForm = () => {
       setColorDataList(newColorDataList);
     }
   };
+
 
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -138,7 +224,7 @@ const AddCustomerOrderForm = () => {
                             Customer
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
-                          <Select
+                          {/* <Select
                             id='customerName'
                             name='customerName'
                             value={customerId}
@@ -155,10 +241,23 @@ const AddCustomerOrderForm = () => {
                                   {data.name}
                                 </option>
                               ))}
-                          </Select>
+                          </Select> */}
+                          <SelectReact
+                            id={`name`}
+                            name={`name`}
+                            options={customerData.map((customer: any) => ({
+                              value: customer._id,
+                              label: customer.name,
+                            }))}
+                            value={{ value: customerId, label: customerName }}
+                            onChange={(selectedOption: any) => {
+                              setCustomerId(selectedOption.value); // Update vendor ID
+                              setCustomerName(selectedOption.label); // Update vendor name
+                            }}
+                          />
                         </div>
                         <div className='col-span-12 lg:col-span-12'>
-                          {entries.map((entry: any, index: any) => (
+                          {entries && entries.map((entry: any, index: any) => (
                             <>
                               <div className='flex items-end justify-end mt-2'>
                                 {entries.length > 1 && (
@@ -194,7 +293,7 @@ const AddCustomerOrderForm = () => {
                                       Products
                                       <span className='ml-1 text-red-500'>*</span>
                                     </Label>
-                                    <Select
+                                    {/* <Select
                                       placeholder='Select Product'
                                       id={`product`}
                                       name={`product`}
@@ -210,7 +309,58 @@ const AddCustomerOrderForm = () => {
                                           {`${item.name} (${item.productCode})`}
                                         </option>
                                       ))}
-                                    </Select>
+                                    </Select> */}
+                                    {/* <SelectReact
+                                      id={`product-${index}`}
+                                      name={`product-${index}`}
+                                      options={productsData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
+                                      // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
+                                      value={{
+                                        value: entry.product,
+                                        label: productsData.find((product: any) => product._id === entry.product)
+                                          ? `${productsData.find((product: any) => product._id === entry.product)?.name} (${productsData.find((product: any) => product._id === entry.product)?.productCode}) (${productsData.find((product: any) => product._id === entry.product)?.length})`
+                                          : ''
+                                      }}
+                                      onChange={(selectedOption: any) => {
+                                        const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
+                                        const updatedEntries = [...entries];
+                                        updatedEntries[index].product = selectedOption.value;
+                                        setEntries(updatedEntries);
+                                        const dropdown: any = document.getElementById(`product-${index}`);
+                                        if (dropdown) {
+                                          dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                                        }
+                                      }}
+                                    /> */}
+                                    <CreatableSelect
+    id={`product-${index}`}
+    name={`product-${index}`}
+    options={productsData.map((product: any) => ({
+        value: product._id,
+        label: `${product.name} (${product.productCode}) (${product.length})`
+    }))}
+    onChange={(selectedOption: any) => {
+        // Find the selected product's name
+        const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
+
+        // Update entries state with the selected product value
+        const updatedEntries = [...entries];
+        updatedEntries[index].product = selectedOption.value;
+
+        // Log updated entries for debugging
+        console.log("🚀 ~ AddCustomerOrderForm ~ updatedEntries:", updatedEntries);
+
+        // Update the state with the new entries
+        setEntries(updatedEntries);
+
+        // Avoid direct DOM manipulation, let React handle rendering
+        // const dropdown: any = document.getElementById(`product-${index}`);
+        // if (dropdown) {
+        //     dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+        // }
+    }}
+/>
+
                                   </div>
                                   {entry.product && (
                                     <div className='col-span-12 lg:col-span-3'>
@@ -274,14 +424,19 @@ const AddCustomerOrderForm = () => {
                                     placeholder='Select Coating'
                                     id={`coating-${index}`}
                                     name={`coating-${index}`}
-                                    value={entry.coating}
-                                    onChange={(e: any) => {
-                                      const coatingId = e.target.value;
-                                      const updatedEntries = [...entries];
-                                      updatedEntries[index].coating = coatingId;
-                                      setEntries(updatedEntries);
-                                      updateColorOptions(coatingId, index);
-                                    }}
+                                    // value={entry.coating }
+                                    value={entry.coating || selectedCoatings[index]}
+                                    onChange={(e) => handleCoatingChange(e, index)}
+                                  // onChange={(e: any,index:number) => {
+                                  //   const coatingId = e.target.value;
+                                  //   const updatedEntries = [...entries];
+                                  //   updatedEntries[index].coating = coatingId;
+                                  //   setEntries(updatedEntries);
+                                  //   updateColorOptions(coatingId, index);
+                                  //   const updatedSelectedCoatings = [...selectedCoatings];
+                                  //   console.log("🚀 ~ AddCustomerOrderForm ~ updatedSelectedCoatings:", updatedSelectedCoatings[index])
+                                  // }}
+
                                   >
                                     {coatingData.map((coating: any) => (
                                       <option key={coating._id} value={coating._id}>
@@ -300,12 +455,14 @@ const AddCustomerOrderForm = () => {
                                       placeholder='Select Color'
                                       id={`color-${index}`}
                                       name={`color-${index}`}
-                                      value={entry.color}
-                                      onChange={(e: any) => {
-                                        const updatedEntries = [...entries];
-                                        updatedEntries[index].color = e.target.value;
-                                        setEntries(updatedEntries);
-                                      }}
+                                      value={entry.color || selectedColor[index]}
+                                      onChange={(e) => handleColorChange(e, index)}
+                                    // value={entry.color}
+                                    // onChange={(e: any) => {
+                                    //   const updatedEntries = [...entries];
+                                    //   updatedEntries[index].color = e.target.value;
+                                    //   setEntries(updatedEntries);
+                                    // }}
                                     >
                                       {colorDataList[index]?.map((color: any) => (
                                         <option key={color._id} value={color._id}>
@@ -314,6 +471,28 @@ const AddCustomerOrderForm = () => {
                                       ))}
                                     </Select>
                                   </div>)}
+
+                                <div className='col-span-12 lg:col-span-3'>
+                                  <Label htmlFor='withoutMaterial'>
+                                    Without Material
+                                    <span className='ml-1 text-red-500'>*</span>
+                                  </Label>
+                                  <Checkbox
+                                    label='Without Material'
+                                    id='withoutMaterial'
+                                    name='withoutMaterial'
+                                    checked={entries[index].withoutMaterial} // Assuming entries is an array of objects
+                                    onChange={(e) => {
+                                      const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
+                                      const updatedEntries = [...entries];
+                                      updatedEntries[index].withoutMaterial = target.checked; // Update with the checked value
+                                      setEntries(updatedEntries);
+                                    }}
+                                  />
+
+
+
+                                </div>
 
                               </div>
 

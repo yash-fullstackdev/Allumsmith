@@ -34,13 +34,10 @@ const columnHelper = createColumnHelper<any>();
 
 
 const CustomerOrderDetail = ({ customerId }: any) => {
-
-
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editedData, setEditedData] = useState<{ [key: string]: any }>({});
     const [selectedBranches, setSelectedBranches] = useState<any>({});
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>()
-    console.log("🚀 ~ CustomerOrderDetail ~ purchaseOrderData:", purchaseOrderData)
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
     const [collapseAll, setCollapseAll] = useState<boolean>(false);
     const [accordionStates, setAccordionStates] = useState({
@@ -93,10 +90,29 @@ const CustomerOrderDetail = ({ customerId }: any) => {
                 </div>
 
             ),
-            header: 'Requried Quanity',
+            header: 'Requried Quantity',
         }),
 
+        columnHelper.accessor('pendingQuantity', {
+            cell: (info) => (
 
+                <div className=''>
+                    {info.getValue() !== undefined ? info.getValue() : 0}
+                </div>
+
+            ),
+            header: 'Pending Quantity',
+        }),
+        columnHelper.accessor('itemSummary.deliveredQuantity', {
+            cell: (info) => (
+
+                <div className=''>
+                    {info.getValue() !== undefined ? info.getValue() : 0}
+                </div>
+
+            ),
+            header: 'Delivered Quantity',
+        }),
         columnHelper.accessor('status', {
             cell: (info) => (
 
@@ -193,6 +209,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
         });
         setCollapseAll(!collapseAll);
     };
+
     const handleSave = async () => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             ProductStaus: row.original.status,
@@ -283,16 +300,16 @@ const CustomerOrderDetail = ({ customerId }: any) => {
 
                             <>
                                 <CardBody className='overflow-auto'>
-                                {table.getFilteredRowModel().rows.length > 0 ? (
-                                <TableTemplate
-                                    className='table-fixed max-md:min-w-[70rem]'
-                                    table={table}
-                                />
-                                ) : (
-                                    <p className="text-center text-gray-500">No records found</p>
-                                )}
+                                    {table.getFilteredRowModel().rows.length > 0 ? (
+                                        <TableTemplate
+                                            className='table-fixed max-md:min-w-[70rem]'
+                                            table={table}
+                                        />
+                                    ) : (
+                                        <p className="text-center text-gray-500">No records found</p>
+                                    )}
                                 </CardBody>
-                                { table.getFilteredRowModel().rows.length > 0 &&
+                                {table.getFilteredRowModel().rows.length > 0 &&
                                     <TableCardFooterTemplate table={table} />
                                 }
                             </>

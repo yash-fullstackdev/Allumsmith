@@ -31,6 +31,9 @@ import { toast } from 'react-toastify';
 import EditColorModal from '../CoatingPage/EditCoatingModal';
 import EditCoatingModal from '../CoatingPage/EditCoatingModal';
 import CoatingColors from './CoatingColors';
+import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
+import { Switch } from '@mui/material';
+import Label from '../../../../components/form/Label';
 
 
 
@@ -46,11 +49,15 @@ const CoatingListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false)
     const [colorModal, setColorModal] = useState<boolean>(false)
     const [colors, setColors] = useState<any>([]);
+    const [coatingState, setCoatingState] = useState<boolean>(true);
+
     const fetchCoatingData = async () => {
         setIsLoading(true);
         try {
             const { data: coatingList } = await get(`/coatings`);
             setCoatingList(coatingList);
+            filterData(coatingList, coatingState);
+            // console.log("🚀 ~ fetchCoatingData ~ data:", coatingList,coatingState)
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -60,9 +67,31 @@ const CoatingListPage = () => {
         }
     };
 
+    const handleToggleCoatingState = () => {
+        setCoatingState(prevState => !prevState);
+    };
+
+    const filterData = (data:any[], isCoating:boolean) => {
+        let filtered;
+        if (isCoating) {
+            filtered = data.filter(item => item.type === 'anodize');
+        } else {
+            filtered = data.filter(item => item.type === 'coating');
+        }
+        setCoatingList(filtered);
+    };
+    
+    
+    useEffect(() => {
+        console.log("coatingState:", coatingState);
+        filterData(coatingList, coatingState);
+    }, [coatingState]);
+    
+    
     useEffect(() => {
         fetchCoatingData();
-    }, [])
+    }, [coatingState])
+
     const handleClickDelete = async (id: any) => {
         try {
             const { data: coating } = await deleted(`/coatings/${id}`);
@@ -179,6 +208,7 @@ const CoatingListPage = () => {
 
     ];
 
+    
     const table = useReactTable({
         data: coatingList,
         columns,
@@ -195,6 +225,14 @@ const CoatingListPage = () => {
 
     return (
         <PageWrapper name='Inventory List'>
+            <Subheader>
+            <SubheaderLeft>
+                    <div className='flex items-center justify-center ml-4' >
+                        <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={handleToggleCoatingState}  /><h4>Anodize</h4>
+                    </div>
+                    <SubheaderSeparator />
+                </SubheaderLeft>
+            </Subheader>
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
@@ -251,7 +289,7 @@ const CoatingListPage = () => {
                 <ModalHeader
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 >
-                    Colors
+                    Coating
                 </ModalHeader>
                 <ModalBody>
                     <CoatingColors colors={colors} />

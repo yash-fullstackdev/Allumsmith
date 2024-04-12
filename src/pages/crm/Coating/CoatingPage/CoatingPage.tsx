@@ -11,6 +11,7 @@ import SelectReact from '../../../../components/form/SelectReact';
 import { get, post } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { toast } from 'react-toastify';
+import { Switch } from '@mui/material';
 
 const CoatingPage = () => {
     const navigate = useNavigate();
@@ -18,9 +19,12 @@ const CoatingPage = () => {
         name: '',
         code: '',
         rate: '',
+        mm: '',
         colors: [],
     });
     const [colorData, setColorData] = useState([]);
+
+    const [coatingState, setCoatingState] = useState<boolean>(true);
 
     useEffect(() => {
         getAllColors();
@@ -35,6 +39,14 @@ const CoatingPage = () => {
         }
     };
 
+    const filteredColors = colorData.filter((color: any) => {
+        if (coatingState) {
+            return color.type === "anodize";
+        } else {
+            return color.type === "coating";
+        }
+    });
+
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
         setFormData(prevState => ({
@@ -44,8 +56,8 @@ const CoatingPage = () => {
     };
 
     const optionsGroup = [];
-    if (Array.isArray(colorData) && colorData.length > 0) {
-        const options = colorData.map((color: any) => ({
+    if (Array.isArray(filteredColors) && filteredColors.length > 0) {
+        const options = filteredColors.map((color: any) => ({
             value: color._id,
             label: color.name
         }));
@@ -57,16 +69,31 @@ const CoatingPage = () => {
         console.error('Invalid or empty color data.');
     }
 
-    const addCoatingToDatabase = async () => {
-        console.log('FormData', formData)
+
+    const addEntryToDatabase = async (type: string) => {
         try {
-            const data = {
-                code: formData.code,
-                colors: formData.colors,
-                name: formData.name,
-                rate: parseInt(formData.rate),
-            };
-            const response = await post('/coatings', data);
+            let finalData = {}
+            if (type === "coating") {
+                const data = {
+                    code: formData.code,
+                    colors: formData.colors,
+                    name: formData.name,
+                    rate: parseInt(formData.rate),
+                    type: type // Include type in the payload
+                };
+                finalData = data
+            } else {
+                const data = {
+                    code: formData.code,
+                    colors: formData.colors,
+                    name: formData.name,
+                    rate: parseInt(formData.rate),
+                    mm: parseFloat(formData.mm),
+                    type: type // Include type in the payload
+                };
+                finalData = data
+            }
+            const response = await post('/coatings', finalData);
             console.log("Response:", response);
             toast.success('Data saved Successfully!');
             navigate(PathRoutes.coating);
@@ -75,7 +102,6 @@ const CoatingPage = () => {
             toast.error('Failed to save data. Please try again.');
         }
     };
-
     return (
         <PageWrapper name='ADD Colors' isProtectedRoute={true}>
             <Subheader>
@@ -87,6 +113,9 @@ const CoatingPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
+                    <div className='flex items-center justify-center ml-4' >
+                        <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={() => setCoatingState(!coatingState)} /><h4>Anodize</h4>
+                    </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
             </Subheader>
@@ -97,7 +126,7 @@ const CoatingPage = () => {
                             <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
                                 <Card>
                                     <CardBody>
-                                        <div className='flex'>
+                                        {coatingState ? (<> <div className='flex'>
                                             <div className='bold w-full'>
                                                 <Button
                                                     variant='outlined'
@@ -107,63 +136,143 @@ const CoatingPage = () => {
                                                 </Button>
                                             </div>
                                         </div>
-                                        <div className='mt-2 grid grid-cols-12 gap-2'>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='name'>
-                                                    Name
-                                                </Label>
-                                                <Input
-                                                    id="name"
-                                                    name="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='code'>
-                                                    Code
-                                                </Label>
-                                                <Input
-                                                    id="code"
-                                                    name="code"
-                                                    value={formData.code}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='rate'>
-                                                    Rate
-                                                </Label>
-                                                <Input
-                                                    id="rate"
-                                                    name="rate"
-                                                    value={formData.rate}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='Colors'>
-                                                    Colors
-                                                </Label>
-                                                <SelectReact
-                                                    name='colors'
-                                                    options={optionsGroup[0]?.options}
-                                                    isMulti
-                                                    menuPlacement='auto'
-                                                    onChange={(selectedOptions: any) => {
-                                                        const selectedValues = selectedOptions.map((option: any) => option.value);
-                                                        setFormData(prevState => ({
-                                                            ...prevState,
-                                                            colors: selectedValues
-                                                        }));
-                                                    }}
-                                                />
+                                            <div className='mt-2 grid grid-cols-12 gap-2'>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='name'>
+                                                        Name
+                                                    </Label>
+                                                    <Input
+                                                        id="name"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='code'>
+                                                        Code
+                                                    </Label>
+                                                    <Input
+                                                        id="code"
+                                                        name="code"
+                                                        value={formData.code}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='rate'>
+                                                        Rate
+                                                    </Label>
+                                                    <Input
+                                                        id="rate"
+                                                        name="rate"
+                                                        value={formData.rate}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='mm'>
+                                                        MM
+                                                    </Label>
+                                                    <Input
+                                                        id="mm"
+                                                        name="mm"
+                                                        value={formData.mm}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='Colors'>
+                                                        Colors
+                                                    </Label>
+                                                    <SelectReact
+                                                        name='colors'
+                                                        options={optionsGroup[0]?.options}
+                                                        isMulti
+                                                        menuPlacement='auto'
+                                                        onChange={(selectedOptions: any) => {
+                                                            const selectedValues = selectedOptions.map((option: any) => option.value);
+                                                            setFormData(prevState => ({
+                                                                ...prevState,
+                                                                colors: selectedValues
+                                                            }));
+                                                        }}
+                                                    />
 
 
+                                                </div>
                                             </div>
-                                        </div>
+                                        </>) : (<>
+                                            <div className='flex'>
+                                                <div className='bold w-full'>
+                                                    <Button
+                                                        variant='outlined'
+                                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                                    >
+                                                        Add Coating
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <div className='mt-2 grid grid-cols-12 gap-2'>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='name'>
+                                                        Name
+                                                    </Label>
+                                                    <Input
+                                                        id="name"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='code'>
+                                                        Code
+                                                    </Label>
+                                                    <Input
+                                                        id="code"
+                                                        name="code"
+                                                        value={formData.code}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='rate'>
+                                                        Rate
+                                                    </Label>
+                                                    <Input
+                                                        id="rate"
+                                                        name="rate"
+                                                        value={formData.rate}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-2'>
+                                                    <Label htmlFor='Colors'>
+                                                        Colors
+                                                    </Label>
+                                                    <SelectReact
+                                                        name='colors'
+                                                        options={optionsGroup[0]?.options}
+                                                        isMulti
+                                                        menuPlacement='auto'
+                                                        onChange={(selectedOptions: any) => {
+                                                            const selectedValues = selectedOptions.map((option: any) => option.value);
+                                                            setFormData(prevState => ({
+                                                                ...prevState,
+                                                                colors: selectedValues
+                                                            }));
+                                                        }}
+                                                    />
+
+
+                                                </div>
+                                            </div>
+                                        </>)
+                                        }
                                         <div className='flex mt-2 gap-2'>
-                                            <Button variant='solid' color='blue' type='button' onClick={addCoatingToDatabase}>
+                                            <Button variant='solid' color='blue' type='button' onClick={() => addEntryToDatabase(coatingState ? 'anodize' : 'coating')}>
                                                 Save Entries
                                             </Button>
                                         </div>

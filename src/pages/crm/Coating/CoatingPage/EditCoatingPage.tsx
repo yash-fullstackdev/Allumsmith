@@ -12,6 +12,7 @@ import CreatableSelect from 'react-select/creatable';
 import { toast } from "react-toastify";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import SelectReact from "../../../../components/form/SelectReact";
+import { Switch } from "@mui/material";
 
 interface ColorOption {
     value: any;
@@ -25,9 +26,11 @@ const EditCoatingPage = () => {
         code: '',
         rate: '',
         colors: [],
+        type : ''
     });
     const [colorOptions, setColorOptions] = useState<ColorOption[]>([]);
     const [existingColors, setExistingColors] = useState<ColorOption[]>([]);
+    const [coatingState, setCoatingState] = useState<boolean>(true);
     useEffect(() => {
         console.log("🚀 ~ EditCoatingModal ~ formData:", formData)
         getAllColors();
@@ -70,10 +73,11 @@ const EditCoatingPage = () => {
     const fetchCoatingById = async () => {
         try {
             const coatingData = await get(`/coatings/${id}`);
-            const { name, code, rate, colors } = coatingData.data;
-            setFormData({ name, code, rate, colors });
+            const { name, code, rate, colors, type } = coatingData.data;
+            setFormData({ name, code, rate, colors, type });
             setExistingColors(colors);
-            console.log("Coating Data", coatingData.data);
+            setCoatingState(type === "anodize");
+            console.log("🚀 ~ fetchCoatingById ~ type === coatingData.data.type:", type === "coating")
         } catch (error) {
             console.error("Error fetching Coatin Data:", error);
         }
@@ -126,13 +130,10 @@ const EditCoatingPage = () => {
         }));
     };
 
-    console.log("Color Options", colorOptions);
-    console.log("Existing Colors", existingColors);
     const filteredOptions = colorOptions.filter(option =>
         existingColors.some((color: any) => color._id === option.value)
     );
     console.log("Filtered Options", filteredOptions);
-    console.log(existingColors, "formData1")
 return(<>
 <PageWrapper name='Edit Color' isProtectedRoute={true}>
             <Subheader>
@@ -140,10 +141,13 @@ return(<>
                     <Button
                         icon='HeroArrowLeft'
                         className='!px-0'
-                        onClick={() => navigate(`${PathRoutes.colors}`)}
+                        onClick={() => navigate(`${PathRoutes.coating}`)}
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
+                    {/* <div className='flex items-center justify-center ml-4' >
+                        <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={() => setCoatingState(!coatingState)} /><h4>Anodize</h4>
+                    </div> */}
                     <SubheaderSeparator />
                 </SubheaderLeft>
             </Subheader>

@@ -27,7 +27,7 @@ const FinishInventoryListPage = () => {
     useEffect(() => {
         getFinishInventory();
     }, [])
-
+    console.log('Finish Inv List', finishInventoryList);
     return (
         <PageWrapper name='Finish Inventory List'>
             <Container>

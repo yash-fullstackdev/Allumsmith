@@ -11,13 +11,16 @@ import Container from "../../../../components/layouts/Container/Container";
 import CreatableSelect from 'react-select/creatable';
 import { toast } from "react-toastify";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
+import { Switch } from "@mui/material";
 
 
 const EditColorPage = () => {
     const navigate = useNavigate();
+    const [colorState, setColorState] = useState<boolean>(true);
     const [formData, setFormData] = useState<any>({
         name: '',
         code: '',
+        type: '',
     });
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
@@ -26,14 +29,13 @@ const EditColorPage = () => {
             [name]: type === 'checkbox' ? checked : value
         }));
     };
- const {id} = useParams();
-    console.log("🚀 ~ EditColorPage ~ id:", id)
+    const {id} = useParams();
     const fetchColorById = async () => {
         try {
             const colorData = await get(`/colors/${id}`);
-            const { name, code } = colorData.data;
-            setFormData({ name, code });
-            console.log("Color Data", colorData.data);
+            const { name, code,type } = colorData.data;
+            setFormData({ name, code, type });
+            setColorState(type === "anodize");
         } catch (error) {
             console.error("Error fetching Color Data:", error);
         }
@@ -67,6 +69,9 @@ return(<>
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
+                    {/* <div className='flex items-center justify-center ml-4'>
+                        <h4>Coating</h4>  <Switch {...Label} checked={colorState} onClick={() => setColorState(!colorState)} /><h4>Anodize</h4>
+                    </div> */}
                     <SubheaderSeparator />
                 </SubheaderLeft>
             </Subheader>

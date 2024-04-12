@@ -36,6 +36,10 @@ import InvoiceListPage from '../pages/crm/Invoice/InvoiceListpage/InvoiceListPag
 import AddInvoice from '../pages/crm/Invoice/InvoicePage/AddInvoice';
 import EditInvoice from '../pages/crm/Invoice/InvoicePage/EditInvoice';
 import EditJobPage from '../pages/crm/Jobs/JobsPage/EditJobPage';
+import LedgerListPage from '../pages/crm/Ledger/LedgerListPage/LedgerListPage';
+import LedgerPage from '../pages/crm/Ledger/LedgerPage/LedgerPage';
+import EditLedgerPag from '../pages/crm/Ledger/LedgerPage/EditLedgerPag';
+import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/EditWithoutMaterial';
 
 
 const contentRoutes: RouteProps[] = [
@@ -173,6 +177,10 @@ const contentRoutes: RouteProps[] = [
 		element: <EditJobPage />,
 	},
 	{
+		path: `${appPages.jobsPage.editwihtoutPageLink.to}/:id`,
+		element: <EditWithoutMaterial/>,
+	},
+	{
 		path: `${appPages.powderPage.listPage.to}`,
 		element: <PowderPage />,
 	},
@@ -187,6 +195,18 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.invoicePage.editPageLink.to}`,
 		element: <EditInvoice />,
+	},
+	{
+		path: `${appPages.ledgerPage.listPage.to}`,
+		element: <LedgerListPage />,
+	},
+	{
+		path: `${appPages.ledgerPage.addPageLink.to}`,
+		element: <LedgerPage />,
+	},
+	{
+		path: `${appPages.ledgerPage.editPageLink.to}`,
+		element: <EditLedgerPag />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },
