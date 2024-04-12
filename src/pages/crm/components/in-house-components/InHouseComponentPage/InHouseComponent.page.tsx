@@ -44,7 +44,7 @@ const InHouseComponentPage = () => {
 					</Button>
 					<SubheaderSeparator />
 				</SubheaderLeft>
-				<SubheaderRight>
+				{/* <SubheaderRight>
 					<div className='col-span-1'>
 						<input
 							type={"file"}
@@ -54,8 +54,7 @@ const InHouseComponentPage = () => {
 
 						/>
 					</div>
-					{/* <Button variant='solid' onClick={handleFiles}>Add File</Button> */}
-				</SubheaderRight>
+				</SubheaderRight> */}
 			</Subheader>
 			<Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
 				<div className='flex h-full flex-wrap content-start'>

@@ -203,7 +203,7 @@ const JobsListPage = () => {
                         
 
                     
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             // setIsEditModal(true)
                             // setJobId(info.row.original._id);
@@ -225,7 +225,7 @@ const JobsListPage = () => {
                             />
                         </svg>
 
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id, false);

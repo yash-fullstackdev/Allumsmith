@@ -23,7 +23,7 @@ const columnHelper = createColumnHelper<any>();
 
 const AddInvoice = () => {
     const navigate = useNavigate();
-    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gst: 0, tax: 0, total_amount: '', finished_weight: '', origin_point: '', delivery_point: '', send_mail: false, }]);
+    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gst: 0, tax: 0, total_amount: '', origin_point: '', delivery_point: '', send_mail: false, }]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [customerList, setCustomerList] = useState<any[]>([]);
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>({});
@@ -197,7 +197,6 @@ const AddInvoice = () => {
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
                 totalAmount: parseFloat(totalAmount) || '',
-                finished_weight: entries.finished_weight || '',
                 origin_point: branchId || '',
                 delivery_point: entries.delivery_point || '',
                 
@@ -560,7 +559,7 @@ const AddInvoice = () => {
                                                                     onChange={(e) => setEntries({ ...entries, total_amount: e.target.value })}
                                                                 />
                                                             </div>
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                            {/* <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Finished Weight
                                                                     <span className='ml-1 text-red-500'>*</span>
@@ -571,7 +570,7 @@ const AddInvoice = () => {
                                                                     name="finished_weight"
                                                                     onChange={(e) => setEntries({ ...entries, finished_weight: e.target.value })}
                                                                 />
-                                                            </div>
+                                                            </div> */}
                                                             
                                                                 <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>

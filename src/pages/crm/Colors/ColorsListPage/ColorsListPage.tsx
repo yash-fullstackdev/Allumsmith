@@ -47,7 +47,7 @@ const ColorsListPage = () => {
     const [colorsList, setColorsList] = useState<any[]>([]);
     const [colorId, setColorId] = useState('')
     const [isEditModal, setIsEditModal] = useState(false)
-    const [colorState, setColorState] = useState<boolean>(true);
+    const [colorState, setColorState] = useState<boolean>(false);
 
     const fetchData = async () => {
         setIsLoading(true);

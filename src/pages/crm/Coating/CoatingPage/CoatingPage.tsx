@@ -88,7 +88,7 @@ const CoatingPage = () => {
                     colors: formData.colors,
                     name: formData.name,
                     rate: parseInt(formData.rate),
-                    mm: parseFloat(formData.mm),
+                    // mm: parseFloat(formData.mm),
                     type: type // Include type in the payload
                 };
                 finalData = data
@@ -171,7 +171,7 @@ const CoatingPage = () => {
                                                     />
                                                 </div>
 
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                {/* <div className='col-span-12 lg:col-span-2'>
                                                     <Label htmlFor='mm'>
                                                         MM
                                                     </Label>
@@ -181,7 +181,7 @@ const CoatingPage = () => {
                                                         value={formData.mm}
                                                         onChange={handleChange}
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div className='col-span-12 lg:col-span-2'>
                                                     <Label htmlFor='Colors'>
                                                         Colors
