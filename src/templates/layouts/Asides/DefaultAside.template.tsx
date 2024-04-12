@@ -20,21 +20,21 @@ const DefaultAsideTemplate = () => {
 				<Nav>
 					<NavTitle>Module</NavTitle>
 					<NavItem {...appPages.productPage.listPage} />
-					<NavItem {...appPages.purchaseOrderPage.listPage} />
-					{/* <NavItem {...appPages.purchaseEntry.listPage} /> */}
 					<NavItem {...appPages.vendorPage.listPage} />
 					<NavItem {...appPages.branchesPage.listPage} />
-					<NavItem {...appPages.inventoryPage.listPage} />
+					<NavItem {...appPages.purchaseOrderPage.listPage} />
 					<NavItem {...appPages.colorsPage.listPage} />
 					<NavItem {...appPages.coatingPage.listPage} />
 					<NavItem {...appPages.customerPage.listPage} />
-					<NavItem {...appPages.workerPage.listPage} />
-					<NavItem {...appPages.powderPage.listPage} />
 					<NavItem {...appPages.customerOrderPage.listPage} />
 					<NavItem {...appPages.jobsPage.listPage} />
-					<NavItem {...appPages.finishInventory.listPage} />
 					<NavItem {...appPages.invoicePage.listPage} />
 					<NavItem {...appPages.ledgerPage.listPage} />
+					{/* <NavItem {...appPages.purchaseEntry.listPage} /> */}
+					<NavItem {...appPages.inventoryPage.listPage} />
+					<NavItem {...appPages.finishInventory.listPage} />
+					<NavItem {...appPages.powderPage.listPage} />
+					<NavItem {...appPages.workerPage.listPage} />
 				</Nav>
 			</AsideBody>
 			<AsideFooter>
