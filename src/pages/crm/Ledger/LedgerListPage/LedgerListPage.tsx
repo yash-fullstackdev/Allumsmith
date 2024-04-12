@@ -39,43 +39,43 @@ const LedgerListPage = () => {
     const [transactionListModal, setTransactionModal] = useState<boolean>(false);
     const [customerId, setCustomerId] = useState<any>('')
     const fetchData = async () => {
-		setIsLoading(true);
-		try {
-			const { data } = await get(`/ledger`);
-            
-			setData(data);
-			setIsLoading(false);
-		} catch (error: any) {
-			console.error('Error fetching users:', error.message);
-			setIsLoading(false);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+        setIsLoading(true);
+        try {
+            const { data } = await get(`/ledger`);
+
+            setData(data);
+            setIsLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
 
-	useEffect(() => {
-		fetchData();
-	}, [])
+    useEffect(() => {
+        fetchData();
+    }, [])
 
     console.log('Data', data);
-	const handleClickDelete = async (id: any) => {
-		console.log("id", id)
-		try {
-			const { data: products } = await deleted(`/ledger/${id}`);
-			toast.success('Product deleted Successfully !');
-		} catch (error: any) {
-			console.error('Error deleting product:', error.message);
-			toast.error('Error deleting Product', error);
-			setIsLoading(false);
-		} finally {
-			setIsLoading(false);
-			fetchData();
-		}
-	}
+    const handleClickDelete = async (id: any) => {
+        console.log("id", id)
+        try {
+            const { data: products } = await deleted(`/ledger/${id}`);
+            toast.success('Product deleted Successfully !');
+        } catch (error: any) {
+            console.error('Error deleting product:', error.message);
+            toast.error('Error deleting Product', error);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+            fetchData();
+        }
+    }
 
 
-   
+
     const columns = [
 
         columnHelper.accessor('customer.name', {
@@ -92,7 +92,7 @@ const LedgerListPage = () => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue() || 0} `}
+                    {`${(info.getValue() || 0).toFixed(2)} `}
                 </div>
 
             ),
@@ -109,7 +109,7 @@ const LedgerListPage = () => {
             ),
             header: 'Pending Amount',
         }),
-        
+
         columnHelper.accessor('payment_mode', {
             cell: (info) => (
 
@@ -147,8 +147,8 @@ const LedgerListPage = () => {
                         </svg>
 
                     </Button>
-                    <Button 
-                    onClick={() => handleClickDelete(info.row.original._id)}
+                    <Button
+                        onClick={() => handleClickDelete(info.row.original._id)}
                     >
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -201,10 +201,10 @@ const LedgerListPage = () => {
                     </CardHeader>
                     <CardBody>
                         {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
-                        <TableTemplate
-                            className='table-fixed max-md:min-w-[70rem]'
-                            table={table}
-                        />
+                            <TableTemplate
+                                className='table-fixed max-md:min-w-[70rem]'
+                                table={table}
+                            />
                         ) : (
                             !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
@@ -222,7 +222,7 @@ const LedgerListPage = () => {
                     Edit Branch
                 </ModalHeader>
                 <ModalBody>
-                   <TransactionListPage customerId={customerId}/>
+                    <TransactionListPage customerId={customerId} />
                 </ModalBody>
             </Modal>
         </PageWrapper>
