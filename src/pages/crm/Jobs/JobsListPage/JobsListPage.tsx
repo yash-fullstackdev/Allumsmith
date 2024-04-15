@@ -616,7 +616,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId={jobId} setStatusModal={setWithOutStatusModal} fetchData={fetchData} />
+                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId={jobId} setStatusModal={setWithOutStatusModal} fetchData={fetchData} fetchDatajobwm = {fetchDatajobwm}/>
                     {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>

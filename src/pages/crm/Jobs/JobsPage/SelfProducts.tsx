@@ -86,6 +86,11 @@ const SelfProducts = ({ entries, setEntries }: any) => {
         }
     };
 
+    const getProductLabel = (productId: string) => {
+        const selectedProduct = productsData.find((product: any) => product._id === productId);
+        return selectedProduct ? `${selectedProduct.name} (${selectedProduct.productCode}) (${selectedProduct.length})` : '';
+    };
+
     return (
 
         <div>
@@ -128,7 +133,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                             Products
                                             <span className='ml-1 text-red-500'>*</span>
                                         </Label>
-                                        <Select
+                                        {/* <Select
                                             placeholder='Select Product'
                                             id={`product-${index}`}
                                             name={`product-${index}`}
@@ -156,29 +161,28 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                 )
                                             })}
 
-                                        </Select>
-                                        {/* <SelectReact
+                                        </Select> */}
+                                        <SelectReact
                                             id={`product-${index}`}
                                             name={`product-${index}`}
-                                            options={productsData.map((product: any) => ({ value: product._id, label: `${product.name} (${product.productCode} ) (${product.length} )` }))}
-                                            // value={{ value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.`${name} ${productCode} ${productCode} ` }}
-                                            value={{
-                                                value: entry.product,
-                                                label: productsData.find((product: any) => product._id === entry.product)
-                                                    ? `${productsData.find((product: any) => product._id === entry.product)?.name} (${productsData.find((product: any) => product._id === entry.product)?.productCode}) (${productsData.find((product: any) => product._id === entry.product)?.length})`
-                                                    : ''
-                                            }}
+                                            options={productsData.map((product: any) => ({
+                                                value: product._id,
+                                                label: `${product.name} (${product.productCode}) (${product.length})`
+                                            }))}
+                                            value={entry.product ? { value: entry.product.id, label: getProductLabel(entry.product.id) } : null}
                                             onChange={(selectedOption: any) => {
-                                                const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
-                                                const updatedEntries = [...entries];
-                                                updatedEntries[index].product = selectedOption.value;
-                                                setEntries(updatedEntries);
-                                                const dropdown: any = document.getElementById(`product-${index}`);
-                                                if (dropdown) {
-                                                    dropdown.querySelector('.select__single-value').textContent = selectedProductName;
+                                                const selectedProductId = selectedOption.value;
+                                                const selectedProduct = productsData.find((product: any) => product._id === selectedProductId);
+                                                if (selectedProduct) {
+                                                    const updatedEntries = [...entries];
+                                                    updatedEntries[index].product = {
+                                                        id: selectedProductId,
+                                                        name: selectedProduct.name // Assigning the name property
+                                                    };
+                                                    setEntries(updatedEntries);
                                                 }
                                             }}
-                                        /> */}
+                                        />
 
 
                                     </div>
