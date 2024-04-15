@@ -183,7 +183,7 @@ const AddInvoice = () => {
                         specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
                         coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
                         coatingRate: parseFloat(entry.coating.rate),
-                        coatingTotal: finalCoatingTotal || 0,
+                        coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
                         amount:parseFloat(amount.toFixed(2)),
                         coatingName:entry?.coating?.name,
                         cgst:parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
@@ -404,7 +404,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
-                                                                        Coating Rate
+                                                                        Coating/Anodize Rate
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input

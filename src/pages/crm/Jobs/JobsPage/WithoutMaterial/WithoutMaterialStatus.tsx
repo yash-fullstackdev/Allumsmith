@@ -7,7 +7,7 @@ import Button from '../../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Input from '../../../../../components/form/Input';
 
-const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetchData }: any) => {
+const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetchDatajobwm }: any) => {
 
     const [workerData, setWorkerData] = useState<any>([]);
     const [worker, setWorker] = useState<any>();
@@ -40,7 +40,7 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
             toast.error('Failed to update status');
         } finally {
             setStatusModal(false);
-            fetchData();
+            fetchDatajobwm();
         }
     };
 
