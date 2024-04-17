@@ -53,6 +53,7 @@ const VendorListPage = () => {
         setIsLoading(true);
         try {
             const { data: vendorList } = await get(`/vendors`);
+            vendorList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setVendorsList(vendorList);
             setIsLoading(false);
         } catch (error: any) {

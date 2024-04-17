@@ -55,6 +55,7 @@ const CoatingListPage = () => {
         setIsLoading(true);
         try {
             const { data: coatingList } = await get(`/coatings`);
+            coatingList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())   
             setCoatingList(coatingList);
             filterData(coatingList, coatingState);
             // console.log("🚀 ~ fetchCoatingData ~ data:", coatingList,coatingState)

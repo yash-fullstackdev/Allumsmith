@@ -47,8 +47,9 @@ const CustomerListPage = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const { data: vendorList } = await get(`/customers`);
-            setCustomerList(vendorList);
+            const { data: customerList } = await get(`/customers`);
+            customerList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            setCustomerList(customerList);
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);

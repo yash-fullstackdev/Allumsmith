@@ -133,29 +133,7 @@ const AddproductForm = () => {
                 Vendor
                 <span className='ml-1 text-red-500'>*</span>
               </Label>
-              {/* <Select
-                id='vendorName'
-                name='vendorName'
-                value={vendorId}
-                placeholder='Select Vendor'
-                onChange={(e: any) => {
-                  console.log(e.target.value)
-                  setVendorId(e.target.value)
-                }}
-              >
-                {vendorData &&
-                  vendorData.length > 0 &&
-                  vendorData?.map((data: any) => (
-                    <option key={data._id} value={data._id}>
-                      {data.name}
-                    </option>
-                  ))}
-              </Select> */}
-              {/* <SelectReact
-                options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
-                value={{ value: vendorId, label: vendorId }}
-                onChange={(selectedOption: any) => setVendorId(selectedOption.value)} // Update vendor ID
-                name='vendorName' /> */}
+              
               <SelectReact
                 options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
                 value={{ value: vendorId, label: vendorName }} // Set value to an object containing vendorId and vendorName

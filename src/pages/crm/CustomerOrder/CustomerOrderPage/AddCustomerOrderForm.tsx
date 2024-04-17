@@ -18,7 +18,8 @@ const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
   const [customerId, setCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
-  const [customerData, setCustomerData] = useState([])
+  const [customerData, setCustomerData] = useState([]);
+  const [customerOrderNumber, setCustomerOrderNumber] = useState<any>('');
   console.log("🚀 ~ AddCustomerOrderForm ~ customerData:", customerData)
   const [coatingData, setCoatingData] = useState<any>([])
   const [productsData, setProductsData] = useState<any>([]);
@@ -135,6 +136,7 @@ const AddCustomerOrderForm = () => {
     const finalValues: any = {
       customer: customerId,
       entries: filteredEntries,
+      customerOrderNumber,
     };
 
     try {
@@ -154,19 +156,6 @@ const AddCustomerOrderForm = () => {
     setEntries(newProduct)
   }
 
-  // const handleCoatingChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-  //   const coatingId = e.target.value;
-  //   const updatedEntries = [...entries];
-  //   updatedEntries[index].coating = coatingId;
-  //   setEntries(updatedEntries);
-  //   updateColorOptions(coatingId, index);
-
-  //   // Update selected coating value
-  //   const updatedSelectedCoatings = [...selectedCoatings];
-  //   updatedSelectedCoatings[index] = coatingId;
-  //   console.log("🚀 ~ handleCoatingChange ~ updatedSelectedCoatings:", updatedSelectedCoatings)
-  //   setSelectedCoatings(updatedSelectedCoatings);
-  // };
 
   const handleCoatingChange = async (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const coatingId = e.target.value;
@@ -192,7 +181,14 @@ const AddCustomerOrderForm = () => {
 
 
 
+  const getCustomerOrderCounter = async() => {
+    const {data} = await get('/counter/customerOrderCounter')
+    setCustomerOrderNumber(`CO${data.value}`)
+  }
 
+  useEffect(() =>{
+    getCustomerOrderCounter();
+  },[])
   const updateColorOptions = (coatingId: any, entryIndex: number) => {
     const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
@@ -208,12 +204,12 @@ const AddCustomerOrderForm = () => {
 
 
   const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newValue = e.target.value; 
+    const newValue = e.target.value;
     const updatedEntries = [...entries];
-    updatedEntries[index].length = newValue; 
+    updatedEntries[index].length = newValue;
     setEntries(updatedEntries);
   };
-  
+
 
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -253,6 +249,20 @@ const AddCustomerOrderForm = () => {
                               setCustomerId(selectedOption.value); // Update vendor ID
                               setCustomerName(selectedOption.label); // Update vendor name
                             }}
+                          />
+                        </div>
+                        <div className='col-span-4 lg:col-span-4 mt-5'>
+                          <Label htmlFor='customerOrderNumber'>
+                            Customer Number
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            id='customerOrderNumber'
+                            name='customerOrderNumber'
+                            value={customerOrderNumber}
+                          // onChange={(e:any) => setInvoiceNumber(e.target.value)}
+
+
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-12'>
@@ -454,7 +464,7 @@ const AddCustomerOrderForm = () => {
                                     <option value="20 Micron">20 Micron</option>
                                   </Select>
                                 </div>)}
-                                
+
 
                               </div>
                             </>

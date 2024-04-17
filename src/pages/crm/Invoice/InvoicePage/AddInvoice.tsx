@@ -32,6 +32,7 @@ const AddInvoice = () => {
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
     const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
     const [totalAmount, setTotalAmount] = useState<any>(0);
+    const [invoiceNumber,setInvoiceNumber] = useState<any>('');
     const [branch,setBranch] = useState<any>([]);
     const getCustomerName = async () => {
         setIsLoading(true);
@@ -55,8 +56,12 @@ const AddInvoice = () => {
         } finally {
         }
     };
-    
+    const getCounterValue = async() =>{
+        const {data} = await get('/counter/invoiceCounter');
+        setInvoiceNumber(`I${data.value}`)
+    }
     useEffect(() => {
+        getCounterValue();
         getAllBranch()
         getCustomerName()
         getPurchaseOrderByid()
@@ -199,7 +204,7 @@ const AddInvoice = () => {
                 totalAmount: parseFloat(totalAmount) || '',
                 origin_point: branchId || '',
                 delivery_point: entries.delivery_point || '',
-                
+                invoiceNumber,
 
             };
             console.log('Payload', payload);
@@ -266,10 +271,24 @@ const AddInvoice = () => {
                                                             customerList.length > 0 &&
                                                             customerList?.map((data: any) => (
                                                                 <option key={data._id} value={data._id}>
-                                                                    {data.customer.name}
+                                                                    {`${data.customer.name} (${data?.customerOrderNumber || 'NA'})`}   
                                                                 </option>
                                                             ))}
                                                     </Select>
+                                                </div>
+                                                <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                    <Label htmlFor='customerName'>
+                                                        Inovice Number
+                                                        <span className='ml-1 text-red-500'>*</span>
+                                                    </Label>
+                                                    <Input 
+                                                    id = 'invoiceNumber'
+                                                    name='invoiceNumber'
+                                                    value={invoiceNumber}
+                                                    // onChange={(e:any) => setInvoiceNumber(e.target.value)}
+                                                    disabled
+                                                    
+                                                    />
                                                 </div>
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {

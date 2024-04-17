@@ -69,6 +69,7 @@ const JobsListPage = () => {
         setIsLoading(true);
         try {
             const { data: jobList } = await get(`/jobs`);
+            jobList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(jobList);
             setIsLoading(false);
         } catch (error: any) {

@@ -43,6 +43,7 @@ const InvoiceListPage = () => {
     const getInvoiceList = async () => {
         try {
             const { data } = await get('/invoice')
+            data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(data);
         } catch (error) {
 

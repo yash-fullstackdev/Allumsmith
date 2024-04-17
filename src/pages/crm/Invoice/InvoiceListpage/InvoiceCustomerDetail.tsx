@@ -14,7 +14,7 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
 
     console.log('JobList', productInfo)
     const columns = [
-        columnHelper.accessor('product.name', {
+        columnHelper.accessor('name', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
@@ -34,12 +34,12 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
             header: 'Amount',
 
         }),
-        columnHelper.accessor('discount', {
+        columnHelper.accessor('coatingDiscount', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
                 //     </div>
-                <div className=''>{info.getValue()}</div>
+                <div className=''>{info.getValue()|| 0}</div>
             ),
             header: 'Discount',
 

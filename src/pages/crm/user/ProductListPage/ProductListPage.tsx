@@ -52,6 +52,9 @@ const ProductListPage = () => {
 		setIsLoading(true);
 		try {
 			const { data: allUsers } = await get(`/products`);
+			allUsers.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			setApiData(allUsers);
+	
 			setApiData(allUsers);
 			setIsLoading(false);
 		} catch (error: any) {

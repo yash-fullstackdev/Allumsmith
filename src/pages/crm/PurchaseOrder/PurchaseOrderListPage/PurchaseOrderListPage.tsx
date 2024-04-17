@@ -53,6 +53,7 @@ const PurchaseOrderListPage = () => {
         setIsLoading(true);
         try {
             const { data: purchaseOrderList } = await get(`/purchase-order`);
+            purchaseOrderList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setPurchaseOrderList(purchaseOrderList);
             setIsLoading(false);
         } catch (error: any) {

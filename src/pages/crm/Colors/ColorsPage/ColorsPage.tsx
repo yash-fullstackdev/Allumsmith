@@ -24,6 +24,7 @@ const ColorsPage = () => {
         try {
             const promises = entries.map(async (entry) => {
                 const { data } = await post("/colors", { ...entry, type });
+                data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 return data;
             });
             const results = await Promise.all(promises);

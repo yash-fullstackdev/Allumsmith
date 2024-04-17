@@ -24,7 +24,9 @@ const EditCustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        default_discount: ''
+        premium_discount: "",
+        commercial_discount:'',
+        wooden_discount:''
     });
     const navigate = useNavigate();
 
@@ -52,18 +54,18 @@ const EditCustomerPage = () => {
 
     const editCustomer = async () => {
         console.log("entries", formData);
-        try {
-            const editedCustomer = await put(`/customers/${id}`, formData);
-            console.log("edited customer", editedCustomer)
-            toast.success("Cusomer edited Successfully!")
-        } catch (error: any) {
-            console.error("Error Updating Customer", error);
-            toast.error('Error Updating Customer', error)
-        }
-        finally {
-            navigate(PathRoutes.customer);
+        // try {
+        //     const editedCustomer = await put(`/customers/${id}`, formData);
+        //     console.log("edited customer", editedCustomer)
+        //     toast.success("Cusomer edited Successfully!")
+        // } catch (error: any) {
+        //     console.error("Error Updating Customer", error);
+        //     toast.error('Error Updating Customer', error)
+        // }
+        // finally {
+        //     navigate(PathRoutes.customer);
 
-        }
+        // }
     };
 
     return (
@@ -193,17 +195,42 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='default_discount'>
-                                    Discount (%)
-                                </Label>
-                                <Input
-                                    id="default_discount"
-                                    name="default_discount"
-                                    value={formData.default_discount}
-                                    onChange={handleChange}
-                                />
-                            </div>
+                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='premium_discount'>
+                                                   Premium Discount
+                                                </Label>
+                                                <Input
+                                                    id="premium_discount"
+                                                    name="premium_discount"
+                                                    value={formData.premium_discount}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for zipcode field */}
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='commercial_discount'>
+                                                   Commercial Discount
+                                                </Label>
+                                                <Input
+                                                    id="commercial_discount"
+                                                    name="commercial_discount"
+                                                    value={formData.commercial_discount}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for zipcode field */}
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-2'>
+                                                <Label htmlFor='wooden_discount'>
+                                                   Wooden Discount
+                                                </Label>
+                                                <Input
+                                                    id="wooden_discount"
+                                                    name="wooden_discount"
+                                                    value={formData.wooden_discount}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for zipcode field */}
+                                            </div>
 
                         </div>
 

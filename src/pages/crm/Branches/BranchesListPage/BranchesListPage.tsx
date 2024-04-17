@@ -48,6 +48,7 @@ const BranchesListPage = () => {
         setIsLoading(true);
         try {
             const { data: branchesList } = await get(`/branches`);
+            branchesList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setBranchesList(branchesList);
             setIsLoading(false);
         } catch (error: any) {

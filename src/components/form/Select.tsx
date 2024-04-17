@@ -23,6 +23,7 @@ interface ISelectProps
 	dimension?: TSelectDimension;
 	value?: string | number | readonly string[] | undefined;
 	variant?: TSelectVariants;
+	placeholder?:any;
 }
 const Select: FC<ISelectProps> = (props) => {
 	const {

@@ -52,6 +52,7 @@ const CustomerOrderListPage = () => {
         setIsLoading(true);
         try {
             const { data: CustomerOrderList } = await get(`/customer-order`);
+            CustomerOrderList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setCustomerOrderList(CustomerOrderList);
             setIsLoading(false);
         } catch (error: any) {

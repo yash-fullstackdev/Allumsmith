@@ -42,7 +42,7 @@ const LedgerListPage = () => {
         setIsLoading(true);
         try {
             const { data } = await get(`/ledger`);
-
+            data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setData(data);
             setIsLoading(false);
         } catch (error: any) {
