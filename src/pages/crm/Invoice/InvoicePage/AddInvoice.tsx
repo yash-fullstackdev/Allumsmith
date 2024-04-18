@@ -18,6 +18,7 @@ import Label from '../../../../components/form/Label';
 import { useNavigate } from 'react-router';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Checkbox from '../../../../components/form/Checkbox';
+import SelectReact from '../../../../components/form/SelectReact';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -32,8 +33,8 @@ const AddInvoice = () => {
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
     const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
     const [totalAmount, setTotalAmount] = useState<any>(0);
-    const [invoiceNumber,setInvoiceNumber] = useState<any>('');
-    const [branch,setBranch] = useState<any>([]);
+    const [invoiceNumber, setInvoiceNumber] = useState<any>('');
+    const [branch, setBranch] = useState<any>([]);
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -49,15 +50,15 @@ const AddInvoice = () => {
     };
     const getPurchaseOrderByid = async () => {
         try {
-          const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
-          setPurchaseOrderData(allPurchaseOrderById);
+            const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
+            setPurchaseOrderData(allPurchaseOrderById);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
         } finally {
         }
     };
-    const getCounterValue = async() =>{
-        const {data} = await get('/counter/invoiceCounter');
+    const getCounterValue = async () => {
+        const { data } = await get('/counter/invoiceCounter');
         setInvoiceNumber(`I${data.value}`)
     }
     useEffect(() => {
@@ -72,17 +73,17 @@ const AddInvoice = () => {
         updatedEntries.splice(index, 1);
         setPurchaseOrderData({ ...purchaseOrderData, entries: updatedEntries });
     };
-    
-    
-   
+
+
+
 
     const handleDeliveredQuantityChange = (value: any, index: number) => {
-   
+
         const updatedDeliveredQuantities = [...deliveredQuantities];
         updatedDeliveredQuantities[index] = parseFloat(value);
         setDeliveredQuantities(updatedDeliveredQuantities);
-        };
-        const handleQuantityAndDiscountChange = (value: any, index: number, field: string) => {
+    };
+    const handleQuantityAndDiscountChange = (value: any, index: number, field: string) => {
         setQuantityAndDiscounts(prevQuantityAndDiscounts => {
             const updatedQuantityAndDiscounts = [...prevQuantityAndDiscounts];
             const currentItem = updatedQuantityAndDiscounts[index] || {};
@@ -94,76 +95,76 @@ const AddInvoice = () => {
             return updatedQuantityAndDiscounts;
         });
     };
-    
- 
+
+
 
     const calculateTotalAmount = () => {
         let totalSpecificProductPrice = 0;
         let totalCoatingTotal = 0;
-    
+
         purchaseOrderData.entries.forEach((entry: any, index: number) => {
             const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
             totalSpecificProductPrice += specificProductPrice || 0;
-    
-            const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry?.coating?.rate ;
-            
+
+            const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry?.coating?.rate;
+
             const discount = parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0;
             const finalCoatingPrice = coatingTotal * (1 - discount / 100);
-            console.log("finalCoatingPrice",finalCoatingPrice);
-            
+            console.log("finalCoatingPrice", finalCoatingPrice);
+
             totalCoatingTotal += finalCoatingPrice || 0;
         });
-    
+
         const totalAmount = totalSpecificProductPrice + totalCoatingTotal;
-        
-        const finalAmount = totalAmount + (totalAmount * (entries.gst/100));
-        
-        const grandTotal = finalAmount &&  (finalAmount + (finalAmount * (entries.tax/100)));
+
+        const finalAmount = totalAmount + (totalAmount * (entries.gst / 100));
+
+        const grandTotal = finalAmount && (finalAmount + (finalAmount * (entries.tax / 100)));
         setTotalAmount(grandTotal.toFixed(2));
     };
-    
+
     const getAllBranch = async () => {
         try {
-          const { data } = await get('/branches');
-          // Update origin_point for each entry
-          setBranch(data);
+            const { data } = await get('/branches');
+            // Update origin_point for each entry
+            setBranch(data);
         } catch (error) {
-          console.error('Error fetching branches:', error);
+            console.error('Error fetching branches:', error);
         }
-      };
-    
+    };
+
     useEffect(() => {
-        if(purchaseOrderData?.entries?.length > 0){
-        calculateTotalAmount();
+        if (purchaseOrderData?.entries?.length > 0) {
+            calculateTotalAmount();
         }
     }, [purchaseOrderData.entries, entries.gst, entries.tax, quantityAndDiscounts]);
 
-    
 
-  
 
-  
+
+
+
     const handleSaveEntries = async () => {
         let amountBeforeTax = 0; // Initialize amountBeforeTax variable
-    
+
         try {
             // Calculate total specificProductPrice
             const totalSpecificProductPrice = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
                 const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
                 return acc + (specificProductPrice || 0);
             }, 0);
-    
+
             // Calculate total coatingTotal
             const totalCoatingTotal = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
                 const coatingTotal = (parseFloat(entry.coating?.coatingWeight) || 0) * parseFloat(entry.coating.rate);
                 const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100);
                 return acc + (finalCoatingTotal || 0);
             }, 0);
-    
+
             // Calculate amountBeforeTax
             amountBeforeTax = totalSpecificProductPrice + totalCoatingTotal;
-             
-            
+
+
             const payload = {
                 customerOrder_id: purchaseOrderData._id || '',
                 customerName: purchaseOrderData.customer?._id || '',
@@ -171,10 +172,10 @@ const AddInvoice = () => {
                 customerPhone: purchaseOrderData.customer?.phone || '',
                 products: purchaseOrderData.entries.map((entry: any, index: any) => {
                     const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
-                    const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate ;
+                    const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
                     const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
-    
+
                     return {
                         product: entry.product._id,
                         name: entry?.product?.name,
@@ -189,11 +190,11 @@ const AddInvoice = () => {
                         coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
                         coatingRate: parseFloat(entry.coating.rate),
                         coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
-                        amount:parseFloat(amount.toFixed(2)),
-                        coatingName:entry?.coating?.name,
-                        cgst:parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                        sgst:parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                        specificCoatingAmount:coatingTotal,
+                        amount: parseFloat(amount.toFixed(2)),
+                        coatingName: entry?.coating?.name,
+                        cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                        sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                        specificCoatingAmount: coatingTotal,
                     };
                 }),
                 amountBeforeTax: parseFloat(amountBeforeTax.toFixed(2)), // Set amountBeforeTax here
@@ -208,21 +209,21 @@ const AddInvoice = () => {
 
             };
             console.log('Payload', payload);
-            
-            const respones = await post('/invoice',payload)
+
+            const respones = await post('/invoice', payload)
             console.log('Response:', respones);
             toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
-            
+
         } catch (error) {
             console.error('Error saving data:', error);
         }
     };
-    
-          
+
+
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
-             <Subheader>
+            <Subheader>
                 <SubheaderLeft>
                     <Button
                         icon='HeroArrowLeft'
@@ -233,7 +234,7 @@ const AddInvoice = () => {
                     </Button>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-                </Subheader>
+            </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
                     <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
@@ -258,7 +259,7 @@ const AddInvoice = () => {
                                                         Customer
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
-                                                    <Select
+                                                    {/* <Select
                                                         id='customerName'
                                                         name='customerName'
                                                         value={customerId}
@@ -274,54 +275,67 @@ const AddInvoice = () => {
                                                                     {`${data.customer.name} (${data?.customerOrderNumber || 'NA'})`}   
                                                                 </option>
                                                             ))}
-                                                    </Select>
+                                                    </Select> */}
+                                                    <SelectReact
+                                                        id='customerName'
+                                                        name='customerName'
+                                                        options={customerList.map((data: any) => ({
+                                                            value: data._id,
+                                                            label: `${data.customer.name} (${data?.customerOrderNumber || 'NA'})`
+                                                        }))}
+                                                        value={{ value: customerId, label: customerList.find((customer: any) => customer._id === customerId)?.customer.name || 'Select Customer' }}
+                                                        onChange={(selectedOption: any) => {
+                                                            setCustomerId(selectedOption.value);
+                                                        }}
+                                                    />
+
                                                 </div>
                                                 <div className='col-span-4 lg:col-span-4 mt-5'>
                                                     <Label htmlFor='customerName'>
                                                         Inovice Number
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
-                                                    <Input 
-                                                    id = 'invoiceNumber'
-                                                    name='invoiceNumber'
-                                                    value={invoiceNumber}
-                                                    // onChange={(e:any) => setInvoiceNumber(e.target.value)}
-                                                    disabled
-                                                    
+                                                    <Input
+                                                        id='invoiceNumber'
+                                                        name='invoiceNumber'
+                                                        value={invoiceNumber}
+                                                        // onChange={(e:any) => setInvoiceNumber(e.target.value)}
+                                                        disabled
+
                                                     />
                                                 </div>
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
-                                                        <div className='flex items-end justify-end mt-2'>
-                                                        <div className='flex items-end justify-end'>
-                                                            <Button
-                                                                type='button'
-                                                                onClick={() => handleDeleteProduct(index)}
-                                                                variant='outlined'
-                                                                color='red'
-                                                            >
-                                                                <svg
-                                                                    xmlns='http://www.w3.org/2000/svg'
-                                                                    fill='none'
-                                                                    viewBox='0 0 24 24'
-                                                                    strokeWidth='1.5'
-                                                                    stroke='currentColor'
-                                                                    data-slot='icon'
-                                                                    className='h-6 w-6'>
-                                                                    <path
-                                                                        strokeLinecap='round'
-                                                                        strokeLinejoin='round'
-                                                                        d='M6 18 18 6M6 6l12 12'
-                                                                    />
-                                                                </svg>
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                            <div className='flex items-end justify-end mt-2'>
+                                                                <div className='flex items-end justify-end'>
+                                                                    <Button
+                                                                        type='button'
+                                                                        onClick={() => handleDeleteProduct(index)}
+                                                                        variant='outlined'
+                                                                        color='red'
+                                                                    >
+                                                                        <svg
+                                                                            xmlns='http://www.w3.org/2000/svg'
+                                                                            fill='none'
+                                                                            viewBox='0 0 24 24'
+                                                                            strokeWidth='1.5'
+                                                                            stroke='currentColor'
+                                                                            data-slot='icon'
+                                                                            className='h-6 w-6'>
+                                                                            <path
+                                                                                strokeLinecap='round'
+                                                                                strokeLinejoin='round'
+                                                                                d='M6 18 18 6M6 6l12 12'
+                                                                            />
+                                                                        </svg>
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
                                                             <div className='mt-2 grid grid-cols-12 gap-1' key={entry._id}>
                                                                 <div className='col-span-12 lg:col-span-2 '>
                                                                     <Label htmlFor="name tex" className='!text-sm'>
-                                                                         Name
+                                                                        Name
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -335,7 +349,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
-                                                                         Length
+                                                                        Length
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -357,15 +371,15 @@ const AddInvoice = () => {
                                                                         name={`product${index}`}
                                                                         value={entry?.product?.weight}
                                                                         onChange={(e) => {
-                                                                            const updatedProducts = [...purchaseOrderData.entries]; 
-                                                                            updatedProducts[index] = { ...updatedProducts[index], product: { ...updatedProducts[index].product, weight: e.target.value } }; 
-                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts }); 
+                                                                            const updatedProducts = [...purchaseOrderData.entries];
+                                                                            updatedProducts[index] = { ...updatedProducts[index], product: { ...updatedProducts[index].product, weight: e.target.value } };
+                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
                                                                         }}
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
-                                                                         Rate
+                                                                        Rate
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -400,14 +414,14 @@ const AddInvoice = () => {
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
-                                                                    type='number'
-                                                                    id={`delivered_quantity${index}`}
-                                                                    name={`delivered_quantity${index}`}
-                                                                    value={deliveredQuantities[index]} 
-                                                                    onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
-                                                                />
+                                                                        type='number'
+                                                                        id={`delivered_quantity${index}`}
+                                                                        name={`delivered_quantity${index}`}
+                                                                        value={deliveredQuantities[index]}
+                                                                        onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
+                                                                    />
                                                                 </div>
-                                                                
+
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coating`} className='!text-sm'>
                                                                         Coating
@@ -432,9 +446,9 @@ const AddInvoice = () => {
                                                                         name={`coatingRate${index}`}
                                                                         value={entry?.coating?.rate}
                                                                         onChange={(e) => {
-                                                                            const updatedProducts = [...purchaseOrderData.entries]; 
-                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, rate: e.target.value } }; 
-                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts }); 
+                                                                            const updatedProducts = [...purchaseOrderData.entries];
+                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, rate: e.target.value } };
+                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
                                                                         }}
                                                                     />
                                                                 </div>
@@ -449,9 +463,9 @@ const AddInvoice = () => {
                                                                         name={`coatingWeight${index}`}
                                                                         value={entry?.coating?.coatingWeight}
                                                                         onChange={(e) => {
-                                                                            const updatedProducts = [...purchaseOrderData.entries]; 
-                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, coatingWeight: e.target.value } }; 
-                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts }); 
+                                                                            const updatedProducts = [...purchaseOrderData.entries];
+                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, coatingWeight: e.target.value } };
+                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
                                                                         }}
                                                                     />
                                                                 </div>
@@ -479,16 +493,16 @@ const AddInvoice = () => {
                                                                         name={`color${index}`}
                                                                         value={entry?.color?.name}
                                                                         disabled
-                                                                        
+
                                                                     />
                                                                 </div>
 
-                                                                
-                                                               
+
+
 
                                                             </div>
-                                                            
-                                                            </>);
+
+                                                        </>);
                                                     })}
                                                 </div>
                                             </div>
@@ -549,14 +563,14 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={entries.gst }
+                                                                    value={entries.gst}
                                                                     name="gst"
                                                                     onChange={(e) => setEntries({ ...entries, gst: e.target.value })}
                                                                 />
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='other_tax'>
-                                                                        Other Tax
+                                                                    Other Tax
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
@@ -590,8 +604,8 @@ const AddInvoice = () => {
                                                                     onChange={(e) => setEntries({ ...entries, finished_weight: e.target.value })}
                                                                 />
                                                             </div> */}
-                                                            
-                                                                <div className='col-span-4 lg:col-span-4 mt-5'>
+
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Origin Point
                                                                     <span className='ml-1 text-red-500'>*</span>
@@ -626,7 +640,7 @@ const AddInvoice = () => {
                                                                     onChange={(e) => setEntries({ ...entries, delivery_point: e.target.value })}
                                                                 />
                                                             </div>
-                                                            
+
                                                         </div>
                                                         <div className='flex mt-2 gap-2 '>
                                                             <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}  >
@@ -640,7 +654,7 @@ const AddInvoice = () => {
                                         </CardBody>
                                     </Card>
                                 </div >
-                            </>) : ""}                        
+                            </>) : ""}
 
 
                         </div>

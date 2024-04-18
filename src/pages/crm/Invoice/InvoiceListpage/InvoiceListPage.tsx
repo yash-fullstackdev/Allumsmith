@@ -30,6 +30,10 @@ const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import InvoiceCustomerDetail from './InvoiceCustomerDetail';
+import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
+import FieldWrap from '../../../../components/form/FieldWrap';
+import Icon from '../../../../components/icon/Icon';
+import Input from '../../../../components/form/Input';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const InvoiceListPage = () => {
@@ -38,7 +42,7 @@ const InvoiceListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false);
     const [productInfo, setProductInfo] = useState<any>()
     const [customerId, setCustomerId] = useState()
-
+    const [globalFilter, setGlobalFilter] = useState<string>('');
     console.log('JobList', jobsList)
     const getInvoiceList = async () => {
         try {
@@ -89,6 +93,16 @@ const InvoiceListPage = () => {
     const columns = [
 
         columnHelper.accessor('customerName.name', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue() || 'NA'} `}
+                </div>
+
+            ),
+            header: 'Name',
+        }),
+        columnHelper.accessor('invoiceNumber', {
             cell: (info) => (
 
                 <div className=''>
@@ -184,7 +198,7 @@ const InvoiceListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
         }),
 
 
@@ -192,12 +206,13 @@ const InvoiceListPage = () => {
     const table = useReactTable({
         data: jobsList,
         columns,
-        // state: {
-        //     sorting,
-        //     globalFilter,
-        // },
+        state: {
+            
+            globalFilter,
+        },
         // onSortingChange: setSorting,
         enableGlobalFilter: true,
+        onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -205,6 +220,31 @@ const InvoiceListPage = () => {
     });
     return (
         <PageWrapper name='Invoice List'>
+            <Subheader>
+				<SubheaderLeft>
+					<FieldWrap
+						firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+						lastSuffix={
+							globalFilter && (
+								<Icon
+									icon='HeroXMark'
+									color='red'
+									className='mx-2 cursor-pointer'
+									onClick={() => setGlobalFilter('')}
+								/>
+							)
+						}>
+						<Input
+							className='pl-8'
+							id='searchBar'
+							name='searchBar'
+							placeholder='Search...'
+							value={globalFilter ?? ''}
+							onChange={(e) => setGlobalFilter(e.target.value)}
+						/>
+					</FieldWrap>
+				</SubheaderLeft>
+			</Subheader>
             <Container>
                 <Card>
                     <CardHeader>

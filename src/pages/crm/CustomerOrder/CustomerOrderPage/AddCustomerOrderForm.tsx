@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import Checkbox from '../../../../components/form/Checkbox';
 import CreatableSelect from 'react-select/creatable'
+import _ from 'lodash';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
@@ -20,7 +21,6 @@ const AddCustomerOrderForm = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([]);
   const [customerOrderNumber, setCustomerOrderNumber] = useState<any>('');
-  console.log("🚀 ~ AddCustomerOrderForm ~ customerData:", customerData)
   const [coatingData, setCoatingData] = useState<any>([])
   const [productsData, setProductsData] = useState<any>([]);
   const navigate = useNavigate();
@@ -28,8 +28,8 @@ const AddCustomerOrderForm = () => {
   const [colorDataList, setColorDataList] = useState<Array<any>>([]);
   const [selectedCoatings, setSelectedCoatings] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState<string[]>([]);
-
-
+  const [inventoryList, setInventoryList] = useState<any>([]);
+  const [productsArray, setProductsArray] = useState<any>([]);
   const getProductDetails = async () => {
     try {
       const { data } = await get('/products');
@@ -40,8 +40,43 @@ const AddCustomerOrderForm = () => {
       console.error("Error Fetching Products", error);
     }
   }
+  useEffect(() => {
+    if (inventoryList.length > 0) {
+        const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
+        const resultArray = Object.keys(groupedData).map((productId) => {
+            const productData = groupedData[productId];
+            if (!productData[0]?.product) return null;
 
+            const branches = productData.map((item) => {
+                if (!item.branch || !item.branch._id || !item.branch.name) return null;
+                return {
+                    branchId: item.branch._id,
+                    branchName: item.branch.name,
+                    quantity: item.quantity,
+                };
+            }).filter(Boolean);
+            const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
+            return {
+                productId,
+                productName: productData[0].product.name,
+                totalQuantity,
+                branches,
+            };
+        }).filter(Boolean);
 
+        setProductsArray(resultArray);
+    }
+}, [inventoryList]);
+  console.log('Products Array', productsArray);
+  const fetchData = async () => {
+    
+    try {
+        const { data: inventoryList } = await get(`/inventory`);
+        setInventoryList(inventoryList);
+    } catch (error: any) {
+        console.error('Error fetching inventory:', error.message);
+    } 
+};
 
   const fetchVendorData = async () => {
     try {
@@ -61,6 +96,7 @@ const AddCustomerOrderForm = () => {
     }
   }
   useEffect(() => {
+    fetchData();
     fetchVendorData()
     getProductDetails();
     getCoatingDetails();
@@ -68,9 +104,6 @@ const AddCustomerOrderForm = () => {
 
   }, []);
 
-  const handleWMChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEntries({ ...entries, withoutMaterial: e.target.checked });
-  };
 
   const handleAddEntry = () => {
     const lastEntry = entries[entries.length - 1];
@@ -91,34 +124,6 @@ const AddCustomerOrderForm = () => {
   };
 
 
-  // const handleSaveEntries = async () => {
-  //   const updatedEntries = entries.map((entry: any) => ({
-  //     ...entry,
-  //     quantity: Number(entry.quantity)
-  //   }));
-
-  //   const filteredEntries = updatedEntries.map((obj: any) => {
-  //     const filteredObj = Object.fromEntries(
-  //       Object.entries(obj).filter(([_, value]: [string, any]) => value !== "")
-  //     );
-  //     return filteredObj;
-  //   });
-
-  //   const finalValues = {
-  //     customer: customerId,
-  //     entries: filteredEntries,
-  //   };
-  //   console.log("🚀 ~ handleSaveEntries ~ finalValues:", finalValues)
-  //   try {
-  //     const { data } = await post('/customer-order', finalValues);
-  //     console.log("🚀 ~ handleSaveEntries ~ data:", data)
-  //     toast.success('Customer order created successfully!');
-  //   } catch (error: any) {
-  //     toast.error('Error Creating customer order', error);
-  //   } finally {
-  //     navigate(PathRoutes.customer_order)
-  //   }
-  // };
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
@@ -246,8 +251,8 @@ const AddCustomerOrderForm = () => {
                             }))}
                             value={{ value: customerId, label: customerName }}
                             onChange={(selectedOption: any) => {
-                              setCustomerId(selectedOption.value); // Update vendor ID
-                              setCustomerName(selectedOption.label); // Update vendor name
+                              setCustomerId(selectedOption.value); 
+                              setCustomerName(selectedOption.label); 
                             }}
                           />
                         </div>
@@ -260,9 +265,7 @@ const AddCustomerOrderForm = () => {
                             id='customerOrderNumber'
                             name='customerOrderNumber'
                             value={customerOrderNumber}
-                          // onChange={(e:any) => setInvoiceNumber(e.target.value)}
-
-
+                          
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-12'>
