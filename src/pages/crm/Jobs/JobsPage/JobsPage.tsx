@@ -30,13 +30,12 @@ const JobsPage = () => {
     const [selectedCustomerOrderData, setSelectedCustomerOrderData] = useState<any>(null);
     const [collapsible, setCollapsible] = useState<boolean[]>(customerOrders.map(() => false));
     const [customerOrderData, setCustomerOrderData] = useState<any>([]);
-    console.log("🚀 ~ JobsPage ~ customerOrderData:", customerOrderData.map((i: any) => i.customer.name))
     const [quantityStatusModal, setQuantityStatusModal] = useState<boolean>(false);
     const [productIdsForReview, setProductIdsForReview] = useState<string[]>([]);
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
-    const [withMaterial, setWithMaterial] = useState<boolean>(true);
+    const [withMaterial, setWithMaterial] = useState<boolean>(false);
     const [customerId, setCustomerId] = useState('');
     const [customerName, setCustomerName] = useState('');
     const getProductDetails = async () => {
@@ -352,10 +351,10 @@ const JobsPage = () => {
                                                             </div>
 
                                                             {order.products.map((product: any, productIndex: any) => (
-                                                                <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
+                                                                <div key={productIndex} className='mt-[10px] col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
 
 
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`product${productIndex}`}>
                                                                             Product {productIndex + 1}
                                                                         </Label>
@@ -367,7 +366,7 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`quantity${productIndex}`}>
                                                                             Pending Quantity
                                                                         </Label>
@@ -379,7 +378,7 @@ const JobsPage = () => {
 
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`pickQuantity${productIndex}`}>
                                                                             Pick Quantity
                                                                         </Label>
@@ -399,7 +398,7 @@ const JobsPage = () => {
                                                                         />
                                                                     </div>
 
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
 
                                                                         <Label htmlFor={`coating${productIndex}`}>
                                                                             Coating
@@ -412,7 +411,7 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`color${productIndex}`}>
                                                                             Color
                                                                         </Label>
@@ -425,7 +424,7 @@ const JobsPage = () => {
                                                                         />
                                                                     </div>
 
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-1 mt-[20px]'>
                                                                         <Button
                                                                             variant='outlined'
                                                                             color='red'

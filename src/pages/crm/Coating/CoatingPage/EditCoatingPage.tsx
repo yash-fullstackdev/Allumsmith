@@ -155,7 +155,7 @@ return(<>
                 <Card>
                     <CardBody>
                         <div className='mt-1 grid grid-cols-12 gap-2'>
-                            <div className='col-span-12 lg:col-span-6'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='name'>
                                     Name
                                 </Label>
@@ -167,7 +167,7 @@ return(<>
                                 />
                             </div>
 
-                            <div className='col-span-12 lg:col-span-6'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='code'>
                                     Code
                                 </Label>
@@ -178,7 +178,7 @@ return(<>
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-6'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='rate'>
                                     Rate
                                 </Label>
@@ -189,7 +189,7 @@ return(<>
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-6'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='Colors'>
                                     Colors
                                 </Label>

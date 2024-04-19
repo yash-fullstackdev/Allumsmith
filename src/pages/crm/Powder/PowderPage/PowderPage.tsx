@@ -27,6 +27,34 @@ const PowderInventoryListPage = () => {
     useEffect(() => {
         getPowderList();
     }, [])
+
+    const renderBranches = (items: any) => {
+        console.log('Branches', items)
+        return (
+            <TableRow>
+                <TableCell colSpan={3}>
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><h3>Branch</h3></TableCell>
+                                    <TableCell><h3>Quantity</h3></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {items && items.map((branch: any) => (
+                                    <TableRow key={branch._id}>
+                                    <TableCell><h4>{branch?.branch?.name || "NA"}</h4></TableCell>
+                                    <TableCell><h4>{branch?.quantity || "NA"}</h4></TableCell>
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </TableCell>
+            </TableRow>
+        );
+    };
     return (
         <PageWrapper name='Powder Inventory List'>
             <Container>
@@ -57,10 +85,16 @@ const PowderInventoryListPage = () => {
                                     {Object.entries(_.groupBy(powderInventoryList, 'utility.name')).map(([productName, items]) => (
                                         <React.Fragment key={productName}>
                                             <TableRow onClick={() => handleProductClick(productName)}>
-                                                <TableCell><h4>{productName}</h4></TableCell>
+                                                {/* <TableCell><h4>{productName}</h4></TableCell> */}
+                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={
+                                                    expandedProduct ?
+                                                        'HeroChevronUp'
+                                                        : 'HeroChevronDown'
+                                                } /></h4></TableCell>
                                                 <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
                                             </TableRow>
-                                            {expandedProduct === productName && (
+                                            {expandedProduct && renderBranches(items)}
+                                            {/* {expandedProduct === productName && (
                                                 <TableRow>
                                                     <TableCell><h3>Branch</h3></TableCell>
                                                     <TableCell><h3>Quantity</h3></TableCell>
@@ -71,7 +105,7 @@ const PowderInventoryListPage = () => {
                                                     <TableCell><h4>{item.branch.name}</h4></TableCell>
                                                     <TableCell><h4>{item.quantity}</h4></TableCell>
                                                 </TableRow>
-                                            ))}
+                                            ))} */}
                                         </React.Fragment>
                                     ))}
                                 </TableBody>

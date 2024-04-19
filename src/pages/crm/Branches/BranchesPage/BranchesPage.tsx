@@ -85,15 +85,14 @@ const BranchesPage = () => {
                                                 <Button
                                                     variant='outlined'
                                                     className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
                                                 >
                                                     Add Branches
                                                 </Button>
                                             </div>
                                         </div>
 
-                                        <div className='mt-5 grid grid-cols-10 gap-2'>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                        <div className='mt-1 grid grid-cols-12 gap-2 '>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='name'>
                                                     Name
                                                 </Label>
@@ -105,7 +104,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for name field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='address_line1'>
                                                     Address Line 1
                                                 </Label>
@@ -117,7 +116,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for addressline1 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='address_line2'>Address Line 2</Label>
                                                 <Input
                                                     id="address_line2"
@@ -127,7 +126,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for addressLine2 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='city'>
                                                     City
                                                 </Label>
@@ -139,7 +138,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for city field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='state'>
                                                     State
                                                 </Label>
@@ -151,7 +150,7 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for state field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='zipcode'>
                                                     Zipcode
                                                 </Label>
@@ -164,7 +163,7 @@ const BranchesPage = () => {
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
 
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='phone'>
                                                     Phone
                                                 </Label>
@@ -177,7 +176,7 @@ const BranchesPage = () => {
                                                 {/* ... Error handling for phone field */}
                                             </div>
 
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='contact_name'>
                                                     Contact Name
                                                 </Label>
@@ -190,7 +189,7 @@ const BranchesPage = () => {
                                                 {/* ... Error handling for company field */}
                                             </div>
 
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='contact_phone'>
                                                     Contact Phone
                                                 </Label>
@@ -202,12 +201,8 @@ const BranchesPage = () => {
                                                 />
                                                 {/* ... Error handling for company field */}
                                             </div>
-
                                         </div>
-
-
                                         <div className='flex mt-4 gap-2'>
-
                                             <Button variant='solid' color='blue' type='button' onClick={addBranchesToDatabase}>
                                                 Save Branch
                                             </Button>

@@ -218,11 +218,11 @@ const AddCustomerOrderForm = () => {
 
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
-      <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
-        <div className='flex h-full flex-wrap content-start'>
+      {/* <Container className='flex shrink-0 grow basis-auto flex-col pb-0'> */}
+        {/* <div className='flex h-full flex-wrap content-start'>
           <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
             <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-              <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+              <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'> */}
                 <Card>
                   <CardBody>
                     <div className='flex'>
@@ -300,7 +300,7 @@ const AddCustomerOrderForm = () => {
                               </div>
                               <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                                 {!productTransfer ? (<>
-                                  <div className='col-span-12 lg:col-span-3'>
+                                  <div className='col-span-12 lg:col-span-4'>
                                     <Label htmlFor={`name-${index}`}>
                                       Products
                                       <span className='ml-1 text-red-500'>*</span>
@@ -319,10 +319,6 @@ const AddCustomerOrderForm = () => {
                                         // Update entries state with the selected product value
                                         const updatedEntries = [...entries];
                                         updatedEntries[index].product = selectedOption.value;
-
-                                        // Log updated entries for debugging
-                                        console.log("🚀 ~ AddCustomerOrderForm ~ updatedEntries:", updatedEntries);
-
                                         // Update the state with the new entries
                                         setEntries(updatedEntries);
                                       }}
@@ -330,7 +326,7 @@ const AddCustomerOrderForm = () => {
 
                                   </div>
                                   {entry.product && (
-                                    <div className='col-span-12 lg:col-span-3'>
+                                    <div className='col-span-12 lg:col-span-4'>
                                       <Label htmlFor={`length-${index}`}>
                                         Length
                                         <span className='ml-1 text-red-500'>*</span>
@@ -349,7 +345,7 @@ const AddCustomerOrderForm = () => {
                                 </>
                                 )
                                   : (<>
-                                    <div className='col-span-12 lg:col-span-3'>
+                                    <div className='col-span-12 lg:col-span-4'>
                                       <Label htmlFor={`product`}>
                                         Product
                                         <span className='ml-1 text-red-500'>*</span>
@@ -368,7 +364,7 @@ const AddCustomerOrderForm = () => {
                                     </div>
 
                                   </>)}
-                                <div className='col-span-12 lg:col-span-3'>
+                                <div className='col-span-12 lg:col-span-4'>
                                   <Label htmlFor={`hsn-${index}`}>
                                     Quantity
                                     <span className='ml-1 text-red-500'>*</span>
@@ -385,7 +381,7 @@ const AddCustomerOrderForm = () => {
                                     }}
                                   />
                                 </div>
-                                <div className='col-span-12 lg:col-span-3'>
+                                <div className='col-span-12 lg:col-span-4'>
                                   <Label htmlFor={`hsn-${index}`}>
                                     Coating
                                     <span className='ml-1 text-red-500'>*</span>
@@ -407,7 +403,7 @@ const AddCustomerOrderForm = () => {
                                   </Select>
                                 </div>
                                 {entry.coating &&
-                                  (<div className='col-span-12 lg:col-span-3'>
+                                  (<div className='col-span-12 lg:col-span-4'>
                                     <Label htmlFor={`hsn-${index}`}>
                                       Color
                                       <span className='ml-1 text-red-500'>*</span>
@@ -427,7 +423,7 @@ const AddCustomerOrderForm = () => {
                                     </Select>
                                   </div>)}
 
-                                <div className='col-span-12 lg:col-span-3'>
+                                <div className='col-span-12 lg:col-span-4'>
                                   <Label htmlFor='withoutMaterial'>
                                     Without Material
                                     <span className='ml-1 text-red-500'>*</span>
@@ -485,11 +481,11 @@ const AddCustomerOrderForm = () => {
                     </div>
                   </CardBody>
                 </Card>
-              </div >
+              {/* </div >
             </div>
           </div>
-        </div>
-      </Container>
+        </div> */}
+      {/* </Container> */}
     </PageWrapper>
   );
 };

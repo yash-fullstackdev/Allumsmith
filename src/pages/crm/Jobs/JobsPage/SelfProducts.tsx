@@ -128,7 +128,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                             </div>
                             <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                                 {!productTransfer ? (<>
-                                    <div className='col-span-12 lg:col-span-2'>
+                                    <div className='col-span-12 lg:col-span-3'>
                                         <Label htmlFor={`name-${index}`}>
                                             Products
                                             <span className='ml-1 text-red-500'>*</span>
@@ -209,7 +209,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         </div>
 
                                     </>)}
-                                <div className='col-span-12 lg:col-span-2'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor={`hsn-${index}`}>
                                         Quantity
                                         <span className='ml-1 text-red-500'>*</span>
@@ -226,7 +226,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         }}
                                     />
                                 </div>
-                                <div className='col-span-12 lg:col-span-2'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor={`hsn-${index}`}>
                                         Coating
                                         <span className='ml-1 text-red-500'>*</span>

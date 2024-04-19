@@ -201,9 +201,6 @@ const JobsListPage = () => {
                      icon='DuoFile'  
                      onClick={() => {generateReceipt(info.row.original._id)}} 
                     />
-                        
-
-                    
                     {/* <Button
                         onClick={() => {
                             // setIsEditModal(true)
@@ -245,14 +242,11 @@ const JobsListPage = () => {
                             />
                         </svg>
                     </Button>
-
                 </div>
             ),
             header: 'Actions',
             size: 140,
         }),
-
-
     ];
 
 
@@ -282,16 +276,13 @@ const JobsListPage = () => {
                 </div>
             ),
             header: 'Name',
-
         }),
 
         columnHelper.accessor('status', {
             cell: (info) => (
-
                 <div className=''>
                     {`${info.getValue()}`}
                 </div>
-
             ),
             header: 'status',
         }),
@@ -369,8 +360,6 @@ const JobsListPage = () => {
             header: 'Actions',
             size: 80,
         }),
-
-
     ];
 
 
@@ -407,7 +396,6 @@ const JobsListPage = () => {
                 </SubheaderRight>
             </Subheader>
             <Container>
-
                 <Card className='h-full'>
                     <div className='flex'>
                         <div className='bold w-full'>
@@ -431,9 +419,20 @@ const JobsListPage = () => {
                                             {table.getFilteredRowModel().rows.length} items
                                         </Badge>
                                     </CardHeaderChild>
-                                    <CardHeaderChild>
+                                    {/* <CardHeaderChild>
 
-                                        <FieldWrap
+                                        <h1>dnhjnv</h1>
+                                    </CardHeaderChild> */}
+
+                                </CardHeader>
+                            </Button>
+                        </div>
+                    </div>
+                    <Collapse isOpen={!collapsible[table.getFilteredRowModel().rows.length]}>
+                        <div>
+                            <CardHeader>
+                                <CardHeaderChild>
+                                <FieldWrap
                                             firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
                                             lastSuffix={
                                                 globalFilter && (
@@ -446,7 +445,7 @@ const JobsListPage = () => {
                                                 )
                                             }>
                                             <Input
-                                                className='pl-8'
+                                                className='pl-8 w-[285px]'
                                                 id='searchBar'
                                                 name='searchBar'
                                                 placeholder='Search...'
@@ -454,15 +453,8 @@ const JobsListPage = () => {
                                                 onChange={(e) => setGlobalFilter(e.target.value)}
                                             />
                                         </FieldWrap>
-                                    </CardHeaderChild>
-
-                                </CardHeader>
-                            </Button>
-                        </div>
-                    </div>
-                    <Collapse isOpen={!collapsible[table.getFilteredRowModel().rows.length]}>
-                        <div>
-
+                                </CardHeaderChild>
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
                                 {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                                     <TableTemplate
@@ -482,7 +474,6 @@ const JobsListPage = () => {
                         </div>
                     </Collapse>
                 </Card>
-
             </Container>
 
             {/* start of wihtout material */}
@@ -511,8 +502,15 @@ const JobsListPage = () => {
                                             {withoutdata.getFilteredRowModel().rows.length} items
                                         </Badge>
                                     </CardHeaderChild>
-                                    <CardHeaderChild>
-
+                                    
+                                </CardHeader>
+                            </Button>
+                        </div>
+                    </div>
+                    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
+                        <div>
+                            <CardHeader>
+                            <CardHeaderChild>
                                         <FieldWrap
                                             firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
                                             lastSuffix={
@@ -526,7 +524,7 @@ const JobsListPage = () => {
                                                 )
                                             }>
                                             <Input
-                                                className='pl-8'
+                                                className='pl-8 w-[285px]'
                                                 id='searchBar'
                                                 name='searchBar'
                                                 placeholder='Search...'
@@ -535,14 +533,7 @@ const JobsListPage = () => {
                                             />
                                         </FieldWrap>
                                     </CardHeaderChild>
-
-                                </CardHeader>
-                            </Button>
-                        </div>
-                    </div>
-                    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
-                        <div>
-
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
                                 {!isLoading && withoutdata.getFilteredRowModel().rows.length > 0 ? (
                                     <TableTemplate
