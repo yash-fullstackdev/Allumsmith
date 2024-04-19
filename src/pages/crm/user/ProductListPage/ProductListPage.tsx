@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-	CellContext,
+	
 	createColumnHelper,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -13,7 +13,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
-import { appPages } from '../../../../config/pages.config';
 import Card, {
 	CardBody,
 	CardHeader,
@@ -21,8 +20,7 @@ import Card, {
 	CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
+
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
@@ -65,7 +63,8 @@ const ProductListPage = () => {
 		}
 	};
 
-
+	
+	
 	useEffect(() => {
 		fetchData();
 	}, [])
@@ -216,7 +215,7 @@ const ProductListPage = () => {
 							<CardTitle>All Products</CardTitle>
 							<Badge
 								variant='outline'
-								className='border-transparent px-4 '
+								className='border-transparent px-4'
 								rounded='rounded-full'>
 								{table.getFilteredRowModel().rows.length} items
 							</Badge>
