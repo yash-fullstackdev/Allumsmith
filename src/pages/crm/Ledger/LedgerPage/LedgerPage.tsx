@@ -130,7 +130,7 @@ const LedgerPage = () => {
                     </div>
                     <div>
                       <div className='mt-2 grid grid-cols-12 gap-1'>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='name'>
                             Customer Name
                             <span className='ml-1 text-red-500'>*</span>
@@ -146,7 +146,7 @@ const LedgerPage = () => {
                           />
                         </div>
                         
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='payment_mode'>
                             Payment Mode
                             <span className='ml-1 text-red-500'>*</span>
@@ -166,7 +166,7 @@ const LedgerPage = () => {
                             }}
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='remarks'>
                             Remarks
                             <span className='ml-1 text-red-500'>*</span>
@@ -179,7 +179,7 @@ const LedgerPage = () => {
                             onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='grandTotal'>
                             Grand Total
                             <span className='ml-1 text-red-500'>*</span>
@@ -193,7 +193,7 @@ const LedgerPage = () => {
                             disabled
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='paidAmount'>
                             Paid Amount
                             <span className='ml-1 text-red-500'>*</span>
@@ -207,7 +207,7 @@ const LedgerPage = () => {
                             disabled
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='pendingAmount'>
                             Pending Amount
                             <span className='ml-1 text-red-500'>*</span>
@@ -222,7 +222,7 @@ const LedgerPage = () => {
                             disabled
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='creditedAmount'>
                             Credited Amount
                             <span className='ml-1 text-red-500'>*</span>
@@ -236,7 +236,7 @@ const LedgerPage = () => {
                             // onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
                           />
                         </div>
-                        <div className='col-span-12 lg:col-span-6'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='amountPayable'>
                             Amount Payable
                             <span className='ml-1 text-red-500'>*</span>

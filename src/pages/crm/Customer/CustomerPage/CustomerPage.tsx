@@ -96,7 +96,7 @@ const CustomerPage = () => {
                                         </div>
 
                                         <div className='mt-2 grid grid-cols-12 gap-2'>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='name'>
                                                     Name
                                                 </Label>
@@ -108,7 +108,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for name field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='email'>
                                                     Email
                                                 </Label>
@@ -120,7 +120,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for email field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='phone'>
                                                     Phone
                                                 </Label>
@@ -132,7 +132,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for phone field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='gst_number'>
                                                     GST Number
                                                 </Label>
@@ -144,7 +144,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for GST Number field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='company'>
                                                     Company
                                                 </Label>
@@ -156,7 +156,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for company field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='address_line1'>
                                                     Address Line 1
                                                 </Label>
@@ -168,7 +168,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for address_line1 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='address_line2'>Address Line 2</Label>
                                                 <Input
                                                     id="address_line2"
@@ -178,7 +178,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for address_line2 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='city'>
                                                     City
                                                 </Label>
@@ -190,7 +190,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for city field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='state'>
                                                     State
                                                 </Label>
@@ -202,7 +202,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for state field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='zipcode'>
                                                     Zipcode
                                                 </Label>
@@ -214,7 +214,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='premium_discount'>
                                                    Premium Discount (%)
                                                 </Label>
@@ -226,7 +226,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='commercial_discount'>
                                                    Commercial Discount (%)
                                                 </Label>
@@ -238,7 +238,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='wooden_discount'>
                                                    wooden Discount (%)
                                                 </Label>
@@ -252,10 +252,7 @@ const CustomerPage = () => {
                                             </div>
 
                                         </div>
-
-
                                         <div className='flex mt-2 gap-2'>
-
                                             <Button variant='solid' color='blue' type='button' onClick={createCustomer}>
                                                 Save Customer
                                             </Button>

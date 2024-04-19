@@ -93,7 +93,7 @@ const WorkerPage = () => {
                                         </div>
 
                                         <div className='mt-2 grid grid-cols-12 gap-2'>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='name'>
                                                     Name
                                                 </Label>
@@ -105,7 +105,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for name field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='email'>
                                                     Email
                                                 </Label>
@@ -117,7 +117,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for email field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='phone'>
                                                     Phone
                                                 </Label>
@@ -129,7 +129,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for phone field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='company'>
                                                     Company
                                                 </Label>
@@ -141,7 +141,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for company field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='address_line1'>
                                                     Address Line 1
                                                 </Label>
@@ -153,7 +153,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for address_line1 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='address_line2'>Address Line 2</Label>
                                                 <Input
                                                     id="address_line2"
@@ -163,7 +163,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for address_line2 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='city'>
                                                     City
                                                 </Label>
@@ -175,7 +175,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for city field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='state'>
                                                     State
                                                 </Label>
@@ -187,7 +187,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for state field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='zipcode'>
                                                     Zipcode
                                                 </Label>
@@ -199,7 +199,7 @@ const WorkerPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='pancard'>
                                                     Pan Card
                                                 </Label>

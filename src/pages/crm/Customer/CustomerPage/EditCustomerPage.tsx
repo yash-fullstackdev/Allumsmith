@@ -24,9 +24,9 @@ const EditCustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        premiumDiscount: "",
-        commercial_discount:'',
-        wooden_discount:''
+        premium_discount: "",
+        commercial_discount: '',
+        wooden_discount: ''
     });
     const navigate = useNavigate();
 
@@ -194,42 +194,42 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='premium_discount'>
-                                                   Premium Discount
-                                                </Label>
-                                                <Input
-                                                    id="premium_discount"
-                                                    name="premium_discount"
-                                                    value={formData.premiumDiscount}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for zipcode field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='commercial_discount'>
-                                                   Commercial Discount
-                                                </Label>
-                                                <Input
-                                                    id="commercial_discount"
-                                                    name="commercial_discount"
-                                                    value={formData.commercial_discount}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for zipcode field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-2'>
-                                                <Label htmlFor='wooden_discount'>
-                                                   Wooden Discount
-                                                </Label>
-                                                <Input
-                                                    id="wooden_discount"
-                                                    name="wooden_discount"
-                                                    value={formData.wooden_discount}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for zipcode field */}
-                                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='premium_discount'>
+                                    Premium Discount
+                                </Label>
+                                <Input
+                                    id="premium_discount"
+                                    name="premium_discount"
+                                    value={formData.premium_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='commercial_discount'>
+                                    Commercial Discount
+                                </Label>
+                                <Input
+                                    id="commercial_discount"
+                                    name="commercial_discount"
+                                    value={formData.commercial_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='wooden_discount'>
+                                    Wooden Discount
+                                </Label>
+                                <Input
+                                    id="wooden_discount"
+                                    name="wooden_discount"
+                                    value={formData.wooden_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
 
                         </div>
 

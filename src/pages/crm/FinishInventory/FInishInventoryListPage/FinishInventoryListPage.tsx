@@ -11,6 +11,7 @@ import { get } from '../../../../utils/api-helper.util';
 
 const FinishInventoryListPage = () => {
     const [finishInventoryList, setFinishInventoryList] = useState<any[]>([]);
+    console.log("🚀 ~ FinishInventoryListPage ~ finishInventoryList:", finishInventoryList)
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
     const [addFinishModal, setAddFinishModal] = useState<any>();
     const [finishQuantityModal, setFinishQuantityModal] = useState<any>();
@@ -27,7 +28,37 @@ const FinishInventoryListPage = () => {
     useEffect(() => {
         getFinishInventory();
     }, [])
-    console.log('Finish Inv List', finishInventoryList);
+    const renderBranches = (items: any) => {
+        console.log('Branches', items)
+        return (
+            <TableRow>
+                <TableCell colSpan={3}>
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><h3>Branch</h3></TableCell>
+                                    <TableCell><h3>Coating</h3></TableCell>
+                                    <TableCell><h3>Color</h3></TableCell>
+                                    <TableCell><h3>Quantity</h3></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {items && items.map((branch: any) => (
+                                    <TableRow key={branch._id}>
+                                    <TableCell><h4>{branch?.branch?.name || "NA"}</h4></TableCell>
+                                    <TableCell><h4>{branch?.coating?.name || "NA"}</h4></TableCell>
+                                    <TableCell><h4>{branch?.color?.name || "NA"}</h4></TableCell>
+                                    <TableCell><h4>{branch?.quantity || "NA"}</h4></TableCell>
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </TableCell>
+            </TableRow>
+        );
+    };
     return (
         <PageWrapper name='Finish Inventory List'>
             <Container>
@@ -51,10 +82,16 @@ const FinishInventoryListPage = () => {
                                     {Object.entries(_.groupBy(finishInventoryList, 'product.name')).map(([productName, items]) => (
                                         <React.Fragment key={productName}>
                                             <TableRow onClick={() => handleProductClick(productName)}>
-                                                <TableCell><h4>{productName}</h4></TableCell>
+                                                {/* <TableCell><h4>{productName}</h4></TableCell> */}
+                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={
+                                                    expandedProduct ?
+                                                        'HeroChevronUp'
+                                                        : 'HeroChevronDown'
+                                                } /></h4></TableCell>
                                                 <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
                                             </TableRow>
-                                            {expandedProduct === productName && (
+                                            {expandedProduct && renderBranches(items)}
+                                            {/* {expandedProduct === productName && (  
                                                 <TableRow>
                                                     <TableCell><h3>Branch</h3></TableCell>
                                                     <TableCell><h3>Coating</h3></TableCell>
@@ -69,7 +106,7 @@ const FinishInventoryListPage = () => {
                                                     <TableCell><h4>{item?.color?.name || "NA"}</h4></TableCell>
                                                     <TableCell><h4>{item?.quantity || "NA"}</h4></TableCell>
                                                 </TableRow>
-                                            ))}
+                                            ))} */}
                                         </React.Fragment>
                                     ))}
                                 </TableBody>

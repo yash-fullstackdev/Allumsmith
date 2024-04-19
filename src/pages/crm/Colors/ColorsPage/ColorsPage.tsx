@@ -15,7 +15,7 @@ import { Switch } from "@mui/material";
 const ColorsPage = () => {
     const navigate = useNavigate();
     const [entries, setEntries] = useState([{ name: '', code: '' }]);
-    const [colorState, setColorState] = useState<boolean>(true);
+    const [colorState, setColorState] = useState<boolean>(false);
     const handleAddEntry = () => {
         setEntries([...entries, { name: '', code: '' }]);
     };
@@ -112,7 +112,7 @@ const ColorsPage = () => {
                                                 </div>
                                                 <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
 
-                                                    <div className='col-span-12 lg:col-span-2'>
+                                                    <div className='col-span-12 lg:col-span-4'>
                                                         <Label htmlFor={`name-${index}`}>
                                                             Name
                                                         </Label>
@@ -128,7 +128,7 @@ const ColorsPage = () => {
                                                         />
                                                         {/* ... Error handling for name field */}
                                                     </div>
-                                                    <div className='col-span-12 lg:col-span-2'>
+                                                    <div className='col-span-12 lg:col-span-4'>
                                                         <Label htmlFor={`code-${index}`}>
                                                             Code
                                                         </Label>

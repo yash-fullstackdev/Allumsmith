@@ -449,15 +449,31 @@ const conversionComponentSchema = Yup.object().shape({
 	originalComponentQuantity: Yup.string().required('Original Quantity is Required'),
 	convertedQuantity: Yup.string().required('Converted Quantity is Required'),
 });
+const productsSchema = Yup.object().shape({
+    entries: Yup.array().of(
+        Yup.object().shape({
+            name: Yup.string().required('Name is required'),
+            hsn: Yup.string(),
+            rate: Yup.string(),
+            productCode: Yup.string(),
+            thickness: Yup.string(),
+            length: Yup.string(),
+            weight: Yup.string(),
+        })
+    ),
+});
+
+const editProductSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    hsn: Yup.string().required('HSN is required'),
+    rate: Yup.number().required('Rate is required').positive('Rate must be a positive number'),
+    productCode: Yup.string().required('Product Code is required'),
+    thickness: Yup.number().required('Thickness is required').positive('Thickness must be a positive number'),
+    length: Yup.number().required('Length is required').positive('Length must be a positive number'),
+    weight: Yup.number().required('Weight is required').positive('Weight must be a positive number')
+});
 
 export {
-	createUserSchema,
-	updateUserSchema,
-	customerSchema,
-	vendorSchema,
-	shippingDetailsSchema,
-	rawMaterialDataSchema,
-	vendorModalDataSchema,
-	inHouseComponentDataSchema,
-	conversionComponentSchema,
+	productsSchema,
+	editProductSchema
 };

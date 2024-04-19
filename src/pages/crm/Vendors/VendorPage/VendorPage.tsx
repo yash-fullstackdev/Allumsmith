@@ -41,14 +41,11 @@ const VendorPage = () => {
 
 
     const addVendorToDatabase = async () => {
-
-        console.log("entries", formData)
         try {
             const vendor = await post('/vendors', formData);
-            console.log("Vendor", vendor);
             toast.success('Vendor added Successfully!')
         } catch (error: any) {
-            console.error("Error Saving Vendor", error)
+            toast.error("Error Saving Vendor", error)
         }
         finally {
             navigate(PathRoutes.vendor);
@@ -93,7 +90,7 @@ const VendorPage = () => {
                                         </div>
 
                                         <div className='mt-2 grid grid-cols-12 gap-2'>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='name'>
                                                     Name
                                                 </Label>
@@ -105,7 +102,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for name field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='email'>
                                                     Email
                                                 </Label>
@@ -117,7 +114,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for email field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='phone'>
                                                     Phone
                                                 </Label>
@@ -129,7 +126,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for phone field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='gstNumber'>
                                                     GST Number
                                                 </Label>
@@ -141,7 +138,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for GST Number field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='company'>
                                                     Company
                                                 </Label>
@@ -153,7 +150,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for company field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='addressLine1'>
                                                     Address Line 1
                                                 </Label>
@@ -165,7 +162,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for addressLine1 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='addressLine2'>Address Line 2</Label>
                                                 <Input
                                                     id="addressLine2"
@@ -175,7 +172,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for addressLine2 field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='city'>
                                                     City
                                                 </Label>
@@ -187,7 +184,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for city field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='state'>
                                                     State
                                                 </Label>
@@ -199,7 +196,7 @@ const VendorPage = () => {
                                                 />
                                                 {/* ... Error handling for state field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-2'>
+                                            <div className='col-span-12 lg:col-span-4'>
                                                 <Label htmlFor='zipcode'>
                                                     Zipcode
                                                 </Label>

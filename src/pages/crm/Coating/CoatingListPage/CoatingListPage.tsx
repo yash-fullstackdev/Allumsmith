@@ -49,7 +49,7 @@ const CoatingListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false)
     const [colorModal, setColorModal] = useState<boolean>(false)
     const [colors, setColors] = useState<any>([]);
-    const [coatingState, setCoatingState] = useState<boolean>(true);
+    const [coatingState, setCoatingState] = useState<boolean>(false);
 
     const fetchCoatingData = async () => {
         setIsLoading(true);

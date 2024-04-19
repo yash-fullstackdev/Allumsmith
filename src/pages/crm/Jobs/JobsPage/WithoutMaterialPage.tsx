@@ -327,8 +327,8 @@ const WithoutMaterialPage = () => {
                                                     </div>
 
                                                     {order.products.map((product: any, productIndex: any) => (
-                                                        <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
-                                                            <div className='row-span-2'>
+                                                        <div key={productIndex} className='col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
+                                                            <div className='col-span-12 lg:col-span-3'>
                                                                 <Label htmlFor={`product${productIndex}`}>
                                                                     Product {productIndex + 1}
                                                                 </Label>
@@ -340,7 +340,7 @@ const WithoutMaterialPage = () => {
                                                                     disabled
                                                                 />
                                                             </div>
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-3'>
                                                                 <Label htmlFor={`quantity${productIndex}`}>
                                                                     Quantity
                                                                 </Label>
@@ -360,7 +360,7 @@ const WithoutMaterialPage = () => {
                                                                 />
                                                             </div>
 
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-3'>
 
                                                                 <Label htmlFor={`coating${productIndex}`}>
                                                                     Coating
@@ -373,7 +373,7 @@ const WithoutMaterialPage = () => {
                                                                     disabled
                                                                 />
                                                             </div>
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-2'>
                                                                 <Label htmlFor={`color${productIndex}`}>
                                                                     Color
                                                                 </Label>
@@ -386,7 +386,7 @@ const WithoutMaterialPage = () => {
                                                                 />
                                                             </div>
 
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-1 mt-[20px]'>
                                                                 <Button
                                                                     variant='outlined'
                                                                     color='red'

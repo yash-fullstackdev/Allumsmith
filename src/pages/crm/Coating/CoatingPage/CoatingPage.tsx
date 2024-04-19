@@ -24,7 +24,7 @@ const CoatingPage = () => {
     });
     const [colorData, setColorData] = useState([]);
 
-    const [coatingState, setCoatingState] = useState<boolean>(true);
+    const [coatingState, setCoatingState] = useState<boolean>(false);
 
     useEffect(() => {
         getAllColors();
@@ -137,7 +137,7 @@ const CoatingPage = () => {
                                             </div>
                                         </div>
                                             <div className='mt-2 grid grid-cols-12 gap-2'>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='name'>
                                                         Name
                                                     </Label>
@@ -148,7 +148,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='code'>
                                                         Code
                                                     </Label>
@@ -159,7 +159,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='rate'>
                                                         Rate
                                                     </Label>
@@ -182,7 +182,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div> */}
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='Colors'>
                                                         Colors
                                                     </Label>
@@ -215,7 +215,7 @@ const CoatingPage = () => {
                                                 </div>
                                             </div>
                                             <div className='mt-2 grid grid-cols-12 gap-2'>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='name'>
                                                         Name
                                                     </Label>
@@ -226,7 +226,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='code'>
                                                         Code
                                                     </Label>
@@ -237,7 +237,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='rate'>
                                                         Rate
                                                     </Label>
@@ -248,7 +248,7 @@ const CoatingPage = () => {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-2'>
+                                                <div className='col-span-12 lg:col-span-3'>
                                                     <Label htmlFor='Colors'>
                                                         Colors
                                                     </Label>
