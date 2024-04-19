@@ -24,7 +24,7 @@ const EditCustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        premium_discount: "",
+        premiumDiscount: "",
         commercial_discount:'',
         wooden_discount:''
     });
@@ -54,18 +54,17 @@ const EditCustomerPage = () => {
 
     const editCustomer = async () => {
         console.log("entries", formData);
-        // try {
-        //     const editedCustomer = await put(`/customers/${id}`, formData);
-        //     console.log("edited customer", editedCustomer)
-        //     toast.success("Cusomer edited Successfully!")
-        // } catch (error: any) {
-        //     console.error("Error Updating Customer", error);
-        //     toast.error('Error Updating Customer', error)
-        // }
-        // finally {
-        //     navigate(PathRoutes.customer);
-
-        // }
+        try {
+            const editedCustomer = await put(`/customers/${id}`, formData);
+            console.log("edited customer", editedCustomer)
+            toast.success("Cusomer edited Successfully!")
+        } catch (error: any) {
+            console.error("Error Updating Customer", error);
+            toast.error('Error Updating Customer', error)
+        }
+        finally {
+            navigate(PathRoutes.customer);
+        }
     };
 
     return (
@@ -202,7 +201,7 @@ const EditCustomerPage = () => {
                                                 <Input
                                                     id="premium_discount"
                                                     name="premium_discount"
-                                                    value={formData.premium_discount}
+                                                    value={formData.premiumDiscount}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
