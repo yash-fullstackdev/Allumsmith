@@ -42,41 +42,41 @@ const AddCustomerOrderForm = () => {
   }
   useEffect(() => {
     if (inventoryList.length > 0) {
-        const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
-        const resultArray = Object.keys(groupedData).map((productId) => {
-            const productData = groupedData[productId];
-            if (!productData[0]?.product) return null;
+      const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
+      const resultArray = Object.keys(groupedData).map((productId) => {
+        const productData = groupedData[productId];
+        if (!productData[0]?.product) return null;
 
-            const branches = productData.map((item) => {
-                if (!item.branch || !item.branch._id || !item.branch.name) return null;
-                return {
-                    branchId: item.branch._id,
-                    branchName: item.branch.name,
-                    quantity: item.quantity,
-                };
-            }).filter(Boolean);
-            const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
-            return {
-                productId,
-                productName: productData[0].product.name,
-                totalQuantity,
-                branches,
-            };
+        const branches = productData.map((item) => {
+          if (!item.branch || !item.branch._id || !item.branch.name) return null;
+          return {
+            branchId: item.branch._id,
+            branchName: item.branch.name,
+            quantity: item.quantity,
+          };
         }).filter(Boolean);
+        const totalQuantity = branches.reduce((total: number, branch: any) => total + branch.quantity, 0);
+        return {
+          productId,
+          productName: productData[0].product.name,
+          totalQuantity,
+          branches,
+        };
+      }).filter(Boolean);
 
-        setProductsArray(resultArray);
+      setProductsArray(resultArray);
     }
-}, [inventoryList]);
+  }, [inventoryList]);
   console.log('Products Array', productsArray);
   const fetchData = async () => {
-    
+
     try {
-        const { data: inventoryList } = await get(`/inventory`);
-        setInventoryList(inventoryList);
+      const { data: inventoryList } = await get(`/inventory`);
+      setInventoryList(inventoryList);
     } catch (error: any) {
-        console.error('Error fetching inventory:', error.message);
-    } 
-};
+      console.error('Error fetching inventory:', error.message);
+    }
+  };
 
   const fetchVendorData = async () => {
     try {
@@ -186,14 +186,14 @@ const AddCustomerOrderForm = () => {
 
 
 
-  const getCustomerOrderCounter = async() => {
-    const {data} = await get('/counter/customerOrderCounter')
+  const getCustomerOrderCounter = async () => {
+    const { data } = await get('/counter/customerOrderCounter')
     setCustomerOrderNumber(`CO${data.value}`)
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     getCustomerOrderCounter();
-  },[])
+  }, [])
   const updateColorOptions = (coatingId: any, entryIndex: number) => {
     const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
@@ -213,6 +213,21 @@ const AddCustomerOrderForm = () => {
     const updatedEntries = [...entries];
     updatedEntries[index].length = newValue;
     setEntries(updatedEntries);
+  };
+
+
+  const handleProductChange = (selectedOption: any, index: any) => {
+    const selectedProduct = productsArray.find((product: any) => product.productId === selectedOption.value);
+    if (selectedProduct) {
+      const { productId, productName, totalQuantity } = selectedProduct;
+      console.log('Product Name', productName)
+      const updatedEntries = [...entries];
+      updatedEntries[index].product = productId;
+      setEntries(updatedEntries);
+      toast.warning(`Selected product: ${productName} Total Quantity:${totalQuantity}`);
+    } else {
+      toast.warning(`Selected product: ${selectedOption.label}: Total Quantity: 0 `)
+    }
   };
 
 
@@ -251,8 +266,8 @@ const AddCustomerOrderForm = () => {
                             }))}
                             value={{ value: customerId, label: customerName }}
                             onChange={(selectedOption: any) => {
-                              setCustomerId(selectedOption.value); 
-                              setCustomerName(selectedOption.label); 
+                              setCustomerId(selectedOption.value);
+                              setCustomerName(selectedOption.label);
                             }}
                           />
                         </div>
@@ -265,7 +280,7 @@ const AddCustomerOrderForm = () => {
                             id='customerOrderNumber'
                             name='customerOrderNumber'
                             value={customerOrderNumber}
-                          
+
                           />
                         </div>
                         <div className='col-span-12 lg:col-span-12'>
@@ -305,6 +320,7 @@ const AddCustomerOrderForm = () => {
                                       Products
                                       <span className='ml-1 text-red-500'>*</span>
                                     </Label>
+                                    
                                     <CreatableSelect
                                       id={`product-${index}`}
                                       name={`product-${index}`}
@@ -312,16 +328,7 @@ const AddCustomerOrderForm = () => {
                                         value: product._id,
                                         label: `${product.name} (${product.productCode}) (${product.length})`
                                       }))}
-                                      onChange={(selectedOption: any) => {
-                                        // Find the selected product's name
-                                        const selectedProductName = productsData.find((product: any) => product._id === selectedOption.value)?.name;
-
-                                        // Update entries state with the selected product value
-                                        const updatedEntries = [...entries];
-                                        updatedEntries[index].product = selectedOption.value;
-                                        // Update the state with the new entries
-                                        setEntries(updatedEntries);
-                                      }}
+                                      onChange={(selectedOption) => handleProductChange(selectedOption, index)}
                                     />
 
                                   </div>
@@ -380,6 +387,13 @@ const AddCustomerOrderForm = () => {
                                       setEntries(updatedEntries);
                                     }}
                                   />
+                                  {entry.product && entry.quantity && (
+                                    <div style={{ color: 'red', marginTop: '0.5rem' }}>
+                                      {`${entry.product ? productsArray.find((product:any) => product.productId === entry.product)?.productName : 'Selected product'} has ${productsArray.find((product:any) => product.productId === entry.product)?.totalQuantity || 0} quantity`}
+
+                                    </div>
+                                  )}
+
                                 </div>
                                 <div className='col-span-12 lg:col-span-4'>
                                   <Label htmlFor={`hsn-${index}`}>
