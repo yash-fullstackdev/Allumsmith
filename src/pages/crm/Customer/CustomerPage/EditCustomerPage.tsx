@@ -54,18 +54,17 @@ const EditCustomerPage = () => {
 
     const editCustomer = async () => {
         console.log("entries", formData);
-        // try {
-        //     const editedCustomer = await put(`/customers/${id}`, formData);
-        //     console.log("edited customer", editedCustomer)
-        //     toast.success("Cusomer edited Successfully!")
-        // } catch (error: any) {
-        //     console.error("Error Updating Customer", error);
-        //     toast.error('Error Updating Customer', error)
-        // }
-        // finally {
-        //     navigate(PathRoutes.customer);
-
-        // }
+        try {
+            const editedCustomer = await put(`/customers/${id}`, formData);
+            console.log("edited customer", editedCustomer)
+            toast.success("Cusomer edited Successfully!")
+        } catch (error: any) {
+            console.error("Error Updating Customer", error);
+            toast.error('Error Updating Customer', error)
+        }
+        finally {
+            navigate(PathRoutes.customer);
+        }
     };
 
     return (

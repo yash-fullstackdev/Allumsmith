@@ -29,7 +29,8 @@ import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
 import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
 import { Info } from 'property-information/lib/util/info';
-
+import { PathRoutes } from '../../../../utils/routes/enum';
+import {  useNavigate } from 'react-router-dom';
 
 
 const columnHelper = createColumnHelper<any>();
@@ -50,6 +51,8 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         collapsibleEntryList: false,
 
     });
+
+    const navigate = useNavigate()
 
     const getPurchaseOrderByid = async () => {
 
@@ -275,7 +278,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         const saveData = table.getFilteredRowModel().rows.map((row: any, index: number) => ({
             ProductStaus: row.original.status,
             product: row.original.product._id,
-            receivedQuantity: editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity,
+            receivedQuantity: parseFloat(editedData[row.id]?.receivedQuantity ?? row.original.receivedQuantity),
             requiredQuantity: parseFloat(row.original.requiredQuantity),
             branch: selectedBranches[index],
         }));
@@ -296,8 +299,10 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             const products = UpdatedEntries
             const final = { products }
             const finalUpdatedvalues = JSON.parse(JSON.stringify(final))
+            console.log("finalUpdatedvalues", finalUpdatedvalues);
+            
             const savePurchaseEntry = await post(`/purchase-order/registerPurchaseEntry/${poId}`, finalUpdatedvalues);
-            console.log("savePurchaseEntry", savePurchaseEntry);
+            // console.log("savePurchaseEntry", savePurchaseEntry);
             toast.success('Product added to inventory');
             getPurchaseOrderByid()
             getPurchaseEntryData();
@@ -309,7 +314,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             toast.error('Error Saving Branch', error);
         }
         finally {
-            // navigate(PathRoutes.branches);
+            navigate(PathRoutes.purchase_order);
         }
     };
 
