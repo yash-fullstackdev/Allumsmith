@@ -287,41 +287,29 @@ import { PathRoutes } from '../../../../../utils/routes/enum';
 import CreatableSelect from 'react-select/creatable';
 import { toast } from 'react-toastify';
 import { productsSchema } from '../../../../../utils/formValidations';
+import { entries } from 'lodash';
 
 const AddproductForm = () => {
 	const [dropDownValues, setDropDownValues] = useState<any>({});
 	const navigate = useNavigate();
 
-	interface Entry {
-		name: any;
-		hsn: string;
-		rate: string;
-		productCode: string;
-		thickness: string;
-		length: string;
-		weight: string;
-	}
 
-	// Define the type of the form values
-	interface FormValues {
-		entries: Entry[];
-	}
-	
-	const formik = useFormik<FormValues>({
-        initialValues: {
-            entries: [{
-                name: '',
-                hsn: '',
-                rate: '',
-                productCode: '',
-                thickness: '',
-                length: '',
-                weight: '',
-            }],
-        },
-        validationSchema: productsSchema,
-        onSubmit: () => {},
-    });
+
+	const formik: any = useFormik({
+		initialValues: {
+			entries: [{
+				name: '',
+				hsn: '',
+				rate: '',
+				productCode: '',
+				thickness: '',
+				length: '',
+				weight: '',
+			}],
+		},
+		validationSchema: productsSchema,
+		onSubmit: () => { },
+	});
 
 	const getDropDownValues = async () => {
 		try {
@@ -345,26 +333,8 @@ const AddproductForm = () => {
 			length: null,
 			weight: null
 		}]);
-		
-	};
 
-	// const handleAddEntry = () => {
-	// 	formik.setValues((prevValues: any) => {
-	// 		const newProducts = [
-	// 			...prevValues.entries,
-	// 			{
-	// 				name: '',
-	// 				hsn: '',
-	// 				rate: '',
-	// 				productCode: '',
-	// 				thickness: '',
-	// 				length: '',
-	// 				weight: ''
-	// 			},
-	// 		];
-	// 		return { ...prevValues, buyers: newProducts };
-	// 	});
-	// };
+	};
 
 
 	const handleDeleteProduct = (index: any) => {
@@ -417,7 +387,7 @@ const AddproductForm = () => {
 			toast.error("Error Adding Products", error);
 		}
 	};
-	console.log('Formik Errors', formik.errors)
+	console.log('Formik Errors', formik.touched)
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
 			<Card>
@@ -431,8 +401,8 @@ const AddproductForm = () => {
 					</div>
 
 					{formik.values.entries.map((entry: any, index: any) => (
-						<div key={index}>
-							<div className='flex items-end justify-end mt-3'>
+						<div className="relative py-5" key={index}>
+							<div className='flex items-end justify-end mt-3 absolute right-0 top-[5px]'>
 								{formik.values.entries.length > 1 && (
 									<div className='flex items-end justify-end'>
 										<Button type='button' onClick={() => handleDeleteProduct(index)} variant='outlined' color='red' icon='HeroXMark' />
@@ -447,8 +417,14 @@ const AddproductForm = () => {
 									<Input
 										type='text'
 										id={`name-${index}`}
-										name={`name-${index}`}
+										// name={`name-${index}`}	
+
+										name={`entries[${index}].name`}
 										value={entry.name}
+										// onBlur={() => {
+										// 	formik.handleBlur(`name-${index}`);
+										// 	console.log(formik.touched.entries?.[index]?.name, formik.errors.entries?.[index]?.name);
+										// }}
 										onBlur={formik.handleBlur}
 										onChange={(e) => {
 											const newEntries = [...formik.values.entries];
@@ -456,16 +432,15 @@ const AddproductForm = () => {
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
-									{/* {formik.touched.entries && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].name && (
-										<div className="text-red-500">{formik.errors.entries[index].name}</div>
-									)} */}
 
-									{/* {formik.touched.entries?.[index]?.name &&
-										formik.errors.entries?.[index]?.name ? (
-										<div className='text-red-500'>
-											{formik.errors.entries[index].name}
-										</div>
-									) : null} */}
+
+									{
+										formik.touched.entries?.[index]?.name &&
+											formik.errors.entries?.[index]?.name ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].name}
+											</div>
+										) : null}
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`hsn-${index}`}>
@@ -473,14 +448,22 @@ const AddproductForm = () => {
 									</Label>
 									<Input
 										id={`hsn-${index}`}
-										name={`hsn-${index}`}
+										name={`entries[${index}].hsn`}
 										value={entry.hsn}
+										onBlur={formik.handleBlur}
 										onChange={(e) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].hsn = e.target.value;
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
+									{
+										formik.touched.entries?.[index]?.hsn &&
+											formik.errors.entries?.[index]?.hsn ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].hsn}
+											</div>
+										) : null}
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`productCode-${index}`}>
@@ -488,16 +471,23 @@ const AddproductForm = () => {
 									</Label>
 									<Input
 										id={`productCode-${index}`}
-										name={`productCode-${index}`}
+										name={`entries[${index}].productCode`}
 										type='number'
 										value={entry?.productCode}
+										onBlur={formik.handleBlur}
 										onChange={(e) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].productCode = e.target.value;
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
-									{/* Error handling for product code field */}
+									{
+										formik.touched.entries?.[index]?.productCode &&
+											formik.errors.entries?.[index]?.productCode ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].productCode}
+											</div>
+										) : null}
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`rate-${index}`}>
@@ -505,16 +495,23 @@ const AddproductForm = () => {
 									</Label>
 									<Input
 										id={`rate-${index}`}
-										name={`rate-${index}`}
+										name={`entries[${index}].rate`}
 										type='number'
 										value={entry.rate}
+										onBlur={formik.handleBlur}
 										onChange={(e) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].rate = e.target.value;
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
-									{/* Error handling for rate field */}
+									{
+										formik.touched.entries?.[index]?.rate &&
+											formik.errors.entries?.[index]?.rate ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].rate}
+											</div>
+										) : null}
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`thickness-${index}`}>
@@ -522,15 +519,23 @@ const AddproductForm = () => {
 									</Label>
 									<CreatableSelect
 										id={`thickness-${index}`}
-										name={`thickness-${index}`}
+										name={`entries[${index}].thickness`}
 										options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
 										// value={entry.thickness.value}
+										onBlur={formik.handleBlur}
 										onChange={(selectedOption: any) => {
 											const newEntries: any = [...formik.values.entries];
 											newEntries[index].thickness = parseFloat(selectedOption.value);
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
+									{
+										formik.touched.entries?.[index]?.thickness &&
+											formik.errors.entries?.[index]?.thickness ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].thickness}
+											</div>
+										) : null}
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`length-${index}`}>

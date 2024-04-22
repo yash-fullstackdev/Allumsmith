@@ -238,18 +238,13 @@ const EditProductPage = () => {
         fetchData();
     }, []);
 
-    const formik = useFormik({
-        initialValues: {
-            name: '',
-            hsn: '',
-            rate: '',
-            productCode: '',
-            thickness: '',
-            length: '',
-            weight: ''
+    const formik :any = useFormik({
+        initialValues: { 
         },
         validationSchema: editProductSchema,
-        onSubmit: async () => {
+        enableReinitialize: true,
+        onSubmit: async (values) => {
+        console.log('Values', values)
         },
     });
 
@@ -265,9 +260,33 @@ const EditProductPage = () => {
     useEffect(() => {
         getDropDownValues();
     }, []);
-    const editProduct = async () => {
+    const updateProduct = async () => {
 
         try {
+            await formik.validateForm();
+
+			const handleNestedErrors = (errors: any, prefix = '') => {
+				//  logic to touch the field which are not validated
+				Object.keys(errors).forEach((errorField) => {
+					const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+
+					if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+						// Recursive call for nested errors
+						handleNestedErrors(errors[errorField], fieldName);
+					} else {
+						// Set the field as touched and set the error
+						formik.setFieldTouched(fieldName, true, false);
+						formik.setFieldError(fieldName, errors[errorField]);
+					}
+				});
+			};
+
+			if (Object.keys(formik.errors).length > 0) {
+				handleNestedErrors(formik.errors);
+
+				toast.error(`Please fill all the mandatory fields and check all formats`);
+				return;
+			}
             const formData = {
                 name: formik.values.name,
                 hsn: formik.values.hsn,
@@ -281,14 +300,15 @@ const EditProductPage = () => {
             const editedProduct = await put(`/products/${id}`, formData);
             console.log("edited Product", editedProduct);
             toast.success(`Product Updated Successfully`)
+            navigate(PathRoutes.product);
         } catch (error: any) {
             console.error("Error Saving Product", error)
             toast.error("Error Adding Products", error);
         }
-        finally {
-            navigate(PathRoutes.product);
-        }
+        
     };
+
+    console.log('Formik ', formik.touched.name)
 
     return (
         <PageWrapper name='ADD Vendor' isProtectedRoute={true}>
@@ -308,7 +328,7 @@ const EditProductPage = () => {
             <Container className='flex shrink-0 grow basis-auto flex-col '>
                 <Card>
                     <CardBody>
-                        <form onSubmit={formik.handleSubmit}>
+                        <form >
                             <div className='mt-1 grid grid-cols-12 gap-2'>
                                 <div className='col-span-12 lg:col-span-6'>
                                     <Label htmlFor='name'>
@@ -319,12 +339,11 @@ const EditProductPage = () => {
                                         type="text"
                                         name="name"
                                         value={formik.values.name}
+                                        onBlur={formik.handleBlur}
                                         onChange={formik.handleChange}
                                     />
                                     {formik.touched.name && formik.errors.name ? (
-                                        <div className='text-red-500'>
-                                            {formik.errors.name}
-                                        </div>
+                                        <div className='text-red-500'>{formik.errors.name}</div>
                                     ) : null}
                                 </div>
                                 <div className='col-span-12 lg:col-span-6'>
@@ -335,8 +354,12 @@ const EditProductPage = () => {
                                         id="hsn"
                                         name="hsn"
                                         value={formik.values.hsn}
+                                        onBlur={formik.handleBlur}
                                         onChange={formik.handleChange}
                                     />
+                                    {formik.touched.hsn && formik.errors.hsn ? (
+                                        <div className='text-red-500'>{formik.errors.hsn}</div>
+                                    ) : null}
                                 </div>
 
                                 {/* Rate */}
@@ -348,8 +371,12 @@ const EditProductPage = () => {
                                         id="rate"
                                         name="rate"
                                         value={formik.values.rate}
+                                        onBlur={formik.handleBlur}
                                         onChange={formik.handleChange}
                                     />
+                                    {formik.touched.rate && formik.errors.rate ? (
+                                        <div className='text-red-500'>{formik.errors.rate}</div>
+                                    ) : null}
                                 </div>
 
                                 {/* Product Code */}
@@ -360,9 +387,13 @@ const EditProductPage = () => {
                                     <Input
                                         id="productCode"
                                         name="productCode"
+                                        onBlur={formik.handleBlur}
                                         value={formik.values.productCode}
                                         onChange={formik.handleChange}
                                     />
+                                    {formik.touched.productCode && formik.errors.productCode ? (
+                                        <div className='text-red-500'>{formik.errors.productCode}</div>
+                                    ) : null}
                                 </div>
 
                                 {/* Thickness */}
@@ -375,8 +406,12 @@ const EditProductPage = () => {
                                         name="thickness"
                                         options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
                                         onChange={(selectedOption: any) => formik.setFieldValue('thickness', selectedOption?.value || '')}
+                                        onBlur={formik.handleBlur}
                                         value={formik.values.thickness ? { value: formik.values.thickness, label: formik.values.thickness?.toString() } : null}
                                     />
+                                    {formik.touched.thickness && formik.errors.thickness ? (
+                                        <div className='text-red-500'>{formik.errors.thickness}</div>
+                                    ) : null}
                                 </div>
 
                                 {/* Length */}
@@ -390,7 +425,11 @@ const EditProductPage = () => {
                                         options={dropDownValues && dropDownValues?.length?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
                                         onChange={(selectedOption: any) => formik.setFieldValue('length', selectedOption?.value || '')}
                                         value={formik.values.length ? { value: formik.values.length, label: formik.values.length?.toString() } : null}
+                                        onBlur={formik.handleBlur}
                                     />
+                                    {formik.touched.length && formik.errors.length ? (
+                                        <div className='text-red-500'>{formik.errors.length}</div>
+                                    ) : null}
                                 </div>
 
                                 {/* Weight */}
@@ -404,12 +443,17 @@ const EditProductPage = () => {
                                         options={dropDownValues && dropDownValues?.weight?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
                                         onChange={(selectedOption: any) => formik.setFieldValue('weight', selectedOption?.value || '')}
                                         value={formik.values.weight ? { value: formik.values.weight, label: formik.values.weight?.toString() } : null}
+                                        onBlur={formik.handleBlur}
                                     />
+
+                                    {formik.touched.weight && formik.errors.weight ? (
+                                        <div className='text-red-500'>{formik.errors.weight}</div>
+                                    ) : null}
                                 </div>
                             </div>
 
                             <div className='flex mt-2 gap-2'>
-                                <Button variant='solid' color='blue' onClick={editProduct}>
+                                <Button variant='solid' color='blue' onClick={updateProduct}>
                                     Update Product
                                 </Button>
                             </div>

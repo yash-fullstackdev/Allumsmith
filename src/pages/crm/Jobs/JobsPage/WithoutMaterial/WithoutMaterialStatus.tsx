@@ -7,13 +7,14 @@ import Button from '../../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Input from '../../../../../components/form/Input';
 
-const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetchDatajobwm }: any) => {
+const WithoutMaterialStatus = ({ status, setStatus }: any) => {
 
     const [workerData, setWorkerData] = useState<any>([]);
     const [worker, setWorker] = useState<any>();
     const [powderInKgs, setPowderInKgs] = useState<number | string>('');
     const [powderData, setPowderData] = useState<any>([]);
     const [powder, setPowder] = useState<any>();
+    const [entries, setEntries] = useState<any>([{ powder: '', powderInKgs: '' }]);
 
     const updateStatus = async () => {
         try {
@@ -23,24 +24,22 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
                 if (!worker) {
                     throw new Error('Worker is required for completed status');
                 }
-                if (!powderInKgs) {
-                    throw new Error('Powder in kgs is required for completed status');
-                }
-                if (!powder) {
-                    throw new Error('Powder is required for completed status');
-                }
-                payload = { ...payload, worker, powder, powderQuantity: Number(powderInKgs) };
+                const powdersPayload = entries.map((entry: any) => ({
+                    powder: entry.powder,
+                    powderInKgs: parseFloat(entry.powderInKgs)
+                }));
+                payload = { ...payload, worker, powder:powdersPayload };
             }
 
             console.log('Payload', payload);
-            const { data } = await put(`/jobwm/${jobId}`, payload);
-            toast.success('Status Updated Successfully');
+            // const { data } = await put(`/jobwm/${jobId}`, payload);
+            // toast.success('Status Updated Successfully');
         } catch (error) {
             console.error('Error Updating Status', error);
             toast.error('Failed to update status');
         } finally {
-            setStatusModal(false);
-            fetchDatajobwm();
+            // setStatusModal(false);
+            // fetchDatajobwm();
         }
     };
 
@@ -92,6 +91,16 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
         setPowderInKgs(powder);
     };
 
+    const handleDeleteProduct = (index: any) => {
+        const newEntries = [...entries];
+        newEntries.splice(index, 1);
+        setEntries(newEntries);
+    };
+
+    const handleAddEntry = () => {
+        setEntries([...entries, { powder: '', powderInKgs: '' }]);
+    };
+
     const handleSubmit = () => {
         updateStatus();
     };
@@ -130,30 +139,53 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
                                 ))}
                             </Select>
                         </div>
-                        <div className='col-span-6 lg:col-span-3'>
-                            <Label htmlFor='powder'>Powder</Label>
-                            <Select
-                                id='powder'
-                                placeholder='Select Powder'
-                                name='powder'
-                                value={powder}
-                                onChange={handlePowderChange}
-                            >
-                                {powderData.map((powder: any, index: number) => (
-                                    <option key={index} value={powder._id}>{powder.name}</option>
-                                ))}
-                            </Select>
-                        </div>
-                        <div className='col-span-6 lg:col-span-3'>
-                            <Label htmlFor='powderInKgs'>Powder (in kgs)</Label>
-                            <Input
-                                type='number'
-                                id='powderInKgs'
-                                name='powderInKgs'
-                                value={powderInKgs}
-                                onChange={handlePowderInKgsChange}
-                                placeholder='Enter powder in kgs'
-                            />
+                        {entries.map((entry: any, index: number) => (
+                            <div key={index} className='flex gap-2'>
+                                <div className='col-span-6 lg:col-span-3'>
+                                    <Label htmlFor={`powder-${index}`}>Powder</Label>
+                                    <Select
+                                        id={`powder-${index}`}
+                                        placeholder='Select Powder'
+                                        name={`powder-${index}`}
+                                        value={entry.powder}
+                                        onChange={(e) => {
+                                            const newEntries = [...entries];
+                                            newEntries[index].powder = e.target.value;
+                                            setEntries(newEntries);
+                                        }}
+                                    >
+                                        {powderData.map((powder: any, index: number) => (
+                                            <option key={index} value={powder._id}>{powder.name}</option>
+                                        ))}
+                                    </Select>
+                                </div>
+                                <div className='col-span-6 lg:col-span-3'>
+                                    <Label htmlFor={`powderInKgs-${index}`}>Powder (in kgs)</Label>
+                                    <Input
+                                        type='number'
+                                        id={`powderInKgs-${index}`}
+                                        name={`powderInKgs-${index}`}
+                                        value={entry.powderInKgs}
+                                        onChange={(e) => {
+                                            const newEntries = [...entries];
+                                            newEntries[index].powderInKgs = e.target.value;
+                                            setEntries(newEntries);
+                                        }}
+                                        placeholder='Enter powder in kgs'
+                                    />
+                                </div>
+                                {entries.length > 1 && (
+                                    <div className='flex items-center'>
+                                        <Button type='button' onClick={() => handleDeleteProduct(index)} icon='HeroXMark'/>
+                                            
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                        <div className='flex justify-between mt-3'>
+                            <Button variant='outline'  type='button' onClick={handleAddEntry}>
+                                Add Entry
+                            </Button>
                         </div>
                     </>
                 )}

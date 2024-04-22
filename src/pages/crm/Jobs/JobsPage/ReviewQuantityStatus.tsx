@@ -10,7 +10,7 @@ import { post } from '../../../../utils/api-helper.util';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 
-const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, productQuantityDetails }: any) => {
+const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, productQuantityDetails, setQuantityStatusModal }: any) => {
     console.log("processReviewData", processReviewData)
     const [quantityInSpecificBranch, setQuantityInSpecificBranch] = useState<number>(0);
     const [productQuantities, setProductQuantities] = useState<any>({});
@@ -159,11 +159,12 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
 
             if (isQuantityExceededBatch) {
                 toast.error('Total quantity of products exceeds the quantity in branch');
-                return;
+                setQuantityStatusModal(false);
             }
 
             // Prepare the data to be saved
-            const dataToSave: any = {
+           else{
+             const dataToSave: any = {
                 name: processReviewData.name,
                 branch: processReviewData.branchId.id,
                 batch: processReviewData.batch.map((batch: any) => ({
@@ -191,12 +192,12 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
 
             const jobData = await post('/jobs', dataToSave);
             toast.success('Job Created Successfully')
+            navigate(PathRoutes.jobs)
+        }
         } catch (error) {
             console.error('Error saving data:', error);
         }
-        finally {
-            navigate(PathRoutes.jobs)
-        }
+        
     };
 
 

@@ -501,7 +501,7 @@ const JobsPage = () => {
                             Edit Status
                         </ModalHeader>
                         <ModalBody>
-                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} />
+                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal = {setQuantityStatusModal}/>
                         </ModalBody>
                     </Modal>
                 </Container>) :

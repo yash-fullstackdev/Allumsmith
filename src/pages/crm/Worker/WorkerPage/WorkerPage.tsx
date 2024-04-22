@@ -312,3 +312,4 @@ const WorkerPage = () => {
 };
 
 export default WorkerPage;
+
