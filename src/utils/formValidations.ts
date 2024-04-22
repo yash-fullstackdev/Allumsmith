@@ -473,7 +473,21 @@ const editProductSchema = Yup.object().shape({
     weight: Yup.number().required('Weight is required').positive('Weight must be a positive number')
 });
 
+const wrokersSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().required('email is required'),
+    phone: Yup.number().required('Phone is required'),
+    company: Yup.string().required('Company Name is required'),
+    address_line1: Yup.string().required('Address is required'),
+    address_line2: Yup.string().required('Address is required'),
+    city: Yup.string().required('City is required'),
+	state: Yup.string().required('State is required'),
+	zipcode: Yup.number().required('Zipcode is required'),
+	pancard: Yup.string().required('PanCard is required'),
+});
+
 export {
 	productsSchema,
-	editProductSchema
+	editProductSchema,
+	wrokersSchema
 };

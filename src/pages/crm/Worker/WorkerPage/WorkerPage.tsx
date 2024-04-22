@@ -12,39 +12,106 @@ import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper"
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import { wrokersSchema } from "../../../../utils/formValidations";
 
 
 const WorkerPage = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        address_line1: '',
-        address_line2: '',
-        city: '',
-        state: '',
-        zipcode: '',
-        pancard: ''
+
+    interface FormValues {
+        name: any,
+        email: any,
+        phone: any,
+        company: string,
+        address_line1: string,
+        address_line2: string,
+        city: string,
+        state: string,
+        zipcode: any,
+        pancard: any
+    }
+
+    const formik = useFormik<FormValues>({
+        initialValues: {
+            name: "",
+            email: "",
+            phone: "",
+            company: "",
+            address_line1: "",
+            address_line2: "",
+            city: "",
+            state: "",
+            zipcode: "",
+            pancard: ""
+        },
+        validationSchema: wrokersSchema,
+        onSubmit: async (values) => {
+            try {
+                await post("/workers", values);
+                toast.success("Worker added successfully!");
+                navigate(PathRoutes.worker);
+            } catch (error) {
+                console.error("Error saving worker", error);
+            }
+        },
     });
 
-    const handleChange = (e: any) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        formik.handleChange(e);
     };
+
+    // const [formData, setFormData] = useState({
+    //     name: '',
+    //     email: '',
+    //     phone: '',
+    //     company: '',
+    //     address_line1: '',
+    //     address_line2: '',
+    //     city: '',
+    //     state: '',
+    //     zipcode: '',
+    //     pancard: ''
+    // });
+
+    // const handleChange = (e: any) => {
+    //     const { name, value, type, checked } = e.target;
+    //     formik.handleChange(e);
+    //     // setFormData(prevState => ({
+    //     //     ...prevState,
+    //     //     [name]: type === 'checkbox' ? checked : value
+    //     // }));
+    // };
     const navigate = useNavigate();
 
-
-
-
     const createWorker = async () => {
+        console.log("entries", formik)
+        await formik.validateForm();
+        console.log(formik.errors);
+        const handleNestedErrors = (errors: any, prefix = '') => {
+            //  logic to touch the field which are not validated
+            Object.keys(errors).forEach((errorField) => {
+                const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
 
-        console.log("entries", formData)
+                if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                    // Recursive call for nested errors
+                    handleNestedErrors(errors[errorField], fieldName);
+                } else {
+                    // Set the field as touched and set the error
+                    formik.setFieldTouched(fieldName, true, false);
+                    formik.setFieldError(fieldName, errors[errorField]);
+                }
+            });
+        };
+        if (Object.keys(formik.errors).length > 0) {
+            handleNestedErrors(formik.errors);
+
+            toast.error(`Please fill all the mandatory fields and check all formats`);
+            return;
+        }
+        // const promises = formik.values;
         try {
-            const worker = await post('/workers', formData);
+            formik.validateForm()
+            const worker = await post('/workers', formik.values);
             console.log("worker", worker);
             toast.success('worker added Successfully!')
         } catch (error: any) {
@@ -91,7 +158,7 @@ const WorkerPage = () => {
                                                 </Button>
                                             </div>
                                         </div>
-
+                                        {/* <form onSubmit={formik.handleSubmit}> */}
                                         <div className='mt-2 grid grid-cols-12 gap-2'>
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='name'>
@@ -100,9 +167,13 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="name"
                                                     name="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
+                                                    value={formik.values.name}
+                                                    onChange={handleChange} // Use custom handleChange
+                                                    onBlur={formik.handleBlur}
                                                 />
+                                                {formik.errors.name && typeof formik.errors.name === 'string' && (
+                                                    <div>{formik.errors.name}</div>
+                                                )}
                                                 {/* ... Error handling for name field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-3'>
@@ -112,9 +183,13 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="email"
                                                     name="email"
-                                                    value={formData.email}
+                                                    value={formik.values.email}
                                                     onChange={handleChange}
+                                                    onBlur={formik.handleBlur}
                                                 />
+                                                {formik.errors.email && typeof formik.errors.email === 'string' && (
+                                                    <div>{formik.errors.email}</div>
+                                                )}
                                                 {/* ... Error handling for email field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-3'>
@@ -124,9 +199,12 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="phone"
                                                     name="phone"
-                                                    value={formData.phone}
+                                                    value={formik.values.phone}
                                                     onChange={handleChange}
                                                 />
+                                                {formik.errors.phone && typeof formik.errors.phone === 'string' && (
+                                                    <div>{formik.errors.phone}</div>
+                                                )}
                                                 {/* ... Error handling for phone field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-3'>
@@ -136,7 +214,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="company"
                                                     name="company"
-                                                    value={formData.company}
+                                                    value={formik.values.company}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for company field */}
@@ -148,7 +226,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="address_line1"
                                                     name="address_line1"
-                                                    value={formData.address_line1}
+                                                    value={formik.values.address_line1}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for address_line1 field */}
@@ -158,7 +236,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="address_line2"
                                                     name="address_line2"
-                                                    value={formData.address_line2}
+                                                    value={formik.values.address_line2}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for address_line2 field */}
@@ -170,7 +248,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="city"
                                                     name="city"
-                                                    value={formData.city}
+                                                    value={formik.values.city}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for city field */}
@@ -182,7 +260,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="state"
                                                     name="state"
-                                                    value={formData.state}
+                                                    value={formik.values.state}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for state field */}
@@ -194,7 +272,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="zipcode"
                                                     name="zipcode"
-                                                    value={formData.zipcode}
+                                                    value={formik.values.zipcode}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
@@ -206,7 +284,7 @@ const WorkerPage = () => {
                                                 <Input
                                                     id="pancard"
                                                     name="pancard"
-                                                    value={formData.pancard}
+                                                    value={formik.values.pancard}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
@@ -221,6 +299,7 @@ const WorkerPage = () => {
                                                 Save Worker
                                             </Button>
                                         </div>
+                                        {/* </form> */}
                                     </CardBody>
                                 </Card>
                             </div>
