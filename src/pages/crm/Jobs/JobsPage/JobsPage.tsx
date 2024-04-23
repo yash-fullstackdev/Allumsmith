@@ -16,8 +16,7 @@ import ReviewQuantityStatus from './ReviewQuantityStatus';
 import SelfProducts from './SelfProducts';
 import { Switch } from '@mui/material';
 import WithoutMaterialPage from './WithoutMaterialPage';
-import SelectReact from '../../../../components/form/SelectReact';
-import { values } from 'lodash';
+
 
 const JobsPage = () => {
     const [name, setName] = useState('');
@@ -35,9 +34,7 @@ const JobsPage = () => {
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
-    const [withMaterial, setWithMaterial] = useState<boolean>(false);
-    const [customerId, setCustomerId] = useState('');
-    const [customerName, setCustomerName] = useState('');
+    const [withMaterial, setWithMaterial] = useState<boolean>(true);
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');

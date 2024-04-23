@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import Checkbox from '../../../../components/form/Checkbox';
 import CreatableSelect from 'react-select/creatable'
-import _ from 'lodash';
+import _, { size } from 'lodash';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
@@ -123,13 +123,13 @@ const AddCustomerOrderForm = () => {
     }
   };
 
-
+  console.log('Entries', entries)
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
       quantity: Number(entry.quantity)
     }));
-    console.log('Entries', entries)
+
     const filteredEntries = updatedEntries.map((obj: any) => {
       const filteredObj = Object.fromEntries(
         Object.entries(obj).filter(([_, value]: [string, any]) => value !== "")
@@ -224,9 +224,15 @@ const AddCustomerOrderForm = () => {
       const updatedEntries = [...entries];
       updatedEntries[index].product = productId;
       setEntries(updatedEntries);
-      toast.warning(`Selected product: ${productName} Total Quantity:${totalQuantity}`);
     } else {
-      toast.warning(`Selected product: ${selectedOption.label}: Total Quantity: 0 `)
+      const updatedEntries = [...entries];
+      updatedEntries[index].product = selectedOption.value;
+
+      // Log updated entries for debugging
+      console.log("🚀 ~ AddCustomerOrderForm ~ updatedEntries:", updatedEntries);
+
+      // Update the state with the new entries
+      setEntries(updatedEntries);
     }
   };
 
@@ -234,268 +240,268 @@ const AddCustomerOrderForm = () => {
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
       {/* <Container className='flex shrink-0 grow basis-auto flex-col pb-0'> */}
-        {/* <div className='flex h-full flex-wrap content-start'>
+      {/* <div className='flex h-full flex-wrap content-start'>
           <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
             <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
               <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'> */}
-                <Card>
-                  <CardBody>
-                    <div className='flex'>
-                      <div className='bold w-full'>
-                        <Button
-                          variant='outlined'
-                          className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                        >
-                          Add Customer Order
-                        </Button>
-                      </div>
+      <Card>
+        <CardBody>
+          <div className='flex'>
+            <div className='bold w-full'>
+              <Button
+                variant='outlined'
+                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+              >
+                Add Customer Order
+              </Button>
+            </div>
+          </div>
+          <div>
+            <div className='mt-2 grid grid-cols-12 gap-1'>
+              <div className='col-span-4 lg:col-span-4 mt-5'>
+                <Label htmlFor='customerName'>
+                  Customer
+                  <span className='ml-1 text-red-500'>*</span>
+                </Label>
+                <SelectReact
+                  id={`name`}
+                  name={`name`}
+                  options={customerData.map((customer: any) => ({
+                    value: customer._id,
+                    label: customer.name,
+                  }))}
+                  value={{ value: customerId, label: customerName }}
+                  onChange={(selectedOption: any) => {
+                    setCustomerId(selectedOption.value);
+                    setCustomerName(selectedOption.label);
+                  }}
+                />
+              </div>
+              <div className='col-span-4 lg:col-span-4 mt-5'>
+                <Label htmlFor='customerOrderNumber'>
+                  Customer Number
+                  <span className='ml-1 text-red-500'>*</span>
+                </Label>
+                <Input
+                  id='customerOrderNumber'
+                  name='customerOrderNumber'
+                  value={customerOrderNumber}
+
+                />
+              </div>
+              <div className='col-span-12 lg:col-span-12'>
+                {entries && entries.map((entry: any, index: any) => (
+                  <>
+                    <div className='flex items-end justify-end mt-2'>
+                      {entries.length > 1 && (
+                        <div className='flex items-end justify-end'>
+                          <Button
+                            type='button'
+                            onClick={() => handleDeleteProduct(index)}
+                            variant='outlined'
+                            color='red'
+                          >
+                            <svg
+                              xmlns='http://www.w3.org/2000/svg'
+                              fill='none'
+                              viewBox='0 0 24 24'
+                              strokeWidth='1.5'
+                              stroke='currentColor'
+                              data-slot='icon'
+                              className='h-6 w-6'>
+                              <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                d='M6 18 18 6M6 6l12 12'
+                              />
+                            </svg>
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <div className='mt-2 grid grid-cols-12 gap-1'>
-                        <div className='col-span-4 lg:col-span-4 mt-5'>
-                          <Label htmlFor='customerName'>
-                            Customer
+                    <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
+                      {!productTransfer ? (<>
+                        <div className='col-span-12 lg:col-span-2'>
+                          <Label htmlFor={`name-${index}`}>
+                            Products
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
-                          <SelectReact
-                            id={`name`}
-                            name={`name`}
-                            options={customerData.map((customer: any) => ({
-                              value: customer._id,
-                              label: customer.name,
+
+                          <CreatableSelect
+                            id={`product-${index}`}
+                            name={`product-${index}`}
+                            options={productsData.map((product: any) => ({
+                              value: product._id,
+                              label: `${product.name} (${product.productCode}) (${product.length})`
                             }))}
-                            value={{ value: customerId, label: customerName }}
-                            onChange={(selectedOption: any) => {
-                              setCustomerId(selectedOption.value);
-                              setCustomerName(selectedOption.label);
-                            }}
+                            onChange={(selectedOption) => handleProductChange(selectedOption, index)}
                           />
+
                         </div>
-                        <div className='col-span-4 lg:col-span-4 mt-5'>
-                          <Label htmlFor='customerOrderNumber'>
-                            Customer Number
+                        {entry.product && (
+                          <div className='col-span-12 lg:col-span-2'>
+                            <Label htmlFor={`length-${index}`}>
+                              Length
+                              <span className='ml-1 text-red-500'>*</span>
+                            </Label>
+                            <Input
+                              type='number'
+                              id={`length-${index}`}
+                              name={`length-${index}`}
+                              value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
+                              onChange={(e) => handleLengthChange(e, index)}
+                            />
+
+
+                          </div>
+                        )}
+                      </>
+                      )
+                        : (<>
+                          <div className='col-span-12 lg:col-span-2'>
+                            <Label htmlFor={`product`}>
+                              Product
+                              <span className='ml-1 text-red-500'>*</span>
+                            </Label>
+                            <Input
+                              type='text'
+                              id={`product`}
+                              name={`product`}
+                              value={entry.product}
+                              onChange={(e) => {
+                                const updatedEntries = [...entries];
+                                updatedEntries[index].product = e.target.value;
+                                setEntries(updatedEntries);
+                              }}
+                            />
+                          </div>
+
+                        </>)}
+                      <div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor={`hsn-${index}`}>
+                          Quantity
+                          <span className='ml-1 text-red-500'>*</span>
+                        </Label>
+                        <Input
+                          type='number'
+                          id={`hsn-${index}`}
+                          name={`hsn-${index}`}
+                          value={entry.quantity}
+                          onChange={(e) => {
+                            const updatedEntries = [...entries];
+                            updatedEntries[index].quantity = e.target.value;
+                            setEntries(updatedEntries);
+                          }}
+                        />
+                        {entry.product && entry.quantity && (
+                          <div style={{ fontSize: '11px', color: 'green', marginTop: '0.5rem' }}>
+                            {`${entry.product ? productsArray.find((product: any) => product.productId === entry.product)?.productName : 'Selected product'} has ${productsArray.find((product: any) => product.productId === entry.product)?.totalQuantity || 0} quantity`}
+
+                          </div>
+                        )}
+
+                      </div>
+                      <div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor={`hsn-${index}`}>
+                          Coating
+                          <span className='ml-1 text-red-500'>*</span>
+                        </Label>
+                        <Select
+                          placeholder='Select Coating'
+                          id={`coating-${index}`}
+                          name={`coating-${index}`}
+                          // value={entry.coating }
+                          value={entry.coating || selectedCoatings[index]}
+                          onChange={(e) => handleCoatingChange(e, index)}
+
+                        >
+                          {coatingData.map((coating: any) => (
+                            <option key={coating._id} value={coating._id}>
+                              {coating.name}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+                      {entry.coating &&
+                        (<div className='col-span-12 lg:col-span-2'>
+                          <Label htmlFor={`hsn-${index}`}>
+                            Color
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
-                          <Input
-                            id='customerOrderNumber'
-                            name='customerOrderNumber'
-                            value={customerOrderNumber}
+                          <Select
+                            placeholder='Select Color'
+                            id={`color-${index}`}
+                            name={`color-${index}`}
+                            value={entry.color || selectedColor[index]}
+                            onChange={(e) => handleColorChange(e, index)}
+                          >
+                            {colorDataList[index]?.map((color: any) => (
+                              <option key={color._id} value={color._id}>
+                                {color.name}
+                              </option>
+                            ))}
+                          </Select>
+                        </div>)}
 
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-12'>
-                          {entries && entries.map((entry: any, index: any) => (
-                            <>
-                              <div className='flex items-end justify-end mt-2'>
-                                {entries.length > 1 && (
-                                  <div className='flex items-end justify-end'>
-                                    <Button
-                                      type='button'
-                                      onClick={() => handleDeleteProduct(index)}
-                                      variant='outlined'
-                                      color='red'
-                                    >
-                                      <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        fill='none'
-                                        viewBox='0 0 24 24'
-                                        strokeWidth='1.5'
-                                        stroke='currentColor'
-                                        data-slot='icon'
-                                        className='h-6 w-6'>
-                                        <path
-                                          strokeLinecap='round'
-                                          strokeLinejoin='round'
-                                          d='M6 18 18 6M6 6l12 12'
-                                        />
-                                      </svg>
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
-                              <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
-                                {!productTransfer ? (<>
-                                  <div className='col-span-12 lg:col-span-4'>
-                                    <Label htmlFor={`name-${index}`}>
-                                      Products
-                                      <span className='ml-1 text-red-500'>*</span>
-                                    </Label>
-                                    
-                                    <CreatableSelect
-                                      id={`product-${index}`}
-                                      name={`product-${index}`}
-                                      options={productsData.map((product: any) => ({
-                                        value: product._id,
-                                        label: `${product.name} (${product.productCode}) (${product.length})`
-                                      }))}
-                                      onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                                    />
-
-                                  </div>
-                                  {entry.product && (
-                                    <div className='col-span-12 lg:col-span-4'>
-                                      <Label htmlFor={`length-${index}`}>
-                                        Length
-                                        <span className='ml-1 text-red-500'>*</span>
-                                      </Label>
-                                      <Input
-                                        type='number'
-                                        id={`length-${index}`}
-                                        name={`length-${index}`}
-                                        value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
-                                        onChange={(e) => handleLengthChange(e, index)}
-                                      />
-
-
-                                    </div>
-                                  )}
-                                </>
-                                )
-                                  : (<>
-                                    <div className='col-span-12 lg:col-span-4'>
-                                      <Label htmlFor={`product`}>
-                                        Product
-                                        <span className='ml-1 text-red-500'>*</span>
-                                      </Label>
-                                      <Input
-                                        type='text'
-                                        id={`product`}
-                                        name={`product`}
-                                        value={entry.product}
-                                        onChange={(e) => {
-                                          const updatedEntries = [...entries];
-                                          updatedEntries[index].product = e.target.value;
-                                          setEntries(updatedEntries);
-                                        }}
-                                      />
-                                    </div>
-
-                                  </>)}
-                                <div className='col-span-12 lg:col-span-4'>
-                                  <Label htmlFor={`hsn-${index}`}>
-                                    Quantity
-                                    <span className='ml-1 text-red-500'>*</span>
-                                  </Label>
-                                  <Input
-                                    type='number'
-                                    id={`hsn-${index}`}
-                                    name={`hsn-${index}`}
-                                    value={entry.quantity}
-                                    onChange={(e) => {
-                                      const updatedEntries = [...entries];
-                                      updatedEntries[index].quantity = e.target.value;
-                                      setEntries(updatedEntries);
-                                    }}
-                                  />
-                                  {entry.product && entry.quantity && (
-                                    <div style={{ color: 'red', marginTop: '0.5rem' }}>
-                                      {`${entry.product ? productsArray.find((product:any) => product.productId === entry.product)?.productName : 'Selected product'} has ${productsArray.find((product:any) => product.productId === entry.product)?.totalQuantity || 0} quantity`}
-
-                                    </div>
-                                  )}
-
-                                </div>
-                                <div className='col-span-12 lg:col-span-4'>
-                                  <Label htmlFor={`hsn-${index}`}>
-                                    Coating
-                                    <span className='ml-1 text-red-500'>*</span>
-                                  </Label>
-                                  <Select
-                                    placeholder='Select Coating'
-                                    id={`coating-${index}`}
-                                    name={`coating-${index}`}
-                                    // value={entry.coating }
-                                    value={entry.coating || selectedCoatings[index]}
-                                    onChange={(e) => handleCoatingChange(e, index)}
-
-                                  >
-                                    {coatingData.map((coating: any) => (
-                                      <option key={coating._id} value={coating._id}>
-                                        {coating.name}
-                                      </option>
-                                    ))}
-                                  </Select>
-                                </div>
-                                {entry.coating &&
-                                  (<div className='col-span-12 lg:col-span-4'>
-                                    <Label htmlFor={`hsn-${index}`}>
-                                      Color
-                                      <span className='ml-1 text-red-500'>*</span>
-                                    </Label>
-                                    <Select
-                                      placeholder='Select Color'
-                                      id={`color-${index}`}
-                                      name={`color-${index}`}
-                                      value={entry.color || selectedColor[index]}
-                                      onChange={(e) => handleColorChange(e, index)}
-                                    >
-                                      {colorDataList[index]?.map((color: any) => (
-                                        <option key={color._id} value={color._id}>
-                                          {color.name}
-                                        </option>
-                                      ))}
-                                    </Select>
-                                  </div>)}
-
-                                <div className='col-span-12 lg:col-span-4'>
-                                  <Label htmlFor='withoutMaterial'>
-                                    Without Material
-                                    <span className='ml-1 text-red-500'>*</span>
-                                  </Label>
-                                  <Checkbox
-                                    label='Without Material'
-                                    id='withoutMaterial'
-                                    name='withoutMaterial'
-                                    checked={entries[index].withoutMaterial} // Assuming entries is an array of objects
-                                    onChange={(e) => {
-                                      const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
-                                      const updatedEntries = [...entries];
-                                      updatedEntries[index].withoutMaterial = target.checked; // Update with the checked value
-                                      setEntries(updatedEntries);
-                                    }}
-                                  />
-                                </div>
-                                {coatingData.find((coating: any) => coating._id === entry.coating)?.type === 'anodize' && (<div className='col-span-12 lg:col-span-3'>
-                                  <Label htmlFor={`anodize-${index}`}>
-                                    Anodize Thickness
-                                  </Label>
-                                  <Select
-                                    id={`anodize-${index}`}
-                                    name={`anodize-${index}`}
-                                    value={entry.anodizeThickness}
-                                    onChange={(e) => {
-                                      const target = e.target as HTMLSelectElement;
-                                      const updatedEntries = [...entries];
-                                      updatedEntries[index].mm = target.value;
-                                      setEntries(updatedEntries);
-                                    }}
-                                    placeholder='Select MM'
-                                    disabled={coatingData.find((coating: any) => coating._id === entry.coating)?.type !== 'anodize'}
-                                  >
-                                    <option value="12 Micron">12 Micron</option>
-                                    <option value="15 Micron">15 Micron</option>
-                                    <option value="20 Micron">20 Micron</option>
-                                  </Select>
-                                </div>)}
-
-
-                              </div>
-                            </>
-                          ))}
-                          <div className='flex mt-2 gap-2 '>
-                            <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
-                              Add Entry
-                            </Button>
-                            <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
-                              Save Entries
-                            </Button>
-                          </div>
-                        </div>
+                      <div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor='withoutMaterial'>
+                          Without Material
+                          <span className='ml-1 text-red-500'>*</span>
+                        </Label>
+                        <Checkbox
+                          label='Without Material'
+                          id='withoutMaterial'
+                          name='withoutMaterial'
+                          checked={entries[index].withoutMaterial} // Assuming entries is an array of objects
+                          onChange={(e) => {
+                            const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
+                            const updatedEntries = [...entries];
+                            updatedEntries[index].withoutMaterial = target.checked; // Update with the checked value
+                            setEntries(updatedEntries);
+                          }}
+                        />
                       </div>
+                      {coatingData.find((coating: any) => coating._id === entry.coating)?.type === 'anodize' && (<div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor={`anodize-${index}`}>
+                          Anodize Thickness
+                        </Label>
+                        <Select
+                          id={`anodize-${index}`}
+                          name={`anodize-${index}`}
+                          value={entry.anodizeThickness}
+                          onChange={(e) => {
+                            const target = e.target as HTMLSelectElement;
+                            const updatedEntries = [...entries];
+                            updatedEntries[index].mm = target.value;
+                            setEntries(updatedEntries);
+                          }}
+                          placeholder='Select MM'
+                          disabled={coatingData.find((coating: any) => coating._id === entry.coating)?.type !== 'anodize'}
+                        >
+                          <option value="12 Micron">12 Micron</option>
+                          <option value="15 Micron">15 Micron</option>
+                          <option value="20 Micron">20 Micron</option>
+                        </Select>
+                      </div>)}
+
+
                     </div>
-                  </CardBody>
-                </Card>
-              {/* </div >
+                  </>
+                ))}
+                <div className='flex mt-2 gap-2 '>
+                  <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+                    Add Entry
+                  </Button>
+                  <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
+                    Save Entries
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+      {/* </div >
             </div>
           </div>
         </div> */}

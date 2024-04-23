@@ -346,12 +346,50 @@ const wrokersSchema = Yup.object().shape({
 const vendorSchema =Yup.object().shape({
 	name: Yup.string().required('Name is required'),
 	email: Yup.string().email('Invalid email address').required('Email is required'),
-	// Add more validation rules for other fields as necessary
+	
+});
+
+const branchSchema = Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+	address_line1: Yup.string().required('Address Line 1 is required'),
+	city: Yup.string().required('City is required'),
+	state: Yup.string().required('State is required'),
+	zipcode: Yup.string().required('Zipcode is required'),
+	phone: Yup.string().required('Phone is required'),
+	contact_name: Yup.string().required('Contact Name is required'),
+	contact_phone: Yup.string().required('Contact Phone is required'),
+	
+});
+
+const purchaseOrderSchema = Yup.object().shape({
+	vendorName: Yup.string().required('Vendor is required'),
+	entries: Yup.array().of(
+	  Yup.object().shape({
+		product: Yup.string().required('Product is required'),
+		requiredQuantity: Yup.number().required('Quantity is required'),
+	  })
+	),
+  });
+
+  const CoatingSchema = Yup.object().shape({
+    name: Yup.string()
+        .required('Name is required'),
+    code: Yup.string()
+        .required('Code is required'),
+    rate: Yup.number()
+        .required('Rate is required')
+        .positive('Rate must be positive')
+        .integer('Rate must be an integer'),
+    colors: Yup.array()
+        .min(1, 'At least one color must be selected')
 });
 
 export {
 	productsSchema,
 	editProductSchema,
 	wrokersSchema,
-	vendorSchema
+	vendorSchema,
+	branchSchema,
+	purchaseOrderSchema,
+	CoatingSchema
 };

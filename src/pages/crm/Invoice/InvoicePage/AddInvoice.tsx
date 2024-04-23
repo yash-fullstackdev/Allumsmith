@@ -17,8 +17,9 @@ import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '..
 import Label from '../../../../components/form/Label';
 import { useNavigate } from 'react-router';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Checkbox from '../../../../components/form/Checkbox';
 import SelectReact from '../../../../components/form/SelectReact';
+import Textarea from '../../../../components/form/Textarea';
+import Checkbox from '../../../../components/form/Checkbox';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -75,7 +76,9 @@ const AddInvoice = () => {
     };
 
 
-
+    const handleSendMailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEntries({ ...entries, send_mail: e.target.checked });
+    };
 
     const handleDeliveredQuantityChange = (value: any, index: number) => {
 
@@ -120,7 +123,7 @@ const AddInvoice = () => {
         const finalAmount = totalAmount + (totalAmount * (entries.gst / 100));
 
         const grandTotal = finalAmount && (finalAmount + (finalAmount * (entries.tax / 100)));
-        setTotalAmount(grandTotal.toFixed(2));
+        return parseFloat(grandTotal.toFixed(2));
     };
 
     const getAllBranch = async () => {
@@ -135,7 +138,9 @@ const AddInvoice = () => {
 
     useEffect(() => {
         if (purchaseOrderData?.entries?.length > 0) {
-            calculateTotalAmount();
+
+            const grandTotal  = calculateTotalAmount();
+            setTotalAmount(grandTotal);
         }
     }, [purchaseOrderData.entries, entries.gst, entries.tax, quantityAndDiscounts]);
 
@@ -259,23 +264,7 @@ const AddInvoice = () => {
                                                         Customer
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
-                                                    {/* <Select
-                                                        id='customerName'
-                                                        name='customerName'
-                                                        value={customerId}
-                                                        placeholder='Select Customer'
-                                                        onChange={(e: any) => {
-                                                            setCustomerId(e.target.value)
-                                                        }}
-                                                    >
-                                                        {customerList &&
-                                                            customerList.length > 0 &&
-                                                            customerList?.map((data: any) => (
-                                                                <option key={data._id} value={data._id}>
-                                                                    {`${data.customer.name} (${data?.customerOrderNumber || 'NA'})`}   
-                                                                </option>
-                                                            ))}
-                                                    </Select> */}
+                                                    
                                                     <SelectReact
                                                         id='customerName'
                                                         name='customerName'
@@ -478,7 +467,13 @@ const AddInvoice = () => {
                                                                         type='number'
                                                                         id={`coating_discount${index}`}
                                                                         name={`coating_discount${index}`}
-                                                                        value={quantityAndDiscounts[index]?.coating_discount || ''}
+                                                                        value={quantityAndDiscounts[index]?.coating_discount || (
+                                                                            entry.coating && entry.coating.type === 'coating' ?
+                                                                            purchaseOrderData.customer?.coating_discount || 0 :
+                                                                            entry.coating && entry.coating.type === 'anodize' ?
+                                                                            purchaseOrderData.customer?.anodize_discount || 0 :
+                                                                            ''
+                                                                        )}
                                                                         onChange={(e) => handleQuantityAndDiscountChange(e.target.value, index, 'coating_discount')}
                                                                     />
                                                                 </div>
@@ -592,19 +587,6 @@ const AddInvoice = () => {
                                                                     onChange={(e) => setEntries({ ...entries, total_amount: e.target.value })}
                                                                 />
                                                             </div>
-                                                            {/* <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Finished Weight
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='number'
-                                                                    value={entries.finished_weight}
-                                                                    name="finished_weight"
-                                                                    onChange={(e) => setEntries({ ...entries, finished_weight: e.target.value })}
-                                                                />
-                                                            </div> */}
-
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Origin Point
@@ -633,14 +615,27 @@ const AddInvoice = () => {
                                                                     Delivery Point
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
-                                                                <Input
-                                                                    type='text'
+                                                                <Textarea
+                                                                    
                                                                     value={entries.delivery_point}
                                                                     name="delivery_point"
                                                                     onChange={(e) => setEntries({ ...entries, delivery_point: e.target.value })}
                                                                 />
                                                             </div>
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='customerName'>
+                                                                    Send Mail
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                                <Checkbox label='Send Mail'
+                                                                    id='send_mail'
+                                                                    name='send_mail'
+                                                                    checked={entries.send_mail}
+                                                                    onChange={handleSendMailChange}
 
+                                                                />
+
+                                                            </div>            
                                                         </div>
                                                         <div className='flex mt-2 gap-2 '>
                                                             <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}  >

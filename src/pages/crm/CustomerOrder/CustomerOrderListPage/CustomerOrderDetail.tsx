@@ -124,6 +124,63 @@ const CustomerOrderDetail = ({ customerId }: any) => {
         }),
 
     ];
+
+    const WMcolumns = [
+        columnHelper.accessor('product.name', {
+            cell: (info) => (
+                <div className=''>{`${info.getValue()}`}</div>
+            ),
+            header: 'Product Name',
+
+        }),
+        columnHelper.accessor("coating.name", {
+            cell: (info) => (
+                <div className=''>{`${info.getValue() || '-'} `}</div>
+            ),
+            header: 'Coating Name',
+
+        }),
+        columnHelper.accessor("color.name", {
+            cell: (info) => (
+                <div className=''>{`${info.getValue() || '-'}`}</div>
+            ),
+            header: 'Color Name',
+
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Requried Quantity',
+        }),
+
+        columnHelper.accessor('mm', {
+            cell: (info) => (
+
+                <div className=''>
+                    {info.getValue() !== undefined ? info.getValue() : 0}
+                </div>
+
+            ),
+            header: 'MM',
+        }),
+        columnHelper.accessor('status', {
+            cell: (info) => (
+
+                <div className=''>
+                    {info.getValue() !== undefined ? info.getValue() : 0}
+                </div>
+
+            ),
+            header: 'Delivered Quantity',
+        }),
+       
+
+    ];
     const table = useReactTable({
         data: purchaseOrderData?.entries || [],
         columns,
@@ -133,8 +190,17 @@ const CustomerOrderDetail = ({ customerId }: any) => {
         enableGlobalFilter: true,
         getCoreRowModel: getCoreRowModel(),
     });
-
-
+    const WMtable = useReactTable({
+        data: purchaseOrderData?.wmproducts || [],
+        columns : WMcolumns,
+        state: {
+            sorting,
+        },
+        enableGlobalFilter: true,
+        getCoreRowModel: getCoreRowModel(),
+    });
+    console.log(WMtable, 'WMtable');
+    
     const getPurchaseEntryData = async () => {
 
         try {
@@ -311,6 +377,56 @@ const CustomerOrderDetail = ({ customerId }: any) => {
                                 </CardBody>
                                 {table.getFilteredRowModel().rows.length > 0 &&
                                     <TableCardFooterTemplate table={table} />
+                                }
+                            </>
+
+                        </Collapse>
+                    </Card>
+                </Container>
+                <Container>
+                    <Card >
+                        <CardBody>
+                            <div className='flex'>
+                                <div className='bold w-full'>
+                                    <Button
+                                        variant='outlined'
+                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                        onClick={() =>
+                                            setAccordionStates({
+                                                ...accordionStates,
+                                                collapsible: !accordionStates.collapsible,
+                                            })
+                                        }
+                                        rightIcon={
+                                            !accordionStates.collapsible
+                                                ? 'HeroChevronUp'
+                                                : 'HeroChevronDown'
+                                        }>
+                                        <h2 className='text-gray-700'> Customer Order Without Material Product List </h2>
+                                    </Button>
+                                </div>
+                            </div>
+
+
+
+                        </CardBody>
+
+
+                        <Collapse isOpen={!accordionStates.collapsible}>
+
+                            <>
+                                <CardBody className='overflow-auto'>
+                                    {WMtable.getFilteredRowModel().rows.length > 0 ? (
+                                        <TableTemplate
+                                            className='table-fixed max-md:min-w-[70rem]'
+                                            table={WMtable}
+                                        />
+                                    ) : (
+                                        <p className="text-center text-gray-500">No records found</p>
+                                    )}
+                                </CardBody>
+                                {WMtable.getFilteredRowModel().rows.length > 0 &&
+                                    <TableCardFooterTemplate table={WMtable} />
                                 }
                             </>
 

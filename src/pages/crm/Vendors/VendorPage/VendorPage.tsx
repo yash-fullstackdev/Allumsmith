@@ -245,6 +245,7 @@ import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { vendorSchema } from '../../../../utils/formValidations';
+import Textarea from '../../../../components/form/Textarea';
 
 const VendorPage = () => {
     const formik:any = useFormik({
@@ -274,6 +275,8 @@ const VendorPage = () => {
             }
         },
     });
+
+     
     const navigate  = useNavigate();
     return (
         <PageWrapper name='ADD Vendor' isProtectedRoute={true}>
@@ -384,36 +387,7 @@ const VendorPage = () => {
                                                         <div className='text-red-500'>{formik.errors.company}</div>
                                                     ) : null}
                                                 </div>
-                                                <div className='col-span-12 lg:col-span-4'>
-                                                    <Label htmlFor='addressLine1'>
-                                                        Address 1
-                                                    </Label>
-                                                    <Input
-                                                        id="addressLine1"
-                                                        name="addressLine1"
-                                                        value={formik.values.addressLine1}
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                    />
-                                                    {formik.touched.addressLine1 && formik.errors.addressLine1 ? (
-                                                        <div className='text-red-500'>{formik.errors.addressLine1}</div>
-                                                    ) : null}
-                                                </div>
-                                                <div className='col-span-12 lg:col-span-4'>
-                                                    <Label htmlFor='addressLine2'>
-                                                    Address 2
-                                                    </Label>
-                                                    <Input
-                                                        id="addressLine2"
-                                                        name="addressLine2"
-                                                        value={formik.values.addressLine2}
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                    />
-                                                    {formik.touched.addressLine2 && formik.errors.addressLine2 ? (
-                                                        <div className='text-red-500'>{formik.errors.addressLine2}</div>
-                                                    ) : null}
-                                                </div>
+                                               
                                                 <div className='col-span-12 lg:col-span-4'>
                                                     <Label htmlFor='city'>
                                                     City
@@ -459,6 +433,36 @@ const VendorPage = () => {
                                                         <div className='text-red-500'>{formik.errors.zipcode}</div>
                                                     ) : null}
                                                 </div>  
+                                                <div className='col-span-12 lg:col-span-6'>
+                                                    <Label htmlFor='addressLine1'>
+                                                        Address 1
+                                                    </Label>
+                                                    <Textarea
+                                                        id="addressLine1"
+                                                        name="addressLine1"
+                                                        value={formik.values.addressLine1}
+                                                        onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
+                                                    />
+                                                    {formik.touched.addressLine1 && formik.errors.addressLine1 ? (
+                                                        <div className='text-red-500'>{formik.errors.addressLine1}</div>
+                                                    ) : null}
+                                                </div>
+                                                <div className='col-span-12 lg:col-span-6'>
+                                                    <Label htmlFor='addressLine2'>
+                                                    Address 2
+                                                    </Label>
+                                                    <Textarea
+                                                        id="addressLine2"
+                                                        name="addressLine2"
+                                                        value={formik.values.addressLine2}
+                                                        onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
+                                                    />
+                                                    {formik.touched.addressLine2 && formik.errors.addressLine2 ? (
+                                                        <div className='text-red-500'>{formik.errors.addressLine2}</div>
+                                                    ) : null}
+                                                </div>
                                             </div>
 
                                             <div className='flex mt-2 gap-2'>

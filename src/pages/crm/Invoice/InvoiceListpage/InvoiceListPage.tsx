@@ -110,7 +110,7 @@ const InvoiceListPage = () => {
                 </div>
 
             ),
-            header: 'Name',
+            header: 'Invoice Number',
         }),
         columnHelper.accessor('customerEmail', {
             cell: (info) => (

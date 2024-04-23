@@ -529,13 +529,13 @@ const AddproductForm = () => {
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
-									{
+									{/* {
 										formik.touched.entries?.[index]?.thickness &&
 											formik.errors.entries?.[index]?.thickness ? (
 											<div className='text-red-500'>
 												{formik.errors.entries[index].thickness}
 											</div>
-										) : null}
+										) : null} */}
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`length-${index}`}>

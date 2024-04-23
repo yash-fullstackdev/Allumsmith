@@ -12,6 +12,7 @@ import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper"
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
+import Textarea from "../../../../components/form/Textarea";
 
 
 const CustomerPage = () => {
@@ -26,9 +27,9 @@ const CustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        premium_discount: "",
-        commercial_discount:'',
-        wooden_discount:''
+        coating_discount: "",
+        anodize_discount: '',
+
     });
 
     const handleChange = (e: any) => {
@@ -156,28 +157,7 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for company field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='address_line1'>
-                                                    Address Line 1
-                                                </Label>
-                                                <Input
-                                                    id="address_line1"
-                                                    name="address_line1"
-                                                    value={formData.address_line1}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for address_line1 field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='address_line2'>Address Line 2</Label>
-                                                <Input
-                                                    id="address_line2"
-                                                    name="address_line2"
-                                                    value={formData.address_line2}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for address_line2 field */}
-                                            </div>
+
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='city'>
                                                     City
@@ -214,41 +194,55 @@ const CustomerPage = () => {
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='premium_discount'>
-                                                   Premium Discount (%)
+                                            <div className='col-span-12 lg:col-span-4'>
+                                                <Label htmlFor='coating_discount'>
+                                                    Coating Discount (%)
                                                 </Label>
                                                 <Input
-                                                    id="premium_discount"
-                                                    name="premium_discount"
-                                                    value={formData.premium_discount}
+                                                    type="number"
+                                                    id="coating_discount"
+                                                    name="coating_discount"
+                                                    value={formData.coating_discount}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='commercial_discount'>
-                                                   Commercial Discount (%)
+                                            <div className='col-span-12 lg:col-span-4'>
+                                                <Label htmlFor='anodize_discount'>
+                                                    Anodize Discount (%)
                                                 </Label>
                                                 <Input
-                                                    id="commercial_discount"
-                                                    name="commercial_discount"
-                                                    value={formData.commercial_discount}
+                                                    type="number"
+                                                    id="anodize_discount"
+                                                    name="anodize_discount"
+                                                    value={formData.anodize_discount}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='wooden_discount'>
-                                                   wooden Discount (%)
+
+                                            <div className='col-span-12 lg:col-span-6'>
+                                                <Label htmlFor='address_line1'>
+                                                    Address Line 1
                                                 </Label>
-                                                <Input
-                                                    id="wooden_discount"
-                                                    name="wooden_discount"
-                                                    value={formData.wooden_discount}
+                                                <Textarea
+                                                    id="address_line1"
+                                                    name="address_line1"
+                                                    value={formData.address_line1}
+                                                    onChange={handleChange}
+
+                                                />
+                                                {/* ... Error handling for address_line1 field */}
+                                            </div>
+                                            <div className='col-span-12 lg:col-span-6'>
+                                                <Label htmlFor='address_line2'>Address Line 2</Label>
+                                                <Textarea
+                                                    id="address_line2"
+                                                    name="address_line2"
+                                                    value={formData.address_line2}
                                                     onChange={handleChange}
                                                 />
-                                                {/* ... Error handling for zipcode field */}
+                                                {/* ... Error handling for address_line2 field */}
                                             </div>
 
                                         </div>

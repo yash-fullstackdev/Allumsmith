@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import Input from '../../../../components/form/Input';
 import SelectReact from '../../../../components/form/SelectReact';
 
-const StatusModal = ({ status, setStatus,jobId }: any) => {
+const StatusModal = ({ status, setStatus,jobId, setStatusModal, fetchData}: any) => {
     const [workerData, setWorkerData] = useState<any>([]);
     const [worker, setWorker] = useState<any>();
     const [powderInKgs, setPowderInKgs] = useState<number | string>('');
@@ -45,6 +45,8 @@ const StatusModal = ({ status, setStatus,jobId }: any) => {
             console.log('Payload', payload);
             const { data } = await put(`/jobs/${jobId}/updateJobStatus`, payload);
             toast.success('Status Updated Successfully');
+            setStatusModal(false);
+            fetchData();
         } catch (error) {
             console.error('Error Updating Status', error);
             toast.error('Failed to update status');

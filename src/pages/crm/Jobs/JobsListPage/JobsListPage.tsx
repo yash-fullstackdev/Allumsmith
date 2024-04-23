@@ -597,7 +597,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData} />
+                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData}  />
                 </ModalBody>
             </Modal>
             <Modal isOpen={withoutstatusModal} setIsOpen={setWithOutStatusModal} isScrollable fullScreen="lg">
@@ -608,7 +608,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} />
+                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId = {jobId} setStatusModal={setWithOutStatusModal} fetchDatajobwm={fetchDatajobwm}/>
                     {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>

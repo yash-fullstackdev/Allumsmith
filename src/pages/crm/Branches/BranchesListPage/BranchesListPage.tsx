@@ -66,6 +66,7 @@ const BranchesListPage = () => {
     const handleClickDelete = async (id: any) => {
         try {
             const { data: branches } = await deleted(`/branches/${id}`);
+            
             console.log("branches", branches)
             toast.success('Branch deleted Successfully');
         } catch (error: any) {
