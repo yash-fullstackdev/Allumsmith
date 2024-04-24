@@ -300,12 +300,12 @@ const AddproductForm = () => {
 		initialValues: {
 			entries: [{
 				name: '',
-				hsn: '',
+				hsn: '760410',
 				rate: '',
 				productCode: '',
 				thickness: '',
 				length: '',
-				weight: '',
+				weight: '2.000',
 			}],
 		},
 		validationSchema: productsSchema,
@@ -340,8 +340,10 @@ const AddproductForm = () => {
 	const handleAddEntry = () => {
 		const { entries } = formik.values;
 		const lastEntry = entries[entries.length - 1];
-		const { name, hsn, rate } = lastEntry;
-	
+		const { name, hsn, rate, thickness, length, weight } = lastEntry;
+
+		console.log("lastEntry", lastEntry)
+
 		formik.setFieldValue('entries', [
 			...entries,
 			{
@@ -349,13 +351,13 @@ const AddproductForm = () => {
 				hsn,
 				rate,
 				productCode: null,
-				thickness: null,
-				length: null,
-				weight: null
+				thickness,
+				length,
+				weight
 			}
 		]);
 	};
-	
+
 
 	const handleDeleteProduct = (index: any) => {
 		const newEntries = [...formik.values.entries];
@@ -537,7 +539,7 @@ const AddproductForm = () => {
 									<Label htmlFor={`thickness-${index}`}>
 										Thickness
 									</Label>
-									<CreatableSelect
+									{/* <CreatableSelect
 										id={`thickness-${index}`}
 										name={`entries[${index}].thickness`}
 										options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
@@ -546,6 +548,18 @@ const AddproductForm = () => {
 										onChange={(selectedOption: any) => {
 											const newEntries: any = [...formik.values.entries];
 											newEntries[index].thickness = parseFloat(selectedOption.value);
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/> */}
+									<Input
+										id={`thickness-${index}`}
+										name={`entries[${index}].thickness`}
+										type='number'
+										value={entry.thickness}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].thickness = e.target.value;
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
@@ -561,7 +575,7 @@ const AddproductForm = () => {
 									<Label htmlFor={`length-${index}`}>
 										Length
 									</Label>
-									<CreatableSelect
+									{/* <CreatableSelect
 										id={`length-${index}`}
 										name={`length-${index}`}
 										options={dropDownValues && dropDownValues?.length?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
@@ -571,13 +585,25 @@ const AddproductForm = () => {
 											newEntries[index].length = parseFloat(selectedOption.value);
 											formik.setFieldValue('entries', newEntries);
 										}}
+									/> */}
+									<Input
+										id={`length-${index}`}
+										name={`entries[${index}].length`}
+										type='number'
+										value={entry.length}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].length = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
 									/>
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`weight-${index}`}>
-										Weight
+										Weight (kg)
 									</Label>
-									<CreatableSelect
+									{/* <CreatableSelect
 										id={`weight-${index}`}
 										name={`weight-${index}`}
 										options={dropDownValues && dropDownValues?.weight?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
@@ -585,6 +611,18 @@ const AddproductForm = () => {
 										onChange={(selectedOption: any) => {
 											const newEntries: any = [...formik.values.entries];
 											newEntries[index].weight = parseFloat(selectedOption.value);
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/> */}
+									<Input
+										id={`weight-${index}`}
+										name={`entries[${index}].weight`}
+										type='number'
+										value={Math.abs(entry.weight / 12 * entry.length).toFixed(2)}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].weight = e.target.value;
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
