@@ -11,7 +11,7 @@
 // import { toast } from 'react-toastify';
 // const AddproductForm = () => {
 // 	const [formSubmitted, setFormSubmitted] = useState(false);
-// 	const [entries, setEntries] = useState([{ name: '', hsn: '', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
+// 	const [entries, setEntries] = useState([{ name: '', hsn: '760410', rate: null, productCode: null, thickness: null, length: null, weight: null }]);
 // 	const [dropDownValues, setDropDownValues] = useState<any>({});
 // 	const navigate = useNavigate()
 
@@ -43,13 +43,14 @@
 
 // 	const handleAddEntry = () => {
 // 		const lastEntry = entries[entries.length - 1];
-// 		const { hsn, productCode, rate } = lastEntry; 
+// 		const {name, hsn, rate, thickness } = lastEntry; 
+// 		console.log(thickness)
 // 		const newEntry = { 
-// 		  name: '', 
+// 		  name, 
 // 		  hsn,
 // 		  rate, 
-// 		  productCode, 
-// 		  thickness: null, 
+// 		  productCode: null, 
+// 		  thickness, 
 // 		  length: null, 
 // 		  weight: null 
 // 		};
@@ -323,19 +324,38 @@ const AddproductForm = () => {
 		getDropDownValues();
 	}, [])
 
+	// const handleAddEntry = () => {
+	// 	formik.setFieldValue('entries', [...formik.values.entries, {
+	// 		name: '',
+	// 		hsn: '',
+	// 		rate: null,
+	// 		productCode: null,
+	// 		thickness: null,
+	// 		length: null,
+	// 		weight: null
+	// 	}]);
+
+
+	// };
 	const handleAddEntry = () => {
-		formik.setFieldValue('entries', [...formik.values.entries, {
-			name: '',
-			hsn: '',
-			rate: null,
-			productCode: null,
-			thickness: null,
-			length: null,
-			weight: null
-		}]);
-
+		const { entries } = formik.values;
+		const lastEntry = entries[entries.length - 1];
+		const { name, hsn, rate } = lastEntry;
+	
+		formik.setFieldValue('entries', [
+			...entries,
+			{
+				name,
+				hsn,
+				rate,
+				productCode: null,
+				thickness: null,
+				length: null,
+				weight: null
+			}
+		]);
 	};
-
+	
 
 	const handleDeleteProduct = (index: any) => {
 		const newEntries = [...formik.values.entries];
@@ -569,6 +589,30 @@ const AddproductForm = () => {
 										}}
 									/>
 								</div>
+								{/* <div className='col-span-12 lg:col-span-3'>
+									<Label htmlFor={`rate-${index}`}>
+										Weight (kg)
+									</Label>
+									<Input
+										id={`rate-${index}`}
+										name={`entries[${index}].weight`}
+										type='number'
+										value={entry?.thickness * entry?.length}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].weight = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/>
+									{
+										formik.touched.entries?.[index]?.weight &&
+											formik.errors.entries?.[index]?.weight ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].weight}
+											</div>
+										) : null}
+								</div> */}
 
 							</div>
 						</div>
