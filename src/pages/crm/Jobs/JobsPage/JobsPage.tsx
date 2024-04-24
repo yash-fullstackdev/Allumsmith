@@ -78,7 +78,7 @@ const JobsPage = () => {
 
     const handleReviewProcess = async () => {
         const regularBatches = customerOrders.map((order: any) => ({
-            coEntry: order.name.name,
+            coEntry: order.name.id,
             products: order.products.map((product: any) => ({
                 productId: product.product._id, // Include product ID
                 product: { id: product.product._id, name: product.product.name },

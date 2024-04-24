@@ -225,7 +225,7 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                                         <h2 className='text-lg font-semibold mb-2'>Branch Name: {processReviewData && processReviewData.branchId.name}</h2>
                                         {processReviewData.batch.map((batch: any, batchIndex: number) => (
                                             <div key={batchIndex} className='mt-4'>
-                                                <h2 className='text-lg font-semibold mb-2'>Customer Name: {batch.coEntry}</h2>
+                                                {/* <h2 className='text-lg font-semibold mb-2'>Customer Name: {batch.coEntry}</h2> */}
                                                 {batch.products.map((product: any, productIndex: number) => (
                                                     <div className='col-span-12 lg:col-span-12 flex items-center gap-2' key={productIndex}>
                                                         <div className='mt-2'>

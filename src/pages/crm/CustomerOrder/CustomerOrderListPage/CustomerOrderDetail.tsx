@@ -126,7 +126,7 @@ const CustomerOrderDetail = ({ customerId }: any) => {
     ];
 
     const WMcolumns = [
-        columnHelper.accessor('product.name', {
+        columnHelper.accessor('product', {
             cell: (info) => (
                 <div className=''>{`${info.getValue()}`}</div>
             ),
