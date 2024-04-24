@@ -22,6 +22,7 @@ const InventoryListPage = () => {
     const [productsArray, setProductsArray] = useState<any>([]);
     const [stockActionModal, setStockActionModal] = useState<any>()
     console.log('productsArray??', productsArray);
+    console.log('Prod');
 
 
 
