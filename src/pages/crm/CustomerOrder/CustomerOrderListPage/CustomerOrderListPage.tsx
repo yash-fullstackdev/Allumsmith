@@ -103,13 +103,14 @@ const CustomerOrderListPage = () => {
             fetchCoData();
         }
     }
-
     const columns = [
         columnHelper.accessor('customer.name', {
             cell: (info) => (
 
+             
+
                 <div className=''>
-                    {`${info?.row?.original?.customer?.name}`}
+                    {`${info?.row?.original?.customer?.name} (${info?.row?.original?.customerOrderNumber})`}
                 </div>
 
             ),
