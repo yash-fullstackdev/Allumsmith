@@ -219,7 +219,7 @@ const LedgerListPage = () => {
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 // onClick={() => formik.resetForm()}
                 >
-                    Edit Branch
+                    Transactions
                 </ModalHeader>
                 <ModalBody>
                     <TransactionListPage customerId={customerId} />

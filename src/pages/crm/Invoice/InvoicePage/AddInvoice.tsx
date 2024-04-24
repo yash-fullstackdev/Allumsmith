@@ -636,7 +636,7 @@ const AddInvoice = () => {
                                                                 <Select
                                                                     id='originPoint'
                                                                     name='originPoint'
-                                                                    value={branchId}
+                                                                    value={branchId.name}
                                                                     placeholder='Select Origin Point'
                                                                     onChange={(e: any) => {
                                                                         setBranchId(e.target.value)
@@ -645,7 +645,7 @@ const AddInvoice = () => {
                                                                     {branch &&
                                                                         branch.length > 0 &&
                                                                         branch?.map((data: any) => (
-                                                                            <option key={data._id} value={data.name}>
+                                                                            <option key={data._id} value={data._id}>
                                                                                 {data.name}
                                                                             </option>
                                                                         ))}

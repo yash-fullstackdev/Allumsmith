@@ -78,14 +78,15 @@ const JobsPage = () => {
 
     const handleReviewProcess = async () => {
         const regularBatches = customerOrders.map((order: any) => ({
-            coEntry: order.name.id,
+            coEntry: order.name.name,
             products: order.products.map((product: any) => ({
                 productId: product.product._id, // Include product ID
                 product: { id: product.product._id, name: product.product.name },
                 pendingQuantity: product.pendingQuantity || product.quantity,
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
-                color: { id: product?.color?._id, name: product?.color?.name }
+                color: { id: product?.color?._id, name: product?.color?.name },
+                mm:product?.mm
             }))
         }));
         const finalValues: any = {
@@ -103,7 +104,8 @@ const JobsPage = () => {
                 product: { id: entry.product.id, name: entry.product.name },
                 quantity: entry.quantity,
                 coating: { id: entry.coating.id, name: entry.coating.name },
-                color: { id: entry.color.id, name: entry.color.name }
+                color: { id: entry.color.id, name: entry.color.name },
+                mm:entry?.mm
             }));
         }
 
@@ -145,7 +147,7 @@ const JobsPage = () => {
     };
 
     console.log('Customer Or', customerOrderData);
-    
+
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
             <Subheader>
@@ -324,7 +326,7 @@ const JobsPage = () => {
                                                                         const selectedOrderId = e.target.value;
                                                                         const selectedOrderName = e.target.options[e.target.selectedIndex].text;
                                                                         const updatedOrders = customerOrders.map((orderItem: any, idx: any) => {
-                                                                            if (idx === index) {   
+                                                                            if (idx === index) {
                                                                                 return {
                                                                                     ...orderItem,
                                                                                     name: { id: selectedOrderId, name: selectedOrderName },
@@ -334,7 +336,7 @@ const JobsPage = () => {
                                                                             return orderItem;
                                                                         });
                                                                         setCustomerOrders(updatedOrders);
-                                                                        setSelectedCustomerOrderData(selectedOrderId); 
+                                                                        setSelectedCustomerOrderData(selectedOrderId);
                                                                     }}
                                                                 >
                                                                     {customerOrderData?.map((co: any) => {
@@ -420,6 +422,19 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
+                                                                    {product?.mm && (<div className='col-span-12 lg:col-span-1'>
+                                                                        <Label htmlFor={`mm${productIndex}`}>
+                                                                            MM
+                                                                        </Label>
+                                                                        <Input
+                                                                            type='text'
+                                                                            id={`mm${productIndex}`}
+                                                                            name={`mm${productIndex}`}
+                                                                            value={product?.mm}
+                                                                            disabled
+                                                                        />
+                                                                    </div>)}
+
 
                                                                     <div className='col-span-12 lg:col-span-1 mt-[20px]'>
                                                                         <Button
@@ -498,13 +513,13 @@ const JobsPage = () => {
                             Edit Status
                         </ModalHeader>
                         <ModalBody>
-                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal = {setQuantityStatusModal}/>
+                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal={setQuantityStatusModal} />
                         </ModalBody>
                     </Modal>
                 </Container>) :
                 <Container>
                     {/* <div> */}
-                        <WithoutMaterialPage />
+                    <WithoutMaterialPage />
                     {/* </div> */}
                 </Container>}
         </PageWrapper >

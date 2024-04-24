@@ -4,6 +4,7 @@ import { config } from '@fullcalendar/core/internal';
 let axiosInstance: AxiosInstance;
 axiosInstance = axios.create({
 	baseURL:'http://localhost:3000',
+	// baseURL:'http://107.23.131.22:3000',
 	// baseURL:'https://allumsmithbe.onrender.com',
 	// baseURL:'https://api.erp.bitontree.co/',
 	// baseURL: process.env.NODE_ENV === 'development' ? 'http://54.221.115.45:3000' : '/api/',

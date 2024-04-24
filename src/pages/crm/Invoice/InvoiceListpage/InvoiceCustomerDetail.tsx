@@ -87,22 +87,6 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
                             <TableCardFooterTemplate table={table} />
                         }
                     </Card>
-
-                    <Card >
-                        <CardBody>
-                            <div className='flex'>
-                                <div className='bold w-full'>
-                                    <Button
-                                        variant='outlined'
-                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'>
-                                        <h2 className='text-gray-700'> Other Detail </h2>
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardBody>
-
-
-                    </Card>
                 </Container>
             </PageWrapper >
 

@@ -173,7 +173,8 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                         product: product.product.id,
                         quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,
                         coating: product.coating.id,
-                        color: product.color.id
+                        color: product.color.id,
+                        mm:product?.mm || null
                     }))
                 })),
             };
@@ -184,7 +185,8 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                     product: product.product.id,
                     quantity: Number(product.quantity),
                     coating: product.coating.id,
-                    color: product.color.id
+                    color: product.color.id,
+                    mm:product?.mm || null
                 }));
             }
 
@@ -209,7 +211,7 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
             selfProducts: updatedSelfProducts
         }));
     };
-
+    console.log('Batch',processReviewData )
 
     return (
         <PageWrapper name='Review Quantity Status' isProtectedRoute={true}>
@@ -223,7 +225,7 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                                         <h2 className='text-lg font-semibold mb-2'>Branch Name: {processReviewData && processReviewData.branchId.name}</h2>
                                         {processReviewData.batch.map((batch: any, batchIndex: number) => (
                                             <div key={batchIndex} className='mt-4'>
-                                                <h2 className='text-lg font-semibold mb-2'>Batch Name: {batch.customerName}</h2>
+                                                <h2 className='text-lg font-semibold mb-2'>Customer Name: {batch.coEntry}</h2>
                                                 {batch.products.map((product: any, productIndex: number) => (
                                                     <div className='col-span-12 lg:col-span-12 flex items-center gap-2' key={productIndex}>
                                                         <div className='mt-2'>

@@ -117,7 +117,7 @@ const PowderInventoryListPage = () => {
                     <ModalHeader
                         className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold gap-5'
                     >
-                        Add Powder
+                        Add Raw Material
                     </ModalHeader>
                     <ModalBody>
                         <AddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} getPowderList = {getPowderList}/>
@@ -127,7 +127,7 @@ const PowderInventoryListPage = () => {
                     <ModalHeader
                         className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                     >
-                        Add Powder Quantity
+                        Add Raw Material Quantity
                     </ModalHeader>
                     <ModalBody>
                         <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} getPowderList = {getPowderList} />

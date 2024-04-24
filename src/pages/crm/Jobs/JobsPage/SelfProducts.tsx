@@ -61,7 +61,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
     }, []);
 
     const handleAddEntry = () => {
-        setEntries([...entries, { product: '', quantity: '', coating: '', color: '' }]);
+        setEntries([...entries, { product: '', quantity: '', coating: '', color: '', mm: '' }]);
     };
 
 
@@ -128,40 +128,12 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                             </div>
                             <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                                 {!productTransfer ? (<>
-                                    <div className='col-span-12 lg:col-span-3'>
+                                    <div className='col-span-12 lg:col-span-2'>
                                         <Label htmlFor={`name-${index}`}>
                                             Products
                                             <span className='ml-1 text-red-500'>*</span>
                                         </Label>
-                                        {/* <Select
-                                            placeholder='Select Product'
-                                            id={`product-${index}`}
-                                            name={`product-${index}`}
-                                            value={entry.product.id} // Assuming entry.product is an object containing id and name
-                                            onChange={(e) => {
-                                                const selectedProductId = e.target.value;
-                                                const selectedProduct = productsData.find((product: any) => product._id === selectedProductId);
-                                                if (selectedProduct) {
-                                                    const updatedEntries = [...entries];
-                                                    updatedEntries[index].product = {
-                                                        id: selectedProductId,
-                                                        name: selectedProduct.name // Assigning the name property
-                                                    };
-                                                    setEntries(updatedEntries);
-                                                }
-                                            }}
-                                        >
-                                            {productsData.map((item: any) => {
-                                                const productId = entries[index]?.product;
-                                                return (
-                                                    <option key={item._id} value={item._id} selected={productId === item._id}>
-                                                        {`${item.name} (${item.productCode})`}
-                                                    </option>
 
-                                                )
-                                            })}
-
-                                        </Select> */}
                                         <SelectReact
                                             id={`product-${index}`}
                                             name={`product-${index}`}
@@ -190,7 +162,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                 </>
                                 )
                                     : (<>
-                                        <div className='col-span-12 lg:col-span-3'>
+                                        <div className='col-span-12 lg:col-span-2'>
                                             <Label htmlFor={`product`}>
                                                 Product
                                                 <span className='ml-1 text-red-500'>*</span>
@@ -209,7 +181,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         </div>
 
                                     </>)}
-                                <div className='col-span-12 lg:col-span-3'>
+                                <div className='col-span-12 lg:col-span-2'>
                                     <Label htmlFor={`hsn-${index}`}>
                                         Quantity
                                         <span className='ml-1 text-red-500'>*</span>
@@ -226,7 +198,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         }}
                                     />
                                 </div>
-                                <div className='col-span-12 lg:col-span-3'>
+                                <div className='col-span-12 lg:col-span-2'>
                                     <Label htmlFor={`hsn-${index}`}>
                                         Coating
                                         <span className='ml-1 text-red-500'>*</span>
@@ -235,7 +207,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                         placeholder='Select Coating'
                                         id={`coating-${index}`}
                                         name={`coating-${index}`}
-                                        value={entry.coating.id} // Assuming entry.coating is an object containing id and name
+                                        value={entry.coating.id}
                                         onChange={(e: any) => {
                                             const selectedCoatingId = e.target.value || entry.coating.id;
                                             const selectedCoating = coatingData.find((coating: any) => coating._id === selectedCoatingId);
@@ -243,7 +215,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                 const updatedEntries = [...entries];
                                                 updatedEntries[index].coating = {
                                                     id: selectedCoatingId,
-                                                    name: selectedCoating.name // Assigning the name property
+                                                    name: selectedCoating.name
                                                 };
                                                 setEntries(updatedEntries);
                                                 updateColorOptions(selectedCoatingId, index);
@@ -263,9 +235,10 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                     </Select>
 
                                 </div>
+
                                 {entry.coating &&
                                     (
-                                        <div className='col-span-12 lg:col-span-3'>
+                                        <div className='col-span-12 lg:col-span-2'>
                                             <Label htmlFor={`hsn-${index}`}>
                                                 Color
                                                 <span className='ml-1 text-red-500'>*</span>
@@ -299,6 +272,29 @@ const SelfProducts = ({ entries, setEntries }: any) => {
 
                                         </div>
                                     )}
+
+                                <div className='col-span-12 lg:col-span-2'>
+                                    <Label htmlFor={`anodize-${index}`}>
+                                        Anodize Thickness
+                                    </Label>
+                                    <Select
+                                        id={`anodize-${index}`}
+                                        name={`anodize-${index}`}
+                                        value={entry.anodizeThickness}
+                                        onChange={(e) => {
+                                            const target = e.target as HTMLSelectElement;
+                                            const updatedEntries = [...entries];
+                                            updatedEntries[index].mm = target.value;
+                                            setEntries(updatedEntries);
+                                        }}
+                                        placeholder='Select MM'
+                                        disabled={coatingData.find((coating: any) => coating._id === entry.coating.id)?.type !== 'anodize'}
+                                    >
+                                        <option value="12 Micron">12 Micron</option>
+                                        <option value="15 Micron">15 Micron</option>
+                                        <option value="20 Micron">20 Micron</option>
+                                    </Select>
+                                </div>
 
                             </div>
 
