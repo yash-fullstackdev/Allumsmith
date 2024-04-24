@@ -180,31 +180,56 @@ const AddInvoice = () => {
                     const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
                     const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
-
-                    return {
-                        product: entry.product._id,
-                        name: entry?.product?.name,
-                        color: entry.color?._id || '',
-                        coating: entry.coating?._id || '',
-                        coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
-                        delieveryQuantity: deliveredQuantities[index] || '',
-                        weight: parseFloat(entry?.product?.weight) || '',
-                        length: entry.product?.length || '',
-                        rate: entry.product?.rate || '',
-                        specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
-                        coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
-                        coatingRate: parseFloat(entry.coating.rate),
-                        coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
-                        amount: parseFloat(amount.toFixed(2)),
-                        coatingName: entry?.coating?.name,
-                        cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                        sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                        specificCoatingAmount: coatingTotal,
-                    };
+                    let finalPayload = {}
+                    if(entry?.mm){
+                        finalPayload =  {
+                            product: entry.product._id,
+                            name: entry?.product?.name,
+                            color: entry.color?._id || '',
+                            coating: entry.coating?._id || '',
+                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+                            delieveryQuantity: deliveredQuantities[index] || '',
+                            weight: parseFloat(entry?.product?.weight) || '',
+                            length: entry.product?.length || '',
+                            rate: entry.product?.rate || '',
+                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
+                            coatingRate: parseFloat(entry.coating.rate),
+                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
+                            amount: parseFloat(amount.toFixed(2)),
+                            coatingName: entry?.coating?.name,
+                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            specificCoatingAmount: coatingTotal,
+                            mm: entry?.mm
+                        };
+                    }else{
+                        finalPayload = {
+                            product: entry.product._id,
+                            name: entry?.product?.name,
+                            color: entry.color?._id || '',
+                            coating: entry.coating?._id || '',
+                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+                            delieveryQuantity: deliveredQuantities[index] || '',
+                            weight: parseFloat(entry?.product?.weight) || '',
+                            length: entry.product?.length || '',
+                            rate: entry.product?.rate || '',
+                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
+                            coatingRate: parseFloat(entry.coating.rate),
+                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
+                            amount: parseFloat(amount.toFixed(2)),
+                            coatingName: entry?.coating?.name,
+                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            specificCoatingAmount: coatingTotal,
+                        }
+                    }
+                    return finalPayload;
                 }),
                 amountBeforeTax: parseFloat(amountBeforeTax.toFixed(2)), // Set amountBeforeTax here
                 alluminiumRate: entries.alluminium_rate || '',
-                sendMail: entries.send_mail || false,
+                send_mail: entries.send_mail || false,
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
                 totalAmount: parseFloat(totalAmount) || '',
@@ -349,6 +374,7 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
+                                                                
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
                                                                         Product Weight
@@ -491,7 +517,22 @@ const AddInvoice = () => {
 
                                                                     />
                                                                 </div>
-
+                                                                {entry?.mm && (
+                                                                    <div className='col-span-12 lg:col-span-2'>
+                                                                    <Label htmlFor="name" className='!text-sm'>
+                                                                        MM
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='text'
+                                                                        id={`product${index}`}
+                                                                        name={`product${index}`}
+                                                                        value={entry?.mm || 'NA'}
+                                                                        disabled
+                                                                    />
+                                                                </div>
+                                                                )}
+                                                                
 
 
 
