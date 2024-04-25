@@ -305,7 +305,7 @@ const AddproductForm = () => {
 				productCode: '',
 				thickness: '',
 				length: '',
-				weight: '2.000',
+				weight: '',
 			}],
 		},
 		validationSchema: productsSchema,
