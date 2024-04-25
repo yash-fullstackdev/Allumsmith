@@ -494,7 +494,6 @@ const AddproductForm = () => {
 									<Input
 										id={`productCode-${index}`}
 										name={`entries[${index}].productCode`}
-										type='number'
 										value={entry?.productCode}
 										onBlur={formik.handleBlur}
 										onChange={(e) => {
@@ -618,7 +617,8 @@ const AddproductForm = () => {
 										id={`weight-${index}`}
 										name={`entries[${index}].weight`}
 										type='number'
-										value={Math.abs(entry.weight / 12 * entry.length).toFixed(2)}
+										min={0}
+										value={entry.weight}
 										onBlur={formik.handleBlur}
 										onChange={(e) => {
 											const newEntries = [...formik.values.entries];
