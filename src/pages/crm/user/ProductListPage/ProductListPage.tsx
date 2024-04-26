@@ -31,6 +31,10 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import EditProductPage from '../ProductPage/EditProductModal';
 import { toast } from 'react-toastify';
+import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
+import FieldWrap from '../../../../components/form/FieldWrap';
+import Icon from '../../../../components/icon/Icon';
+import Input from '../../../../components/form/Input';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -44,6 +48,7 @@ const ProductListPage = () => {
 	const [apiData, setApiData] = useState<any[]>([]);
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editProductId, setEditProductId] = useState<any>('')
+	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const navigate = useNavigate();
 
 	const fetchData = async () => {
@@ -195,6 +200,7 @@ const ProductListPage = () => {
 		columns,
 		state: {
 			sorting,
+			globalFilter,
 		},
 		onSortingChange: setSorting,
 		enableGlobalFilter: true,
@@ -208,6 +214,31 @@ const ProductListPage = () => {
 
 	return (
 		<PageWrapper name='Product List'>
+			<Subheader>
+				<SubheaderLeft>
+					<FieldWrap
+						firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+						lastSuffix={
+							globalFilter && (
+								<Icon
+									icon='HeroXMark'
+									color='red'
+									className='mx-2 cursor-pointer'
+									onClick={() => setGlobalFilter('')}
+								/>
+							)
+						}>
+						<Input
+							className='pl-8'
+							id='searchBar'
+							name='searchBar'
+							placeholder='Search...'
+							value={globalFilter ?? ''}
+							onChange={(e) => setGlobalFilter(e.target.value)}
+						/>
+					</FieldWrap>
+				</SubheaderLeft>
+			</Subheader>
 			<Container>
 				<Card className='h-full'>
 					<CardHeader>
