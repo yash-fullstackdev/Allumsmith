@@ -238,13 +238,13 @@ const EditProductPage = () => {
         fetchData();
     }, []);
 
-    const formik :any = useFormik({
-        initialValues: { 
+    const formik: any = useFormik({
+        initialValues: {
         },
         validationSchema: editProductSchema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-        console.log('Values', values)
+            console.log('Values', values)
         },
     });
 
@@ -265,28 +265,28 @@ const EditProductPage = () => {
         try {
             await formik.validateForm();
 
-			const handleNestedErrors = (errors: any, prefix = '') => {
-				//  logic to touch the field which are not validated
-				Object.keys(errors).forEach((errorField) => {
-					const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+            const handleNestedErrors = (errors: any, prefix = '') => {
+                //  logic to touch the field which are not validated
+                Object.keys(errors).forEach((errorField) => {
+                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
 
-					if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
-						// Recursive call for nested errors
-						handleNestedErrors(errors[errorField], fieldName);
-					} else {
-						// Set the field as touched and set the error
-						formik.setFieldTouched(fieldName, true, false);
-						formik.setFieldError(fieldName, errors[errorField]);
-					}
-				});
-			};
+                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                        // Recursive call for nested errors
+                        handleNestedErrors(errors[errorField], fieldName);
+                    } else {
+                        // Set the field as touched and set the error
+                        formik.setFieldTouched(fieldName, true, false);
+                        formik.setFieldError(fieldName, errors[errorField]);
+                    }
+                });
+            };
 
-			if (Object.keys(formik.errors).length > 0) {
-				handleNestedErrors(formik.errors);
+            if (Object.keys(formik.errors).length > 0) {
+                handleNestedErrors(formik.errors);
 
-				toast.error(`Please fill all the mandatory fields and check all formats`);
-				return;
-			}
+                toast.error(`Please fill all the mandatory fields and check all formats`);
+                return;
+            }
             const formData = {
                 name: formik.values.name,
                 hsn: formik.values.hsn,
@@ -305,7 +305,7 @@ const EditProductPage = () => {
             console.error("Error Saving Product", error)
             toast.error("Error Adding Products", error);
         }
-        
+
     };
 
     console.log('Formik ', formik.touched.name)
@@ -330,7 +330,7 @@ const EditProductPage = () => {
                     <CardBody>
                         <form >
                             <div className='mt-1 grid grid-cols-12 gap-2'>
-                                <div className='col-span-12 lg:col-span-6'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor='name'>
                                         Name
                                     </Label>
@@ -346,7 +346,7 @@ const EditProductPage = () => {
                                         <div className='text-red-500'>{formik.errors.name}</div>
                                     ) : null}
                                 </div>
-                                <div className='col-span-12 lg:col-span-6'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor='hsn'>
                                         HSN
                                     </Label>
@@ -363,7 +363,7 @@ const EditProductPage = () => {
                                 </div>
 
                                 {/* Rate */}
-                                <div className='col-span-12 lg:col-span-6'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor='rate'>
                                         Rate
                                     </Label>
@@ -380,7 +380,7 @@ const EditProductPage = () => {
                                 </div>
 
                                 {/* Product Code */}
-                                <div className='col-span-12 lg:col-span-6'>
+                                <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor='productCode'>
                                         Product Code
                                     </Label>
@@ -397,36 +397,50 @@ const EditProductPage = () => {
                                 </div>
 
                                 {/* Thickness */}
-                                <div className='col-span-12 lg:col-span-4'>
-                                    <Label htmlFor='thickness'>
-                                        Thickness
-                                    </Label>
-                                    <CreatableSelect
+                               
+                            
+                                    {/* <CreatableSelect
                                         id="thickness"
                                         name="thickness"
                                         options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
                                         onChange={(selectedOption: any) => formik.setFieldValue('thickness', selectedOption?.value || '')}
                                         onBlur={formik.handleBlur}
                                         value={formik.values.thickness ? { value: formik.values.thickness, label: formik.values.thickness?.toString() } : null}
-                                    />
-                                    {formik.touched.thickness && formik.errors.thickness ? (
-                                        <div className='text-red-500'>{formik.errors.thickness}</div>
-                                    ) : null}
-                                </div>
+                                    /> */}
+                                    <div className='col-span-12 lg:col-span-4'>
+                                        <Label htmlFor='thickness'>
+                                            Thickness
+                                        </Label>
+                                        <Input
+                                            id="thickness"
+                                            min={0}
+                                            name="thickness"
+                                            type="number"
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.thickness}
+                                            onChange={formik.handleChange}
+                                        />
+                                        {formik.touched.thickness && formik.errors.thickness ? (
+                                            <div className='text-red-500'>{formik.errors.thickness}</div>
+                                        ) : null}
+                                    </div>
+
+                                    
 
                                 {/* Length */}
                                 <div className='col-span-12 lg:col-span-4'>
                                     <Label htmlFor='length'>
                                         Length
                                     </Label>
-                                    <CreatableSelect
-                                        id="length"
-                                        name="length"
-                                        options={dropDownValues && dropDownValues?.length?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
-                                        onChange={(selectedOption: any) => formik.setFieldValue('length', selectedOption?.value || '')}
-                                        value={formik.values.length ? { value: formik.values.length, label: formik.values.length?.toString() } : null}
-                                        onBlur={formik.handleBlur}
-                                    />
+                                    <Input
+                                            min={0}
+                                            id="length"
+                                            type="number"
+                                            name="length"
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.length}
+                                            onChange={formik.handleChange}
+                                        />
                                     {formik.touched.length && formik.errors.length ? (
                                         <div className='text-red-500'>{formik.errors.length}</div>
                                     ) : null}
@@ -437,15 +451,23 @@ const EditProductPage = () => {
                                     <Label htmlFor='weight'>
                                         Weight
                                     </Label>
-                                    <CreatableSelect
+                                    {/* <CreatableSelect
                                         id="weight"
                                         name="weight"
                                         options={dropDownValues && dropDownValues?.weight?.map((value: any) => ({ value, label: value?.toString() ?? "" }))}
                                         onChange={(selectedOption: any) => formik.setFieldValue('weight', selectedOption?.value || '')}
                                         value={formik.values.weight ? { value: formik.values.weight, label: formik.values.weight?.toString() } : null}
                                         onBlur={formik.handleBlur}
-                                    />
-
+                                    /> */}
+                                      <Input
+                                            id="weight"
+                                            min={0}
+                                            type="number"
+                                            name="weight"
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.weight}
+                                            onChange={formik.handleChange}
+                                        />                           
                                     {formik.touched.weight && formik.errors.weight ? (
                                         <div className='text-red-500'>{formik.errors.weight}</div>
                                     ) : null}

@@ -325,9 +325,9 @@ const editProductSchema = Yup.object().shape({
     hsn: Yup.string().required('HSN is required'),
     rate: Yup.number().required('Rate is required'),
     productCode: Yup.string().required('Product Code is required'),
-    thickness: Yup.number().required('Thickness is required').positive('Thickness must be a positive number'),
-    length: Yup.number().required('Length is required').positive('Length must be a positive number'),
-    weight: Yup.number().required('Weight is required').positive('Weight must be a positive number')
+    thickness: Yup.number().required('Thickness is required'),
+    length: Yup.number().required('Length is required'),
+    weight: Yup.number().required('Weight is required'),
 });
 
 const wrokersSchema = Yup.object().shape({
