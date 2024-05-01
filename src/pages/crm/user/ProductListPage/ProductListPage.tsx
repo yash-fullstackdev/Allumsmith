@@ -28,7 +28,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditProductPage from '../ProductPage/EditProductModal';
 import { toast } from 'react-toastify';
 import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
@@ -49,8 +49,33 @@ const ProductListPage = () => {
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editProductId, setEditProductId] = useState<any>('')
 	const [globalFilter, setGlobalFilter] = useState<string>('');
+	const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
 	const navigate = useNavigate();
 
+
+
+	const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleProductDelete = async (id: any) => {
+		console.log("id", id)
+		try {
+			const { data: products } = await deleted(`/products/${id}`);
+			console.log("products", products);
+			toast.success('Product deleted Successfully !');
+		} catch (error: any) {
+			console.error('Error deleting product:', error.message);
+			toast.error('Error deleting Product', error);
+			setIsLoading(false);
+		} finally {
+			setIsLoading(false);
+			fetchData();
+			setDeleteModal(false);
+		}
+	};
 	const fetchData = async () => {
 		setIsLoading(true);
 		try {
@@ -75,21 +100,7 @@ const ProductListPage = () => {
 	}, [])
 
 
-	const handleClickDelete = async (id: any) => {
-		console.log("id", id)
-		try {
-			const { data: products } = await deleted(`/products/${id}`);
-			console.log("products", products);
-			toast.success('Product deleted Successfully !');
-		} catch (error: any) {
-			console.error('Error deleting product:', error.message);
-			toast.error('Error deleting Product', error);
-			setIsLoading(false);
-		} finally {
-			setIsLoading(false);
-			fetchData();
-		}
-	}
+
 
 
 
@@ -289,6 +300,26 @@ const ProductListPage = () => {
 				<ModalBody>
 					<EditProductPage editProductId={editProductId} setEditModal={setEditModal} fetchData={fetchData} />
 				</ModalBody>
+			</Modal>
+			<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleProductDelete(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
 			</Modal>
 		</PageWrapper>
 	)

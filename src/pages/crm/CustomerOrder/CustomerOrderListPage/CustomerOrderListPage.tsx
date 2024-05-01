@@ -26,7 +26,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import CustomerEntryDetail from './CustomerOrderDetail';
 import { post } from '../../../../utils/api-helper.util';
@@ -41,7 +41,34 @@ const CustomerOrderListPage = () => {
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
     const [customerId, setCustomerId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
-    const [vendorInfo, setVendorInfo] = useState<any>()
+    const [vendorInfo, setVendorInfo] = useState<any>();
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
+
+    const handleClickDelete = (info: any) => {
+		setDeleteModal(true);
+		setDeleteId(info.row.original._id);
+	};
+
+	const handleDeleteCustomerOrder = async (id: any) => {
+		console.log('Id', id);
+        try {
+            const { data: allUsers } = await deleted(`/customer-order/${id}`);
+            console.log("allUsers", allUsers);
+            toast.success('customer Order  deleted Successfully!')
+           
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+            toast.error('Error deleting customer Order', error);
+        } finally {
+            setIsLoading(false);
+            setDeleteModal(false);
+            fetchCoData();
+        }
+	};
+
+
 
     console.log("customerId", customerId)
     console.log("vendorInfo", vendorInfo)
@@ -88,21 +115,7 @@ const CustomerOrderListPage = () => {
         fetchCoData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
-        console.log('Id', id);
-        try {
-            const { data: allUsers } = await deleted(`/customer-order/${id}`);
-            console.log("allUsers", allUsers);
-            toast.success('customer Order  deleted Successfully!')
-        } catch (error: any) {
-            console.error('Error fetching users:', error.message);
-            setIsLoading(false);
-            toast.error('Error deleting customer Order', error);
-        } finally {
-            setIsLoading(false);
-            fetchCoData();
-        }
-    }
+    
     const columns = [
         columnHelper.accessor('customer.name', {
             cell: (info) => (
@@ -159,7 +172,7 @@ const CustomerOrderListPage = () => {
                      
                     <Button
                         onClick={() => {
-                            handleClickDelete(info?.row?.original?._id);
+                            handleClickDelete(info);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -268,6 +281,26 @@ const CustomerOrderListPage = () => {
                         <CustomerEntryDetail customerId={customerId} />
                     </ModalBody>
                 </Modal>
+                <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteCustomerOrder(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
             </PageWrapper>
         </>
     )

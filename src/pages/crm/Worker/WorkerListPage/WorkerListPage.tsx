@@ -28,7 +28,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import EditWorkerModal from '../WorkerPage/EditWorkerModal';
 import AssociatedJobsModal from './AssociatedJobsModal';
@@ -45,6 +45,8 @@ const WorkerListPage = () => {
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
     const [associatedJobs, setAssociatedJobs] = useState<any>([]);
     const [associatedJobsModal, setAssociatedJobsModal] = useState<boolean>(false);
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
     const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
@@ -65,7 +67,13 @@ const WorkerListPage = () => {
         fetchData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
+
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteWorker = async (id: any) => {
         try {
             const { data: worker } = await deleted(`/workers/${id}`);
             console.log("worker", worker);
@@ -78,7 +86,9 @@ const WorkerListPage = () => {
             setIsLoading(false);
             fetchData();
         }
-    }
+	};
+  
+   
 
     const columns = [
 
@@ -277,7 +287,26 @@ const WorkerListPage = () => {
                     <AssociatedJobsModal associatedJobs={associatedJobs} setAssociatedJobsModal={setAssociatedJobsModal} />
                 </ModalBody>
             </Modal>
-
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteWorker(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>        
         </PageWrapper>
     )
 

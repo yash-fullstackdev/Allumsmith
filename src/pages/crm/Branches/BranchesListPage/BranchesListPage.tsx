@@ -26,7 +26,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditBranchModal from '../BranchesPage/EditBranchModal';
 import { toast } from 'react-toastify';
 
@@ -40,7 +40,9 @@ const BranchesListPage = () => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [branchesList, setBranchesList] = useState<any[]>([]);
     const [branchId, setBranchId] = useState('')
-    const [isEditModal, setIsEditModal] = useState(false)
+    const [isEditModal, setIsEditModal] = useState(false);
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -63,7 +65,14 @@ const BranchesListPage = () => {
         fetchData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
+
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteBranch = async (id: any) => {
+        console.log('Id', id);
         try {
             const { data: branches } = await deleted(`/branches/${id}`);
             
@@ -76,8 +85,10 @@ const BranchesListPage = () => {
         } finally {
             setIsLoading(false);
             fetchData();
+            setDeleteModal(false);
         }
-    }
+	};
+   
 
     const columns = [
 
@@ -243,6 +254,27 @@ const BranchesListPage = () => {
                     <EditBranchModal branchId={branchId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
+
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteBranch(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
 
         </PageWrapper>
     )

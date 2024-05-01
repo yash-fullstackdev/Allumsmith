@@ -63,6 +63,7 @@ const JobsListPage = () => {
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
+    
 
 
     const fetchData = async () => {
@@ -98,6 +99,7 @@ const JobsListPage = () => {
 
     const generateReceipt  = async(id:any) =>{
         try{
+        setIsLoading(true)    
         const response = await post(`/jobs/generateJobReceipt/${id}`,{});
         if (response && response.status === 201 && response.data && response.data.data) {
             const pdfData = response.data.data;
@@ -109,9 +111,11 @@ const JobsListPage = () => {
         } else {
             console.error('Error: PDF data not found in response');
         }
+        setIsLoading(false)
         }catch(error){
             toast.error('Error Generating Receipt')
         }
+
     }
     useEffect(() => {
         fetchData();
@@ -467,8 +471,9 @@ const JobsListPage = () => {
                                 <div className='flex justify-center'>
                                     {isLoading && <LoaderDotsCommon />}
                                 </div>
+
                             </CardBody>
-                            {table.getFilteredRowModel().rows.length > 0 &&
+                            {!isLoading && table.getFilteredRowModel().rows.length > 0 &&
                                 <TableCardFooterTemplate table={table} />
                             }
                         </div>

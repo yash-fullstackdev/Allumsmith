@@ -28,7 +28,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import EditCustomerModal from '../CustomerPage/EditVendorModal';
 
@@ -42,7 +42,8 @@ const CustomerListPage = () => {
     const [custmoerList, setCustomerList] = useState<any[]>([]);
     const [customerId, setCustomerId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
-
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
     const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
@@ -63,7 +64,13 @@ const CustomerListPage = () => {
         fetchData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
+
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteCustomer= async (id: any) => {
         try {
             const { data: customer } = await deleted(`/customers/${id}`);
             console.log("customer", customer);
@@ -75,8 +82,10 @@ const CustomerListPage = () => {
         } finally {
             setIsLoading(false);
             fetchData();
+            setDeleteModal(false);   
         }
-    }
+	};
+    
 
     const columns = [
 
@@ -251,6 +260,26 @@ const CustomerListPage = () => {
                     <EditCustomerModal customerId={customerId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteCustomer(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
 
         </PageWrapper>
     )
