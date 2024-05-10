@@ -306,6 +306,10 @@ const AddproductForm = () => {
 				thickness: '',
 				length: '',
 				weight: '',
+				premium_rate: '',
+				wooden_rate: '',
+				commercial_rate: '',
+				anodize_rate: ''
 			}],
 		},
 		validationSchema: productsSchema,
@@ -394,6 +398,8 @@ const AddproductForm = () => {
 				toast.error(`Please fill all the mandatory fields and check all formats`);
 				return;
 			}
+			console.log('final data', formik.values.entries);
+			
 			const promises = formik.values.entries.map(async (entry: any) => {
 				const { data } = await post("/products", entry);
 				return data;
@@ -626,6 +632,102 @@ const AddproductForm = () => {
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
+								</div>
+								<div className='col-span-12 lg:col-span-3'>
+									<Label htmlFor={`rate-${index}`}>
+										Wooden Coating Rate
+									</Label>
+									<Input
+										id={`wooden_rate-${index}`}
+										name={`entries[${index}].wooden_rate`}
+										type='number'
+										value={entry.wooden_rate}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].wooden_rate = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/>
+									{
+										formik.touched.entries?.[index]?.wooden_rate &&
+											formik.errors.entries?.[index]?.wooden_rate ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].wooden_rate}
+											</div>
+										) : null}
+								</div>
+								<div className='col-span-12 lg:col-span-3'>
+									<Label htmlFor={`commercial_rate-${index}`}>
+										Commercial Coating Rate
+									</Label>
+									<Input
+										id={`commercial_rate-${index}`}
+										name={`entries[${index}].commercial_rate`}
+										type='number'
+										value={entry.commercial_rate}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].commercial_rate = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/>
+									{
+										formik.touched.entries?.[index]?.commercial_rate &&
+											formik.errors.entries?.[index]?.commercial_rate ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].wooden_rate}
+											</div>
+										) : null}
+								</div>
+								<div className='col-span-12 lg:col-span-3'>
+									<Label htmlFor={`anodize_rate-${index}`}>
+										Anodize Coating Rate
+									</Label>
+									<Input
+										id={`anodize_rate-${index}`}
+										name={`entries[${index}].anodize_rate`}
+										type='number'
+										value={entry.anodize_rate}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].anodize_rate = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/>
+									{
+										formik.touched.entries?.[index]?.anodize_rate &&
+											formik.errors.entries?.[index]?.anodize_rate ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].anodize_rate}
+											</div>
+										) : null}
+								</div>
+								<div className='col-span-12 lg:col-span-3'>
+									<Label htmlFor={`premium_rate-${index}`}>
+										Premium Coating Rate
+									</Label>
+									<Input
+										id={`premium_rate-${index}`}
+										name={`entries[${index}].premium_rate`}
+										type='number'
+										value={entry.premium_rate}
+										onBlur={formik.handleBlur}
+										onChange={(e) => {
+											const newEntries = [...formik.values.entries];
+											newEntries[index].premium_rate = e.target.value;
+											formik.setFieldValue('entries', newEntries);
+										}}
+									/>
+									{
+										formik.touched.entries?.[index]?.premium_rate &&
+											formik.errors.entries?.[index]?.premium_rate ? (
+											<div className='text-red-500'>
+												{formik.errors.entries[index].premium_rate}
+											</div>
+										) : null}
 								</div>
 								{/* <div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`rate-${index}`}>

@@ -25,9 +25,9 @@ const EditCustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        coating_discount: "",
+        premium_discount: '',
         anodize_discount: '',
-        
+        commercial_discount: '',
     });
     const navigate = useNavigate();
 
@@ -42,8 +42,8 @@ const EditCustomerPage = () => {
     const fetchCustomerById = async () => {
         try {
             const customer = await get(`/customers/${id}`);
-            const { name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, coating_discount, anodize_discount } = customer.data;
-            setFormData({ name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, coating_discount, anodize_discount });
+            const { name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, premium_discount, anodize_discount, commercial_discount } = customer.data;
+            setFormData({ name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, premium_discount, anodize_discount,commercial_discount });
         } catch (error) {
             console.error("Error fetching Customer data:", error);
         }
@@ -177,25 +177,37 @@ const EditCustomerPage = () => {
                                 />
                             </div>
                             <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='coating_discount'>
-                                    Coating Discount
+                                <Label htmlFor='premium_discount'>
+                                    Premium Discount(%)
                                 </Label>
                                 <Input
-                                    id="coating_discount"
-                                    name="coating_discount"
-                                    value={formData.coating_discount}
+                                    id="premium_discount"
+                                    name="premium_discount"
+                                    value={formData.premium_discount}
                                     onChange={handleChange}
                                 />
                                 {/* ... Error handling for zipcode field */}
                             </div>
                             <div className='col-span-12 lg:col-span-4'>
                                 <Label htmlFor='anodize_discount'>
-                                    Anodize Discount
+                                    Anodize Discount(%)
                                 </Label>
                                 <Input
                                     id="anodize_discount"
                                     name="anodize_discount"
                                     value={formData.anodize_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='commercial_discount'>
+                                    Commercial Discount(%)
+                                </Label>
+                                <Input
+                                    id="commercial_discount"
+                                    name="commercial_discount"
+                                    value={formData.commercial_discount}
                                     onChange={handleChange}
                                 />
                                 {/* ... Error handling for zipcode field */}

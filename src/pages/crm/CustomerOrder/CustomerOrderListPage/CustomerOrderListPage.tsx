@@ -92,6 +92,7 @@ const CustomerOrderListPage = () => {
 
     const handleGeneratePDF = async (id: any) => {
         try {
+            setIsLoading(true)
             console.log(`PDF GENERATED Sucessfully for ${id}`)
             const response = await post(`/customer-order/generateReciept/${id}`, {});
             console.log(response.data.data);
@@ -107,6 +108,8 @@ const CustomerOrderListPage = () => {
             }
         } catch (error) {
             console.error('Error Generating PDF', error)
+        } finally {
+            setIsLoading(false)
         }
 
     }
@@ -214,6 +217,7 @@ const CustomerOrderListPage = () => {
 
     return (
         <>
+            
             <PageWrapper name='Product List'>
                 <Container>
                     <Card className='h-full'>
@@ -246,9 +250,10 @@ const CustomerOrderListPage = () => {
                             ) : (
                                 !isLoading && <p className="text-center text-gray-500">No records found</p>
                             )}
-                            <div className='flex justify-center'>
-                                {isLoading && <LoaderDotsCommon />}
-                            </div>
+                            
+                        <div className='flex justify-center'>
+                            {isLoading && <LoaderDotsCommon />}
+                        </div>
                         </CardBody>
                         { table.getFilteredRowModel().rows.length > 0 &&
                             <TableCardFooterTemplate table={table} />

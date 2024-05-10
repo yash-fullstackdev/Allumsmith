@@ -315,7 +315,11 @@ const productsSchema = Yup.object().shape({
             productCode: Yup.string().required('Product Code is required'),
             thickness: Yup.string().required('Thickness is required'),
             length: Yup.string().required('Length is required'),
-            weight: Yup.string().required('Weight is required'),
+			weight: Yup.string().required('Weight is required'),
+			premium_rate: Yup.number().positive(),
+			wooden_rate: Yup.number().positive(),
+			commercial_rate: Yup.number().positive(),
+			anodize_rate: Yup.number().positive(),
         })
     ),
 });
@@ -381,7 +385,8 @@ const purchaseOrderSchema = Yup.object().shape({
         .positive('Rate must be positive')
         .integer('Rate must be an integer'),
     colors: Yup.array()
-        .min(1, 'At least one color must be selected')
+		  .min(1, 'At least one color must be selected'),
+	type: Yup.string().required('Type of the coating is required')
 });
 
 export {

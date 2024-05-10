@@ -59,7 +59,7 @@ const CoatingListPage = () => {
             const { data: coatingList } = await get(`/coatings`);
             coatingList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())   
             setCoatingList(coatingList);
-            filterData(coatingList, coatingState);
+            // filterData(coatingList, coatingState);
             // console.log("🚀 ~ fetchCoatingData ~ data:", coatingList,coatingState)
             setIsLoading(false);
         } catch (error: any) {
@@ -74,21 +74,21 @@ const CoatingListPage = () => {
         setCoatingState(prevState => !prevState);
     };
 
-    const filterData = (data:any[], isCoating:boolean) => {
-        let filtered;
-        if (isCoating) {
-            filtered = data.filter(item => item.type === 'anodize');
-        } else {
-            filtered = data.filter(item => item.type === 'coating');
-        }
-        setCoatingList(filtered);
-    };
+    // const filterData = (data:any[], isCoating:boolean) => {
+    //     let filtered;
+    //     if (isCoating) {
+    //         filtered = data.filter(item => item.type === 'anodize');
+    //     } else {
+    //         filtered = data.filter(item => item.type === 'coating');
+    //     }
+    //     setCoatingList(filtered);
+    // };
     
     
-    useEffect(() => {
-        console.log("coatingState:", coatingState);
-        filterData(coatingList, coatingState);
-    }, [coatingState]);
+    // useEffect(() => {
+    //     console.log("coatingState:", coatingState);
+    //     filterData(coatingList, coatingState);
+    // }, [coatingState]);
     
     
     useEffect(() => {
@@ -237,14 +237,14 @@ const CoatingListPage = () => {
 
     return (
         <PageWrapper name='Inventory List'>
-            <Subheader>
+            {/* <Subheader>
             <SubheaderLeft>
                     <div className='flex items-center justify-center ml-4' >
                         <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={handleToggleCoatingState}  /><h4>Anodize</h4>
                     </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-            </Subheader>
+            </Subheader> */}
             <Container>
                 <Card className='h-full'>
                     <CardHeader>

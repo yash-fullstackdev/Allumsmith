@@ -81,7 +81,6 @@ const AddInvoice = () => {
     };
 
     const handleDeliveredQuantityChange = (value: any, index: number) => {
-
         const updatedDeliveredQuantities = [...deliveredQuantities];
         updatedDeliveredQuantities[index] = parseFloat(value);
         setDeliveredQuantities(updatedDeliveredQuantities);
@@ -228,7 +227,6 @@ const AddInvoice = () => {
                     return finalPayload;
                 }),
                 amountBeforeTax: parseFloat(amountBeforeTax.toFixed(2)), // Set amountBeforeTax here
-                alluminiumRate: entries.alluminium_rate || '',
                 send_mail: entries.send_mail || false,
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
@@ -244,7 +242,6 @@ const AddInvoice = () => {
             console.log('Response:', respones);
             toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
-
         } catch (error) {
             console.error('Error saving data:', error);
         }
@@ -358,7 +355,6 @@ const AddInvoice = () => {
                                                                         name={`product${index}`}
                                                                         value={entry?.product?.name}
                                                                         disabled
-
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
@@ -460,6 +456,7 @@ const AddInvoice = () => {
                                                                         id={`coatingRate${index}`}
                                                                         name={`coatingRate${index}`}
                                                                         value={entry?.coating?.rate}
+                                                                        min={0}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
                                                                             updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, rate: e.target.value } };
@@ -624,8 +621,12 @@ const AddInvoice = () => {
                                                                 <Input
                                                                     type='number'
                                                                     value={totalAmount}
+                                                                    id="total_amount"
                                                                     name="total_amount"
-                                                                    onChange={(e) => setEntries({ ...entries, total_amount: e.target.value })}
+                                                                    onChange={(e) => {
+                                                                        setTotalAmount(e.target.value)
+                                                                        setEntries({...entries, total_amount: totalAmount})
+                                                                    }}
                                                                 />
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
@@ -657,7 +658,6 @@ const AddInvoice = () => {
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Textarea
-                                                                    
                                                                     value={entries.delivery_point}
                                                                     name="delivery_point"
                                                                     onChange={(e) => setEntries({ ...entries, delivery_point: e.target.value })}
@@ -673,7 +673,6 @@ const AddInvoice = () => {
                                                                     name='send_mail'
                                                                     checked={entries.send_mail}
                                                                     onChange={handleSendMailChange}
-
                                                                 />
 
                                                             </div>            

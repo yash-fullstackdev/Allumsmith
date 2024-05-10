@@ -27,9 +27,9 @@ const CustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        coating_discount: "",
+        premium_discount: '',
         anodize_discount: '',
-
+        commercial_discount: ''
     });
 
     const handleChange = (e: any) => {
@@ -195,15 +195,17 @@ const CustomerPage = () => {
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
                                             <div className='col-span-12 lg:col-span-4'>
-                                                <Label htmlFor='coating_discount'>
-                                                    Coating Discount (%)
+                                                <Label htmlFor='premium_discount'>
+                                                    Premium Discount (%)
                                                 </Label>
                                                 <Input
                                                     type="number"
-                                                    id="coating_discount"
-                                                    name="coating_discount"
-                                                    value={formData.coating_discount}
+                                                    id="premium_discount"
+                                                    name="premium_discount"
+                                                    value={formData.premium_discount}
                                                     onChange={handleChange}
+                                                    min={0}
+                                                    max={100}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
@@ -216,6 +218,20 @@ const CustomerPage = () => {
                                                     id="anodize_discount"
                                                     name="anodize_discount"
                                                     value={formData.anodize_discount}
+                                                    onChange={handleChange}
+                                                />
+                                                {/* ... Error handling for zipcode field */}
+                                            </div>
+                                            
+                                            <div className='col-span-12 lg:col-span-4'>
+                                                <Label htmlFor='commercial_discount'>
+                                                    Commercial Discount (%)
+                                                </Label>
+                                                <Input
+                                                    type="number"
+                                                    id="commercial_discount"
+                                                    name="commercial_discount"
+                                                    value={formData.commercial_discount}
                                                     onChange={handleChange}
                                                 />
                                                 {/* ... Error handling for zipcode field */}

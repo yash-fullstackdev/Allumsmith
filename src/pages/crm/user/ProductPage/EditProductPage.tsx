@@ -295,8 +295,13 @@ const EditProductPage = () => {
                 thickness: formik.values.thickness,
                 length: formik.values.length,
                 weight: formik.values.weight,
-
+                premium_rate: formik.values.premium_rate,
+                wooden_rate: formik.values.wooden_rate,
+                commercial_rate: formik.values.commercial_rate,
+                anodize_rate: formik.values.anodize_rate
             }
+            console.log('form',formData);
+            
             const editedProduct = await put(`/products/${id}`, formData);
             console.log("edited Product", editedProduct);
             toast.success(`Product Updated Successfully`)
@@ -470,6 +475,74 @@ const EditProductPage = () => {
                                         />                           
                                     {formik.touched.weight && formik.errors.weight ? (
                                         <div className='text-red-500'>{formik.errors.weight}</div>
+                                    ) : null}
+                                </div>
+
+                                {/*Wooden Coating Rate*/}
+                                <div className='col-span-12 lg:col-span-3'>
+                                    <Label htmlFor='wooden_rate'>
+                                        Wooden Coating Rate
+                                    </Label>
+                                    <Input
+                                        id="rate"
+                                        name="wooden_rate"
+                                        value={formik.values.wooden_rate}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                    />
+                                    {formik.touched.wooden_rate && formik.errors.wooden_rate ? (
+                                        <div className='text-red-500'>{formik.errors.wooden_rate}</div>
+                                    ) : null}
+                                </div>
+                                
+                                {/*Premium Coating Rate*/}
+                                <div className='col-span-12 lg:col-span-3'>
+                                    <Label htmlFor='premium_rate'>
+                                        Premium Coating Rate
+                                    </Label>
+                                    <Input
+                                        id="rate"
+                                        name="premium_rate"
+                                        value={formik.values.premium_rate}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                    />
+                                    {formik.touched.premium_rate && formik.errors.premium_rate ? (
+                                        <div className='text-red-500'>{formik.errors.premium_rate}</div>
+                                    ) : null}
+                                </div>
+                                
+                                {/*Commecial Coating Rate*/}
+                                <div className='col-span-12 lg:col-span-3'>
+                                    <Label htmlFor='commercial_rate'>
+                                        Commercial Coating Rate
+                                    </Label>
+                                    <Input
+                                        id="rate"
+                                        name="commercial_rate"
+                                        value={formik.values.commercial_rate}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                    />
+                                    {formik.touched.commercial_rate && formik.errors.commercial_rate ? (
+                                        <div className='text-red-500'>{formik.errors.commercial_rate}</div>
+                                    ) : null}
+                                </div>
+                                
+                                {/*Anodize Coating Rate*/}
+                                <div className='col-span-12 lg:col-span-3'>
+                                    <Label htmlFor='anodize_rate'>
+                                        Anodize Coating Rate
+                                    </Label>
+                                    <Input
+                                        id="rate"
+                                        name="anodize_rate"
+                                        value={formik.values.anodize_rate}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                    />
+                                    {formik.touched.anodize_rate && formik.errors.anodize_rate ? (
+                                        <div className='text-red-500'>{formik.errors.anodize_rate}</div>
                                     ) : null}
                                 </div>
                             </div>

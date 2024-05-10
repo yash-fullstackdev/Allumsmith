@@ -16,7 +16,7 @@ import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
 
 const AddCustomerOrderForm = () => {
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', withoutMaterial: '' }]);
+  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '',coating_rate: '' ,withoutMaterial: '' }]);
   const [customerId, setCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([]);
@@ -30,10 +30,15 @@ const AddCustomerOrderForm = () => {
   const [selectedColor, setSelectedColor] = useState<string[]>([]);
   const [inventoryList, setInventoryList] = useState<any>([]);
   const [productsArray, setProductsArray] = useState<any>([]);
+  const [entriesString, setEntriesString] = useState('');
+  const [estimateRate,setEstimateRate] = useState<number>(0)
+  const [estimateWeight, setEstimateWeight] = useState<number>(0)
+  const [currentCustomerData, setCurrentCustomerData] = useState<any>({})
+  const [customerDiscount, setCustomerDiscount] = useState<number>(0);
+
   const getProductDetails = async () => {
     try {
       const { data } = await get('/products');
-      console.log('Data of Products', data);
       const productsWithData = data.filter((item: any) => item.name);
       setProductsData(productsWithData);
     } catch (error) {
@@ -101,9 +106,17 @@ const AddCustomerOrderForm = () => {
     getProductDetails();
     getCoatingDetails();
 
-
   }, []);
 
+  useEffect(() => {
+    // Generate a unique string based on product, quantity, and coating properties
+    const updatedEntriesString = entries
+      .map((entry: any) => `${entry.product}-${entry.quantity}-${entry.coating}`)
+      .join('-');
+
+    // Update the state with the new string
+    setEntriesString(updatedEntriesString);
+  }, [entries]);
 
   const handleAddEntry = () => {
     const lastEntry = entries[entries.length - 1];
@@ -113,6 +126,8 @@ const AddCustomerOrderForm = () => {
       coating: lastEntry.coating || null,
       color: lastEntry.color || null,
       length: '',
+      weight: '',
+      coating_rate: '',
       withoutMaterial: ''
     };
     setEntries([...entries, newEntry]);
@@ -127,7 +142,8 @@ const AddCustomerOrderForm = () => {
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
-      quantity: Number(entry.quantity)
+      quantity: Number(entry.quantity),
+      coating_rate: Number(entry.coating_rate)
     }));
 
     const filteredEntries = updatedEntries.map((obj: any) => {
@@ -142,6 +158,9 @@ const AddCustomerOrderForm = () => {
       customer: customerId,
       entries: filteredEntries,
       customerOrderNumber,
+      estimate_total: estimateRate,
+      estimate_weight: estimateWeight,
+      customer_discount: customerDiscount
     };
 
     try {
@@ -173,7 +192,7 @@ const AddCustomerOrderForm = () => {
       const { data } = await get(`/coatings/${coatingId}`);
     } catch (error) {
       console.error("Error fetching coating details", error);
-    }
+    } 
   };
 
 
@@ -215,26 +234,86 @@ const AddCustomerOrderForm = () => {
     setEntries(updatedEntries);
   };
 
+  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newValue = e.target.value;
+    const updatedEntries = [...entries];
+    updatedEntries[index].weight = newValue;
+    setEntries(updatedEntries)
+  }
+
+  const SetCurrentCustomerData = (id:string) => {
+    setCurrentCustomerData(customerData.find((customer:any)=> customer._id.toString() === id.toString()))
+  }
+
+  const SetCustomerDiscount = (value: number) => {
+    setCustomerDiscount(value)
+  }
+
+  useEffect(() => {
+    const calculateCoatingRate = (productId: string, coatingId: string, quantity: number) => {
+        const product = productsData.find((item: any) => item._id === productId);
+        const coating = coatingData.find((item: any) => item._id === coatingId);
+        
+        if (!product || !coating) {
+            return 0; // Handle if product or coating is not found
+        }
+
+        const type = coating.type;
+      
+        const productCoatingRate = `${type}_rate`;
+        const rate = product[productCoatingRate] || 0;
+        return rate * quantity;
+    };
+
+    // Calculate coating rate and update entries state whenever product, coating, or quantity changes
+    const updatedEntries = entries.map((entry: any) => {
+        const { product, coating, quantity } = entry;
+        return {
+            ...entry,
+            coating_rate: calculateCoatingRate(product, coating, quantity)
+        };
+    });
+
+    setEntries(updatedEntries);
+  }, [entriesString]);
+
 
   const handleProductChange = (selectedOption: any, index: any) => {
     const selectedProduct = productsArray.find((product: any) => product.productId === selectedOption.value);
     if (selectedProduct) {
-      const { productId, productName, totalQuantity } = selectedProduct;
-      console.log('Product Name', productName)
+      const { productId, productName, totalQuantity,wooden_rate,commercial_rate,premium_rate,anodize_rate } = selectedProduct;
       const updatedEntries = [...entries];
       updatedEntries[index].product = productId;
       setEntries(updatedEntries);
     } else {
       const updatedEntries = [...entries];
       updatedEntries[index].product = selectedOption.value;
-
-      // Log updated entries for debugging
-      console.log("🚀 ~ AddCustomerOrderForm ~ updatedEntries:", updatedEntries);
-
-      // Update the state with the new entries
       setEntries(updatedEntries);
     }
   };
+
+  useEffect(() => {    
+    let totalWeight: number = 0;
+    for (const entry of entries) {
+      const product = productsData?.find((prod: any) => prod._id.toString() === entry.product.toString())
+      const weight = parseFloat(entry?.weight) || product?.weight
+      totalWeight += (weight * entry?.quantity) || 0;
+      totalWeight = parseFloat(totalWeight.toFixed(2))
+    }
+    setEstimateWeight(totalWeight)
+  }, [entries,productsData])
+  
+  useEffect(() => {
+    let totalRate: number = 0;
+    for (const entry of entries) {
+      let final_rate = parseInt(entry.coating_rate)
+      totalRate += final_rate || 0
+    }
+    if (customerDiscount) {
+      totalRate = parseFloat((totalRate - (totalRate * customerDiscount / 100)).toFixed(2)) 
+    }
+    setEstimateRate(totalRate)
+  },[entries, productsData,customerDiscount])
 
 
   return (
@@ -274,6 +353,7 @@ const AddCustomerOrderForm = () => {
                   onChange={(selectedOption: any) => {
                     setCustomerId(selectedOption.value);
                     setCustomerName(selectedOption.label);
+                    SetCurrentCustomerData(selectedOption.value)
                   }}
                 />
               </div>
@@ -339,6 +419,7 @@ const AddCustomerOrderForm = () => {
 
                         </div>
                         {entry.product && (
+                          <>
                           <div className='col-span-12 lg:col-span-2'>
                             <Label htmlFor={`length-${index}`}>
                               Length
@@ -352,8 +433,21 @@ const AddCustomerOrderForm = () => {
                               onChange={(e) => handleLengthChange(e, index)}
                             />
 
-
                           </div>
+                          <div className='col-span-12 lg:col-span-2'>
+                            <Label htmlFor={`Weight-${index}`}>
+                              Weight
+                              <span className='ml-1 text-red-500'>*</span>
+                            </Label>
+                            <Input
+                              type='number'
+                              id={`weight-${index}`}
+                              name={`weight-${index}`}
+                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight || ''}
+                              onChange={(e) => handleWeightChange(e, index)}
+                            />
+                          </div>
+                          </>
                         )}
                       </>
                       )
@@ -396,7 +490,6 @@ const AddCustomerOrderForm = () => {
                         {entry.product && entry.quantity && (
                           <div style={{ fontSize: '11px', color: 'green', marginTop: '0.5rem' }}>
                             {`${entry.product ? productsArray.find((product: any) => product.productId === entry.product)?.productName : 'Selected product'} has ${productsArray.find((product: any) => product.productId === entry.product)?.totalQuantity || 0} quantity`}
-
                           </div>
                         )}
 
@@ -413,7 +506,6 @@ const AddCustomerOrderForm = () => {
                           // value={entry.coating }
                           value={entry.coating || selectedCoatings[index]}
                           onChange={(e) => handleCoatingChange(e, index)}
-
                         >
                           {coatingData.map((coating: any) => (
                             <option key={coating._id} value={coating._id}>
@@ -442,6 +534,25 @@ const AddCustomerOrderForm = () => {
                             ))}
                           </Select>
                         </div>)}
+                      
+                        <div className='col-span-12 lg:col-span-2'>
+                          <Label htmlFor={`hsn-${index}`}>
+                            Coating Rate
+                            <span className='ml-1 text-red-500'>*</span>
+                          </Label>
+                          <Input
+                            type='number'
+                            id={`hsn-${index}`}
+                            name={`hsn-${index}`}
+                            value={entry.coating_rate}
+                            min={0}
+                            onChange={(e) => {
+                              const updatedEntries = [...entries];
+                              updatedEntries[index].coating_rate = e.target.value;
+                              setEntries(updatedEntries);
+                            }}
+                          />
+                      </div>
 
                       <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor='withoutMaterial'>
@@ -483,8 +594,6 @@ const AddCustomerOrderForm = () => {
                           <option value="20 Micron">20 Micron</option>
                         </Select>
                       </div>)}
-
-
                     </div>
                   </>
                 ))}
@@ -492,20 +601,98 @@ const AddCustomerOrderForm = () => {
                   <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
                     Add Entry
                   </Button>
-                  <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
-                    Save Entries
-                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </CardBody>
       </Card>
-      {/* </div >
+      <div className='col-span-12 flex flex-col gap-1 xl:col-span-6 mt-5'>
+        <Card>
+          <CardBody>
+            <div className='flex'>
+              <div className='bold w-full'>
+                <Button
+                  variant='outlined'
+                  className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                >
+                  Other Details
+                </Button>
+              </div>
             </div>
-          </div>
-        </div> */}
-      {/* </Container> */}
+            <div>
+              <div className='mt-2 grid grid-cols-12 gap-1'>
+                <div className='col-span-12 lg:col-span-12'>
+                  <div className='mt-2 grid grid-cols-12 gap-1' >
+                  <div className='col-span-4 lg:col-span-3 mt-5'>
+                      <Label htmlFor='estimatedRate'>
+                        Coating Discount
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Select
+                        id='coating_discount'
+                        name='coating_discount'
+                        placeholder={"Select Discount"}
+                        onChange={(e) => {
+                          SetCustomerDiscount(parseInt(e.target.value))
+                        }}
+                      >
+                        <option value={currentCustomerData?.premium_discount}>
+                          Premium Discount
+                        </option>
+                        <option value={currentCustomerData?.anodize_discount}>
+                          Anodize Discount
+                        </option>
+                        <option value={currentCustomerData?.commercial_discount}>
+                          Commercial Discount
+                        </option>
+                      </Select>
+                    </div>
+
+                    <div className='col-span-4 lg:col-span-3 mt-5'>
+                      <Label htmlFor='estimatedWeight'>
+                        Estimated Weight
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="estimatedWeight"
+                        value={estimateWeight}
+                        min={0}
+                        onChange={(e) => {
+                          setEstimateWeight(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    <div className='col-span-4 lg:col-span-3 mt-5'>
+                      <Label htmlFor='estimatedRate'>
+                        Estimated Rate
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="estimatedRate"
+                        value={estimateRate}
+                        min={0}
+                        onChange={(e) => {
+                          setEstimateRate(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='mt-5'>
+              <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
+                  Save Entries
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+      
     </PageWrapper>
   );
 };

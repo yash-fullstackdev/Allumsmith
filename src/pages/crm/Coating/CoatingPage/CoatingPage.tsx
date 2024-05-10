@@ -290,6 +290,7 @@ import Card, { CardBody } from '../../../../components/ui/Card';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/Input';
 import SelectReact from '../../../../components/form/SelectReact';
+import Select from '../../../../components/form/Select';
 import { get, post } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { toast } from 'react-toastify';
@@ -301,11 +302,19 @@ const CoatingPage = () => {
 
     const [colorData, setColorData] = useState([]);
     const [coatingState, setCoatingState] = useState<boolean>(false);
+    const [coatingType, setCoatingType] = useState<any>({value: "", label:""});
 
     useEffect(() => {
         getAllColors();
     }, []);
 
+    const coatingTypes = [
+        { value: 'anodize', label: 'Anodize' },
+        { value: 'wooden', label: 'Wooden' },
+        { value: 'premium', label: 'Premium' },
+        { value: 'commercial', label: 'Commercial' }
+    ];
+    
     const getAllColors = async () => {
         try {
             const response = await get('/colors');
@@ -330,13 +339,14 @@ const CoatingPage = () => {
             code: '',
             rate: '',
             colors: [],
+            type: ''
         },
         validationSchema:CoatingSchema,
         onSubmit: async (values) => {
             try {
                
-                const type = coatingState ? 'anodize' : 'coating';
-                await addEntryToDatabase(values, type);
+                // const type = coatingState ? 'anodize' : 'coating';
+                await addEntryToDatabase(values);
             } catch (error) {
                 console.error("Error Saving Data:", error);
                 toast.error('Failed to save data. Please try again.');
@@ -344,7 +354,7 @@ const CoatingPage = () => {
         },
     });
 
-    const addEntryToDatabase = async (values:any, type:any) => {
+    const addEntryToDatabase = async (values:any) => {
         try {
             await formik.validateForm();
 			console.log(formik.errors);
@@ -373,8 +383,7 @@ const CoatingPage = () => {
 				return;
 			}
             const finalData = {
-                ...values,
-                type,
+                ...values
             };
             console.log('FinalData', finalData);
             const response = await post('/coatings', finalData);
@@ -389,7 +398,7 @@ const CoatingPage = () => {
     console.log(formik.touched.name && formik.errors.name)
     return (
         <PageWrapper name='ADD Colors' isProtectedRoute={true}>
-            <Subheader>
+            {/* <Subheader>
                 <SubheaderLeft>
                     <Button
                         icon='HeroArrowLeft'
@@ -403,7 +412,7 @@ const CoatingPage = () => {
                     </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-            </Subheader>
+            </Subheader> */}
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
                     <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
@@ -489,7 +498,26 @@ const CoatingPage = () => {
                                                         <div className='text-red-500'>{formik.errors.colors}</div>
                                                     ):null}
                                                 </div>
+                                                <div className='col-span-12 lg:col-span-3'>
+                                                    <Label htmlFor='Colors'>
+                                                        Coating Type
+                                                    </Label>
+                                                    <Select
+                                                        id='type'
+                                                        name='type'
+                                                        value={formik.values.type}
+                                                        placeholder='Select Type'
+                                                        onChange={formik.handleChange}
+                                                    >
+                                                        {coatingTypes.map((coating:any, index) => (
+                                                            <option key={index} value={coating.value}>
+                                                                {coating.label}
+                                                            </option>
+                                                        ))}
+                                                    </Select>
+                                                </div>
                                             </div>
+                                            
                                             <div className='flex mt-2 gap-2'>
                                                 <Button variant='solid' color='blue' type='submit'>
                                                     Save Entries
