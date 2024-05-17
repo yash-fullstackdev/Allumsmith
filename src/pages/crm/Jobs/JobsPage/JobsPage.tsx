@@ -510,7 +510,7 @@ const JobsPage = () => {
                             className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
 
                         >
-                            Edit Status
+                            Review Job Process
                         </ModalHeader>
                         <ModalBody>
                             <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal={setQuantityStatusModal} />
