@@ -38,7 +38,7 @@ const DefaultAsideTemplate = () => {
 				</Nav>
 			</AsideBody>
 			<AsideFooter>
-				<UserTemplate />
+				{/* <UserTemplate /> */}
 				<DarkModeSwitcherPart />
 			</AsideFooter>
 		</Aside>
