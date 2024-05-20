@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, memo } from 'react';
 // import Moment from 'moment';
 import {
     createColumnHelper,
@@ -28,9 +28,10 @@ import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
 import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
-import { Info } from 'property-information/lib/util/info';
+
 import { PathRoutes } from '../../../../utils/routes/enum';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const columnHelper = createColumnHelper<any>();
@@ -51,8 +52,10 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         collapsibleEntryList: false,
 
     });
-
+    const[currentState, setCurrentState] = useState<any>('');
     const navigate = useNavigate()
+
+
 
     const getPurchaseOrderByid = async () => {
 
@@ -74,13 +77,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             },
         }));
     }
-
-
-    useEffect(() => {
-
-    }, []);
-
-    const columns = [
+        const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
                 <div className=''>{`${info.getValue()}`}</div>
@@ -121,18 +118,29 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
         columnHelper.accessor('receivedQuantity', {
             cell: (info) => (
+
                 <div className=''>
                     <Input
                         type='number'
                         value={editedData[info.row.id]?.receivedQuantity}
-                        onChange={(e) => { e.preventDefault(); handleReceivedQuantityChange(info.row.id, e.target.value) }}
+                        onChange={(e) => { handleReceivedQuantityChange(info.row.id, e.target.value) }}
                         disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
                         id={`receivedQuantity-${info.row.id}`}
                         name={`receivedQuantity-${info.row.id}`}
                         placeholder='Received Quantity'
+                        onClick={() => setCurrentState(info.row.id)}
+                        autoFocus = {info.row.id === currentState}
+                        
                     />
+
                 </div>
+
             ),
+           
+
+
+
+
             header: 'Received Quantity',
         }),
 
@@ -300,7 +308,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             const final = { products }
             const finalUpdatedvalues = JSON.parse(JSON.stringify(final))
             console.log("finalUpdatedvalues", finalUpdatedvalues);
-            
+
             const savePurchaseEntry = await post(`/purchase-order/registerPurchaseEntry/${poId}`, finalUpdatedvalues);
             // console.log("savePurchaseEntry", savePurchaseEntry);
             toast.success('Product added to inventory');
@@ -374,17 +382,17 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
 
                             <>
                                 <CardBody className='overflow-auto'>
-                                {table.getFilteredRowModel().rows.length > 0 ? (
-                                <TableTemplate
-                                    className='table-fixed max-md:min-w-[70rem]'
-                                    table={table}
-                                />
-                                ) : (
-                                    <p className="text-center text-gray-500">No records found</p>
-                                )}
+                                    {table.getFilteredRowModel().rows.length > 0 ? (
+                                        <TableTemplate
+                                            className='table-fixed max-md:min-w-[70rem]'
+                                            table={table}
+                                        />
+                                    ) : (
+                                        <p className="text-center text-gray-500">No records found</p>
+                                    )}
                                 </CardBody>
 
-                                { table.getFilteredRowModel().rows.length > 0 &&
+                                {table.getFilteredRowModel().rows.length > 0 &&
                                     <TableCardFooterTemplate table={table} />
                                 }
                                 <div style={{ display: "flex", justifyContent: "end", marginRight: "15px", marginTop: "20px" }}>
