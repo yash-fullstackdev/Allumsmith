@@ -235,150 +235,7 @@ const customerSchema = Yup.object().shape({
 	),
 });
 
-const vendorSchema = Yup.object().shape({
-	vendorStatus: Yup.string().required('Status is Required'),
-	Name: Yup.string().required('Name is Required'),
-	dbaName: Yup.string().nullable(),
-	address: Yup.string().required('Address is Required'),
-	city: Yup.string().required('City is Required'),
-	state: Yup.string().required('State is Required'),
-	// zipcode: Yup.string().min(5, '!').max(9, '!').required('Zip Code is Required'),
-	zipcode: Yup.string()
-		.matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code')
-		.required('Zip code is Required'),
-	country: Yup.string().required('Country is Required'),
 
-	phoneNumber: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.required('Phone Number is Required'),
-	phoneNumber2: Yup.string()
-		.nullable()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number'),
-	fax: Yup.string()
-		.nullable()
-		.min(14, 'Enter valid Fax number')
-		.max(15, 'Enter valid Fax number'),
-
-	URL: Yup.string()
-		.nullable()
-		.matches(/^(ftp|http|https):\/\/[^ "]+$/, 'Invalid URL. Please enter a valid URL.')
-		.min(10, 'URL must be at least 10 characters')
-		.max(50, 'URL must not exceed 15 characters'),
-	email: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			const isValid = Yup.array()
-				.of(
-					Yup.string()
-						.email('Inavlid Email format')
-						.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-				)
-				.isValidSync(emails);
-
-			return isValid;
-		}),
-	pophoneNumber: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.nullable(),
-	masterContact: Yup.string().nullable(),
-	masterContactEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			const isValid = Yup.array()
-				.of(
-					Yup.string()
-						.email('Inavlid Email format')
-						.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-				)
-				.isValidSync(emails);
-
-			return isValid;
-		}),
-
-	POEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			const isValid = Yup.array()
-				.of(
-					Yup.string()
-						.email('Inavlid Email format')
-						.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-				)
-				.isValidSync(emails);
-
-			return isValid;
-		}),
-	ARContacts: Yup.array().of(
-		Yup.object().shape({
-			ARemail: Yup.string()
-				.nullable()
-				.test('validate-emails', 'Inavlid Email format', (value) => {
-					const emails = value?.split(',').map((email) => email.trim());
-					const isValid = Yup.array()
-						.of(
-							Yup.string()
-								.email('Inavlid Email format')
-								.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-						)
-						.isValidSync(emails);
-
-					return isValid;
-				}),
-
-			ARphoneNumber: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Phone number')
-				.max(15, 'Enter valid Phone number'),
-			paymentEmail: Yup.string()
-				.nullable()
-				.test('validate-emails', 'Inavlid Email format', (value) => {
-					const emails = value?.split(',').map((email) => email.trim());
-					const isValid = Yup.array()
-						.of(
-							Yup.string()
-								.email('Inavlid Email format')
-								.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-						)
-						.isValidSync(emails);
-
-					return isValid;
-				}),
-		}),
-	),
-	salesRep: Yup.array().of(
-		Yup.object().shape({
-			salesRepEmail: Yup.string()
-				.nullable()
-				.test('validate-emails', 'Inavlid Email format', (value) => {
-					const emails = value?.split(',').map((email) => email.trim());
-					const isValid = Yup.array()
-						.of(
-							Yup.string()
-								.email('Inavlid Email format')
-								.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-						)
-						.isValidSync(emails);
-
-					return isValid;
-				}),
-
-			salesRepPhone: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Phone number')
-				.max(15, 'Enter valid Phone number'),
-		}),
-	),
-	terms: Yup.string().nullable(),
-	pricingTerms: Yup.string().nullable(),
-	// creditLimit: Yup.string(),
-	custPORequired: Yup.string(),
-});
 
 const rawMaterialDataSchema = Yup.object().shape({
 	componentID: Yup.string().required('Component ID is Required'),
@@ -449,15 +306,95 @@ const conversionComponentSchema = Yup.object().shape({
 	originalComponentQuantity: Yup.string().required('Original Quantity is Required'),
 	convertedQuantity: Yup.string().required('Converted Quantity is Required'),
 });
+const productsSchema = Yup.object().shape({
+    entries: Yup.array().of(
+        Yup.object().shape({
+            name: Yup.string().required('Name is required'),
+            hsn: Yup.string().required('HSN is required'),
+            rate: Yup.string().required('Rate is required'),
+            productCode: Yup.string().required('Product Code is required'),
+            thickness: Yup.string().required('Thickness is required'),
+            length: Yup.string().required('Length is required'),
+			weight: Yup.string().required('Weight is required'),
+			premium_rate: Yup.number().positive(),
+			wooden_rate: Yup.number().positive(),
+			commercial_rate: Yup.number().positive(),
+			anodize_rate: Yup.number().positive(),
+        })
+    ),
+});
+
+const editProductSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    hsn: Yup.string().required('HSN is required'),
+    rate: Yup.number().required('Rate is required'),
+    productCode: Yup.string().required('Product Code is required'),
+    thickness: Yup.number().required('Thickness is required'),
+    length: Yup.number().required('Length is required'),
+    weight: Yup.number().required('Weight is required'),
+});
+
+const wrokersSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().required('email is required'),
+    phone: Yup.number().required('Phone is required'),
+    company: Yup.string().required('Company Name is required'),
+    address_line1: Yup.string().required('Address is required'),
+    address_line2: Yup.string().required('Address is required'),
+    city: Yup.string().required('City is required'),
+	state: Yup.string().required('State is required'),
+	zipcode: Yup.number().required('Zipcode is required'),
+	pancard: Yup.string().required('PanCard is required'),
+});
+
+const vendorSchema =Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+	email: Yup.string().email('Invalid email address').required('Email is required'),
+	
+});
+
+const branchSchema = Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+	address_line1: Yup.string().required('Address Line 1 is required'),
+	city: Yup.string().required('City is required'),
+	state: Yup.string().required('State is required'),
+	zipcode: Yup.string().required('Zipcode is required'),
+	phone: Yup.string().required('Phone is required'),
+	contact_name: Yup.string().required('Contact Name is required'),
+	contact_phone: Yup.string().required('Contact Phone is required'),
+	
+});
+
+const purchaseOrderSchema = Yup.object().shape({
+	vendorName: Yup.string().required('Vendor is required'),
+	entries: Yup.array().of(
+	  Yup.object().shape({
+		product: Yup.string().required('Product is required'),
+		requiredQuantity: Yup.number().required('Quantity is required'),
+	  })
+	),
+  });
+
+  const CoatingSchema = Yup.object().shape({
+    name: Yup.string()
+        .required('Name is required'),
+    code: Yup.string()
+        .required('Code is required'),
+    rate: Yup.number()
+        .required('Rate is required')
+        .positive('Rate must be positive')
+        .integer('Rate must be an integer'),
+    colors: Yup.array()
+		  .min(1, 'At least one color must be selected'),
+	type: Yup.string().required('Type of the coating is required')
+});
 
 export {
-	createUserSchema,
-	updateUserSchema,
-	customerSchema,
+	productsSchema,
+	editProductSchema,
+	wrokersSchema,
 	vendorSchema,
-	shippingDetailsSchema,
-	rawMaterialDataSchema,
-	vendorModalDataSchema,
-	inHouseComponentDataSchema,
-	conversionComponentSchema,
+	branchSchema,
+	purchaseOrderSchema,
+	CoatingSchema
 };

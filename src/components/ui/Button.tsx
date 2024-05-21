@@ -26,7 +26,7 @@ export interface IButtonProps extends HTMLAttributes<HTMLButtonElement> {
 	rounded?: TRounded;
 	size?: TButtonSize;
 	variant?: TButtonVariants;
-	type?: string;
+	type?: any;
 }
 const Button = forwardRef<HTMLButtonElement, IButtonProps>((props, ref) => {
 	const {
@@ -200,7 +200,7 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>((props, ref) => {
 	);
 
 	return (
-		<button ref={ref} data-component-name='Button' type='button' className={classes} {...rest}>
+		<button ref={ref} data-component-name='Button' type={type} className={classes} {...rest}>
 			{(!!icon || isLoading) && (
 				<Icon
 					icon={isLoading ? 'DuoLoading' : (icon as TIcons)}
@@ -226,6 +226,7 @@ Button.defaultProps = {
 	rounded: themeConfig.rounded,
 	size: 'default',
 	variant: 'default',
+	type: "button"
 };
 Button.displayName = 'Button';
 

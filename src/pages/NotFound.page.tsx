@@ -25,7 +25,7 @@ const NotFoundPage = () => {
 				<div className='grid grid-cols-12 gap-4'>
 					<div className='col-span-12 mb-16 flex flex-wrap justify-center gap-4'>
 						<div className='flex basis-full justify-center'>
-							<span className='text-5xl font-semibold'>{userName}</span>
+							<span className='text-5xl font-semibold'>Welcome</span>
 						</div>
 						<div className='flex basis-full justify-center'>
 							{/* <span className='text-zinc-500'>Welcome user</span> */}

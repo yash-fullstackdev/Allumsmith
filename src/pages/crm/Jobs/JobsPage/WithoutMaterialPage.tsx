@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
+import { PathRoutes } from '../../../../utils/routes/enum';
 
 const WithoutMaterialPage = () => {
     const [name, setName] = useState('');
@@ -117,19 +118,21 @@ const WithoutMaterialPage = () => {
                 quantity: Number(product.quantity),
                 coating: product?.coating?._id,
                 color: product?.color?._id,
+                mm:product?.mm || null
             }))
         }));
         const finalValues: any = {
             name,
             branch: branchId.id,
             batch: [...regularBatches],
-            withoutMaterial: "true"
+            // withoutMaterial: "true"
         };
         console.log("🚀 ~ handleSaveData ~ finalValues:", finalValues)
         try {
-            const { data } = await post('http://localhost:3000/jobwm', finalValues);
+            const { data } = await post('jobwm', finalValues);
             console.log("🚀 ~ handleSaveEntries ~ data:", data)
             toast.success('Without Material created successfully!');
+            navigate(PathRoutes.jobs)
         } catch (error: any) {
             toast.error('Error Creating Without Material', error);
         }
@@ -307,7 +310,7 @@ const WithoutMaterialPage = () => {
                                                                         return {
                                                                             ...orderItem,
                                                                             name: { id: selectedOrderId, name: selectedOrderName },
-                                                                            products: customerOrderData?.find((co: any) => co.customer.name === selectedOrderName)?.wmproducts || [],
+                                                                            products: customerOrderData?.find((co: any) => co._id === selectedOrderId)?.wmproducts || [],
                                                                         };
                                                                     }
                                                                     return orderItem;
@@ -327,8 +330,8 @@ const WithoutMaterialPage = () => {
                                                     </div>
 
                                                     {order.products.map((product: any, productIndex: any) => (
-                                                        <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
-                                                            <div className='row-span-2'>
+                                                        <div key={productIndex} className='col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
+                                                            <div className='col-span-12 lg:col-span-2'>
                                                                 <Label htmlFor={`product${productIndex}`}>
                                                                     Product {productIndex + 1}
                                                                 </Label>
@@ -340,7 +343,7 @@ const WithoutMaterialPage = () => {
                                                                     disabled
                                                                 />
                                                             </div>
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-2'>
                                                                 <Label htmlFor={`quantity${productIndex}`}>
                                                                     Quantity
                                                                 </Label>
@@ -360,7 +363,7 @@ const WithoutMaterialPage = () => {
                                                                 />
                                                             </div>
 
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-2'>
 
                                                                 <Label htmlFor={`coating${productIndex}`}>
                                                                     Coating
@@ -373,7 +376,7 @@ const WithoutMaterialPage = () => {
                                                                     disabled
                                                                 />
                                                             </div>
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-2'>
                                                                 <Label htmlFor={`color${productIndex}`}>
                                                                     Color
                                                                 </Label>
@@ -385,8 +388,19 @@ const WithoutMaterialPage = () => {
                                                                     disabled
                                                                 />
                                                             </div>
-
-                                                            <div className='row-span-2'>
+                                                            <div className='col-span-12 lg:col-span-2'>
+                                                                <Label htmlFor={`mm${productIndex}`}>
+                                                                    MM
+                                                                </Label>
+                                                                <Input
+                                                                    type='text'
+                                                                    id={`mm${productIndex}`}
+                                                                    name={`mm${productIndex}`}
+                                                                    value={product?.mm}
+                                                                    disabled
+                                                                />
+                                                            </div>        
+                                                            <div className='col-span-12 lg:col-span-1 mt-[20px]'>
                                                                 <Button
                                                                     variant='outlined'
                                                                     color='red'

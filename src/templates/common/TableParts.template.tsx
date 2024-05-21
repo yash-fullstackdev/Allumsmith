@@ -114,7 +114,8 @@ export const TableFooterTemplate: FC<ITableFooterTemplateProps> = ({ table }) =>
 								'text-left': header.id !== 'Actions',
 								'text-center': header.id === 'Actions',
 							})}>
-							{header.isPlaceholder ? null : (
+								{''}
+							{/* {header.isPlaceholder ? null : (
 								<div
 									key={header.id}
 									aria-hidden='true'
@@ -143,7 +144,7 @@ export const TableFooterTemplate: FC<ITableFooterTemplateProps> = ({ table }) =>
 										),
 									}[header.column.getIsSorted() as string] ?? null}
 								</div>
-							)}
+							)} */}
 						</Th>
 					))}
 				</Tr>

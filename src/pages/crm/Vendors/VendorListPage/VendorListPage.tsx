@@ -32,7 +32,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditVendorModal from '../VendorPage/EditVendorModal';
 import { toast } from 'react-toastify';
 
@@ -47,12 +47,15 @@ const VendorListPage = () => {
     const [vendorsList, setVendorsList] = useState<any[]>([]);
     const [vendorId, setVendorId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
-
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
     const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data: vendorList } = await get(`/vendors`);
+            console.log('VendorList', vendorList)
+            vendorList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setVendorsList(vendorList);
             setIsLoading(false);
         } catch (error: any) {
@@ -67,8 +70,13 @@ const VendorListPage = () => {
         fetchData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
-        try {
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleProductDelete = async (id: any) => {
+		try {
             const { data: vendor } = await deleted(`/vendors/${id}`);
             console.log("vendor", vendor);
             toast.success(`Vendor deleted successfully!`);
@@ -79,8 +87,11 @@ const VendorListPage = () => {
         } finally {
             setIsLoading(false);
             fetchData();
+            setDeleteModal(false);
         }
-    }
+	};
+
+    
 
     const columns = [
 
@@ -255,7 +266,26 @@ const VendorListPage = () => {
                     <EditVendorModal vendorId={vendorId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
-
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleProductDelete(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>       
         </PageWrapper>
     )
 

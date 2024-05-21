@@ -54,13 +54,12 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
             const powder = await post('/utility_inventory/stockaction', formData);
             toast.success('Powder added Successfully!')
             setPowderQuantityModal(false);
+            getPowderList();
         } catch (error: any) {
             console.error("Error Saving Powder", error)
             toast.error('Error Saving Powder', error)
         }
-        finally {
-            getPowderList();
-        }
+        
     }
 
     return (

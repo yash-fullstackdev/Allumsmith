@@ -1,11 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '@fullcalendar/core/internal';
 
-// console.log("process.env.VITE_APP_API_ENDPOINT",process.env.VITE_APP_API_ENDPOINT)
 let axiosInstance: AxiosInstance;
 axiosInstance = axios.create({
-	// baseURL: process.env.VITE_APP_API_ENDPOINT ,
-	baseURL: import.meta.env.VITE_APP_API_ENDPOINT,
+	// baseURL:'http://localhost:3000',
+	// baseURL:'http://107.23.131.22:3000',
+	// baseURL:'https://allumsmithbe.onrender.com',
+	baseURL: 'https://api.erp.bitontree.co/',
+	// baseURL: process.env.NODE_ENV === 'development' ? 'http://54.221.115.45:3000' : '/api/',
+	// baseURL: import.meta.env.VITE_APP_API_ENDPOINT,
 	headers: {
 		// Verify CORS issue
 		'Access-Control-Allow-Origin': 'origin',

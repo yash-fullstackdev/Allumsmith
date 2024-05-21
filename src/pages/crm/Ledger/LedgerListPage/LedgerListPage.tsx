@@ -28,7 +28,7 @@ import {
 import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditBranchModal from '../../Branches/BranchesPage/EditBranchModal';
 import TransactionListPage from './TransactionListPage';
 
@@ -38,11 +38,13 @@ const LedgerListPage = () => {
     const [data, setData] = useState<any>([]);
     const [transactionListModal, setTransactionModal] = useState<boolean>(false);
     const [customerId, setCustomerId] = useState<any>('')
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data } = await get(`/ledger`);
-
+            data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setData(data);
             setIsLoading(false);
         } catch (error: any) {
@@ -59,8 +61,13 @@ const LedgerListPage = () => {
     }, [])
 
     console.log('Data', data);
-    const handleClickDelete = async (id: any) => {
-        console.log("id", id)
+
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteLedger= async (id: any) => {
         try {
             const { data: products } = await deleted(`/ledger/${id}`);
             toast.success('Product deleted Successfully !');
@@ -72,7 +79,8 @@ const LedgerListPage = () => {
             setIsLoading(false);
             fetchData();
         }
-    }
+	};
+  
 
 
 
@@ -219,12 +227,32 @@ const LedgerListPage = () => {
                     className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
                 // onClick={() => formik.resetForm()}
                 >
-                    Edit Branch
+                    Transactions
                 </ModalHeader>
                 <ModalBody>
                     <TransactionListPage customerId={customerId} />
                 </ModalBody>
             </Modal>
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteLedger(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
         </PageWrapper>
     )
 }

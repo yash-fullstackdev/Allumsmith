@@ -63,12 +63,14 @@ const JobsListPage = () => {
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
+    
 
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data: jobList } = await get(`/jobs`);
+            jobList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(jobList);
             setIsLoading(false);
         } catch (error: any) {
@@ -97,6 +99,7 @@ const JobsListPage = () => {
 
     const generateReceipt  = async(id:any) =>{
         try{
+        setIsLoading(true)    
         const response = await post(`/jobs/generateJobReceipt/${id}`,{});
         if (response && response.status === 201 && response.data && response.data.data) {
             const pdfData = response.data.data;
@@ -108,9 +111,11 @@ const JobsListPage = () => {
         } else {
             console.error('Error: PDF data not found in response');
         }
+        setIsLoading(false)
         }catch(error){
             toast.error('Error Generating Receipt')
         }
+
     }
     useEffect(() => {
         fetchData();
@@ -200,9 +205,6 @@ const JobsListPage = () => {
                      icon='DuoFile'  
                      onClick={() => {generateReceipt(info.row.original._id)}} 
                     />
-                        
-
-                    
                     {/* <Button
                         onClick={() => {
                             // setIsEditModal(true)
@@ -244,14 +246,11 @@ const JobsListPage = () => {
                             />
                         </svg>
                     </Button>
-
                 </div>
             ),
             header: 'Actions',
             size: 140,
         }),
-
-
     ];
 
 
@@ -281,16 +280,13 @@ const JobsListPage = () => {
                 </div>
             ),
             header: 'Name',
-
         }),
 
         columnHelper.accessor('status', {
             cell: (info) => (
-
                 <div className=''>
                     {`${info.getValue()}`}
                 </div>
-
             ),
             header: 'status',
         }),
@@ -368,8 +364,6 @@ const JobsListPage = () => {
             header: 'Actions',
             size: 80,
         }),
-
-
     ];
 
 
@@ -406,7 +400,6 @@ const JobsListPage = () => {
                 </SubheaderRight>
             </Subheader>
             <Container>
-
                 <Card className='h-full'>
                     <div className='flex'>
                         <div className='bold w-full'>
@@ -430,9 +423,20 @@ const JobsListPage = () => {
                                             {table.getFilteredRowModel().rows.length} items
                                         </Badge>
                                     </CardHeaderChild>
-                                    <CardHeaderChild>
+                                    {/* <CardHeaderChild>
 
-                                        <FieldWrap
+                                        <h1>dnhjnv</h1>
+                                    </CardHeaderChild> */}
+
+                                </CardHeader>
+                            </Button>
+                        </div>
+                    </div>
+                    <Collapse isOpen={!collapsible[table.getFilteredRowModel().rows.length]}>
+                        <div>
+                            <CardHeader>
+                                <CardHeaderChild>
+                                <FieldWrap
                                             firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
                                             lastSuffix={
                                                 globalFilter && (
@@ -445,7 +449,7 @@ const JobsListPage = () => {
                                                 )
                                             }>
                                             <Input
-                                                className='pl-8'
+                                                className='pl-8 w-[285px]'
                                                 id='searchBar'
                                                 name='searchBar'
                                                 placeholder='Search...'
@@ -453,15 +457,8 @@ const JobsListPage = () => {
                                                 onChange={(e) => setGlobalFilter(e.target.value)}
                                             />
                                         </FieldWrap>
-                                    </CardHeaderChild>
-
-                                </CardHeader>
-                            </Button>
-                        </div>
-                    </div>
-                    <Collapse isOpen={!collapsible[table.getFilteredRowModel().rows.length]}>
-                        <div>
-
+                                </CardHeaderChild>
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
                                 {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                                     <TableTemplate
@@ -474,14 +471,14 @@ const JobsListPage = () => {
                                 <div className='flex justify-center'>
                                     {isLoading && <LoaderDotsCommon />}
                                 </div>
+
                             </CardBody>
-                            {table.getFilteredRowModel().rows.length > 0 &&
+                            {!isLoading && table.getFilteredRowModel().rows.length > 0 &&
                                 <TableCardFooterTemplate table={table} />
                             }
                         </div>
                     </Collapse>
                 </Card>
-
             </Container>
 
             {/* start of wihtout material */}
@@ -510,8 +507,15 @@ const JobsListPage = () => {
                                             {withoutdata.getFilteredRowModel().rows.length} items
                                         </Badge>
                                     </CardHeaderChild>
-                                    <CardHeaderChild>
-
+                                    
+                                </CardHeader>
+                            </Button>
+                        </div>
+                    </div>
+                    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
+                        <div>
+                            <CardHeader>
+                            <CardHeaderChild>
                                         <FieldWrap
                                             firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
                                             lastSuffix={
@@ -525,7 +529,7 @@ const JobsListPage = () => {
                                                 )
                                             }>
                                             <Input
-                                                className='pl-8'
+                                                className='pl-8 w-[285px]'
                                                 id='searchBar'
                                                 name='searchBar'
                                                 placeholder='Search...'
@@ -534,14 +538,7 @@ const JobsListPage = () => {
                                             />
                                         </FieldWrap>
                                     </CardHeaderChild>
-
-                                </CardHeader>
-                            </Button>
-                        </div>
-                    </div>
-                    <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
-                        <div>
-
+                            </CardHeader>
                             <CardBody className='overflow-auto'>
                                 {!isLoading && withoutdata.getFilteredRowModel().rows.length > 0 ? (
                                     <TableTemplate
@@ -605,7 +602,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData} />
+                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData}  />
                 </ModalBody>
             </Modal>
             <Modal isOpen={withoutstatusModal} setIsOpen={setWithOutStatusModal} isScrollable fullScreen="lg">
@@ -616,7 +613,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId={jobId} setStatusModal={setWithOutStatusModal} fetchData={fetchData} fetchDatajobwm = {fetchDatajobwm}/>
+                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId = {jobId} setStatusModal={setWithOutStatusModal} fetchDatajobwm={fetchDatajobwm}/>
                     {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>

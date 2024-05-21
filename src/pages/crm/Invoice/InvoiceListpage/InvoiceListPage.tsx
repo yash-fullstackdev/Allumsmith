@@ -28,8 +28,13 @@ import {
 import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import InvoiceCustomerDetail from './InvoiceCustomerDetail';
+import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
+import FieldWrap from '../../../../components/form/FieldWrap';
+import Icon from '../../../../components/icon/Icon';
+import Input from '../../../../components/form/Input';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const InvoiceListPage = () => {
@@ -38,11 +43,14 @@ const InvoiceListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false);
     const [productInfo, setProductInfo] = useState<any>()
     const [customerId, setCustomerId] = useState()
-
+    const [globalFilter, setGlobalFilter] = useState<string>('');
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
     console.log('JobList', jobsList)
     const getInvoiceList = async () => {
         try {
             const { data } = await get('/invoice')
+            data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(data);
         } catch (error) {
 
@@ -54,6 +62,7 @@ const InvoiceListPage = () => {
     }, [])
     const handleGeneratePDF = async (id: any) => {
         try {
+            setIsLoading(true)
             console.log(`PDF GENERATED Sucessfully for ${id}`)
             const response = await post(`/invoice/generatePDF/${id}`, {});
             console.log(response.data.data);
@@ -67,12 +76,19 @@ const InvoiceListPage = () => {
             } else {
                 console.error('Error: PDF data not found in response');
             }
+            setIsLoading(false);
         } catch (error) {
             console.error('Error Generating PDF', error)
         }
 
     }
-    const handleClickDelete = async (id:any) => {
+
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteInvoice= async (id: any) => {
         try {
             const {data} = await deleted(`/invoice/${id}`)
             toast.success('Invoice deleted Successfully');
@@ -84,7 +100,8 @@ const InvoiceListPage = () => {
             setIsLoading(false);
             getInvoiceList();
         }
-    }
+	};
+ 
     const columns = [
 
         columnHelper.accessor('customerName.name', {
@@ -96,6 +113,16 @@ const InvoiceListPage = () => {
 
             ),
             header: 'Name',
+        }),
+        columnHelper.accessor('invoiceNumber', {
+            cell: (info) => (
+
+                <div className=''>
+                    {`${info.getValue() || 'NA'} `}
+                </div>
+
+            ),
+            header: 'Invoice Number',
         }),
         columnHelper.accessor('customerEmail', {
             cell: (info) => (
@@ -117,25 +144,7 @@ const InvoiceListPage = () => {
             ),
             header: 'Phone',
         }),
-        // columnHelper.accessor((row) => row.customerPhone, {
-        //     cell: (info) => (
-        //         <div className=''>
-        //             {`${info.getValue() || "NA"} `}
-        //         </div>
-        //     ),
-        //     header: 'Phone',
-
-        // }),
-        // columnHelper.accessor((row) => row.customerEmail, {
-        //     cell: (info) => (
-        //         <div className=''>
-        //             {`${info.getValue() || "NA"} `}
-        //         </div>
-        //     ),
-        //     header: 'Email',
-
-        // }),
-
+       
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
@@ -183,7 +192,7 @@ const InvoiceListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
         }),
 
 
@@ -191,12 +200,13 @@ const InvoiceListPage = () => {
     const table = useReactTable({
         data: jobsList,
         columns,
-        // state: {
-        //     sorting,
-        //     globalFilter,
-        // },
+        state: {
+            
+            globalFilter,
+        },
         // onSortingChange: setSorting,
         enableGlobalFilter: true,
+        onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -204,6 +214,31 @@ const InvoiceListPage = () => {
     });
     return (
         <PageWrapper name='Invoice List'>
+            <Subheader>
+				<SubheaderLeft>
+					<FieldWrap
+						firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+						lastSuffix={
+							globalFilter && (
+								<Icon
+									icon='HeroXMark'
+									color='red'
+									className='mx-2 cursor-pointer'
+									onClick={() => setGlobalFilter('')}
+								/>
+							)
+						}>
+						<Input
+							className='pl-8'
+							id='searchBar'
+							name='searchBar'
+							placeholder='Search...'
+							value={globalFilter ?? ''}
+							onChange={(e) => setGlobalFilter(e.target.value)}
+						/>
+					</FieldWrap>
+				</SubheaderLeft>
+			</Subheader>
             <Container>
                 <Card>
                     <CardHeader>
@@ -219,7 +254,10 @@ const InvoiceListPage = () => {
                         </CardHeaderChild>
 
                     </CardHeader>
-                    <CardBody>
+                    {isLoading ? <div className='flex justify-center'>
+                                    {isLoading && <LoaderDotsCommon />}
+                                </div>: (
+                         <CardBody>
                         {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
                             <TableTemplate
                                 className='table-fixed max-md:min-w-[70rem]'
@@ -228,11 +266,11 @@ const InvoiceListPage = () => {
                         ) : (
                             !isLoading && <p className="text-center text-gray-500">No records found</p>
                         )}
-                        {/* <div className='flex justify-center'>
-                            {isLoading && <LoaderDotsCommon />}
-                        </div> */}
+                        
                     </CardBody>
-                    {table.getFilteredRowModel().rows.length > 0 &&
+                    )}
+                   
+                    {!isLoading && table.getFilteredRowModel().rows.length > 0 &&
                         <TableCardFooterTemplate table={table} />
                     }
                 </Card>
@@ -250,6 +288,26 @@ const InvoiceListPage = () => {
                     <InvoiceCustomerDetail productInfo={productInfo} />
                 </ModalBody>
             </Modal>
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteInvoice(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
         </PageWrapper>
     )
 }

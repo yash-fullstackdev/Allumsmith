@@ -26,7 +26,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import CustomerEntryDetail from './CustomerOrderDetail';
 import { post } from '../../../../utils/api-helper.util';
@@ -41,7 +41,34 @@ const CustomerOrderListPage = () => {
     const [vedorProductModal, setVendorProductModal] = useState<boolean>(false)
     const [customerId, setCustomerId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
-    const [vendorInfo, setVendorInfo] = useState<any>()
+    const [vendorInfo, setVendorInfo] = useState<any>();
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
+
+    const handleClickDelete = (info: any) => {
+		setDeleteModal(true);
+		setDeleteId(info.row.original._id);
+	};
+
+	const handleDeleteCustomerOrder = async (id: any) => {
+		console.log('Id', id);
+        try {
+            const { data: allUsers } = await deleted(`/customer-order/${id}`);
+            console.log("allUsers", allUsers);
+            toast.success('customer Order  deleted Successfully!')
+           
+        } catch (error: any) {
+            console.error('Error fetching users:', error.message);
+            setIsLoading(false);
+            toast.error('Error deleting customer Order', error);
+        } finally {
+            setIsLoading(false);
+            setDeleteModal(false);
+            fetchCoData();
+        }
+	};
+
+
 
     console.log("customerId", customerId)
     console.log("vendorInfo", vendorInfo)
@@ -52,6 +79,7 @@ const CustomerOrderListPage = () => {
         setIsLoading(true);
         try {
             const { data: CustomerOrderList } = await get(`/customer-order`);
+            CustomerOrderList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setCustomerOrderList(CustomerOrderList);
             setIsLoading(false);
         } catch (error: any) {
@@ -64,6 +92,7 @@ const CustomerOrderListPage = () => {
 
     const handleGeneratePDF = async (id: any) => {
         try {
+            setIsLoading(true)
             console.log(`PDF GENERATED Sucessfully for ${id}`)
             const response = await post(`/customer-order/generateReciept/${id}`, {});
             console.log(response.data.data);
@@ -79,6 +108,8 @@ const CustomerOrderListPage = () => {
             }
         } catch (error) {
             console.error('Error Generating PDF', error)
+        } finally {
+            setIsLoading(false)
         }
 
     }
@@ -87,28 +118,15 @@ const CustomerOrderListPage = () => {
         fetchCoData();
     }, [])
 
-    const handleClickDelete = async (id: any) => {
-        console.log('Id', id);
-        try {
-            const { data: allUsers } = await deleted(`/customer-order/${id}`);
-            console.log("allUsers", allUsers);
-            toast.success('customer Order  deleted Successfully!')
-        } catch (error: any) {
-            console.error('Error fetching users:', error.message);
-            setIsLoading(false);
-            toast.error('Error deleting customer Order', error);
-        } finally {
-            setIsLoading(false);
-            fetchCoData();
-        }
-    }
-
+    
     const columns = [
         columnHelper.accessor('customer.name', {
             cell: (info) => (
 
+             
+
                 <div className=''>
-                    {`${info?.row?.original?.customer?.name}`}
+                    {`${info?.row?.original?.customer?.name} (${info?.row?.original?.customerOrderNumber})`}
                 </div>
 
             ),
@@ -157,7 +175,7 @@ const CustomerOrderListPage = () => {
                      
                     <Button
                         onClick={() => {
-                            handleClickDelete(info?.row?.original?._id);
+                            handleClickDelete(info);
                         }}>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -199,6 +217,7 @@ const CustomerOrderListPage = () => {
 
     return (
         <>
+            
             <PageWrapper name='Product List'>
                 <Container>
                     <Card className='h-full'>
@@ -231,9 +250,10 @@ const CustomerOrderListPage = () => {
                             ) : (
                                 !isLoading && <p className="text-center text-gray-500">No records found</p>
                             )}
-                            <div className='flex justify-center'>
-                                {isLoading && <LoaderDotsCommon />}
-                            </div>
+                            
+                        <div className='flex justify-center'>
+                            {isLoading && <LoaderDotsCommon />}
+                        </div>
                         </CardBody>
                         { table.getFilteredRowModel().rows.length > 0 &&
                             <TableCardFooterTemplate table={table} />
@@ -266,6 +286,26 @@ const CustomerOrderListPage = () => {
                         <CustomerEntryDetail customerId={customerId} />
                     </ModalBody>
                 </Modal>
+                <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteCustomerOrder(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
             </PageWrapper>
         </>
     )

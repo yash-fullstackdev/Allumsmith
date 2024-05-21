@@ -16,8 +16,7 @@ import ReviewQuantityStatus from './ReviewQuantityStatus';
 import SelfProducts from './SelfProducts';
 import { Switch } from '@mui/material';
 import WithoutMaterialPage from './WithoutMaterialPage';
-import SelectReact from '../../../../components/form/SelectReact';
-import { values } from 'lodash';
+
 
 const JobsPage = () => {
     const [name, setName] = useState('');
@@ -30,15 +29,12 @@ const JobsPage = () => {
     const [selectedCustomerOrderData, setSelectedCustomerOrderData] = useState<any>(null);
     const [collapsible, setCollapsible] = useState<boolean[]>(customerOrders.map(() => false));
     const [customerOrderData, setCustomerOrderData] = useState<any>([]);
-    console.log("🚀 ~ JobsPage ~ customerOrderData:", customerOrderData.map((i: any) => i.customer.name))
     const [quantityStatusModal, setQuantityStatusModal] = useState<boolean>(false);
     const [productIdsForReview, setProductIdsForReview] = useState<string[]>([]);
     const [processReviewData, setProcessReviewData] = useState<any>({});
     const [productQuantityDetails, setProductQuantityDetails] = useState<any>([]);
     const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '' }]);
     const [withMaterial, setWithMaterial] = useState<boolean>(true);
-    const [customerId, setCustomerId] = useState('');
-    const [customerName, setCustomerName] = useState('');
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
@@ -89,7 +85,8 @@ const JobsPage = () => {
                 pendingQuantity: product.pendingQuantity || product.quantity,
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
-                color: { id: product?.color?._id, name: product?.color?.name }
+                color: { id: product?.color?._id, name: product?.color?.name },
+                mm:product?.mm
             }))
         }));
         const finalValues: any = {
@@ -107,7 +104,8 @@ const JobsPage = () => {
                 product: { id: entry.product.id, name: entry.product.name },
                 quantity: entry.quantity,
                 coating: { id: entry.coating.id, name: entry.coating.name },
-                color: { id: entry.color.id, name: entry.color.name }
+                color: { id: entry.color.id, name: entry.color.name },
+                mm:entry?.mm
             }));
         }
 
@@ -149,7 +147,7 @@ const JobsPage = () => {
     };
 
     console.log('Customer Or', customerOrderData);
-    
+
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
             <Subheader>
@@ -328,7 +326,7 @@ const JobsPage = () => {
                                                                         const selectedOrderId = e.target.value;
                                                                         const selectedOrderName = e.target.options[e.target.selectedIndex].text;
                                                                         const updatedOrders = customerOrders.map((orderItem: any, idx: any) => {
-                                                                            if (idx === index) {   
+                                                                            if (idx === index) {
                                                                                 return {
                                                                                     ...orderItem,
                                                                                     name: { id: selectedOrderId, name: selectedOrderName },
@@ -338,7 +336,7 @@ const JobsPage = () => {
                                                                             return orderItem;
                                                                         });
                                                                         setCustomerOrders(updatedOrders);
-                                                                        setSelectedCustomerOrderData(selectedOrderId); 
+                                                                        setSelectedCustomerOrderData(selectedOrderId);
                                                                     }}
                                                                 >
                                                                     {customerOrderData?.map((co: any) => {
@@ -352,10 +350,10 @@ const JobsPage = () => {
                                                             </div>
 
                                                             {order.products.map((product: any, productIndex: any) => (
-                                                                <div key={productIndex} className='col-span-12 lg:col-span-12 flex items-center gap-2'>
+                                                                <div key={productIndex} className='mt-[10px] col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
 
 
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`product${productIndex}`}>
                                                                             Product {productIndex + 1}
                                                                         </Label>
@@ -367,7 +365,7 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`quantity${productIndex}`}>
                                                                             Pending Quantity
                                                                         </Label>
@@ -379,7 +377,7 @@ const JobsPage = () => {
 
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`pickQuantity${productIndex}`}>
                                                                             Pick Quantity
                                                                         </Label>
@@ -399,7 +397,7 @@ const JobsPage = () => {
                                                                         />
                                                                     </div>
 
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
 
                                                                         <Label htmlFor={`coating${productIndex}`}>
                                                                             Coating
@@ -412,7 +410,7 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
-                                                                    <div className='row-span-2'>
+                                                                    <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`color${productIndex}`}>
                                                                             Color
                                                                         </Label>
@@ -424,8 +422,21 @@ const JobsPage = () => {
                                                                             disabled
                                                                         />
                                                                     </div>
+                                                                    {product?.mm && (<div className='col-span-12 lg:col-span-1'>
+                                                                        <Label htmlFor={`mm${productIndex}`}>
+                                                                            MM
+                                                                        </Label>
+                                                                        <Input
+                                                                            type='text'
+                                                                            id={`mm${productIndex}`}
+                                                                            name={`mm${productIndex}`}
+                                                                            value={product?.mm}
+                                                                            disabled
+                                                                        />
+                                                                    </div>)}
 
-                                                                    <div className='row-span-2'>
+
+                                                                    <div className='col-span-12 lg:col-span-1 mt-[20px]'>
                                                                         <Button
                                                                             variant='outlined'
                                                                             color='red'
@@ -499,16 +510,16 @@ const JobsPage = () => {
                             className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
 
                         >
-                            Edit Status
+                            Review Job Process
                         </ModalHeader>
                         <ModalBody>
-                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} />
+                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal={setQuantityStatusModal} />
                         </ModalBody>
                     </Modal>
                 </Container>) :
                 <Container>
                     {/* <div> */}
-                        <WithoutMaterialPage />
+                    <WithoutMaterialPage />
                     {/* </div> */}
                 </Container>}
         </PageWrapper >

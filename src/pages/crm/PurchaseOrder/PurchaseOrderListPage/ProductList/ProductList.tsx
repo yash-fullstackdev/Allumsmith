@@ -34,6 +34,7 @@ const ProductList = ({ productsArray, vendorId }: any) => {
 
         try {
             const { data: allProductList } = await get(`/purchase-order/purchaseEntry/${vendorId}`);
+            allProductList.sort((a:any,b:any) => b.createdAt - a.createdAt)
             setPurchaseEntry(allProductList);
             purchaseEntryTable.setGlobalFilter(allProductList)
         } catch (error: any) {
@@ -195,13 +196,6 @@ const ProductList = ({ productsArray, vendorId }: any) => {
                     <Card className='h-full'>
                         <CardHeader>
                             <CardHeaderChild>
-                                {/* <CardTitle>Purchased Entry List</CardTitle>
-                                <Badge
-                                    variant='outline'
-                                    className='border-transparent px-4 '
-                                    rounded='rounded-full'>
-                                    {purchaseEntryTable.getFilteredRowModel().rows.length} items
-                                </Badge> */}
                             </CardHeaderChild>
                         </CardHeader>
                         <CardBody className='overflow-auto'>

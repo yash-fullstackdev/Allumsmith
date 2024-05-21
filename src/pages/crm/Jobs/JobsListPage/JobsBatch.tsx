@@ -28,6 +28,7 @@ const JobsBatch = ({ jobId }: any) => {
     // Function to find customer name by ID
     const findCustomerName = (customerId: string) => {
         const customer = customerData.find((c: any) => c._id === customerId);
+        console.log('Customer', customer);
         return customer ? customer.name : 'Unknown';
     };
 
@@ -39,7 +40,7 @@ const JobsBatch = ({ jobId }: any) => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell colSpan={4}><h2>Customer Name: {findCustomerName(batch.coEntry?.customer)}</h2></TableCell>
+                                    <TableCell colSpan={4}><h2>Customer Name: {findCustomerName(batch.coEntry?.customer?._id)}</h2></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell>Product Name</TableCell>

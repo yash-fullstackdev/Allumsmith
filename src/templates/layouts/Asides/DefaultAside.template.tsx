@@ -19,26 +19,26 @@ const DefaultAsideTemplate = () => {
 			<AsideBody>
 				<Nav>
 					<NavTitle>Module</NavTitle>
-					<NavItem {...appPages.productPage.listPage} />
-					<NavItem {...appPages.vendorPage.listPage} />
-					<NavItem {...appPages.branchesPage.listPage} />
-					<NavItem {...appPages.purchaseOrderPage.listPage} />
-					<NavItem {...appPages.colorsPage.listPage} />
-					<NavItem {...appPages.coatingPage.listPage} />
-					<NavItem {...appPages.customerPage.listPage} />
-					<NavItem {...appPages.customerOrderPage.listPage} />
-					<NavItem {...appPages.jobsPage.listPage} />
-					<NavItem {...appPages.invoicePage.listPage} />
-					<NavItem {...appPages.ledgerPage.listPage} />
+					<NavItem {...appPages.productPage.listPage} identifier={appPages.productPage.identifier} />
+					<NavItem {...appPages.vendorPage.listPage} identifier={appPages.vendorPage.identifier} />
+					<NavItem {...appPages.branchesPage.listPage} identifier={appPages.branchesPage.identifier}/>
+					<NavItem {...appPages.purchaseOrderPage.listPage} identifier={appPages.purchaseOrderPage.identifier} />
+					<NavItem {...appPages.colorsPage.listPage} identifier={appPages.colorsPage.identifier}/>
+					<NavItem {...appPages.coatingPage.listPage} identifier={appPages.coatingPage.identifier}/>
+					<NavItem {...appPages.customerPage.listPage} identifier={appPages.customerPage.identifier}/>
+					<NavItem {...appPages.customerOrderPage.listPage} identifier={appPages.customerOrderPage.identifier}/>
+					<NavItem {...appPages.jobsPage.listPage} identifier={appPages.jobsPage.identifier}/>
+					<NavItem {...appPages.invoicePage.listPage} identifier={appPages.invoicePage.identifier}/>
+					<NavItem {...appPages.ledgerPage.listPage} identifier={appPages.ledgerPage.identifier}/>
 					{/* <NavItem {...appPages.purchaseEntry.listPage} /> */}
-					<NavItem {...appPages.inventoryPage.listPage} />
-					<NavItem {...appPages.finishInventory.listPage} />
-					<NavItem {...appPages.powderPage.listPage} />
-					<NavItem {...appPages.workerPage.listPage} />
+					<NavItem {...appPages.inventoryPage.listPage} identifier={appPages.inventoryPage.identifier}/>
+					<NavItem {...appPages.finishInventory.listPage} identifier={appPages.finishInventory.identifier}/>
+					<NavItem {...appPages.powderPage.listPage} identifier={appPages.powderPage.identifier} />
+					<NavItem {...appPages.workerPage.listPage} identifier={appPages.workerPage.identifier}/>
 				</Nav>
 			</AsideBody>
 			<AsideFooter>
-				<UserTemplate />
+				{/* <UserTemplate /> */}
 				<DarkModeSwitcherPart />
 			</AsideFooter>
 		</Aside>

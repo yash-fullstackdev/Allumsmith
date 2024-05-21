@@ -14,7 +14,7 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
 
     console.log('JobList', productInfo)
     const columns = [
-        columnHelper.accessor('product.name', {
+        columnHelper.accessor('name', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
@@ -34,12 +34,12 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
             header: 'Amount',
 
         }),
-        columnHelper.accessor('discount', {
+        columnHelper.accessor('coatingDiscount', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
                 //     </div>
-                <div className=''>{info.getValue()}</div>
+                <div className=''>{info.getValue()|| 0}</div>
             ),
             header: 'Discount',
 
@@ -86,22 +86,6 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
                         {table.getFilteredRowModel().rows.length > 0 &&
                             <TableCardFooterTemplate table={table} />
                         }
-                    </Card>
-
-                    <Card >
-                        <CardBody>
-                            <div className='flex'>
-                                <div className='bold w-full'>
-                                    <Button
-                                        variant='outlined'
-                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'>
-                                        <h2 className='text-gray-700'> Other Detail </h2>
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardBody>
-
-
                     </Card>
                 </Container>
             </PageWrapper >

@@ -26,7 +26,7 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import EditColorModal from '../CoatingPage/EditCoatingModal';
 import EditCoatingModal from '../CoatingPage/EditCoatingModal';
@@ -49,14 +49,17 @@ const CoatingListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false)
     const [colorModal, setColorModal] = useState<boolean>(false)
     const [colors, setColors] = useState<any>([]);
-    const [coatingState, setCoatingState] = useState<boolean>(true);
+    const [coatingState, setCoatingState] = useState<boolean>(false);
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
+    const [deleteId,setDeleteId] = useState<string>('');
 
     const fetchCoatingData = async () => {
         setIsLoading(true);
         try {
             const { data: coatingList } = await get(`/coatings`);
+            coatingList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())   
             setCoatingList(coatingList);
-            filterData(coatingList, coatingState);
+            // filterData(coatingList, coatingState);
             // console.log("🚀 ~ fetchCoatingData ~ data:", coatingList,coatingState)
             setIsLoading(false);
         } catch (error: any) {
@@ -71,28 +74,34 @@ const CoatingListPage = () => {
         setCoatingState(prevState => !prevState);
     };
 
-    const filterData = (data:any[], isCoating:boolean) => {
-        let filtered;
-        if (isCoating) {
-            filtered = data.filter(item => item.type === 'anodize');
-        } else {
-            filtered = data.filter(item => item.type === 'coating');
-        }
-        setCoatingList(filtered);
-    };
+    // const filterData = (data:any[], isCoating:boolean) => {
+    //     let filtered;
+    //     if (isCoating) {
+    //         filtered = data.filter(item => item.type === 'anodize');
+    //     } else {
+    //         filtered = data.filter(item => item.type === 'coating');
+    //     }
+    //     setCoatingList(filtered);
+    // };
     
     
-    useEffect(() => {
-        console.log("coatingState:", coatingState);
-        filterData(coatingList, coatingState);
-    }, [coatingState]);
+    // useEffect(() => {
+    //     console.log("coatingState:", coatingState);
+    //     filterData(coatingList, coatingState);
+    // }, [coatingState]);
     
     
     useEffect(() => {
         fetchCoatingData();
     }, [coatingState])
 
-    const handleClickDelete = async (id: any) => {
+    const handleClickDelete = (id: any) => {
+		setDeleteModal(true);
+		setDeleteId(id);
+	};
+
+	const handleDeleteCoating= async (id: any) => {
+        console.log('Id', id);
         try {
             const { data: coating } = await deleted(`/coatings/${id}`);
             console.log("coating", coating)
@@ -104,8 +113,11 @@ const CoatingListPage = () => {
         } finally {
             setIsLoading(false);
             fetchCoatingData();
+            setDeleteModal(false);
         }
-    }
+	};
+
+  
     const columns = [
 
         columnHelper.accessor('name', {
@@ -225,14 +237,14 @@ const CoatingListPage = () => {
 
     return (
         <PageWrapper name='Inventory List'>
-            <Subheader>
+            {/* <Subheader>
             <SubheaderLeft>
                     <div className='flex items-center justify-center ml-4' >
                         <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={handleToggleCoatingState}  /><h4>Anodize</h4>
                     </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-            </Subheader>
+            </Subheader> */}
             <Container>
                 <Card className='h-full'>
                     <CardHeader>
@@ -295,6 +307,26 @@ const CoatingListPage = () => {
                     <CoatingColors colors={colors} />
                 </ModalBody>
             </Modal>
+            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+				<ModalHeader>Are you sure?</ModalHeader>
+				<ModalFooter>
+					<ModalFooterChild>
+						Do you really want to delete these records? This cannot be undone.
+					</ModalFooterChild>
+					<ModalFooterChild>
+						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+							Cancel
+						</Button>
+						<Button
+							variant='solid'
+							onClick={() => {
+								handleDeleteCoating(deleteId);
+							}}>
+							Delete
+						</Button>
+					</ModalFooterChild>
+				</ModalFooter>
+			</Modal>
         </PageWrapper>
     )
 

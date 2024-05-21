@@ -11,6 +11,7 @@ import Checkbox from "../../../../components/form/Checkbox";
 import { toast } from "react-toastify";
 import { PathRoutes } from "../../../../utils/routes/enum";
 import Subheader, { SubheaderLeft, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
+import Textarea from "../../../../components/form/Textarea";
 
 const EditCustomerPage = () => {
     const [formData, setFormData] = useState<any>({
@@ -24,7 +25,9 @@ const EditCustomerPage = () => {
         city: '',
         state: '',
         zipcode: '',
-        default_discount: ''
+        premium_discount: '',
+        anodize_discount: '',
+        commercial_discount: '',
     });
     const navigate = useNavigate();
 
@@ -39,8 +42,8 @@ const EditCustomerPage = () => {
     const fetchCustomerById = async () => {
         try {
             const customer = await get(`/customers/${id}`);
-            const { name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, default_discount } = customer.data;
-            setFormData({ name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, default_discount });
+            const { name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, premium_discount, anodize_discount, commercial_discount } = customer.data;
+            setFormData({ name, email, phone, gst_number, company, address_line1, address_line2, city, state, zipcode, premium_discount, anodize_discount,commercial_discount });
         } catch (error) {
             console.error("Error fetching Customer data:", error);
         }
@@ -62,7 +65,6 @@ const EditCustomerPage = () => {
         }
         finally {
             navigate(PathRoutes.customer);
-
         }
     };
 
@@ -85,7 +87,7 @@ const EditCustomerPage = () => {
                 <Card>
                     <CardBody>
                         <div className='mt-1 grid grid-cols-12 gap-2'>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='name'>
                                     Name
                                 </Label>
@@ -96,7 +98,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='email'>
                                     Email
                                 </Label>
@@ -107,7 +109,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='phone'>
                                     Phone
                                 </Label>
@@ -118,7 +120,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='gst_number'>
                                     GST Number
                                 </Label>
@@ -129,7 +131,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='company'>
                                     Company
                                 </Label>
@@ -140,27 +142,8 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='address_line1'>
-                                    Address Line 1
-                                </Label>
-                                <Input
-                                    id="address_line1"
-                                    name="address_line1"
-                                    value={formData.address_line1}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='address_line2'>Address Line 2</Label>
-                                <Input
-                                    id="address_line2"
-                                    name="address_line2"
-                                    value={formData.address_line2}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='city'>
                                     City
                                 </Label>
@@ -171,7 +154,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='state'>
                                     State
                                 </Label>
@@ -182,7 +165,7 @@ const EditCustomerPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='col-span-12 lg:col-span-4'>
+                            <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='zipcode'>
                                     Zipcode
                                 </Label>
@@ -194,13 +177,58 @@ const EditCustomerPage = () => {
                                 />
                             </div>
                             <div className='col-span-12 lg:col-span-4'>
-                                <Label htmlFor='default_discount'>
-                                    Discount (%)
+                                <Label htmlFor='premium_discount'>
+                                    Premium Discount(%)
                                 </Label>
                                 <Input
-                                    id="default_discount"
-                                    name="default_discount"
-                                    value={formData.default_discount}
+                                    id="premium_discount"
+                                    name="premium_discount"
+                                    value={formData.premium_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='anodize_discount'>
+                                    Anodize Discount(%)
+                                </Label>
+                                <Input
+                                    id="anodize_discount"
+                                    name="anodize_discount"
+                                    value={formData.anodize_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-4'>
+                                <Label htmlFor='commercial_discount'>
+                                    Commercial Discount(%)
+                                </Label>
+                                <Input
+                                    id="commercial_discount"
+                                    name="commercial_discount"
+                                    value={formData.commercial_discount}
+                                    onChange={handleChange}
+                                />
+                                {/* ... Error handling for zipcode field */}
+                            </div>
+                            <div className='col-span-12 lg:col-span-6'>
+                                <Label htmlFor='address_line1'>
+                                    Address Line 1
+                                </Label>
+                                <Textarea
+                                    id="address_line1"
+                                    name="address_line1"
+                                    value={formData.address_line1}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-6'>
+                                <Label htmlFor='address_line2'>Address Line 2</Label>
+                                <Textarea
+                                    id="address_line2"
+                                    name="address_line2"
+                                    value={formData.address_line2}
                                     onChange={handleChange}
                                 />
                             </div>

@@ -77,7 +77,7 @@ const TransactionListPage = ({customerId}:any) => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue() || 0} `}
+                    {`${info.getValue().toFixed(2) || 0} `}
                 </div>
 
             ),
@@ -126,7 +126,7 @@ const TransactionListPage = ({customerId}:any) => {
                 <Card>
                     <CardHeader>
                         <CardHeaderChild>
-                            <CardTitle><h1>TransactionListPage</h1></CardTitle>
+                            <CardTitle><h1>Transaction List </h1></CardTitle>
                         </CardHeaderChild>
 
 
