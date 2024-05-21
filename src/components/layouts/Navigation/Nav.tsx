@@ -25,7 +25,7 @@ const navItemClasses = {
 		themeConfig.transition,
 	),
 	inactive: 'border-transparent',
-	active: 'border-zinc-300 text-zinc-950 dark:border-zinc-800 dark:text-zinc-100',
+	active: 'border-zinc-500 font-semibold text-zinc-950 dark:border-zinc-800 dark:text-zinc-100',
 	here: 'text-zinc-950 dark:text-zinc-100 border-transparent',
 };
 
@@ -45,11 +45,11 @@ const navItemChildCheck = (
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return children?.length > 1
 		? // @ts-ignore
-		  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
-		  children?.map((child) => child.type.displayName).includes('NavButton')
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+		children?.map((child) => child.type.displayName).includes('NavButton')
 		: // @ts-ignore
-		  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
-		  children?.type?.displayName === 'NavButton';
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+		children?.type?.displayName === 'NavButton';
 };
 
 interface INavItemTextProps extends HTMLAttributes<HTMLDivElement> {
@@ -175,111 +175,225 @@ interface INavItemProps extends HTMLAttributes<HTMLLIElement> {
 	text: string;
 	to?: string;
 	className?: string;
+	identifier?: string
 }
+// export const NavItem: FC<INavItemProps> = (props) => {
+// 	const { children, icon, text, to, className, identifier, ...rest } = props;
+// 	console.log("🚀 ~ childrasdsen:", children)
+
+// 	const { t } = useTranslation('menu');
+
+// 	const { asideStatus, setAsideStatus } = useAsideStatus();
+
+// 	const isChildrenNavButton = navItemChildCheck(children);
+// 	console.log('identifier', identifier === to)
+// 	const isActive = (match: any, location: any) => {
+//         // Check if the current location matches the 'to' prop
+//         if (match || location.pathname === to) {
+//             return true;
+//         }
+//         // Check if the current location matches the 'identifier' prop
+//         if (identifier && location.pathname.includes(identifier)) {
+//             return true;
+//         }
+//         return false;
+//     };
+// 	const CONTENT = (
+// 		<>
+// 			<NavIcon icon={icon} />
+// 			<NavItemContent>
+// 				<NavItemText>{t(text)}</NavItemText>
+// 				{children && !isChildrenNavButton && <div>{children as ReactNode}</div>}
+// 			</NavItemContent>
+// 		</>
+// 	);
+
+// 	return (
+// 		<Tooltip text={asideStatus ? '' : t(text)} placement='right'>
+// 			<li
+// 				data-component-name='Nav/NavItem'
+// 				className={classNames(
+// 					'flex list-none items-center overflow-hidden whitespace-nowrap',
+// 					className,
+// 				)}
+// 				{...rest}>
+// 				{to ? (
+// 					<>
+// 						{/* For Desktop */}
+// 						<NavLink
+// 							end
+// 							to={to}
+// 							className={({ isActive }) =>
+// 								isActive
+// 									? classNames(
+// 										navItemClasses.default,
+// 										navItemClasses.active,
+// 										'max-md:hidden',
+// 									)
+// 									: classNames(
+// 										navItemClasses.default,
+// 										navItemClasses.inactive,
+// 										'max-md:hidden',
+// 									)
+// 							}>
+// 							{CONTENT}
+// 						</NavLink>
+// 						{/* For Mobile */}
+// 						<NavLink
+// 							end
+// 							to={to}
+// 							onClick={() => setAsideStatus(false)}
+// 							className={({ isActive }) =>
+// 								isActive
+// 									? classNames(
+// 										navItemClasses.default,
+// 										navItemClasses.active,
+// 										'md:hidden',
+// 									)
+// 									: classNames(
+// 										navItemClasses.default,
+// 										navItemClasses.inactive,
+// 										'md:hidden',
+// 									)
+// 							}>
+// 							{CONTENT}
+// 						</NavLink>
+// 					</>
+// 				) : (
+// 					<>
+// 						{/* For Desktop */}
+// 						<div
+// 							className={classNames(
+// 								navItemClasses.default,
+// 								navItemClasses.inactive,
+// 								'max-md:hidden',
+// 							)}>
+// 							{CONTENT}
+// 						</div>
+// 						{/* For Mobile */}
+// 						<div
+// 							className={classNames(
+// 								navItemClasses.default,
+// 								navItemClasses.inactive,
+// 								'md:hidden',
+// 							)}>
+// 							{CONTENT}
+// 						</div>
+// 					</>
+// 				)}
+// 				{asideStatus && children && isChildrenNavButton && (
+// 					<div className='mb-2 flex items-center gap-3 px-3'>{children as ReactNode}</div>
+// 				)}
+// 			</li>
+// 		</Tooltip>
+// 	);
+// };
 export const NavItem: FC<INavItemProps> = (props) => {
-	const { children, icon, text, to, className, ...rest } = props;
+	
+	// debugger
+    const { children, icon, text, to, className, identifier, ...rest } = props;
+    const { t } = useTranslation('menu');
+    const { asideStatus, setAsideStatus } = useAsideStatus();
+    const location = useLocation();
+   
+    // const isActive = (identifier && location.pathname.includes(identifier)) || (to && location.pathname.includes(to));
+	// const isActive = identifier 
+    // ? location.pathname.includes(identifier) 
+    // : (to && location.pathname.includes(to));
+	// const isActive = (identifier && location.pathname.includes(identifier)) || (to && location.pathname === to);
+	const isActive = (to && location.pathname === to) || (identifier && location.pathname.includes(identifier));
 
-	const { t } = useTranslation('menu');
 
-	const { asideStatus, setAsideStatus } = useAsideStatus();
 
-	const isChildrenNavButton = navItemChildCheck(children);
 
-	const CONTENT = (
-		<>
-			<NavIcon icon={icon} />
-			<NavItemContent>
-				<NavItemText>{t(text)}</NavItemText>
-				{children && !isChildrenNavButton && <div>{children as ReactNode}</div>}
-			</NavItemContent>
-		</>
-	);
 
-	return (
-		<Tooltip text={asideStatus ? '' : t(text)} placement='right'>
-			<li
-				data-component-name='Nav/NavItem'
-				className={classNames(
-					'flex list-none items-center overflow-hidden whitespace-nowrap',
-					className,
-				)}
-				{...rest}>
-				{to ? (
-					<>
-						{/* For Desktop */}
-						<NavLink
-							end
-							to={to}
-							className={({ isActive }) =>
-								isActive
-									? classNames(
-											navItemClasses.default,
-											navItemClasses.active,
-											'max-md:hidden',
-									  )
-									: classNames(
-											navItemClasses.default,
-											navItemClasses.inactive,
-											'max-md:hidden',
-									  )
-							}>
-							{CONTENT}
-						</NavLink>
-						{/* For Mobile */}
-						<NavLink
-							end
-							to={to}
-							onClick={() => setAsideStatus(false)}
-							className={({ isActive }) =>
-								isActive
-									? classNames(
-											navItemClasses.default,
-											navItemClasses.active,
-											'md:hidden',
-									  )
-									: classNames(
-											navItemClasses.default,
-											navItemClasses.inactive,
-											'md:hidden',
-									  )
-							}>
-							{CONTENT}
-						</NavLink>
-					</>
-				) : (
-					<>
-						{/* For Desktop */}
-						<div
-							className={classNames(
-								navItemClasses.default,
-								navItemClasses.inactive,
-								'max-md:hidden',
-							)}>
-							{CONTENT}
-						</div>
-						{/* For Mobile */}
-						<div
-							className={classNames(
-								navItemClasses.default,
-								navItemClasses.inactive,
-								'md:hidden',
-							)}>
-							{CONTENT}
-						</div>
-					</>
-				)}
-				{asideStatus && children && isChildrenNavButton && (
-					<div className='mb-2 flex items-center gap-3 px-3'>{children as ReactNode}</div>
-				)}
-			</li>
-		</Tooltip>
-	);
+	// const isActive = identifier && location.pathname.includes(identifier);
+	// const isActive = (to && location.pathname.includes(to)) || (!to && identifier && location.pathname.includes(identifier));
+
+    const CONTENT = (
+        <>
+            <NavIcon icon={icon} />
+            <NavItemContent>
+                <NavItemText>{t(text)}</NavItemText>
+                {children && !navItemChildCheck(children) && <div>{children}</div>}
+            </NavItemContent>
+        </>
+    );
+    return (
+        <Tooltip text={asideStatus ? '' : t(text)} placement='right'>
+            <li
+                data-component-name='Nav/NavItem'
+                className={classNames('flex list-none items-center overflow-hidden whitespace-nowrap', className)}
+                {...rest}
+            >
+                {to ? (
+                    <>
+                        {/* For Desktop */}
+                        <NavLink
+                            end
+                            to={to}
+                            className={classNames(navItemClasses.default, {
+                                [navItemClasses.active]: isActive,
+                                [navItemClasses.inactive]: !isActive,
+                                'max-md:hidden': true,
+                            })}
+							// className={classNames(navItemClasses.default, {
+							// 	[navItemClasses.active]: location.pathname === to, // Check if the current location matches the 'to' prop
+							// 	[navItemClasses.inactive]: location.pathname !== to,
+							// 	'max-md:hidden': true,
+							// })}
+                        >
+                            {CONTENT}
+                        </NavLink>
+                        {/* For Mobile */}
+                        <NavLink
+                            end
+                            to={to}
+                            onClick={() => setAsideStatus(false)}
+                            className={classNames(navItemClasses.default, {
+                                [navItemClasses.active]: isActive,
+                                [navItemClasses.inactive]: !isActive,
+                                'md:hidden': true,
+                            })}
+                        >
+                            {CONTENT}
+                        </NavLink>
+                    </>
+                ) : (
+                    <>
+                        {/* For Desktop */}
+                        <div className={classNames(navItemClasses.default, {
+                            [navItemClasses.active]: isActive,
+                            [navItemClasses.inactive]: !isActive,
+                            'max-md:hidden': true,
+                        })}>
+                            {CONTENT}
+                        </div>
+                        {/* For Mobile */}
+                        <div className={classNames(navItemClasses.default, {
+                            [navItemClasses.active]: isActive,
+                            [navItemClasses.inactive]: !isActive,
+                            'md:hidden': true,
+                        })}>
+                            {CONTENT}
+                        </div>
+                    </>
+                )}
+                      
+                {asideStatus && children && navItemChildCheck(children) && (
+                    <div className='mb-2 flex items-center gap-3 px-3'>{children}</div>
+                )}
+            </li>
+        </Tooltip>
+    );
 };
+
 NavItem.defaultProps = {
 	children: undefined,
 	className: undefined,
 	icon: undefined,
 	to: undefined,
+	identifier: undefined,
 };
 NavItem.displayName = 'NavItem';
 
@@ -289,9 +403,10 @@ interface INavCollapseProps extends HTMLAttributes<HTMLLIElement> {
 	text: string;
 	to: string;
 	className?: string;
+	identifier?: string;
 }
 export const NavCollapse: FC<INavCollapseProps> = (props) => {
-	const { children, icon, text, className, to, ...rest } = props;
+	const { children, icon, text, className, to, identifier, ...rest } = props;
 
 	const { t } = useTranslation('menu');
 
@@ -301,65 +416,131 @@ export const NavCollapse: FC<INavCollapseProps> = (props) => {
 	const { asideStatus } = useAsideStatus();
 
 	const location = useLocation();
-	const here = to !== '/' && location.pathname.includes(to);
+	// const here = to !== '/' && location.pathname.includes(to);
+	// console.log("🚀 ~ here:", here)
+
+	// useEffect(() => {
+	// 	setIsActive(here);
+	// }, [here, location.pathname]);
+	
+
+	
+	const isActiveCollapse = identifier !== undefined && location.pathname.includes(identifier);
 
 	useEffect(() => {
-		setIsActive(here);
-	}, [here, location.pathname]);
+        // Update isActive state when location changes
+        setIsActive(isActiveCollapse);
+    }, [isActiveCollapse, location.pathname]);
 
+    const toggleIsActive = () => {
+        // Toggle isActive state when clicked
+        setIsActive(!isActive);
+    };
 	return (
-		<li
-			data-component-name='Nav/NavCollapse'
-			className={classNames('list-none overflow-hidden', className)}
-			{...rest}>
-			<Tooltip text={asideStatus ? '' : t(text)} placement='right'>
-				<div
-					role='presentation'
-					className={
-						isActive || here
-							? classNames(navItemClasses.default, navItemClasses.here)
-							: classNames(navItemClasses.default, navItemClasses.inactive)
-					}
-					onClick={() => setIsActive(!isActive)}>
-					<NavIcon icon={icon} />
+		// <li
+		// 	data-component-name='Nav/NavCollapse'
+		// 	className={classNames('list-none overflow-hidden', className)}
+		// 	{...rest}>
+		// 	<Tooltip text={asideStatus ? '' : t(text)} placement='right'>
+		// 		<div
+		// 			role='presentation'
+		// 			className={
+		// 				isActive || here
+		// 					? classNames(navItemClasses.default, navItemClasses.here)
+		// 					: classNames(navItemClasses.default, navItemClasses.inactive)
+		// 			}
+		// 			onClick={() => {
+		// 				setIsActive(!isActive)
+		// 			}}>
+		// 			<NavIcon icon={icon} />
 
-					<NavItemContent>
-						<NavItemText>{t(text)}</NavItemText>
-						<div>
-							<Icon
-								icon='HeroChevronDown'
-								className={classNames(
-									'text-2xl',
-									{
-										'rotate-180': isActive,
-									},
-									themeConfig.transition,
-								)}
-							/>
-						</div>
-					</NavItemContent>
-				</div>
-			</Tooltip>
-			<AnimatePresence>
-				{isActive && (
-					<motion.ul
-						key={id}
-						initial='collapsed'
-						animate='open'
-						exit='collapsed'
-						variants={{
-							open: { height: 'auto' },
-							collapsed: { height: 0 },
-						}}
-						transition={{ duration: 0.3 }}
-						className={classNames('!transition-margin !duration-300 !ease-in-out', {
-							'ms-4': asideStatus,
-						})}>
-						{children}
-					</motion.ul>
-				)}
-			</AnimatePresence>
-		</li>
+		// 			<NavItemContent>
+		// 				<NavItemText>{t(text)}</NavItemText>
+		// 				<div>
+		// 					<Icon
+		// 						icon='HeroChevronDown'
+		// 						className={classNames(
+		// 							'text-2xl',
+		// 							{
+		// 								'rotate-180': isActive,
+		// 							},
+		// 							themeConfig.transition,
+		// 						)}
+		// 					/>
+		// 				</div>
+		// 			</NavItemContent>
+		// 		</div>
+		// 	</Tooltip>
+		// 	<AnimatePresence>
+		// 		{isActive && (
+		// 			<motion.ul
+		// 				key={id}
+		// 				initial='collapsed'
+		// 				animate='open'
+		// 				exit='collapsed'
+		// 				variants={{
+		// 					open: { height: 'auto' },
+		// 					collapsed: { height: 0 },
+		// 				}}
+		// 				transition={{ duration: 0.3 }}
+		// 				className={classNames('!transition-margin !duration-300 !ease-in-out', {
+		// 					'ms-4': asideStatus,
+		// 				})}>
+		// 				{children}
+		// 			</motion.ul>
+		// 		)}
+		// 	</AnimatePresence>
+		// </li>
+		<li
+            data-component-name='Nav/NavCollapse'
+            className={classNames('list-none overflow-hidden', className)}
+            {...rest}
+        >
+            <Tooltip text={asideStatus ? '' : t(text)} placement='right'>
+                <div
+                    role='presentation'
+                    className={classNames(navItemClasses.default, {
+                        [navItemClasses.here]: isActive,
+                        [navItemClasses.inactive]: !isActive,
+                    })}
+					onClick={toggleIsActive}
+                >
+                    <NavIcon icon={icon} />
+                    <NavItemContent>
+                        <NavItemText>{t(text)}</NavItemText>
+                        <div>
+                            <Icon
+                                icon='HeroChevronDown'
+                                className={classNames(
+                                    'text-2xl',
+                                    { 'rotate-180': isActive },
+                                    themeConfig.transition,
+                                )}
+                            />
+                        </div>
+                    </NavItemContent>
+                </div>
+            </Tooltip>
+            <AnimatePresence>
+                {isActive && (
+                    <motion.ul
+                        initial='collapsed'
+                        animate='open'
+                        exit='collapsed'
+                        variants={{
+                            open: { height: 'auto' },
+                            collapsed: { height: 0 },
+                        }}
+                        transition={{ duration: 0.3 }}
+                        className={classNames('!transition-margin !duration-300 !ease-in-out', {
+                            'ms-4': asideStatus,
+                        })}
+                    >
+                        {children}
+                    </motion.ul>
+                )}
+            </AnimatePresence>
+        </li>
 	);
 };
 NavCollapse.defaultProps = {
@@ -453,15 +634,15 @@ export const NavUser: FC<INavUserProps> = (props) => {
 							className={({ isActive }) =>
 								isActive
 									? classNames(
-											navItemClasses.default,
-											navItemClasses.active,
-											'max-md:hidden',
-									  )
+										navItemClasses.default,
+										navItemClasses.active,
+										'max-md:hidden',
+									)
 									: classNames(
-											navItemClasses.default,
-											navItemClasses.inactive,
-											'max-md:hidden',
-									  )
+										navItemClasses.default,
+										navItemClasses.inactive,
+										'max-md:hidden',
+									)
 							}>
 							{CONTENT}
 						</NavLink>
@@ -473,15 +654,15 @@ export const NavUser: FC<INavUserProps> = (props) => {
 							className={({ isActive }) =>
 								isActive
 									? classNames(
-											navItemClasses.default,
-											navItemClasses.active,
-											'md:hidden',
-									  )
+										navItemClasses.default,
+										navItemClasses.active,
+										'md:hidden',
+									)
 									: classNames(
-											navItemClasses.default,
-											navItemClasses.inactive,
-											'md:hidden',
-									  )
+										navItemClasses.default,
+										navItemClasses.inactive,
+										'md:hidden',
+									)
 							}>
 							{CONTENT}
 						</NavLink>

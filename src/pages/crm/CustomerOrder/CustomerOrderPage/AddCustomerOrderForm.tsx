@@ -16,7 +16,7 @@ import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
 
 const AddCustomerOrderForm = () => {
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '',coating_rate: '' ,withoutMaterial: '' }]);
+  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '',coating_rate: '' ,withoutMaterial: '',length: '' }]);
   const [customerId, setCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([]);
@@ -34,7 +34,9 @@ const AddCustomerOrderForm = () => {
   const [estimateRate,setEstimateRate] = useState<number>(0)
   const [estimateWeight, setEstimateWeight] = useState<number>(0)
   const [currentCustomerData, setCurrentCustomerData] = useState<any>({})
-  const [customerDiscount, setCustomerDiscount] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
+  const [alluminiumRate, setAlluminiumRate] = useState<number>(0)
+  const [coatingCharges,setCoatingCharges] = useState<number>(0)
 
   const getProductDetails = async () => {
     try {
@@ -158,9 +160,11 @@ const AddCustomerOrderForm = () => {
       customer: customerId,
       entries: filteredEntries,
       customerOrderNumber,
+      alluminium_rate: alluminiumRate,
       estimate_total: estimateRate,
       estimate_weight: estimateWeight,
-      customer_discount: customerDiscount
+      coating_charges: coatingCharges,
+      customer_discount: discount
     };
 
     try {
@@ -245,12 +249,9 @@ const AddCustomerOrderForm = () => {
     setCurrentCustomerData(customerData.find((customer:any)=> customer._id.toString() === id.toString()))
   }
 
-  const SetCustomerDiscount = (value: number) => {
-    setCustomerDiscount(value)
-  }
 
   useEffect(() => {
-    const calculateCoatingRate = (productId: string, coatingId: string, quantity: number) => {
+    const calculateCoatingRate = (productId: string, coatingId: string) => {
         const product = productsData.find((item: any) => item._id === productId);
         const coating = coatingData.find((item: any) => item._id === coatingId);
         
@@ -262,7 +263,7 @@ const AddCustomerOrderForm = () => {
       
         const productCoatingRate = `${type}_rate`;
         const rate = product[productCoatingRate] || 0;
-        return rate * quantity;
+        return rate;
     };
 
     // Calculate coating rate and update entries state whenever product, coating, or quantity changes
@@ -270,7 +271,7 @@ const AddCustomerOrderForm = () => {
         const { product, coating, quantity } = entry;
         return {
             ...entry,
-            coating_rate: calculateCoatingRate(product, coating, quantity)
+            coating_rate: calculateCoatingRate(product, coating)
         };
     });
 
@@ -305,15 +306,18 @@ const AddCustomerOrderForm = () => {
   
   useEffect(() => {
     let totalRate: number = 0;
-    for (const entry of entries) {
-      let final_rate = parseInt(entry.coating_rate)
-      totalRate += final_rate || 0
-    }
-    if (customerDiscount) {
-      totalRate = parseFloat((totalRate - (totalRate * customerDiscount / 100)).toFixed(2)) 
-    }
+    totalRate = estimateWeight * (alluminiumRate || 0)
     setEstimateRate(totalRate)
-  },[entries, productsData,customerDiscount])
+  }, [estimateWeight, alluminiumRate])
+  
+  useEffect(() => {
+    let totalCoatingCharges: number = 0;
+    for (const entry of entries) {
+      const product = productsData?.find((product:any) => product._id.toString() === entry.product.toString())
+      totalCoatingCharges += (entry.quantity * entry.coating_rate * (product?.length || entry.length || 0))
+    }
+    setCoatingCharges(totalCoatingCharges)
+  },[entries,productsData,discount])
 
 
   return (
@@ -401,7 +405,7 @@ const AddCustomerOrderForm = () => {
                     </div>
                     <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                       {!productTransfer ? (<>
-                        <div className='col-span-12 lg:col-span-2'>
+                        <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor={`name-${index}`}>
                             Products
                             <span className='ml-1 text-red-500'>*</span>
@@ -555,6 +559,35 @@ const AddCustomerOrderForm = () => {
                       </div>
 
                       <div className='col-span-12 lg:col-span-2'>
+                          <Label htmlFor={`hsn-${index}`}>
+                            Product Weight
+                          </Label>
+                          <Input
+                            type='number'
+                            id={`hsn-${index}`}
+                            name={`hsn-${index}`}
+                            value={entry.quantity * (productsData.find((item: any) => item._id === entry.product)?.weight || entry.weight || 0)}
+                            min={0}
+                            disabled
+                          />
+                      </div>
+
+                      
+                      <div className='col-span-12 lg:col-span-2'>
+                          <Label htmlFor={`hsn-${index}`}>
+                            Total Coating Rate
+                          </Label>
+                          <Input
+                            type='number'
+                            id={`hsn-${index}`}
+                            name={`hsn-${index}`}
+                            value={entry.quantity * (productsData.find((item: any) => item._id === entry.product)?.length || entry.length || 0) * entry.coating_rate}
+                            min={0}
+                            disabled
+                          />
+                      </div>
+
+                      <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor='withoutMaterial'>
                           Without Material
                           <span className='ml-1 text-red-500'>*</span>
@@ -623,35 +656,41 @@ const AddCustomerOrderForm = () => {
             <div>
               <div className='mt-2 grid grid-cols-12 gap-1'>
                 <div className='col-span-12 lg:col-span-12'>
-                  <div className='mt-2 grid grid-cols-12 gap-1' >
-                  <div className='col-span-4 lg:col-span-3 mt-5'>
-                      <Label htmlFor='estimatedRate'>
-                        Coating Discount
+                  <div className='mt-2 grid grid-cols-12 gap-2' >
+                  <div className='col-span-4 lg:col-span-2 mt-5'>
+                      <Label htmlFor='discount'>
+                        Discount(%)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
-                      <Select
-                        id='coating_discount'
-                        name='coating_discount'
-                        placeholder={"Select Discount"}
+                      <Input
+                        type='number'
+                        name="discount"
+                        value={discount}
+                        min={0}
                         onChange={(e) => {
-                          SetCustomerDiscount(parseInt(e.target.value))
+                          setDiscount(parseInt(e.target.value))
                         }}
-                      >
-                        <option value={currentCustomerData?.premium_discount}>
-                          Premium Discount
-                        </option>
-                        <option value={currentCustomerData?.anodize_discount}>
-                          Anodize Discount
-                        </option>
-                        <option value={currentCustomerData?.commercial_discount}>
-                          Commercial Discount
-                        </option>
-                      </Select>
+                      />
                     </div>
 
-                    <div className='col-span-4 lg:col-span-3 mt-5'>
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
+                      <Label htmlFor='alluminiumRate'>
+                        Alluminium Rate(Rs)
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="alluminiumRate"
+                        value={alluminiumRate}
+                        min={0}
+                        onChange={(e) => {
+                          setAlluminiumRate(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='estimatedWeight'>
-                        Estimated Weight
+                        Estimated Weight(Kg)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
@@ -664,9 +703,9 @@ const AddCustomerOrderForm = () => {
                         }}
                       />
                     </div>
-                    <div className='col-span-4 lg:col-span-3 mt-5'>
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='estimatedRate'>
-                        Estimated Rate
+                        Product Rate(Rs)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
@@ -676,6 +715,22 @@ const AddCustomerOrderForm = () => {
                         min={0}
                         onChange={(e) => {
                           setEstimateRate(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
+                      <Label htmlFor='coatingCharges'>
+                        Coating Charges(Rs)
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="coatingCharges"
+                        value={coatingCharges}
+                        min={0}
+                        onChange={(e) => {
+                          setCoatingCharges(parseInt(e.target.value))
                         }}
                       />
                     </div>

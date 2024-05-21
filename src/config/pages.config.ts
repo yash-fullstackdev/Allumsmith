@@ -14,6 +14,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-product',
 		},
+		identifier: 'product'
 	},
 	purchaseOrderPage: {
 		listPage: {
@@ -26,6 +27,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-purchase-order',
 		},
+		identifier: 'purchase-order'
 	},
 
 	vendorPage: {
@@ -43,6 +45,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-vendor',
 		},
+		identifier: 'vendor'
 	},
 	customerPage: {
 		listPage: {
@@ -59,6 +62,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-customer',
 		},
+		identifier: 'customer'
 	},
 	workerPage: {
 		listPage: {
@@ -75,6 +79,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-worker',
 		},
+		identifier: 'worker'
 	},
 	powderPage: {
 		listPage: {
@@ -83,6 +88,7 @@ export const appPages: any = {
 			text: 'Raw material',
 			icon: 'DuoOption',
 		},
+		identifier: 'raw-material'
 	},
 	branchesPage: {
 		listPage: {
@@ -99,6 +105,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-branches',
 		},
+		identifier: 'branches'
 	},
 	colorsPage: {
 		listPage: {
@@ -119,6 +126,7 @@ export const appPages: any = {
 		// 	id: 'editPageLink',
 		// 	to: '/add-colors',
 		// },
+		identifier: 'colors'
 	},
 	coatingPage: {
 		listPage: {
@@ -135,6 +143,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-coating',
 		},
+		identifier: 'coating'
 	},
 	jobsPage: {
 		listPage: {
@@ -155,23 +164,25 @@ export const appPages: any = {
 			id: 'editwihtoutPageLink',
 			to: '/edit-jobs-withoutmaterial',
 		},
+		identifier: 'jobs'
 	},
 
 	customerOrderPage: {
 		listPage: {
-			id: 'customerOrderPage',
-			to: '/customer-order',
+			id: 'OrderPage',
+			to: '/co-order',
 			text: 'Customer Order',
 			icon: 'HeroShoppingBag',
 		},
 		addPageLink: {
 			id: 'addPageLink',
-			to: '/add-customer-order',
+			to: '/add-co-order',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/edit-customer-order',
+			to: '/edit-co-order',
 		},
+		identifier: 'order'
 	},
 
 	inventoryPage: {
@@ -185,6 +196,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-inventory',
 		},
+		identifier: 'inventory'
 	},
 	finishInventory: {
 		listPage: {
@@ -197,6 +209,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/add-inventory',
 		},
+		identifier: 'finish-inventory'
 	},
 	invoicePage: {
 		listPage: {
@@ -213,6 +226,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-invoice',
 		},
+		identifier: 'invoice'
 	},
 	ledgerPage: {
 		listPage: {
@@ -229,6 +243,7 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-ledger',
 		},
+		identifier: 'ledger'
 	},
 	projectAppPages: {
 		subPages: {
