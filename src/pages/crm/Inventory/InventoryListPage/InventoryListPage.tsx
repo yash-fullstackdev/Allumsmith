@@ -94,7 +94,7 @@ const InventoryListPage = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell><h5>Branch Name</h5></TableCell>
-                                    <TableCell><h5>Quantity</h5></TableCell>
+                                    <TableCell><h5>Quantity(Pcs)</h5></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -131,8 +131,8 @@ const InventoryListPage = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell><h3> Product Name</h3></TableCell>
-                                            <TableCell><h3>Total Quantity</h3></TableCell>
+                                            <TableCell><h3>Product Name</h3></TableCell>
+                                            <TableCell><h3>Total Quantity(Pcs)</h3></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>

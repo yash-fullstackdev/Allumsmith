@@ -36,7 +36,8 @@ const AddCustomerOrderForm = () => {
   const [currentCustomerData, setCurrentCustomerData] = useState<any>({})
   const [discount, setDiscount] = useState<number>(0);
   const [alluminiumRate, setAlluminiumRate] = useState<number>(0)
-  const [coatingCharges,setCoatingCharges] = useState<number>(0)
+  const [coatingCharges, setCoatingCharges] = useState<number>(0)
+  const [gst, setGst] = useState<number>(0);
 
   const getProductDetails = async () => {
     try {
@@ -140,6 +141,13 @@ const AddCustomerOrderForm = () => {
     }
   };
 
+  const calcCoatingChargeBeforeDiscount = (productsArray:any) => {
+    return productsArray.reduce((acc: number, curr: any) => {
+      const product = productsData.find((prod: any) => prod._id === curr.product)
+      return acc + (product.length * curr.quantity * curr.coating_rate)
+    },0);
+  }
+
   console.log('Entries', entries)
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
@@ -164,7 +172,9 @@ const AddCustomerOrderForm = () => {
       estimate_total: estimateRate,
       estimate_weight: estimateWeight,
       coating_charges: coatingCharges,
-      customer_discount: discount
+      customer_discount: discount,
+      gst: gst,
+      coatingCharges_before_discount: calcCoatingChargeBeforeDiscount(entries)
     };
 
     try {
@@ -316,6 +326,10 @@ const AddCustomerOrderForm = () => {
       const product = productsData?.find((product:any) => product._id.toString() === entry.product.toString())
       totalCoatingCharges += (entry.quantity * entry.coating_rate * (product?.length || entry.length || 0))
     }
+    if (discount) {
+      const discountedValue = (totalCoatingCharges * discount / 100)
+      totalCoatingCharges -= discountedValue
+    }
     setCoatingCharges(totalCoatingCharges)
   },[entries,productsData,discount])
 
@@ -426,7 +440,7 @@ const AddCustomerOrderForm = () => {
                           <>
                           <div className='col-span-12 lg:col-span-2'>
                             <Label htmlFor={`length-${index}`}>
-                              Length
+                              Length(ft)
                               <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input
@@ -440,7 +454,7 @@ const AddCustomerOrderForm = () => {
                           </div>
                           <div className='col-span-12 lg:col-span-2'>
                             <Label htmlFor={`Weight-${index}`}>
-                              Weight
+                              Weight(kg)
                               <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input
@@ -477,7 +491,7 @@ const AddCustomerOrderForm = () => {
                         </>)}
                       <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor={`hsn-${index}`}>
-                          Quantity
+                          Quantity(Pcs)
                           <span className='ml-1 text-red-500'>*</span>
                         </Label>
                         <Input
@@ -541,7 +555,7 @@ const AddCustomerOrderForm = () => {
                       
                         <div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
-                            Coating Rate
+                            Coating Rate(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -560,7 +574,7 @@ const AddCustomerOrderForm = () => {
 
                       <div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
-                            Product Weight
+                            Product Weight(kg)
                           </Label>
                           <Input
                             type='number'
@@ -575,7 +589,7 @@ const AddCustomerOrderForm = () => {
                       
                       <div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
-                            Total Coating Rate
+                            Total Coating Rate(rs)
                           </Label>
                           <Input
                             type='number'
@@ -674,8 +688,24 @@ const AddCustomerOrderForm = () => {
                     </div>
 
                     <div className='col-span-4 lg:col-span-2 mt-5'>
+                      <Label htmlFor='gst'>
+                        GST(%)
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="gst"
+                        value={gst}
+                        min={0}
+                        onChange={(e) => {
+                          setGst(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='alluminiumRate'>
-                        Alluminium Rate(Rs)
+                        Alluminium Rate(rs)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
@@ -690,7 +720,7 @@ const AddCustomerOrderForm = () => {
                     </div>
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='estimatedWeight'>
-                        Estimated Weight(Kg)
+                        Estimated Weight(kg)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
@@ -705,7 +735,7 @@ const AddCustomerOrderForm = () => {
                     </div>
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='estimatedRate'>
-                        Product Rate(Rs)
+                        Product Rate(rs)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
@@ -721,7 +751,7 @@ const AddCustomerOrderForm = () => {
                     
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='coatingCharges'>
-                        Coating Charges(Rs)
+                        Coating Charges(rs)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input

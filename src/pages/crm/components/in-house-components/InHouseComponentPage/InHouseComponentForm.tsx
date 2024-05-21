@@ -518,7 +518,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`rate-${index}`}>
-										Rate
+										Rate (rs)
 									</Label>
 									<Input
 										id={`rate-${index}`}
@@ -542,7 +542,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`thickness-${index}`}>
-										Thickness
+										Thickness(mm)
 									</Label>
 									{/* <CreatableSelect
 										id={`thickness-${index}`}
@@ -578,7 +578,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`length-${index}`}>
-										Length
+										Length(ft)
 									</Label>
 									{/* <CreatableSelect
 										id={`length-${index}`}
@@ -635,7 +635,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`rate-${index}`}>
-										Wooden Coating Rate
+										Wooden Coating Rate(rs)
 									</Label>
 									<Input
 										id={`wooden_rate-${index}`}
@@ -659,7 +659,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`commercial_rate-${index}`}>
-										Commercial Coating Rate
+										Commercial Coating Rate(rs)
 									</Label>
 									<Input
 										id={`commercial_rate-${index}`}
@@ -683,7 +683,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`anodize_rate-${index}`}>
-										Anodize Coating Rate
+										Anodize Coating Rate(rs)
 									</Label>
 									<Input
 										id={`anodize_rate-${index}`}
@@ -707,7 +707,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-3'>
 									<Label htmlFor={`premium_rate-${index}`}>
-										Premium Coating Rate
+										Premium Coating Rate(rs)
 									</Label>
 									<Input
 										id={`premium_rate-${index}`}

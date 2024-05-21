@@ -270,6 +270,7 @@ const AddproductForm = () => {
   const [vendorId, setVendorId] = useState('');
   const [vendorData, setVendorData] = useState<any>([]);
   const [productListData, setProductListData] = useState<any>([]);
+  const [purchaseOrderNum, setPurchaseOrderNum] = useState<string>('');
   const navigate = useNavigate();
 
   const formik: any = useFormik({
@@ -280,10 +281,20 @@ const AddproductForm = () => {
     validationSchema: purchaseOrderSchema,
     onSubmit:() => {}
   });
+
+  const fetchPurchaseOrderNumber = async () => {
+    try {
+      const {data} = await get('/counter/purchaseOrderNumber')
+      setPurchaseOrderNum(`PO${data.value}`)
+    } catch (error:any) {
+      console.log(error.message);
+    }
+  }
   
   useEffect(() => {
     fetchData();
     fetchVendorData();
+    fetchPurchaseOrderNumber()
   }, []);
 
   const fetchData = async () => {
@@ -308,6 +319,11 @@ const AddproductForm = () => {
     setEntries([...entries, { product: '', requiredQuantity: '' }]);
   };
 
+  const showProductDetails = (productArray: any, productId: string): string => {
+    const {name,productCode,length,thickness} = productArray.find((product:any) => product._id.toString() === productId.toString())
+    return `${name} (${productCode}) (${length}) (${thickness})`
+  }
+
   const handleSaveEntries = async () => {
         const duplicateProductIds = entries
           .map((entry: any) => entry.product)
@@ -317,18 +333,19 @@ const AddproductForm = () => {
           return;
         }
         const finalValues = {
-          vendor: formik.values.vendor,
-          products: formik.values.entries
+          vendor: vendorId,
+          products: formik.values.entries,
+          po_number: purchaseOrderNum
         };
     
         try {
+          console.log('api-data', finalValues);
+          
           const { data } = await post("/purchase-order", finalValues);
           toast.success('Purchase Order Created Successfully!');
           navigate(PathRoutes.purchase_order);
         } catch (error: any) {
           toast.error('Error Creating Purchase Order', error);
-        } finally {
-          navigate(PathRoutes.purchase_order)
         }
     
       };
@@ -355,25 +372,42 @@ const AddproductForm = () => {
           </div>
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <div className='col-span-4 lg:col-span-4 mt-5'>
-                <Label htmlFor='vendor'>
-                  Vendor
-                  <span className='ml-1 text-red-500'>*</span>
-                </Label>
-                <SelectReact
-                  options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
-                  value={vendorId ? { value: vendorId, label: vendorData.find((vendor: any) => vendor._id === vendorId)?.name } : null}
-                  onChange={(selectedOption: any) => {
-                    setVendorId(selectedOption.value);
-                    formik.setFieldValue('vendor', selectedOption.value);
-                  }}
-                  onBlur={formik.handleBlur}
-                  name='vendor'
-                />
-                {formik.errors.vendor && formik.touched.vendor && (
-                  <div className='text-red-500'>{formik.errors.vendorName}</div>
-                )}
+              <div className='mt-2 flex gap-1'>
+                <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
+                  <Label htmlFor='vendor'>
+                    Vendor
+                    <span className='ml-1 text-red-500'>*</span>
+                  </Label>
+                  <SelectReact
+                    options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
+                    value={vendorId ? { value: vendorId, label: vendorData.find((vendor: any) => vendor._id === vendorId)?.name } : null}
+                    onChange={(selectedOption: any) => {
+                      setVendorId(selectedOption.value);
+                      formik.setFieldValue('vendor', selectedOption.value);
+                    }}
+                    onBlur={formik.handleBlur}
+                    name='vendor'
+                  />
+                  {formik.errors.vendor && formik.touched.vendor && (
+                    <div className='text-red-500'>{formik.errors.vendorName}</div>
+                  )}
+                  </div>
+                  
+                  <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
+                  <Label htmlFor='po-number'>
+                    PO-Number
+                    <span className='ml-1 text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    value={purchaseOrderNum}
+                    name='po-number'
+                    id='po-number'
+                    disabled
+                  />
+                </div>
               </div>
+              
+              
               {entries.map((entry: any, index: number) => (
                 <div key={index} className='mt-2 grid grid-cols-4 gap-1'>
                   <div className='col-span-12 lg:col-span-2'>
@@ -386,7 +420,7 @@ const AddproductForm = () => {
                         value: product._id,
                         label: `${product.name} (${product.productCode}) (${product.length})`,
                       }))}
-                      value={entry.product ? { value: entry.product, label: productListData.find((product: any) => product._id === entry.product)?.name } : null}
+                      value={entry.product ? { value: entry.product, label: showProductDetails(productListData,entry.product) } : null}
                       onChange={(selectedOption: any) => {
                         const updatedEntries = [...entries];
                         updatedEntries[index].product = selectedOption.value;
