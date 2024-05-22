@@ -170,19 +170,19 @@ export const appPages: any = {
 	customerOrderPage: {
 		listPage: {
 			id: 'OrderPage',
-			to: '/co-order',
+			to: '/cuo-order',
 			text: 'Customer Order',
 			icon: 'HeroShoppingBag',
 		},
 		addPageLink: {
 			id: 'addPageLink',
-			to: '/add-co-order',
+			to: '/add-cuo-order',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/edit-co-order',
+			to: '/edit-cuo-order',
 		},
-		identifier: 'order'
+		identifier: 'cuo'
 	},
 
 	inventoryPage: {
@@ -201,15 +201,15 @@ export const appPages: any = {
 	finishInventory: {
 		listPage: {
 			id: 'finishInventory',
-			to: '/finish-inventory',
+			to: '/finish-storage',
 			text: 'Finish Inventory',
 			icon: 'HeroTruck',
 		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-inventory',
+			to: '/add-storage',
 		},
-		identifier: 'finish-inventory'
+		identifier: 'storage'
 	},
 	invoicePage: {
 		listPage: {

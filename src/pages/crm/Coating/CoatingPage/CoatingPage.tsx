@@ -56,7 +56,6 @@ const CoatingPage = () => {
         initialValues: {
             name: '',
             code: '',
-            rate: '',
             colors: [],
             type: ''
         },
@@ -177,21 +176,6 @@ const CoatingPage = () => {
                                                     />
                                                     {formik.touched.code && formik.errors.code ? (
                                                         <div className='text-red-500'>{formik.errors.code}</div>
-                                                    ):null}
-                                                </div>
-                                                <div className='col-span-12 lg:col-span-3'>
-                                                    <Label htmlFor='rate'>
-                                                        Rate
-                                                    </Label>
-                                                    <Input
-                                                        id="rate"
-                                                        name="rate"
-                                                        value={formik.values.rate}
-                                                        onBlur={formik.handleBlur}
-                                                        onChange={formik.handleChange}
-                                                    />
-                                                    {formik.touched.rate && formik.errors.rate ? (
-                                                        <div className='text-red-500'>{formik.errors.rate}</div>
                                                     ):null}
                                                 </div>
                                                 <div className='col-span-12 lg:col-span-3'>

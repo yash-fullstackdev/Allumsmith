@@ -367,7 +367,7 @@ const JobsPage = () => {
                                                                     </div>
                                                                     <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`quantity${productIndex}`}>
-                                                                            Pending Quantity
+                                                                            Pending Quantity(Pcs)
                                                                         </Label>
                                                                         <Input
                                                                             type='text'
@@ -379,7 +379,7 @@ const JobsPage = () => {
                                                                     </div>
                                                                     <div className='col-span-12 lg:col-span-2'>
                                                                         <Label htmlFor={`pickQuantity${productIndex}`}>
-                                                                            Pick Quantity
+                                                                            Pick Quantity(Pcs)
                                                                         </Label>
                                                                         <Input
                                                                             type='text'

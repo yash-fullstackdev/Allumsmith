@@ -181,7 +181,7 @@ const LedgerPage = () => {
                         </div>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='grandTotal'>
-                            Grand Total
+                            Grand Total(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -195,7 +195,7 @@ const LedgerPage = () => {
                         </div>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='paidAmount'>
-                            Paid Amount
+                            Paid Amount(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -209,7 +209,7 @@ const LedgerPage = () => {
                         </div>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='pendingAmount'>
-                            Pending Amount
+                            Pending Amount(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -224,7 +224,7 @@ const LedgerPage = () => {
                         </div>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='creditedAmount'>
-                            Credited Amount
+                            Credited Amount(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
@@ -238,7 +238,7 @@ const LedgerPage = () => {
                         </div>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor='amountPayable'>
-                            Amount Payable
+                            Amount Payable(rs)
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input

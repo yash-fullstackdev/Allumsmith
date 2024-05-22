@@ -359,7 +359,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
-                                                                        Length
+                                                                        Length(mm)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -373,7 +373,7 @@ const AddInvoice = () => {
                                                                 
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
-                                                                        Product Weight
+                                                                        Product Weight(kg)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -390,7 +390,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
-                                                                        Rate
+                                                                        Rate(rs)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -409,7 +409,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="coatingQuantity" className='!text-sm'>
-                                                                        Available Quantity
+                                                                        Available Quantity(Pcs)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -421,7 +421,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="deliveredQuantity" className='!text-sm'>
-                                                                        Delivered Quantity
+                                                                        Delivered Quantity(Pcs)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -448,7 +448,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
-                                                                        Coating/Anodize Rate
+                                                                        Coating/Anodize Rate(rs)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -466,7 +466,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="coatingWeight" className='!text-sm'>
-                                                                        Coating Weight
+                                                                        Coating Weight(kg)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -483,7 +483,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="coatingDiscount" className='!text-sm'>
-                                                                        Coating Discount
+                                                                        Coating Discount(%)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -591,7 +591,20 @@ const AddInvoice = () => {
 
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
-                                                                    GST
+                                                                    Alluminium Rate
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                                <Input
+                                                                    type='number'
+                                                                    value={entries.alluminium_rate}
+                                                                    name="gst"
+                                                                    onChange={(e) => setEntries({ ...entries, alluminium_rate: e.target.value })}
+                                                                />
+                                                            </div>
+
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='customerName'>
+                                                                    GST(%)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
@@ -603,7 +616,7 @@ const AddInvoice = () => {
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='other_tax'>
-                                                                    Other Tax
+                                                                    Other Tax(%)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
@@ -615,7 +628,7 @@ const AddInvoice = () => {
                                                             </div>
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='totalAmount'>
-                                                                    Total Amount
+                                                                    Total Amount(rs)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
@@ -700,4 +713,4 @@ const AddInvoice = () => {
     )
 }
 
-export default AddInvoice
+export default AddInvoice;

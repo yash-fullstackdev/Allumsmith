@@ -100,7 +100,7 @@ const PurchaseOrderListPage = () => {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info?.row?.original?.vendor?.name}`}
+                    {`${info?.row?.original?.vendor?.name}`}{`(${info?.row?.original?.po_number})`}
                 </div>
 
             ),
