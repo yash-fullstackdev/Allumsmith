@@ -38,6 +38,7 @@ const AddCustomerOrderForm = () => {
   const [alluminiumRate, setAlluminiumRate] = useState<number>(0)
   const [coatingCharges, setCoatingCharges] = useState<number>(0)
   const [gst, setGst] = useState<number>(0);
+  const [grandTotal, setGrandTotal] = useState<number>(0);
 
   const getProductDetails = async () => {
     try {
@@ -142,9 +143,9 @@ const AddCustomerOrderForm = () => {
   };
 
   const calcCoatingChargeBeforeDiscount = (productsArray:any) => {
-    return productsArray.reduce((acc: number, curr: any) => {
-      const product = productsData.find((prod: any) => prod._id === curr.product)
-      return acc + (product.length * curr.quantity * curr.coating_rate)
+    return productsArray?.reduce((acc: number, curr: any) => {
+      const product = productsData?.find((prod: any) => prod._id === curr.product)
+      return acc + ((product?.length || curr.length) * curr.quantity * curr.coating_rate)
     },0);
   }
 
@@ -174,11 +175,15 @@ const AddCustomerOrderForm = () => {
       coating_charges: coatingCharges,
       customer_discount: discount,
       gst: gst,
-      coatingCharges_before_discount: calcCoatingChargeBeforeDiscount(entries)
+      coatingCharges_before_discount: calcCoatingChargeBeforeDiscount(entries),
+      grand_total: grandTotal
     };
 
     try {
       console.log('Final Values', finalValues);
+      if (!customerId || customerId === '') {
+        toast.error('Please select customer')
+      }
       const { data } = await post('/customer-order', finalValues);
       toast.success('Customer order created successfully!');
     } catch (error: any) {
@@ -281,7 +286,7 @@ const AddCustomerOrderForm = () => {
         const { product, coating, quantity } = entry;
         return {
             ...entry,
-            coating_rate: calculateCoatingRate(product, coating)
+            coating_rate: calculateCoatingRate(product, coating) || entry?.coating_rate
         };
     });
 
@@ -302,6 +307,13 @@ const AddCustomerOrderForm = () => {
       setEntries(updatedEntries);
     }
   };
+
+  const calculateGrandTotal = (estimateRate:number,coating_charges:number,gst:number) => {
+    const totalPrice = estimateRate + coating_charges
+    const gstAmount = totalPrice * (gst / 100)
+    const grand_total = (totalPrice + gstAmount).toFixed(2)
+    setGrandTotal(parseFloat(grand_total));
+  }
 
   useEffect(() => {    
     let totalWeight: number = 0;
@@ -331,7 +343,11 @@ const AddCustomerOrderForm = () => {
       totalCoatingCharges -= discountedValue
     }
     setCoatingCharges(totalCoatingCharges)
-  },[entries,productsData,discount])
+  }, [entries, productsData, discount])
+  
+  useEffect(() => {
+    calculateGrandTotal(estimateRate,coatingCharges,gst)
+  },[estimateRate,coatingCharges,gst])
 
 
   return (
@@ -507,10 +523,10 @@ const AddCustomerOrderForm = () => {
                         />
                         {entry.product && entry.quantity && (
                           <div style={{ fontSize: '11px', color: 'green', marginTop: '0.5rem' }}>
-                            {`${entry.product ? productsArray.find((product: any) => product.productId === entry.product)?.productName : 'Selected product'} has ${productsArray.find((product: any) => product.productId === entry.product)?.totalQuantity || 0} quantity`}
+                            {`${entry.product ? (productsArray.find((product: any) => product.productId === entry.product)?.productName || entry?.product) : 'No product selected'} has ${(productsArray.find((product: any) => product.productId === entry.product)?.totalQuantity || 0)} quantity`}
                           </div>
                         )}
-
+                            
                       </div>
                       <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor={`hsn-${index}`}>
@@ -670,7 +686,7 @@ const AddCustomerOrderForm = () => {
             <div>
               <div className='mt-2 grid grid-cols-12 gap-1'>
                 <div className='col-span-12 lg:col-span-12'>
-                  <div className='mt-2 grid grid-cols-12 gap-2' >
+                  <div className='mt-2 grid grid-cols-6 gap-2' >
                   <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='discount'>
                         Discount(%)
@@ -761,6 +777,22 @@ const AddCustomerOrderForm = () => {
                         min={0}
                         onChange={(e) => {
                           setCoatingCharges(parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
+                      <Label htmlFor='grandTotal'>
+                        Grand Total(rs)
+                        <span className='ml-1 text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        type='number'
+                        name="grandTotal"
+                        value={grandTotal}
+                        min={0}
+                        onChange={(e) => {
+                          setGrandTotal(parseFloat(e.target.value))
                         }}
                       />
                     </div>
