@@ -106,12 +106,12 @@ const AddInvoice = () => {
         updatedTotalWeights[index] = parseFloat(totalWeight.toFixed(2));
         setTotalWeights((updatedTotalWeights));
         console.log(purchaseOrderData )
-        const totalRate = purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating_rate ;
+        const totalRate = purchaseOrderData.entries[index]?.coating?.coating_rate ? purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating?.coating_rate : purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating_rate;
         const updatedTotalCoatingRate = [...totalCoatingRate];
         updatedTotalCoatingRate[index] = parseFloat(totalRate.toFixed(2));
         setTotalCoatingRate(updatedTotalCoatingRate);
     };
-
+    
     const handleTotalWeight = (index: number) => {
         return totalWeights[index] || 0;
     }
@@ -212,6 +212,80 @@ const AddInvoice = () => {
             amountBeforeTax = totalSpecificProductPrice + totalCoatingTotal;
 
 
+            // const payload = {
+            //     customerOrder_id: purchaseOrderData._id || '',
+            //     customerName: purchaseOrderData.customer?._id || '',
+            //     customerEmail: purchaseOrderData.customer?.email || '',
+            //     customerPhone: purchaseOrderData.customer?.phone || '',
+            //     products: purchaseOrderData.entries.map((entry: any, index: any) => {
+            //         const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
+            //         const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
+            //         const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
+            //         const amount = specificProductPrice + finalCoatingTotal;
+            //         let finalPayload = {}
+            //         if (entry?.mm) {
+            //             finalPayload = {
+            //                 product: entry.product._id,
+            //                 name: entry?.product?.name,
+            //                 color: entry.color?._id || '',
+            //                 coating: entry.coating?._id || '',
+            //                 coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+            //                 delieveryQuantity: deliveredQuantities[index] || '',
+            //                 weight: parseFloat(entry?.product?.weight) || '',
+            //                 length: entry.product?.length || '',
+            //                 rate: entry.product?.rate || '',
+            //                 specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+            //                 coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
+            //                 coatingRate: parseFloat(entry.coating.rate),
+            //                 coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
+            //                 amount: parseFloat(amount.toFixed(2)),
+            //                 coatingName: entry?.coating?.name,
+            //                 cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+            //                 sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+            //                 specificCoatingAmount: coatingTotal,
+            //                 mm: entry?.mm,
+            //                 total_weight: totalWeights[index] || 0,
+            //                 toatl_coating_rate: totalCoatingRate[index] || 0
+            //             };
+            //         } else {
+            //             finalPayload = {
+            //                 product: entry.product._id,
+            //                 name: entry?.product?.name,
+            //                 color: entry.color?._id || '',
+            //                 coating: entry.coating?._id || '',
+            //                 coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+            //                 delieveryQuantity: deliveredQuantities[index] || '',
+            //                 weight: parseFloat(entry?.product?.weight) || '',
+            //                 length: entry.product?.length || '',
+            //                 rate: entry.product?.rate || '',
+            //                 specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+            //                 coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
+            //                 coatingRate: parseFloat(entry.coating.rate),
+            //                 coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
+            //                 amount: parseFloat(amount.toFixed(2)),
+            //                 coatingName: entry?.coating?.name,
+            //                 cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+            //                 sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+            //                 specificCoatingAmount: coatingTotal,
+            //                 total_weight: totalWeights[index] || 0,
+            //                 total_coating_rate: totalCoatingRate[index] || 0,
+            //             }
+            //         }
+            //         return finalPayload;
+            //     }),
+            //     send_mail: entries.send_mail || false,
+            //     gst: parseFloat(entries.gst) || '',
+            //     other_tax: parseFloat(entries.tax) || '',
+            //     totalAmount: parseFloat(totalAmount) || '',
+            //     origin_point: branchId || '',
+            //     delivery_point: entries.delivery_point || '',
+            //     totalCoatingCharges: finalCoatingPrice,
+            //     totalProductPrice: totalProductPrice,
+            //     amountBeforeTax: amountBeforeTaxAndGst,
+            //     discount,
+            //     invoiceNumber,
+
+            // };
             const payload = {
                 customerOrder_id: purchaseOrderData._id || '',
                 customerName: purchaseOrderData.customer?._id || '',
@@ -229,20 +303,12 @@ const AddInvoice = () => {
                             name: entry?.product?.name,
                             color: entry.color?._id || '',
                             coating: entry.coating?._id || '',
-                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
                             delieveryQuantity: deliveredQuantities[index] || '',
                             weight: parseFloat(entry?.product?.weight) || '',
                             length: entry.product?.length || '',
                             rate: entry.product?.rate || '',
-                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
-                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
-                            coatingRate: parseFloat(entry.coating.rate),
-                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
-                            amount: parseFloat(amount.toFixed(2)),
+                            coatingRate: parseFloat(entry.coating_rate),
                             coatingName: entry?.coating?.name,
-                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            specificCoatingAmount: coatingTotal,
                             mm: entry?.mm,
                             total_weight: totalWeights[index] || 0,
                             toatl_coating_rate: totalCoatingRate[index] || 0
@@ -253,20 +319,12 @@ const AddInvoice = () => {
                             name: entry?.product?.name,
                             color: entry.color?._id || '',
                             coating: entry.coating?._id || '',
-                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
                             delieveryQuantity: deliveredQuantities[index] || '',
                             weight: parseFloat(entry?.product?.weight) || '',
                             length: entry.product?.length || '',
                             rate: entry.product?.rate || '',
-                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
-                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
-                            coatingRate: parseFloat(entry.coating.rate),
-                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
-                            amount: parseFloat(amount.toFixed(2)),
+                            coatingRate: parseFloat(entry.coating_rate),
                             coatingName: entry?.coating?.name,
-                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            specificCoatingAmount: coatingTotal,
                             total_weight: totalWeights[index] || 0,
                             total_coating_rate: totalCoatingRate[index] || 0,
                         }
@@ -288,10 +346,10 @@ const AddInvoice = () => {
             };
             console.log('Payload', payload);
 
-            // const respones = await post('/invoice', payload)
-            // console.log('Response:', respones);
-            // toast.success('Invoice Generated Successfully')
-            // navigate(PathRoutes.invoice_list)
+            const respones = await post('/invoice', payload)
+            console.log('Response:', respones);
+            toast.success('Invoice Generated Successfully')
+            navigate(PathRoutes.invoice_list)
         } catch (error) {
             console.error('Error saving data:', error);
         }
@@ -491,13 +549,24 @@ const AddInvoice = () => {
                                                                     <Input
                                                                         type='text'
                                                                         id={`coatingRate${index}`}
-                                                                        name={`coatingRate${index}`}
-                                                                        value={entry?.coating_rate}
+                                                                        name={`coating_rate${index}`}
+                                                                        // value={entry?.coating_rate}
+                                                                        value={purchaseOrderData.entries[index]?.coating?.coating_rate || entry?.coating_rate || ''}
+                                                                        // defaultValue={entry?.coating_rate}
+                                                                        // value={purchaseOrderData.entries[index]?.coating?.coating_rate || ''}
                                                                         min={0}
                                                                         onChange={(e) => {
+                                                                            const value = e.target.value.trim() === '' ? 0 : e.target.value;
                                                                             const updatedProducts = [...purchaseOrderData.entries];
-                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, rate: e.target.value } };
+                                                                            updatedProducts[index] = {
+                                                                                ...updatedProducts[index],
+                                                                                coating: {
+                                                                                    ...updatedProducts[index].coating,
+                                                                                    coating_rate: value
+                                                                                }
+                                                                            };
                                                                             setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
+                                                                            console.log(value);
                                                                         }}
                                                                         
                                                                     />
