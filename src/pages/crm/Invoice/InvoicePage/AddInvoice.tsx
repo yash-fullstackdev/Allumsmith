@@ -20,12 +20,13 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import SelectReact from '../../../../components/form/SelectReact';
 import Textarea from '../../../../components/form/Textarea';
 import Checkbox from '../../../../components/form/Checkbox';
+import FieldWrap from '../../../../components/form/FieldWrap';
 
-const columnHelper = createColumnHelper<any>();
+
 
 const AddInvoice = () => {
     const navigate = useNavigate();
-    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gst: 0, tax: 0, total_amount: '', origin_point: '', delivery_point: '', send_mail: false, }]);
+    const [entries, setEntries] = useState<any>([{ product_id: '', customer_id: '', delivered_quantity: '', customer_email: '', customer_number: '', alluminium_rate: '', coating_discount: '', customer_discount: '', gst: 0, tax: 0, total_amount: '', origin_point: '', delivery_point: '', totalProductweight: 0 }]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [customerList, setCustomerList] = useState<any[]>([]);
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>({});
@@ -36,6 +37,15 @@ const AddInvoice = () => {
     const [totalAmount, setTotalAmount] = useState<any>(0);
     const [invoiceNumber, setInvoiceNumber] = useState<any>('');
     const [branch, setBranch] = useState<any>([]);
+    const [totalWeights, setTotalWeights] = useState<Array<number>>([]);
+    const [totalCoatingRate, setTotalCoatingRate] = useState<Array<number>>([]);
+    const [totalProductWeight, setTotalProducWeight] = useState<any>(0);
+    const [totalProductPrice,setTotalProductPrice] = useState<number>(0);
+    const [alluminiumRate,setAlluminiumRate] = useState<number>(0);
+    const [finalCoatingPrice,setFinalCoatingPrice] = useState<number>(0);
+    const [discount, setDiscount] = useState<number>(0);
+    const [amountBeforeTaxAndGst, setAmountBeforeTaxAndGst] = useState<number>(0);
+
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -80,49 +90,50 @@ const AddInvoice = () => {
         setEntries({ ...entries, send_mail: e.target.checked });
     };
 
+    // const handleDeliveredQuantityChange = (value: any, index: number) => {
+    //     const updatedDeliveredQuantities = [...deliveredQuantities];
+    //     updatedDeliveredQuantities[index] = parseFloat(value);
+    //     setDeliveredQuantities(updatedDeliveredQuantities);
+    // };
     const handleDeliveredQuantityChange = (value: any, index: number) => {
         const updatedDeliveredQuantities = [...deliveredQuantities];
         updatedDeliveredQuantities[index] = parseFloat(value);
         setDeliveredQuantities(updatedDeliveredQuantities);
-    };
-    const handleQuantityAndDiscountChange = (value: any, index: number, field: string) => {
-        setQuantityAndDiscounts(prevQuantityAndDiscounts => {
-            const updatedQuantityAndDiscounts = [...prevQuantityAndDiscounts];
-            const currentItem = updatedQuantityAndDiscounts[index] || {};
-            const updatedItem = {
-                ...currentItem,
-                [field]: value,
-            };
-            updatedQuantityAndDiscounts[index] = updatedItem;
-            return updatedQuantityAndDiscounts;
-        });
+
+        // Calculate total weight for the current entry
+        const totalWeight = purchaseOrderData.entries[index]?.product?.weight * parseFloat(value);
+        const updatedTotalWeights = [...totalWeights];
+        updatedTotalWeights[index] = parseFloat(totalWeight.toFixed(2));
+        setTotalWeights((updatedTotalWeights));
+        console.log(purchaseOrderData )
+        const totalRate = purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating_rate ;
+        const updatedTotalCoatingRate = [...totalCoatingRate];
+        updatedTotalCoatingRate[index] = parseFloat(totalRate.toFixed(2));
+        setTotalCoatingRate(updatedTotalCoatingRate);
     };
 
+    const handleTotalWeight = (index: number) => {
+        return totalWeights[index] || 0;
+    }
+
+    const handleTotalCoatingRate = (index:number)=>{
+        return totalCoatingRate[index] || 0
+    }
 
 
     const calculateTotalAmount = () => {
-        let totalSpecificProductPrice = 0;
-        let totalCoatingTotal = 0;
+        const gst:number = entries.gst
+        const tax:number = entries.tax
 
-        purchaseOrderData.entries.forEach((entry: any, index: number) => {
-            const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
-            totalSpecificProductPrice += specificProductPrice || 0;
+        const myTotalCoatingPrice:number = finalCoatingPrice
+        const myProductPrice:number = totalProductPrice
+        const estimateGrandTotal:number = myTotalCoatingPrice + myProductPrice
+        setAmountBeforeTaxAndGst(estimateGrandTotal);
 
-            const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry?.coating?.rate;
+        const amountAfterGst = estimateGrandTotal * (gst/100)
+        const amountAfterTax = estimateGrandTotal * (tax/100)
 
-            const discount = parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0;
-            const finalCoatingPrice = coatingTotal * (1 - discount / 100);
-            console.log("finalCoatingPrice", finalCoatingPrice);
-
-            totalCoatingTotal += finalCoatingPrice || 0;
-        });
-
-        const totalAmount = totalSpecificProductPrice + totalCoatingTotal;
-
-        const finalAmount = totalAmount + (totalAmount * (entries.gst / 100));
-
-        const grandTotal = finalAmount && (finalAmount + (finalAmount * (entries.tax / 100)));
-        return parseFloat(grandTotal.toFixed(2));
+        return parseFloat((estimateGrandTotal + amountAfterGst + amountAfterTax).toFixed(2));
     };
 
     const getAllBranch = async () => {
@@ -135,18 +146,50 @@ const AddInvoice = () => {
         }
     };
 
+    const calcTotalWeight = () =>{
+        let weight = 0;
+        totalWeights.forEach((data:any) =>(
+            weight += data
+        ));
+        let totalWeight = weight || 0;
+        setTotalProducWeight(totalWeight);
+    }
+
+    const calculateTotalCoatingPrice = () => {
+        let estimateCoatingPrice:number = 0;
+        totalCoatingRate.forEach((item:number) => {
+            estimateCoatingPrice += item
+        })
+        estimateCoatingPrice = (estimateCoatingPrice) * (1 - (discount/100));
+        setFinalCoatingPrice(estimateCoatingPrice || 0)
+    }
+    useEffect(() =>{
+        calculateTotalCoatingPrice();
+    },[discount])
+    const calculateTotalProductPrice = (alluminiumRate:number,totalProductWeight:number) => {
+        const totalPrice = alluminiumRate * totalProductWeight
+        setTotalProductPrice(parseFloat(totalPrice.toFixed(2)))
+    }
+
+    useEffect(() =>{
+        calcTotalWeight();
+    },[totalWeights]);
+
+    useEffect(() => {
+        calculateTotalCoatingPrice()
+    },[totalCoatingRate])
+
     useEffect(() => {
         if (purchaseOrderData?.entries?.length > 0) {
 
-            const grandTotal  = calculateTotalAmount();
+            const grandTotal = calculateTotalAmount();
             setTotalAmount(grandTotal);
         }
-    }, [purchaseOrderData.entries, entries.gst, entries.tax, quantityAndDiscounts]);
+    }, [totalProductPrice,finalCoatingPrice, entries.gst, entries.tax]);
 
-
-
-
-
+    useEffect(() => {
+        calculateTotalProductPrice(alluminiumRate,totalProductWeight)
+    },[alluminiumRate,totalProductWeight])
 
     const handleSaveEntries = async () => {
         let amountBeforeTax = 0; // Initialize amountBeforeTax variable
@@ -180,29 +223,7 @@ const AddInvoice = () => {
                     const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
                     let finalPayload = {}
-                    if(entry?.mm){
-                        finalPayload =  {
-                            product: entry.product._id,
-                            name: entry?.product?.name,
-                            color: entry.color?._id || '',
-                            coating: entry.coating?._id || '',
-                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
-                            delieveryQuantity: deliveredQuantities[index] || '',
-                            weight: parseFloat(entry?.product?.weight) || '',
-                            length: entry.product?.length || '',
-                            rate: entry.product?.rate || '',
-                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
-                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
-                            coatingRate: parseFloat(entry.coating.rate),
-                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
-                            amount: parseFloat(amount.toFixed(2)),
-                            coatingName: entry?.coating?.name,
-                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
-                            specificCoatingAmount: coatingTotal,
-                            mm: entry?.mm
-                        };
-                    }else{
+                    if (entry?.mm) {
                         finalPayload = {
                             product: entry.product._id,
                             name: entry?.product?.name,
@@ -222,26 +243,55 @@ const AddInvoice = () => {
                             cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
                             sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
                             specificCoatingAmount: coatingTotal,
+                            mm: entry?.mm,
+                            total_weight: totalWeights[index] || 0,
+                            toatl_coating_rate: totalCoatingRate[index] || 0
+                        };
+                    } else {
+                        finalPayload = {
+                            product: entry.product._id,
+                            name: entry?.product?.name,
+                            color: entry.color?._id || '',
+                            coating: entry.coating?._id || '',
+                            coatingDiscount: parseFloat(quantityAndDiscounts[index]?.coating_discount) || '',
+                            delieveryQuantity: deliveredQuantities[index] || '',
+                            weight: parseFloat(entry?.product?.weight) || '',
+                            length: entry.product?.length || '',
+                            rate: entry.product?.rate || '',
+                            specificProductPrice: parseFloat(specificProductPrice.toFixed(2)) || 0,
+                            coatingWeight: parseFloat(entry?.coating?.coatingWeight) || '',
+                            coatingRate: parseFloat(entry.coating.rate),
+                            coatingTotal: parseFloat(finalCoatingTotal.toFixed(2)) || 0,
+                            amount: parseFloat(amount.toFixed(2)),
+                            coatingName: entry?.coating?.name,
+                            cgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            sgst: parseFloat(((totalAmount - amountBeforeTax) / 2).toFixed(2)),
+                            specificCoatingAmount: coatingTotal,
+                            total_weight: totalWeights[index] || 0,
+                            total_coating_rate: totalCoatingRate[index] || 0,
                         }
                     }
                     return finalPayload;
                 }),
-                amountBeforeTax: parseFloat(amountBeforeTax.toFixed(2)), // Set amountBeforeTax here
                 send_mail: entries.send_mail || false,
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
                 totalAmount: parseFloat(totalAmount) || '',
                 origin_point: branchId || '',
                 delivery_point: entries.delivery_point || '',
+                totalCoatingCharges: finalCoatingPrice,
+                totalProductPrice: totalProductPrice,
+                amountBeforeTax: amountBeforeTaxAndGst,
+                discount,
                 invoiceNumber,
 
             };
             console.log('Payload', payload);
 
-            const respones = await post('/invoice', payload)
-            console.log('Response:', respones);
-            toast.success('Invoice Generated Successfully')
-            navigate(PathRoutes.invoice_list)
+            // const respones = await post('/invoice', payload)
+            // console.log('Response:', respones);
+            // toast.success('Invoice Generated Successfully')
+            // navigate(PathRoutes.invoice_list)
         } catch (error) {
             console.error('Error saving data:', error);
         }
@@ -281,12 +331,12 @@ const AddInvoice = () => {
                                         </div>
                                         <div>
                                             <div className='mt-2 grid grid-cols-12 gap-1'>
-                                                <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                <div className='col-span-4 lg:col-span-3 mt-5'>
                                                     <Label htmlFor='customerName'>
                                                         Customer
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
-                                                    
+
                                                     <SelectReact
                                                         id='customerName'
                                                         name='customerName'
@@ -301,7 +351,7 @@ const AddInvoice = () => {
                                                     />
 
                                                 </div>
-                                                <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                <div className='col-span-4 lg:col-span-3 mt-5'>
                                                     <Label htmlFor='customerName'>
                                                         Inovice Number
                                                         <span className='ml-1 text-red-500'>*</span>
@@ -310,11 +360,40 @@ const AddInvoice = () => {
                                                         id='invoiceNumber'
                                                         name='invoiceNumber'
                                                         value={invoiceNumber}
-                                                        // onChange={(e:any) => setInvoiceNumber(e.target.value)}
+
                                                         disabled
 
                                                     />
                                                 </div>
+                                                {
+                                                    customerId && customerId !== '' && <>
+                                                        <div className='col-span-4 lg:col-span-3 mt-5'>
+                                                        <Label htmlFor='customerName'>
+                                                            Customer Email
+                                                            <span className='ml-1 text-red-500'>*</span>
+                                                        </Label>
+                                                        <Input
+                                                            type='text'
+                                                            value={purchaseOrderData && purchaseOrderData?.customer?.email}
+                                                            name="customer_email"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div className='col-span-4 lg:col-span-3 mt-5'>
+                                                        <Label htmlFor='customerName'>
+                                                            Customer Number
+                                                            <span className='ml-1 text-red-500'>*</span>
+                                                        </Label>
+                                                        <Input
+                                                            type='text'
+                                                            value={purchaseOrderData && purchaseOrderData?.customer?.phone}
+                                                            name="customer_number"
+                                                            disabled
+
+                                                        />
+                                                    </div>
+                                                    </>
+                                                }
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
@@ -344,7 +423,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                             </div>
                                                             <div className='mt-2 grid grid-cols-12 gap-1' key={entry._id}>
-                                                                <div className='col-span-12 lg:col-span-2 '>
+                                                                <div className='col-span-12 lg:col-span-3 '>
                                                                     <Label htmlFor="name tex" className='!text-sm'>
                                                                         Name
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -357,7 +436,7 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
+                                                                <div className='col-span-12 lg:col-span-1'>
                                                                     <Label htmlFor="name" className='!text-sm'>
                                                                         Length(mm)
                                                                         <span className='ml-1 text-red-500'>*</span>
@@ -370,7 +449,7 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                
+
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor="name" className='!text-sm'>
                                                                         Product Weight(kg)
@@ -388,50 +467,8 @@ const AddInvoice = () => {
                                                                         }}
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="name" className='!text-sm'>
-                                                                        Rate(rs)
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='text'
-                                                                        id={`product${index}`}
-                                                                        name={`product${index}`}
-                                                                        // value={entry?.product?.rate}
-                                                                        value={entry?.product?.rate}
-                                                                        onChange={(e) => {
-                                                                            const updatedProducts = [...purchaseOrderData.entries]; // Copy the products array
-                                                                            updatedProducts[index] = { ...updatedProducts[index], product: { ...updatedProducts[index].product, rate: e.target.value } }; // Update the rate of the specific product
-                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts }); // Update the state with the modified products
-                                                                        }}
 
-                                                                    />
-                                                                </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="coatingQuantity" className='!text-sm'>
-                                                                        Available Quantity(Pcs)
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='text'
-                                                                        id={`coatingQuantity${index}`}
-                                                                        name={`coatingQuantity${index}`}
-                                                                        value={entry?.itemSummary?.coatingQuantity}
-                                                                    />
-                                                                </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="deliveredQuantity" className='!text-sm'>
-                                                                        Delivered Quantity(Pcs)
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='number'
-                                                                        id={`delivered_quantity${index}`}
-                                                                        name={`delivered_quantity${index}`}
-                                                                        value={deliveredQuantities[index]}
-                                                                        onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
-                                                                    />
-                                                                </div>
+
 
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coating`} className='!text-sm'>
@@ -448,58 +485,25 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
-                                                                        Coating/Anodize Rate(rs)
+                                                                        Coating/Anodize Rate(rf)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
                                                                         type='text'
                                                                         id={`coatingRate${index}`}
                                                                         name={`coatingRate${index}`}
-                                                                        value={entry?.coating?.rate}
+                                                                        value={entry?.coating_rate}
                                                                         min={0}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
                                                                             updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, rate: e.target.value } };
                                                                             setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
                                                                         }}
+                                                                        
                                                                     />
                                                                 </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="coatingWeight" className='!text-sm'>
-                                                                        Coating Weight(kg)
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='text'
-                                                                        id={`coatingWeight${index}`}
-                                                                        name={`coatingWeight${index}`}
-                                                                        value={entry?.coating?.coatingWeight}
-                                                                        onChange={(e) => {
-                                                                            const updatedProducts = [...purchaseOrderData.entries];
-                                                                            updatedProducts[index] = { ...updatedProducts[index], coating: { ...updatedProducts[index].coating, coatingWeight: e.target.value } };
-                                                                            setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                                <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="coatingDiscount" className='!text-sm'>
-                                                                        Coating Discount(%)
-                                                                        <span className='ml-1 text-red-500'>*</span>
-                                                                    </Label>
-                                                                    <Input
-                                                                        type='number'
-                                                                        id={`coating_discount${index}`}
-                                                                        name={`coating_discount${index}`}
-                                                                        value={quantityAndDiscounts[index]?.coating_discount || (
-                                                                            entry.coating && entry.coating.type === 'coating' ?
-                                                                            purchaseOrderData.customer?.coating_discount || 0 :
-                                                                            entry.coating && entry.coating.type === 'anodize' ?
-                                                                            purchaseOrderData.customer?.anodize_discount || 0 :
-                                                                            ''
-                                                                        )}
-                                                                        onChange={(e) => handleQuantityAndDiscountChange(e.target.value, index, 'coating_discount')}
-                                                                    />
-                                                                </div>
+
+
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor='color' className='!text-sm'>
                                                                         Color
@@ -515,23 +519,75 @@ const AddInvoice = () => {
                                                                     />
                                                                 </div>
                                                                 {entry?.mm && (
-                                                                    <div className='col-span-12 lg:col-span-2'>
-                                                                    <Label htmlFor="name" className='!text-sm'>
-                                                                        MM
+                                                                    <div className='col-span-12 lg:col-span-3'>
+                                                                        <Label htmlFor="name" className='!text-sm'>
+                                                                            MM
+                                                                            <span className='ml-1 text-red-500'>*</span>
+                                                                        </Label>
+                                                                        <Input
+                                                                            type='text'
+                                                                            id={`product${index}`}
+                                                                            name={`product${index}`}
+                                                                            value={entry?.mm || 'NA'}
+                                                                            disabled
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                                <div className='col-span-12 lg:col-span-3'>
+                                                                    <Label htmlFor="coatingQuantity" className='!text-sm'>
+                                                                        Available Quantity
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
                                                                         type='text'
-                                                                        id={`product${index}`}
-                                                                        name={`product${index}`}
-                                                                        value={entry?.mm || 'NA'}
+                                                                        id={`coatingQuantity${index}`}
+                                                                        name={`coatingQuantity${index}`}
+                                                                        value={entry?.itemSummary?.coatingQuantity}
+                                                                    />
+                                                                </div>
+                                                                <div className='col-span-12 lg:col-span-3'>
+                                                                    <Label htmlFor="deliveredQuantity" className='!text-sm'>
+                                                                        Delivered Quantity
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='number'
+                                                                        id={`delivered_quantity${index}`}
+                                                                        name={`delivered_quantity${index}`}
+                                                                        value={deliveredQuantities[index]}
+                                                                        min={0}
+                                                                        onChange={(e) => handleDeliveredQuantityChange(e.target.value, index)}
+                                                                    />
+                                                                </div>
+
+                                                                <div className='col-span-12 lg:col-span-3'>
+                                                                    <Label htmlFor="totalWeight" className='!text-sm'>
+                                                                        Total Weight
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='number'
+                                                                        id={`total_weight${index}`}
+                                                                        name={`total_weight${index}`}
+                                                                        value={handleTotalWeight(index)}
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                )}
                                                                 
 
-
+                                                                <div className='col-span-12 lg:col-span-3'>
+                                                                    <Label htmlFor={`total_rate${index}`} className='!text-sm'>
+                                                                        Product Coating Rate
+                                                                        <span className='ml-1 text-red-500'>*</span>
+                                                                    </Label>
+                                                                    <Input
+                                                                        type='number'
+                                                                        id={`total_rate${index}`}
+                                                                        name={`total_rate${index}`}
+                                                                        value={handleTotalCoatingRate(index)}
+                                                                        disabled
+                                                                    />
+                                                                </div>
 
                                                             </div>
 
@@ -563,31 +619,7 @@ const AddInvoice = () => {
                                                 <div className='mt-2 grid grid-cols-12 gap-1'>
                                                     <div className='col-span-12 lg:col-span-12'>
                                                         <div className='mt-2 grid grid-cols-12 gap-1' >
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Customer Email
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='text'
-                                                                    value={purchaseOrderData && purchaseOrderData.customer.email}
-                                                                    name="customer_email"
-                                                                    disabled
-                                                                />
-                                                            </div>
-                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
-                                                                    Customer Number
-                                                                    <span className='ml-1 text-red-500'>*</span>
-                                                                </Label>
-                                                                <Input
-                                                                    type='text'
-                                                                    value={purchaseOrderData && purchaseOrderData.customer.phone}
-                                                                    name="customer_number"
-                                                                    disabled
 
-                                                                />
-                                                            </div>
 
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
@@ -596,14 +628,14 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={entries.alluminium_rate}
+                                                                    value={alluminiumRate || 0}
                                                                     name="gst"
-                                                                    onChange={(e) => setEntries({ ...entries, alluminium_rate: e.target.value })}
+                                                                    onChange={(e) => setAlluminiumRate(parseInt(e.target.value))}
                                                                 />
                                                             </div>
 
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
-                                                                <Label htmlFor='customerName'>
+                                                                <Label htmlFor='gst'>
                                                                     GST(%)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
@@ -611,9 +643,68 @@ const AddInvoice = () => {
                                                                     type='number'
                                                                     value={entries.gst}
                                                                     name="gst"
+                                                                    min={0}
                                                                     onChange={(e) => setEntries({ ...entries, gst: e.target.value })}
                                                                 />
                                                             </div>
+
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='totalProductWeight'>
+                                                                    Total Product Weight
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                                <Input
+                                                                    type='number'
+                                                                    value={totalProductWeight}
+                                                                    name="totalProductWeight"
+                                                                   
+                                                                />
+                                                            </div>
+                                                            
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='totalProductPrice'>
+                                                                    Total Product Charges
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                                <Input
+                                                                    type='number'
+                                                                    value={totalProductPrice || 0}
+                                                                    name="totalProductPrice"
+                                                                    disabled
+                                                                />
+                                                            </div>
+                                                            
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='totalCoatingCharges'>
+                                                                    Total Coating Charges
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                                <Input
+                                                                    type='number'
+                                                                    value={finalCoatingPrice || 0}
+                                                                    name="totalCoatingCharges"
+                                                                    disabled
+                                                                />
+                                                            </div>
+
+                                                            <div className='col-span-4 lg:col-span-4 mt-5'>
+                                                                <Label htmlFor='discount'>
+                                                                    Discount(%)
+                                                                    <span className='ml-1 text-red-500'>*</span>
+                                                                </Label>
+                                                               
+                                                                <Input
+                                                                    type='number'
+                                                                    value={discount || 0}
+                                                                    name="discount"
+                                                                    onChange={(e:any) => setDiscount(+e.target.value)}
+                                                                    min={0}
+
+                                                                    
+                                                                />
+                                                                
+                                                            </div>
+
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='other_tax'>
                                                                     Other Tax(%)
@@ -623,6 +714,7 @@ const AddInvoice = () => {
                                                                     type='number'
                                                                     value={entries.tax}
                                                                     name="other_tax"
+                                                                    min={0}
                                                                     onChange={(e) => setEntries({ ...entries, tax: e.target.value })}
                                                                 />
                                                             </div>
@@ -638,7 +730,7 @@ const AddInvoice = () => {
                                                                     name="total_amount"
                                                                     onChange={(e) => {
                                                                         setTotalAmount(e.target.value)
-                                                                        setEntries({...entries, total_amount: totalAmount})
+                                                                        setEntries({ ...entries, total_amount: totalAmount })
                                                                     }}
                                                                 />
                                                             </div>
@@ -688,7 +780,7 @@ const AddInvoice = () => {
                                                                     onChange={handleSendMailChange}
                                                                 />
 
-                                                            </div>            
+                                                            </div>
                                                         </div>
                                                         <div className='flex mt-2 gap-2 '>
                                                             <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries}  >
