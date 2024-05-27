@@ -15,6 +15,8 @@ import AllInvoice from './AllInvoice';
 import { useFormik } from 'formik';
 import AllLedger from './AllLedger';
 import Collapse from '../../../../components/utils/Collapse';
+import { toast } from 'react-toastify';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 
 const optionSelect = [
   { value: "credit", label: "Credit" },
@@ -43,17 +45,23 @@ const LedgerPage = () => {
     ledgerDetails: false,
 
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { id } = useParams();
   const getCustomerDetails = async () => {
     try {
-      const { data } = await get(`/customers`);
+      const { data } = await get(`/customers/${id}`);
       setCustomer(data);
+      formik.setFieldValue('customerName', data?.name)
+      formik.setFieldValue('address_line1', data?.address_line1);
+      formik.setFieldValue('address_line2', data?.address_line2);
+      formik.setFieldValue('phone', data?.phone);
+      formik.setFieldValue('email', data?.email);
     } catch (error) {
       console.error('Error Fetching Customer Order');
     }
   }
 
-  console.log('customer')
+  console.log('customer', customer)
   const formik: any = useFormik({
     initialValues: {
       startDate: '',
@@ -65,62 +73,77 @@ const LedgerPage = () => {
   });
 
 
-  const handleSubmit = async () => {
-    try {
-      // Gather all form data
-      const formDataToSend = {
-        customer: formData.customer_id,
-        payment_mode: formData.payment_mode,
-        grandTotal: parseFloat(formData.grandTotal),
-        remarks: formData.remarks,
-        amount_payable: parseFloat(formData.amountPayable),
-      };
 
-      console.log('Form data to send:', formDataToSend);
-      const { data } = await post('/ledger', formDataToSend);
-
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      navigate(PathRoutes.ledger_list)
-    }
-  };
-  function formatDate(dateString:any) {
+  function formatDate(dateString: any) {
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`;
-}
+  }
 
-// Example usage:
-const formattedDate = formatDate(formik.values.startDate);
-console.log(formattedDate); // Outputs: 24-05-2024
+  // Example usage:
+  const formattedDate = formatDate(formik.values.startDate);
+  console.log(formattedDate); // Outputs: 24-05-2024
 
+  
   const fetchLedgerDetails = async (customerId: any) => {
     try {
-      const startDate = formatDate(formik.values.startDate);
-      const endDate = formatDate(formik.values.endDate);
-      const { data } = await get(`/ledger/findledger/${customerId}/${startDate}/${endDate}`);
-      setSpecificCustomerData(data);
-      formik.setFieldValue('customerName', data[0]?.customer_id.name);
-      formik.setFieldValue('address_line1',data[0]?.customer_id.address_line1);
-      formik.setFieldValue('address_line2',data[0]?.customer_id.address_line2);
-      formik.setFieldValue('email', data[0].customer_id.email);
-      formik.setFieldValue('phone', data[0].customer_id.phone)
+      const startDate = formik.values.startDate ? formatDate(formik.values.startDate) : '';
+      const endDate = formik.values.endDate ? formatDate(formik.values.endDate) : '';
+      const type = formik.values.type || '';
 
-      // setAssociatedInvoices(data.associatedInvoices);
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append('startDate', startDate);
+      if (endDate) queryParams.append('endDate', endDate);
+      if (type) queryParams.append('type', type);
 
-      // Calculate grandTotal
-      // const totalAmounts = data.associatedInvoices.map((invoice: any) => invoice.totalAmount);
-      // const grandTotal = totalAmounts.reduce((acc: number, curr: number) => acc + curr, 0);
-
-      // Set grandTotal in formData
-      // setFormData({ ...formData, grandTotal:parseFloat(grandTotal.toFixed(2)), customer_id: customerId, paidAmount:parseFloat((data.paid_amount).toFixed(2)) || 0, pendingAmount: data.pending_amount || 0, creditedAmount:parseFloat((data.credit_amount).toFixed(2)) || 0});
-      // setFormData({ ...formData, grandTotal, customer_id: customerId, paidAmount: data.paid_amount || 0, pendingAmount: data.pending_amount || 0, creditedAmount: data.credit_amount || 0 });
-
+      const { data } = await get(`/ledger/findledger/${customerId}?${queryParams.toString()}`);
+      setAssociatedLedger(data);
     } catch (error) {
       console.error('Error Fetching Invoices for Customer:', error);
     }
+  };
+
+  useEffect(() => {
+    fetchLedgerDetails
+  }, [associatedLedger])
+  const handleLedgerData = async () => {
+    try {
+      const { data } = await get(`/ledger/customer/${id}`);
+      setAssociatedLedger(data);
+    } catch (error) {
+
+    }
   }
-  console.log('data', specificCustomerData)
+
+  const handleGeneratePdf = async() =>{
+    try {
+        setIsLoading(true);
+        const payload = associatedLedger
+        console.log("payload",payload)
+        toast.success('Please Wait Pdf is being generated...')
+        const response = await post(`/ledger/pdf`, payload);
+       
+        console.log(response.data.data);
+        if (response && response.status === 201 && response.data && response.data.data) {
+            const pdfData = response.data.data;
+            console.log('PDF DATA', pdfData);
+
+            const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
+
+            window.open(url, '_blank');
+        } else {
+            console.error('Error: PDF data not found in response');
+        }
+        setIsLoading(false);
+        
+    } catch (error) {
+        toast.error('Error Generating PDF');
+    }
+}
+
+  useEffect(() => {
+    handleLedgerData();
+  }, [])
+  console.log('data', associatedLedger)
 
   const collapseAllAccordians = () => {
     setAccordionStates({
@@ -132,16 +155,20 @@ console.log(formattedDate); // Outputs: 24-05-2024
     setCollapseAll(!collapseAll);
   };
 
-  console.log('Invoice Data', associatedInvoices);
-  console.log('data', specificCustomerData)
-  console.log('Customer', customer);
+
   useEffect(() => {
     getCustomerDetails()
   }, [])
 
   return (
-    <PageWrapper name='ADD LEDGER' isProtectedRoute={true}>
-      <Subheader>
+    <PageWrapper name='LEDGER' isProtectedRoute={true}>
+      {isLoading ? (
+        <div className='flex h-[80vh] items-center justify-center'>
+        <LoaderDotsCommon />
+      </div>
+      ):(
+        <>
+        <Subheader>
         <SubheaderLeft>
           <Button
             icon='HeroArrowLeft'
@@ -165,6 +192,7 @@ console.log(formattedDate); // Outputs: 24-05-2024
 
         </SubheaderRight>
       </Subheader>
+
       <Container>
         <div className='flex h-full flex-wrap content-start'>
           <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
@@ -194,111 +222,37 @@ console.log(formattedDate); // Outputs: 24-05-2024
                         </Button>
                       </div>
                     </div>
-                    <Collapse isOpen={!accordionStates.customerInfo} className='overflow-visible'>
+                    <Collapse isOpen={!accordionStates.customerInfo} >
                       <div className='mt-2 grid grid-cols-12 gap-1 '>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='name'>
-                            Customer Name
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <SelectReact
-                            id={`name`}
-                            name={`name`}
-                            options={customer.map((customer: any) => ({
-                              value: customer._id,
-                              label: customer.name,
-                            }))}
-                            onChange={(value: any) => {
-                              formik.setFieldValue('customer_id', value.value)
-                              getCustomerDetails();
-                            }
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Customer Name :<span><h5>{formik.values.customerName}</h5></span>
 
-
-                            }
-                          // onChange ={handleCustomerSelect}
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3 '>
-                          <Label htmlFor='startDate'>
-                            Start Date
-                            <span className='ml-1 text-red-500'>*</span>
                           </Label>
-                          <Input
-                            type='date'
-                            id={`startDate`}
-                            name={`startDate`}
-                            value={formik.values.startDate}
-                            onChange={formik.handleChange}
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='endDate'>
-                            End Date
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type='date'
-                            id={`endDate`}
-                            name={`endDate`}
-                            value={formik.values.endDate}
-                            onChange={formik.handleChange}
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3 mt-4 ml-2'>
-                          <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={() => fetchLedgerDetails(formik.values.customer_id)} >
-                            Fetch Details
-                          </Button>
                         </div>
 
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Address :<span><h5>{formik.values.address_line1?.toUpperCase()}</h5></span>
+                          </Label>
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Phone :<span><h5>{formik.values.phone}</h5></span>
+                          </Label>
+                        </div>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Address Line 2 :<span><h5>{formik?.values.address_line2?.toUpperCase() || 'NA'}</h5></span>
+                          </Label>
+                        </div>
+                        <div className='col-span-12 lg:col-span-12'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Email:<span><h5>{formik.values.email}</h5></span>
+                          </Label>
+                        </div>
                       </div>
                     </Collapse>
-
-
-                  </CardBody>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </Container>
-      <Container>
-        <div className='flex h-full flex-wrap content-start'>
-          <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
-            <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-              <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                <Card>
-
-                  <CardBody>
-                  <div className='mt-2 grid grid-cols-12 gap-1 '>
-                    <div className='col-span-12 lg:col-span-6'>
-                      <Label htmlFor='name' className='flex gap-1'>
-                        Customer Name :<span><h5>{formik.values.customerName}</h5></span>
-
-                      </Label>
-                    </div>
-
-                    <div className='col-span-12 lg:col-span-6'>
-                      <Label htmlFor='name' className='flex gap-1'>
-                        Address :<span><h5>{formik.values.address_line1?.toUpperCase()}</h5></span>
-                      </Label>
-                    </div>
-                    <div className='col-span-12 lg:col-span-6'>
-                      <Label htmlFor='name' className='flex gap-1'>
-                        Phone :<span><h5>{formik.values.phone}</h5></span>
-                      </Label>
-                    </div>
-                    <div className='col-span-12 lg:col-span-6'>
-                      <Label htmlFor='name' className='flex gap-1'>
-                        Address Line 2 :<span><h5>{formik?.values.address_line2?.toUpperCase() || 'NA'}</h5></span>
-                      </Label>
-                    </div>
-                    <div className='col-span-12 lg:col-span-12'>
-                      <Label htmlFor='name' className='flex gap-1'>
-                        Email:<span><h5>{formik.values.email}</h5></span>
-                      </Label>
-                    </div>
-                    </div>
                   </CardBody>
                 </Card>
               </div>
@@ -306,8 +260,12 @@ console.log(formattedDate); // Outputs: 24-05-2024
           </div>
         </div>
       </Container>
-      {/* <AllInvoice associatedInvoices={associatedInvoices} accordionStates={accordionStates} setAccordionStates={setAccordionStates} /> */}
-      <AllLedger associatedLedger={specificCustomerData}  />
+      
+      <AllLedger associatedLedger={associatedLedger} formik={formik} fetchLedgerDetails={fetchLedgerDetails} id={id} setAssociatedLedger={setAssociatedLedger} accordionStates= {accordionStates} setAccordionStates={setAccordionStates} handleLedgerData = {handleLedgerData} handleGeneratePdf = {handleGeneratePdf} />
+        </>
+      )}
+      
+    
     </PageWrapper>
 
 
