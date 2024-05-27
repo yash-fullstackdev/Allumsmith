@@ -29,9 +29,10 @@ import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Collapse from '../../../../components/utils/Collapse';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
-const AllInvoice = ({associatedInvoices}:any) => {
+const AllInvoice = ({ associatedInvoices, accordionStates, setAccordionStates }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [jobsList, setJobsList] = useState<any>([]);
     const [isEditModal, setIsEditModal] = useState(false);
@@ -51,8 +52,8 @@ const AllInvoice = ({associatedInvoices}:any) => {
     useEffect(() => {
         getInvoiceList();
     }, [])
-   
-    const columns:any = [
+
+    const columns: any = [
 
         columnHelper.accessor('Invoice Name', {
             cell: (cellContext) => (
@@ -72,7 +73,7 @@ const AllInvoice = ({associatedInvoices}:any) => {
             ),
             header: 'Total Amount',
         }),
-        
+
 
     ];
     console.log('Associated Invoices', associatedInvoices);
@@ -91,36 +92,64 @@ const AllInvoice = ({associatedInvoices}:any) => {
         getPaginationRowModel: getPaginationRowModel(),
     });
     return (
-        
+        <PageWrapper >
             <Container>
-                <Card>
-                    <CardHeader>
-                        <CardHeaderChild>
-                            <CardTitle><h1>Invoice List</h1></CardTitle>
-                        </CardHeaderChild>
+                <div className='flex h-full flex-wrap content-start'>
+                    <div className='m-5 mt-0 grid w-full grid-cols-6 gap-1'>
+                        <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                            <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+                                <Card>
+                                <CardBody>
+                                    <div className='flex'>
+                                        <div className='bold w-full'>
+                                            <Button
+                                                variant='outlined'
+                                                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                                onClick={() =>
+                                                    setAccordionStates({
+                                                        ...accordionStates,
+                                                        invoiceDetails: !accordionStates.invoiceDetails,
+                                                    })
+                                                }
+                                                rightIcon={
+                                                    !accordionStates.invoiceDetails
+                                                        ? 'HeroChevronUp'
+                                                        : 'HeroChevronDown'
+                                                }
+                                            >
+                                                Invoice Details
+                                            </Button>
+                                        </div>
+                                    </div>
+                                                
+                                    <Collapse isOpen={!accordionStates.invoiceDetails}>        
+                                                
+                                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
+                                            <TableTemplate
 
-
-                    </CardHeader>
-                    <CardBody>
-                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                            />
-                        ) : (
-                            !isLoading && <p className="text-center text-gray-500">No records found</p>
-                        )}
-                        {/* <div className='flex justify-center'>
+                                                className='table-fixed max-md:min-w-[70rem] mt-3'
+                                                table={table}
+                                            />
+                                        ) : (
+                                            !isLoading && <p className="text-center text-gray-500">No records found</p>
+                                        )}
+                                        {/* <div className='flex justify-center'>
                             {isLoading && <LoaderDotsCommon />}
                         </div> */}
-                    </CardBody>
-                    {table.getFilteredRowModel().rows.length > 0 &&
-                        <TableCardFooterTemplate table={table} />
-                    }
-                </Card>
+                                    
+                                    {table.getFilteredRowModel().rows.length > 0 &&
+                                        <TableCardFooterTemplate table={table} />
+                                    }
+                                    </Collapse> 
+                                    </CardBody>
+                                </Card>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Container>
-            
-        
+        </PageWrapper>
+
     )
 }
 

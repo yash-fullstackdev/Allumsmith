@@ -40,6 +40,7 @@ import LedgerListPage from '../pages/crm/Ledger/LedgerListPage/LedgerListPage';
 import LedgerPage from '../pages/crm/Ledger/LedgerPage/LedgerPage';
 import EditLedgerPag from '../pages/crm/Ledger/LedgerPage/EditLedgerPag';
 import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/EditWithoutMaterial';
+import PaymentPage from '../pages/crm/Payment/PaymentPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -201,12 +202,16 @@ const contentRoutes: RouteProps[] = [
 		element: <LedgerListPage />,
 	},
 	{
-		path: `${appPages.ledgerPage.addPageLink.to}`,
+		path: `${appPages.ledgerPage.addPageLink.to}/:id`,
 		element: <LedgerPage />,
 	},
+	// {
+	// 	path: `${appPages.ledgerPage.editPageLink.to}`,
+	// 	element: <EditLedgerPag />,
+	// },
 	{
-		path: `${appPages.ledgerPage.editPageLink.to}`,
-		element: <EditLedgerPag />,
+		path:`${appPages.payment.addPageLink.to}`,
+		element:<PaymentPage/>
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },
