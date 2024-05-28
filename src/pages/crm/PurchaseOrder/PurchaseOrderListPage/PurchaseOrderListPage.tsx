@@ -159,8 +159,10 @@ const PurchaseOrderListPage = () => {
                 <div className=''>
                     <Button onClick={() => {
 						navigate(`${PathRoutes.edit_purchase_order}/${info.row.original._id}`)
+                    }
 					}
-					}>
+                    isDisable = {(info.row.original.status !== 'pending')}
+                    >
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							fill='none'

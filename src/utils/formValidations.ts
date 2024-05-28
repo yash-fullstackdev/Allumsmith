@@ -30,210 +30,7 @@ const createUserSchema = Yup.object().shape({
 	// }),
 });
 
-const customerSchema = Yup.object().shape({
-	Name: Yup.string().min(2, 'Too Short!').required('Name is Required'),
-	// dbaName: Yup.string()
-	// 	.min(2, 'Too Short!')
-	// 	.required('DBA Name is Required'),
-	address: Yup.string().min(2, 'Too Short!').required('Address is Required'),
-	city: Yup.string().min(2, 'Too Short!').required('City is Required'),
-	state: Yup.string().min(2, 'Too Short!').required('State is Required'),
-	// zipcode: Yup.string().min(5, '!').max(9, '!').required('Zip Code is Required'),
-	zipcode: Yup.string()
-		.matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code')
-		.required('Zip Code is Required'),
-	country: Yup.string().required('Country is Required'),
-	phoneNumber: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.required('Phone number is Required'),
-	phoneNumber2: Yup.string()
-		.nullable()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number'),
-	fax: Yup.string()
-		.nullable()
-		.min(14, 'Enter valid Fax number')
-		.max(15, 'Enter valid Fax number'),
-	URL: Yup.string()
-		.nullable()
-		.matches(/^(ftp|http|https):\/\/[^ "]+$/, 'Invalid URL. Please enter a valid URL.')
-		.min(10, 'URL must be at least 10 characters')
-		.max(50, 'URL must not exceed 15 characters'),
-	billZipcode: Yup.string()
-		.matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code')
-		.nullable(),
-	billPhoneNumber: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.nullable(),
-	billPhoneNumber2: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.nullable(),
-	billFax: Yup.string()
-		.nullable()
-		.min(14, 'Enter valid Fax number')
-		.max(15, 'Enter valid Fax number')
-		.nullable(),
-	billEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			const isValid = Yup.array()
-				.of(
-					Yup.string()
-						.email('Inavlid Email format')
-						.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-				)
-				.isValidSync(emails);
 
-			return isValid;
-		}),
-	invoiceEmail: Yup.string()
-		.required('Invoice Email is Required')
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			const isValid = Yup.array().of(Yup.string().email()).isValidSync(emails);
-
-			return isValid;
-		}),
-	orderConfirmationEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			if (!value || value.trim() === '') {
-				return true;
-			}
-			const emails = value?.split(',').map((email) => email.trim());
-			return emails?.every((email) => emailRegex.test(email));
-		}),
-	statementsEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			if (!value || value.trim() === '') {
-				return true;
-			}
-			const emails = value?.split(',').map((email) => email.trim());
-			return emails?.every((email) => emailRegex.test(email));
-		}),
-
-	email: Yup.string()
-		.required('Email is required')
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value.split(',').map((email) => email.trim());
-			return emails.every((email) => emailRegex.test(email));
-		}),
-	APcontact: Yup.string().required('A/P Contact is Required'),
-	APphoneNumber: Yup.string()
-		.min(14, 'Enter valid Phone number')
-		.max(15, 'Enter valid Phone number')
-		.required('A/P Phone Number is Required'),
-	APemail: Yup.string()
-		.required('A/P Email is Required')
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			const emails = value?.split(',').map((email) => email.trim());
-			return emails?.every((email) => emailRegex.test(email));
-		}),
-
-	terms: Yup.string().required('Terms is Required'),
-	pricingTerms: Yup.string().required('Pricing Terms is Required'),
-	creditLimit: Yup.number().required('Credit Limit is Required'),
-	creditHold: Yup.string().required('Credit Hold Required'),
-	acceptBO: Yup.string().required('Accept BO is Required'),
-	acceptPartialOrder: Yup.string().required('Accept Partial Order is Required'),
-	custClass: Yup.string().required('Customer Class is Required'),
-	custType: Yup.string().required('Customer Type is Required'),
-	// custGroup: Yup.string().required('Customer Group is Required'),
-	custPORequired: Yup.string().required('Customer PO is Required'),
-	// masterContact: Yup.string().required('Master Contact is Required'),
-	masterContactEmail: Yup.string()
-		.nullable()
-		.test('validate-emails', 'Inavlid Email format', (value) => {
-			if (!value || value.trim() === '') {
-				return true;
-			}
-			const emails = value?.split(',').map((email) => email.trim());
-			return emails?.every((email) => emailRegex.test(email));
-		}),
-	buyers: Yup.array().of(
-		Yup.object().shape({
-			buyerEmail: Yup.string()
-				.nullable()
-				.test('validate-emails', 'Inavlid Email format', (value) => {
-					const emails = value?.split(',').map((email) => email.trim());
-					const isValid = Yup.array()
-						.of(
-							Yup.string()
-								.email('Inavlid Email format')
-								.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-						)
-						.isValidSync(emails);
-
-					return isValid;
-				}),
-			buyerPhone: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Contact')
-				.max(15, 'Enter valid Contact'),
-		}),
-	),
-	additionalContactInfo: Yup.array().of(
-		Yup.object().shape({
-			additionalEmail: Yup.string()
-				.nullable()
-				.test('validate-emails', 'Inavlid Email format', (value) => {
-					const emails = value?.split(',').map((email) => email.trim());
-					const isValid = Yup.array()
-						.of(
-							Yup.string()
-								.email('Inavlid Email format')
-								.matches(/^[^@]+@[^.]+\.[a-z]+$/i, 'Inavlid Email format after @'),
-						)
-						.isValidSync(emails);
-
-					return isValid;
-				}),
-			additionalPhone: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Phone number')
-				.max(15, 'Enter valid Phone number'),
-			additionalMobile: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Mobile number')
-				.max(15, 'Enter valid Mobile number'),
-			additionalFax: Yup.string()
-				.nullable()
-				.min(14, 'Enter valid Fax number')
-				.max(15, 'Enter valid Fax number'),
-		}),
-	),
-	contacts: Yup.array().of(
-		Yup.object().shape({
-			SCshippingLocation: Yup.string().required('Shipping Location is Required'),
-			// SClocationContactPerson: Yup.string().required('Contact Person is Required'),
-			SCcontactAddress1: Yup.string().required('Address is Required'),
-			SCcity: Yup.string().required('City is Required'),
-			SCstate: Yup.string().required('State is Required'),
-			SCzipcode: Yup.string()
-				.matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code')
-				.required('Zip Code is Required'),
-			SCcountry: Yup.string().required('Country is Required'),
-			SCressComm: Yup.string().required('Res / Comm Address is Required'),
-			// SCshipMethod: Yup.string().required('Shipping Method is Required'),
-			SCemail: Yup.string().test('validate-emails', 'Inavlid Email format', (value) => {
-				if (!value || value.trim() === '') {
-					return true;
-				}
-				const emails = value?.split(',').map((email) => email.trim());
-				return emails?.every((email) => emailRegex.test(email));
-			}),
-			SCphone: Yup.string()
-				.min(14, 'Enter valid Phone number')
-				.max(15, 'Enter valid Phone number')
-				.nullable(),
-		}),
-	),
-});
 
 
 
@@ -316,10 +113,7 @@ const productsSchema = Yup.object().shape({
             thickness: Yup.string().required('Thickness is required'),
             length: Yup.string().required('Length is required'),
 			weight: Yup.string().required('Weight is required'),
-			premium_rate: Yup.number().positive(),
-			wooden_rate: Yup.number().positive(),
-			commercial_rate: Yup.number().positive(),
-			anodize_rate: Yup.number().positive(),
+			
         })
     ),
 });
@@ -392,6 +186,8 @@ const PaymentSchema = Yup.object().shape({
 
 
 })
+
+
 
 export {
 	productsSchema,

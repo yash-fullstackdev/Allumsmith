@@ -100,6 +100,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='name'>
                                                     Name
+                                                    <span className='ml-1 text-red-500'>*</span>P
                                                 </Label>
                                                 <Input
                                                     id="name"
@@ -263,7 +264,7 @@ const CustomerPage = () => {
 
                                         </div>
                                         <div className='flex mt-2 gap-2'>
-                                            <Button variant='solid' color='blue' type='button' onClick={createCustomer}>
+                                            <Button variant='solid' color='blue' type='button' isDisable= {formData.name === ''} onClick={createCustomer}>
                                                 Save Customer
                                             </Button>
                                         </div>

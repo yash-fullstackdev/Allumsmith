@@ -86,7 +86,7 @@ const PaymentPage = () => {
                 });
             };
 
-            if (formik.values.status !== 'DRAFT' && Object.keys(check).length > 0) {
+            if (Object.keys(check).length > 0) {
                 handleNestedErrors(check);
 
                 toast.error(`Please fill all the mandatory fields and check all formats`);
