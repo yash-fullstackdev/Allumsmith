@@ -35,6 +35,7 @@ const DefaultAsideTemplate = () => {
 					<NavItem {...appPages.finishInventory.listPage} identifier={appPages.finishInventory.identifier}/>
 					<NavItem {...appPages.powderPage.listPage} identifier={appPages.powderPage.identifier} />
 					<NavItem {...appPages.workerPage.listPage} identifier={appPages.workerPage.identifier}/>
+					<NavItem {...appPages.payment.listPage} identifier={appPages.payment.listPage} />
 				</Nav>
 			</AsideBody>
 			<AsideFooter>

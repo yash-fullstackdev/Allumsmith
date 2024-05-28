@@ -4,7 +4,7 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/Input';
@@ -12,6 +12,11 @@ import { get, post } from '../../../../utils/api-helper.util';
 import SelectReact from '../../../../components/form/SelectReact';
 import { number } from 'yup';
 import AllInvoice from './AllInvoice';
+import { useFormik } from 'formik';
+import AllLedger from './AllLedger';
+import Collapse from '../../../../components/utils/Collapse';
+import { toast } from 'react-toastify';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 
 const optionSelect = [
   { value: "credit", label: "Credit" },
@@ -19,86 +24,157 @@ const optionSelect = [
 ]
 
 const OptionPaymentMode = [
-  { value: "cheque", label: "Cheque" },
-  { value: "cash", label: "Cash" },
+  { value: "Cheque", label: "Cheque" },
+  { value: "Cash", label: "Cash" },
   { value: "RTGS", label: "RTGS" },
-  { value: "upi", label: "UPI" },
+  { value: "UPI", label: "UPI" },
 
 ]
 
 const LedgerPage = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<any>([]);
-  const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', payment_mode: '', remarks: '', grandTotal:0, paidAmount:0, pendingAmount:0, creditedAmount:0, amountPayable:0 })
+  const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', payment_mode: '', remarks: '', grandTotal: 0, paidAmount: 0, pendingAmount: 0, creditedAmount: 0, amountPayable: 0, chequeNumber: '', upi: '' })
   const [specificCustomerData, setSpecificCustomerData] = useState<any>([]);
   const [associatedInvoices, setAssociatedInvoices] = useState<any>([]);
+  const [associatedLedger, setAssociatedLedger] = useState<any>([]);
+  const [collapseAll, setCollapseAll] = useState<boolean>(false);
+  const [accordionStates, setAccordionStates] = useState({
+    customerInfo: false,
+    invoiceDetails: false,
+    ledgerDetails: false,
+
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { id } = useParams();
   const getCustomerDetails = async () => {
     try {
-      const { data } = await get('/customers');
+      const { data } = await get(`/customers/${id}`);
       setCustomer(data);
+      formik.setFieldValue('customerName', data?.name)
+      formik.setFieldValue('address_line1', data?.address_line1);
+      formik.setFieldValue('address_line2', data?.address_line2);
+      formik.setFieldValue('phone', data?.phone);
+      formik.setFieldValue('email', data?.email);
     } catch (error) {
       console.error('Error Fetching Customer Order');
     }
   }
 
+  console.log('customer', customer)
+  const formik: any = useFormik({
+    initialValues: {
+      startDate: '',
+      endDate: '',
+      type:''
+    },
+    enableReinitialize: true,
+
+    onSubmit: () => { },
+  });
 
 
-  const handleSubmit = async () => {
+
+  function formatDate(dateString: any) {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  }
+
+  // Example usage:
+  const formattedDate = formatDate(formik.values.startDate);
+  console.log(formattedDate); // Outputs: 24-05-2024
+
+  
+  const fetchLedgerDetails = async (customerId: any) => {
     try {
-      // Gather all form data
-      const formDataToSend = {
-        customer: formData.customer_id,
-        payment_mode: formData.payment_mode,
-        grandTotal: parseFloat(formData.grandTotal),
-        remarks: formData.remarks,
-        amount_payable:parseFloat(formData.amountPayable),
-      };
+      const startDate = formik.values.startDate ? formatDate(formik.values.startDate) : '';
+      const endDate = formik.values.endDate ? formatDate(formik.values.endDate) : '';
+      const type = formik.values.type || '';
+      console.log('Type', type)
 
-      console.log('Form data to send:', formDataToSend);
-      const {data} = await post('/ledger', formDataToSend);
-      
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }finally{
-      navigate(PathRoutes.ledger_list)
-    }
-  };
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append('startDate', startDate);
+      if (endDate) queryParams.append('endDate', endDate);
+      if (type) queryParams.append('type', type);
 
-  const fetchInvoices = async (customerId: any) => {
-    try {
-      const { data } = await get(`/customers/getAllInvoiceOfCustomer/${customerId}`);
-      setSpecificCustomerData(data);
-      setAssociatedInvoices(data.associatedInvoices);
-      
-      // Calculate grandTotal
-      const totalAmounts = data.associatedInvoices.map((invoice: any) => invoice.totalAmount);
-      const grandTotal = totalAmounts.reduce((acc: number, curr: number) => acc + curr, 0);
-      
-      // Set grandTotal in formData
-      // setFormData({ ...formData, grandTotal:parseFloat(grandTotal.toFixed(2)), customer_id: customerId, paidAmount:parseFloat((data.paid_amount).toFixed(2)) || 0, pendingAmount: data.pending_amount || 0, creditedAmount:parseFloat((data.credit_amount).toFixed(2)) || 0});
-      setFormData({ ...formData, grandTotal, customer_id: customerId,paidAmount:data.paid_amount || 0, pendingAmount: data.pending_amount || 0, creditedAmount:data.credit_amount || 0});
-
+      const { data } = await get(`/ledger/findledger/${customerId}?${queryParams.toString()}`);
+      setAssociatedLedger(data);
     } catch (error) {
       console.error('Error Fetching Invoices for Customer:', error);
     }
-  }
-
-  const handleCustomerSelect = (selectedOption:any) => {
-    if (selectedOption && selectedOption.value) {
-      fetchInvoices(selectedOption.value);
-    }
+  };
+  const resetFilters = () => {
+    formik.values.startDate = '';
+    formik.values.endDate = '';
+    formik.values.type='';
+    fetchLedgerDetails(id);
   };
 
-  console.log('Invoice Data', associatedInvoices);
-  console.log('data', specificCustomerData)
+  const handleLedgerData = async () => {
+    try {
+      const { data } = await get(`/ledger/customer/${id}`);
+      setAssociatedLedger(data);
+    } catch (error) {
+
+    }
+  }
+
+
+  const handleGeneratePdf = async() =>{
+    try {
+        setIsLoading(true);
+        const payload = associatedLedger
+        console.log("payload",payload)
+        toast.success('Please Wait Pdf is being generated...')
+        const response = await post(`/ledger/pdf`, payload);
+       
+        console.log(response.data.data);
+        if (response && response.status === 201 && response.data && response.data.data) {
+            const pdfData = response.data.data;
+            console.log('PDF DATA', pdfData);
+
+            const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
+
+            window.open(url, '_blank');
+        } else {
+            console.error('Error: PDF data not found in response');
+        }
+        setIsLoading(false);
+        
+    } catch (error) {
+        toast.error('Error Generating PDF');
+    }
+}
+
+  useEffect(() => {
+    handleLedgerData();
+  }, [])
+  console.log('data', associatedLedger)
+
+  const collapseAllAccordians = () => {
+    setAccordionStates({
+      customerInfo: !collapseAll,
+      invoiceDetails: !collapseAll,
+      ledgerDetails: !collapseAll,
+
+    });
+    setCollapseAll(!collapseAll);
+  };
+
 
   useEffect(() => {
     getCustomerDetails()
   }, [])
 
   return (
-    <PageWrapper name='ADD LEDGER' isProtectedRoute={true}>
-      <Subheader>
+    <PageWrapper name='LEDGER' isProtectedRoute={true}>
+      {isLoading ? (
+        <div className='flex h-[80vh] items-center justify-center'>
+        <LoaderDotsCommon />
+      </div>
+      ):(
+        <>
+        <Subheader>
         <SubheaderLeft>
           <Button
             icon='HeroArrowLeft'
@@ -109,7 +185,20 @@ const LedgerPage = () => {
           </Button>
           <SubheaderSeparator />
         </SubheaderLeft>
+        <SubheaderRight>
+          <div className='col-span-1'>
+            <Button
+              variant='solid'
+              color='emerald'
+              className='mr-5'
+              onClick={() => collapseAllAccordians()}>
+              {!collapseAll ? 'Collapse All Information' : 'Expand All Information'}
+            </Button>
+          </div>
+
+        </SubheaderRight>
       </Subheader>
+
       <Container>
         <div className='flex h-full flex-wrap content-start'>
           <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
@@ -123,149 +212,71 @@ const LedgerPage = () => {
                         <Button
                           variant='outlined'
                           className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                          onClick={() =>
+                            setAccordionStates({
+                              ...accordionStates,
+                              customerInfo: !accordionStates.customerInfo,
+                            })
+                          }
+                          rightIcon={
+                            !accordionStates.customerInfo
+                              ? 'HeroChevronUp'
+                              : 'HeroChevronDown'
+                          }
                         >
-                          Add Ledger
+                          Customer Details
                         </Button>
                       </div>
                     </div>
-                    <div>
-                      <div className='mt-2 grid grid-cols-12 gap-1'>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='name'>
-                            Customer Name
-                            <span className='ml-1 text-red-500'>*</span>
+                    <Collapse isOpen={!accordionStates.customerInfo} >
+                      <div className='mt-2 grid grid-cols-12 gap-1 '>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Customer Name :<span><h5>{formik.values.customerName}</h5></span>
+
                           </Label>
-                          <SelectReact
-                            id={`name`}
-                            name={`name`}
-                            options={customer.map((customer: any) => ({
-                              value: customer._id,
-                              label: customer.name,
-                            }))}
-                            onChange={handleCustomerSelect}
-                          />
                         </div>
-                        
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='payment_mode'>
-                            Payment Mode
-                            <span className='ml-1 text-red-500'>*</span>
+
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Address :<span><h5>{formik.values.address_line1?.toUpperCase()}</h5></span>
                           </Label>
-                          <SelectReact
-                            id={`payment_mode`}
-                            name={`payment_mode`}
-                            options={OptionPaymentMode.map((payment_mode: any) => ({
-                              value: payment_mode.value,
-                              label: `${payment_mode.label} `,
-                            }))}
-                            value={{ value: formData.payment_mode, label: formData.payment_mode }}
-                            onChange={(selectedOption) => {
-                              if (selectedOption && 'value' in selectedOption) {
-                                setFormData({ ...formData, payment_mode: selectedOption.value });
-                              }
-                            }}
-                          />
                         </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='remarks'>
-                            Remarks
-                            <span className='ml-1 text-red-500'>*</span>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Phone :<span><h5>{formik.values.phone}</h5></span>
                           </Label>
-                          <Input
-                            type='text'
-                            id={`remarks`}
-                            name={`remarks`}
-                            value={formData.remarks}
-                            onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-                          />
                         </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='grandTotal'>
-                            Grand Total(rs)
-                            <span className='ml-1 text-red-500'>*</span>
+                        <div className='col-span-12 lg:col-span-6'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Address Line 2 :<span><h5>{formik?.values.address_line2?.toUpperCase() || 'NA'}</h5></span>
                           </Label>
-                          <Input
-                            type="number"
-                            id={`grandTotal`}
-                            name={`grandTotal`}
-                            value={parseFloat(formData.grandTotal.toFixed(2))}
-                            // onChange={(e) => setFormData({ ...formData, grandTotal: e.target.value })}
-                            disabled
-                          />
                         </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='paidAmount'>
-                            Paid Amount(rs)
-                            <span className='ml-1 text-red-500'>*</span>
+                        <div className='col-span-12 lg:col-span-12'>
+                          <Label htmlFor='name' className='flex gap-1'>
+                            Email:<span><h5>{formik.values.email}</h5></span>
                           </Label>
-                          <Input
-                            type="number"
-                            id={`paidAmount`}
-                            name={`paidAmount`}
-                            value={parseFloat(formData.paidAmount.toFixed(2))}
-                            onChange={(e) => setFormData({ ...formData, paidAmount: e.target.value })}
-                            disabled
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='pendingAmount'>
-                            Pending Amount(rs)
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type="number"
-                            placeholder='Pending Amount'
-                            id={`pendingAmount`}
-                            name={`pendingAmount`}
-                            value={parseFloat(formData.pendingAmount.toFixed(2))}
-                            onChange={(e) => setFormData({ ...formData, pendingAmount: e.target.value })}
-                            disabled
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='creditedAmount'>
-                            Credited Amount(rs)
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type="number"
-                            id={`creditedAmount`}
-                            name={`creditedAmount`}
-                            value={parseFloat(formData.creditedAmount.toFixed(2))}
-                            disabled
-                            // onChange={(e) => setFormData({ ...formData, creditedAmount: e.target.value })}
-                          />
-                        </div>
-                        <div className='col-span-12 lg:col-span-3'>
-                          <Label htmlFor='amountPayable'>
-                            Amount Payable(rs)
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type="number"
-                            min={0}
-                            id={`amountPayable`}
-                            name={`amountPayable`}
-                            value={formData.amountPayable}
-                            onChange={(e) => setFormData({ ...formData, amountPayable: e.target.value })}
-                          />
                         </div>
                       </div>
-                      <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={handleSubmit} >
-                        Save Entries
-                      </Button>
-                    </div>
+                    </Collapse>
                   </CardBody>
                 </Card>
               </div>
             </div>
           </div>
         </div>
-
       </Container>
-      <AllInvoice associatedInvoices = {associatedInvoices} />
+      
+      <AllLedger associatedLedger={associatedLedger} formik={formik} fetchLedgerDetails={fetchLedgerDetails} id={id} setAssociatedLedger={setAssociatedLedger} accordionStates= {accordionStates} setAccordionStates={setAccordionStates} handleLedgerData = {handleLedgerData} handleGeneratePdf = {handleGeneratePdf} resetFilters={resetFilters}/>
+        </>
+      )}
+      
+    
     </PageWrapper>
+
+
   )
+
 }
 
 export default LedgerPage

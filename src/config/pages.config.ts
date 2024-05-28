@@ -245,6 +245,19 @@ export const appPages: any = {
 		},
 		identifier: 'ledger'
 	},
+	payment:{
+		listPage:{
+			id: 'payment',
+			to: '/add-payment',
+			text: 'Payment',
+			icon: 'HeroReceiptPercent',
+		},
+		addPageLink:{
+			id: 'addPageLink',
+			to: '/add-payment',
+		},
+		identifier:'payment',
+	},
 	projectAppPages: {
 		subPages: {
 			projectDashboardPage: {

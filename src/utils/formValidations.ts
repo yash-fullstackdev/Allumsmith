@@ -389,6 +389,14 @@ const purchaseOrderSchema = Yup.object().shape({
 	type: Yup.string().required('Type of the coating is required')
 });
 
+const PaymentSchema = Yup.object().shape({
+	payment_mode: Yup.string().required('Payment Mode is required'),
+	customer_id:Yup.string().required('Customer Name is Required'),
+	amount_payable:Yup.number().required('Payable Amount is Required').positive('Amount Must be greated than 0')
+
+
+})
+
 export {
 	productsSchema,
 	editProductSchema,
@@ -396,5 +404,6 @@ export {
 	vendorSchema,
 	branchSchema,
 	purchaseOrderSchema,
-	CoatingSchema
+	CoatingSchema,
+	PaymentSchema
 };

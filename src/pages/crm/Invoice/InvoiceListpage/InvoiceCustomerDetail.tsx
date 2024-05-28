@@ -24,24 +24,24 @@ const InvoiceCustomerDetail = ({ productInfo }: any) => {
             header: 'Product Name',
 
         }),
-        columnHelper.accessor('amount', {
+        columnHelper.accessor('total_coating_rate', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
                 //     </div>
                 <div className=''>{info.getValue()}</div>
             ),
-            header: 'Amount',
+            header: 'Total Coating Rate',
 
         }),
-        columnHelper.accessor('coatingDiscount', {
+        columnHelper.accessor('total_weight', {
             cell: (info) => (
                 // <div className=''>
                 //         {`${info.getValue()}`}
                 //     </div>
                 <div className=''>{info.getValue()|| 0}</div>
             ),
-            header: 'Discount',
+            header: 'Total Weight',
 
         }),
 
