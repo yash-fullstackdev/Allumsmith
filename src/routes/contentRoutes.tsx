@@ -41,6 +41,8 @@ import LedgerPage from '../pages/crm/Ledger/LedgerPage/LedgerPage';
 import EditLedgerPag from '../pages/crm/Ledger/LedgerPage/EditLedgerPag';
 import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/EditWithoutMaterial';
 import PaymentPage from '../pages/crm/Payment/PaymentPage';
+import EditPurchaseOrderForm from '../pages/crm/PurchaseOrder/PurchaseOrderPage/EditPurchaseOrderForm';
+import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
 
 
 const contentRoutes: RouteProps[] = [
@@ -63,8 +65,12 @@ const contentRoutes: RouteProps[] = [
 		element: <PurchaseOrderListPage />,
 	},
 	{
-		path: `${appPages.purchaseOrderPage.editPageLink.to}`,
-		element: <PurchaseOrderPage />,
+		path: `${appPages.purchaseOrderPage.addPageLink.to}`,
+		element: <AddPurchaseOrderPage />,
+	},
+	{
+		path: `${appPages.purchaseOrderPage.editPageLink.to}/:id`,
+		element: <EditPurchaseOrderForm />,
 	},
 	{
 		path: `${appPages.customerOrderPage.listPage.to}`,

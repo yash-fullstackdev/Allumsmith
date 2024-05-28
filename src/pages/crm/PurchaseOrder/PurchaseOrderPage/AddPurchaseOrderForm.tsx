@@ -264,7 +264,7 @@ import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import { purchaseOrderSchema } from '../../../../utils/formValidations';
 
-const AddproductForm = () => {
+const AddPurchaseOrderForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [entries, setEntries] = useState([{ product: '', requiredQuantity: '' }]);
   const [vendorId, setVendorId] = useState('');
@@ -475,4 +475,4 @@ const AddproductForm = () => {
   );
 };
 
-export default AddproductForm;
+export default AddPurchaseOrderForm;

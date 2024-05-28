@@ -400,7 +400,8 @@ const AddCustomerOrderForm = () => {
                   id='customerOrderNumber'
                   name='customerOrderNumber'
                   value={customerOrderNumber}
-
+                  disabled
+                  className='cursor-not-allowed'
                 />
               </div>
               <div className='col-span-12 lg:col-span-12'>
@@ -465,6 +466,7 @@ const AddCustomerOrderForm = () => {
                               name={`length-${index}`}
                               value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
                               onChange={(e) => handleLengthChange(e, index)}
+                              min={0}
                             />
 
                           </div>
@@ -479,6 +481,7 @@ const AddCustomerOrderForm = () => {
                               name={`weight-${index}`}
                               value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight || ''}
                               onChange={(e) => handleWeightChange(e, index)}
+                              min={0}
                             />
                           </div>
                           </>

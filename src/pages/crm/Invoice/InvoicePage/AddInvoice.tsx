@@ -223,7 +223,7 @@ const AddInvoice = () => {
                     const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
                     const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
-                    let finalPayload = {}
+                    let finalPayload : any= {}
                     if (entry?.mm) {
                         finalPayload = {
                             product: entry.product._id,
@@ -256,8 +256,14 @@ const AddInvoice = () => {
                             total_coating_rate: totalCoatingRate[index] || 0,
                         }
                     }
+                    console.log(finalPayload.delieveryQuantity)
+                    console.log(entry?.itemSummary?.coatingQuantity)
+                    if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
+                        toast.error('Delivery Quantity Should be less than Available Quantity')
+                    }
                     return finalPayload;
                 }),
+               
                 send_mail: entries.send_mail || false,
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
