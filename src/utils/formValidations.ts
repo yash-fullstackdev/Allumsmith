@@ -380,10 +380,6 @@ const purchaseOrderSchema = Yup.object().shape({
         .required('Name is required'),
     code: Yup.string()
         .required('Code is required'),
-    rate: Yup.number()
-        .required('Rate is required')
-        .positive('Rate must be positive')
-        .integer('Rate must be an integer'),
     colors: Yup.array()
 		  .min(1, 'At least one color must be selected'),
 	type: Yup.string().required('Type of the coating is required')

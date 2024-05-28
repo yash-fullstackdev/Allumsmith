@@ -220,7 +220,7 @@ const CoatingPage = () => {
                                             </div>
                                             
                                             <div className='flex mt-2 gap-2'>
-                                                <Button variant='solid' color='blue' type='submit'>
+                                                <Button variant='solid' color='blue' onClick={() =>addEntryToDatabase(formik.values)}>
                                                     Save Entries
                                                 </Button>
                                             </div>

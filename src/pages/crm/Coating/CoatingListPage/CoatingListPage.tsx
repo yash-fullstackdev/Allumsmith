@@ -141,17 +141,6 @@ const CoatingListPage = () => {
             header: 'Code',
         }),
 
-        columnHelper.accessor('rate', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Rate',
-        }),
-
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
