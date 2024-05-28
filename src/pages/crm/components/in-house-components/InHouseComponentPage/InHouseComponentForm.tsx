@@ -159,7 +159,7 @@ const AddproductForm = () => {
 								)}
 							</div>
 							<div className='mt-2 grid grid-cols-12 gap-1'>
-								<div className='col-span-12 lg:col-span-3'>
+								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`name-${index}`}>
 										Name <span className='text-red-500'>*</span>
 									</Label>
@@ -191,7 +191,7 @@ const AddproductForm = () => {
 											</div>
 										) : null}
 								</div>
-								<div className='col-span-12 lg:col-span-3'>
+								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`hsn-${index}`}>
 										HSN
 									</Label>
@@ -214,9 +214,9 @@ const AddproductForm = () => {
 											</div>
 										) : null}
 								</div>
-								<div className='col-span-12 lg:col-span-3'>
+								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`productCode-${index}`}>
-										Product Code
+										Product Code <span className='text-red-500'>*</span>
 									</Label>
 									<Input
 										id={`productCode-${index}`}
@@ -237,40 +237,12 @@ const AddproductForm = () => {
 											</div>
 										) : null}
 								</div>
-								<div className='col-span-12 lg:col-span-3'>
-									<Label htmlFor={`rate-${index}`}>
-										Rate (rs)
-									</Label>
-									<Input
-										id={`rate-${index}`}
-										name={`entries[${index}].rate`}
-										type='number'
-										value={entry.rate}
-										onBlur={formik.handleBlur}
-										onChange={(e) => {
-											const newEntries = [...formik.values.entries];
-											newEntries[index].rate = e.target.value;
-											formik.setFieldValue('entries', newEntries);
-										}}
-									/>
-									
-								</div>
+								
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`thickness-${index}`}>
-										Thickness(mm)
+										Thickness(mm) <span className='text-red-500'>*</span>
 									</Label>
-									{/* <CreatableSelect
-										id={`thickness-${index}`}
-										name={`entries[${index}].thickness`}
-										options={dropDownValues && dropDownValues?.thickness?.map((value: any) => ({ value, label: value.toString() ?? "" }))}
-										// value={entry.thickness.value}
-										onBlur={formik.handleBlur}
-										onChange={(selectedOption: any) => {
-											const newEntries: any = [...formik.values.entries];
-											newEntries[index].thickness = parseFloat(selectedOption.value);
-											formik.setFieldValue('entries', newEntries);
-										}}
-									/> */}
+									
 									<Input
 										id={`thickness-${index}`}
 										name={`entries[${index}].thickness`}
@@ -293,7 +265,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`length-${index}`}>
-										Length(ft)
+										Length(ft) <span className='text-red-500'>*</span>
 									</Label>
 									{/* <CreatableSelect
 										id={`length-${index}`}
@@ -328,7 +300,7 @@ const AddproductForm = () => {
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`weight-${index}`}>
-										Weight (kg)
+										Weight (kg) <span className='text-red-500'>*</span>
 									</Label>
 									{/* <CreatableSelect
 										id={`weight-${index}`}
