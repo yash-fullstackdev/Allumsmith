@@ -259,7 +259,8 @@ const AddInvoice = () => {
                     console.log(finalPayload.delieveryQuantity)
                     console.log(entry?.itemSummary?.coatingQuantity)
                     if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
-                        toast.error('Delivery Quantity Should be less than Available Quantity')
+                        toast.error('Delivery Quantity Should be less than Available Quantity');
+                        return
                     }
                     return finalPayload;
                 }),

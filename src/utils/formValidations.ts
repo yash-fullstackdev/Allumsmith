@@ -108,7 +108,6 @@ const productsSchema = Yup.object().shape({
         Yup.object().shape({
             name: Yup.string().required('Name is required'),
             hsn: Yup.string().required('HSN is required'),
-            rate: Yup.string().required('Rate is required'),
             productCode: Yup.string().required('Product Code is required'),
             thickness: Yup.string().required('Thickness is required'),
             length: Yup.string().required('Length is required'),

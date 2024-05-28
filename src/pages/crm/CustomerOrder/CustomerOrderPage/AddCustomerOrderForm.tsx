@@ -479,7 +479,7 @@ const AddCustomerOrderForm = () => {
                               type='number'
                               id={`weight-${index}`}
                               name={`weight-${index}`}
-                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight || ''}
+                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight ||  ''}
                               onChange={(e) => handleWeightChange(e, index)}
                               min={0}
                             />
@@ -599,7 +599,7 @@ const AddCustomerOrderForm = () => {
                             type='number'
                             id={`hsn-${index}`}
                             name={`hsn-${index}`}
-                            value={entry.quantity * (productsData.find((item: any) => item._id === entry.product)?.weight || entry.weight || 0)}
+                            value={ (entry.quantity * (entry.weight || (productsData.find((item: any) => item._id === entry.product)?.weight)) || 0)}
                             min={0}
                             disabled
                           />
