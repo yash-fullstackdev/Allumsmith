@@ -11,10 +11,13 @@ import Button from "../../../components/ui/Button";
 import PageWrapper from "../../../components/layouts/PageWrapper/PageWrapper";
 import Container from "../../../components/layouts/Container/Container";
 import { PaymentSchema } from "../../../utils/formValidations";
+import { useNavigate } from "react-router-dom";
+import { PathRoutes } from "../../../utils/routes/enum";
 
 
 const PaymentPage = () => {
     const [customer, setCustomer] = useState<any>([])
+    const navigate = useNavigate();
     const OptionPaymentMode = [
         { value: "Cheque", label: "Cheque" },
         { value: "Cash", label: "Cash" },
@@ -104,8 +107,9 @@ const PaymentPage = () => {
                 payload;
             }
             console.log(payload)
-            // const { data } = await post('/ledger', payload)
-            // toast.success("ledger created")
+            const { data } = await post('/ledger', payload)
+            toast.success("ledger created")
+            navigate(PathRoutes.ledger_list);
         } catch (error) {
             toast.error('Error Saving Ledger');
         }

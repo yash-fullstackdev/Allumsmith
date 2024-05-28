@@ -66,6 +66,7 @@ const LedgerPage = () => {
     initialValues: {
       startDate: '',
       endDate: '',
+      type:''
     },
     enableReinitialize: true,
 
@@ -89,6 +90,7 @@ const LedgerPage = () => {
       const startDate = formik.values.startDate ? formatDate(formik.values.startDate) : '';
       const endDate = formik.values.endDate ? formatDate(formik.values.endDate) : '';
       const type = formik.values.type || '';
+      console.log('Type', type)
 
       const queryParams = new URLSearchParams();
       if (startDate) queryParams.append('startDate', startDate);
@@ -101,10 +103,13 @@ const LedgerPage = () => {
       console.error('Error Fetching Invoices for Customer:', error);
     }
   };
+  const resetFilters = () => {
+    formik.values.startDate = '';
+    formik.values.endDate = '';
+    formik.values.type='';
+    fetchLedgerDetails(id);
+  };
 
-  useEffect(() => {
-    fetchLedgerDetails
-  }, [associatedLedger])
   const handleLedgerData = async () => {
     try {
       const { data } = await get(`/ledger/customer/${id}`);
@@ -113,6 +118,7 @@ const LedgerPage = () => {
 
     }
   }
+
 
   const handleGeneratePdf = async() =>{
     try {
@@ -261,7 +267,7 @@ const LedgerPage = () => {
         </div>
       </Container>
       
-      <AllLedger associatedLedger={associatedLedger} formik={formik} fetchLedgerDetails={fetchLedgerDetails} id={id} setAssociatedLedger={setAssociatedLedger} accordionStates= {accordionStates} setAccordionStates={setAccordionStates} handleLedgerData = {handleLedgerData} handleGeneratePdf = {handleGeneratePdf} />
+      <AllLedger associatedLedger={associatedLedger} formik={formik} fetchLedgerDetails={fetchLedgerDetails} id={id} setAssociatedLedger={setAssociatedLedger} accordionStates= {accordionStates} setAccordionStates={setAccordionStates} handleLedgerData = {handleLedgerData} handleGeneratePdf = {handleGeneratePdf} resetFilters={resetFilters}/>
         </>
       )}
       

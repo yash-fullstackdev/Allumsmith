@@ -1,14 +1,4 @@
-// import React from 'react'
 
-// const AllLedger = () => {
-//   return (
-//     <div>
-//       All Ledger 
-//     </div>
-//   )
-// }
-
-// export default AllLedger
 
 import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
@@ -47,7 +37,7 @@ import Select from '../../../../components/form/Select';
 import Collapse from '../../../../components/utils/Collapse';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
-const AllLedger = ({handleGeneratePdf,  associatedLedger, formik, fetchLedgerDetails, id, accordionStates, setAccordionStates, handleLedgerData }: any) => {
+const AllLedger = ({ handleGeneratePdf, associatedLedger, formik, fetchLedgerDetails, id, accordionStates, setAccordionStates, resetFilters }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [jobsList, setJobsList] = useState<any>([]);
     const [isEditModal, setIsEditModal] = useState(false);
@@ -77,39 +67,51 @@ const AllLedger = ({handleGeneratePdf,  associatedLedger, formik, fetchLedgerDet
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric'
-                    }).format(new Date(info.getValue())) || 'NA'}
+                    }).format(new Date(info.getValue())) || '-'}
                 </div>
             ),
             header: 'Created Date',
         }),
 
-
-        columnHelper.accessor('amount_payable', {
-            cell: (info) => (
-
-                <div className=''>
-                    {/* {`${info.getValue() || 'NA'} `} */}
-                    {info.row.original.type === 'credit' ? `${info.getValue()} - (Paid Amount)` : `${info.getValue()} - (Invoice Amount)`}
-                </div>
-
-            ),
-            header: 'Amount',
-        }),
         columnHelper.accessor('type', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue() || 'NA'} `}
+                    {`${info.getValue() || '-'} `}
                 </div>
 
             ),
             header: 'Type',
         }),
+
+        columnHelper.accessor('invoice_amount', {
+            cell: (info) => (
+                <div className=''>
+                    {info.getValue() || '-'}
+                </div>
+            ),
+            header: 'Invoice Amount',
+        }),
+        columnHelper.accessor('amount_payable', {
+            cell: (info) => (
+
+                // <div className=''>
+                //     {/* {`${info.getValue() || 'NA'} `} */}
+                //     {info.row.original.type === 'credit' ? `${info.getValue()} - (Paid Amount)` : `${info.getValue()} - (Invoice Amount)`}
+                // </div>
+                <div>
+                    {info.getValue() || '-'}
+                </div>
+
+            ),
+            header: 'Amount Paid',
+        }),
+
         columnHelper.accessor('payment_mode', {
             cell: (info) => (
 
                 <div className=''>
-                    {`${info.getValue() || 'NA'} `}
+                    {`${info.getValue() || '-'} `}
                 </div>
 
             ),
@@ -133,7 +135,6 @@ const AllLedger = ({handleGeneratePdf,  associatedLedger, formik, fetchLedgerDet
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
-    
 
     return (
 
@@ -213,21 +214,13 @@ const AllLedger = ({handleGeneratePdf,  associatedLedger, formik, fetchLedgerDet
                                             </Select>
                                         </div>
                                         <div className='col-span-12 lg:col-span-1  mt-4 ml-2'>
-                                            <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={() => fetchLedgerDetails(id)} >
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
-                                                </svg>
+                                            <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={() => fetchLedgerDetails(id)} icon='HeroFunnel'>
+
 
                                             </Button>
                                         </div>
                                         <div className='col-span-12 lg:col-span-1 mt-4 w-[200px]  '>
-                                            <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={() =>{
-                                                
-                                                formik.setFieldValue('startDate','');
-                                                formik.setFieldValue('endDate','');
-                                                formik.setFieldValue('type','');
-                                                handleLedgerData();
-                                            }}>
+                                            <Button className='mt-2' variant='solid' color='blue' type='submit' onClick={resetFilters}>
                                                 Reset Filter
 
                                             </Button>
@@ -255,10 +248,10 @@ const AllLedger = ({handleGeneratePdf,  associatedLedger, formik, fetchLedgerDet
                                     )}
 
                                     {table.getFilteredRowModel().rows.length > 0 &&
-                                        <TableCardFooterTemplate  table={table} />
+                                        <TableCardFooterTemplate table={table} />
                                     }
                                 </Collapse>
-                                
+
 
                             </CardBody>
 
