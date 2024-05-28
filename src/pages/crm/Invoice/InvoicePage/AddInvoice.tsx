@@ -238,7 +238,7 @@ const AddInvoice = () => {
                             coatingName: entry?.coating?.name,
                             mm: entry?.mm,
                             total_weight: totalWeights[index] || 0,
-                            toatl_coating_rate: totalCoatingRate[index] || 0
+                            total_coating_rate: totalCoatingRate[index] || 0
                         };
                     } else {
                         finalPayload = {
@@ -260,7 +260,7 @@ const AddInvoice = () => {
                     console.log(entry?.itemSummary?.coatingQuantity)
                     if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
                         toast.error('Delivery Quantity Should be less than Available Quantity');
-                        return
+                        throw new Error('Delivery Quantity Should be less than Available Quantity');
                     }
                     return finalPayload;
                 }),

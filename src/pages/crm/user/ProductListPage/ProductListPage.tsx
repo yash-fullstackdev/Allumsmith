@@ -35,6 +35,8 @@ import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subhead
 import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
+import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
+import ProductDetailCanvas from './ProductDetailCanvas';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -51,6 +53,8 @@ const ProductListPage = () => {
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const [deleteModal,setDeleteModal] = useState<boolean>(false);
     const [deleteId,setDeleteId] = useState<string>('');
+	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
+	const [productDetails, setProductDetails] = useState<any>('');
 	const navigate = useNavigate();
 
 
@@ -179,6 +183,14 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
+					<Button icon='HeroInformationCircle' onClick={() =>{
+						setProductDetails(info.row.original)
+						setProductDetailModal(true)}}
+						>
+					
+					
+						
+					</Button>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -201,7 +213,7 @@ const ProductListPage = () => {
 				</div>
 			),
 			header: 'Actions',
-			size: 80,
+			size: 120,
 		}),
 
 	];
@@ -321,6 +333,11 @@ const ProductListPage = () => {
 					</ModalFooterChild>
 				</ModalFooter>
 			</Modal>
+			<OffCanvas isOpen={productDetailModal} setIsOpen={setProductDetailModal}>
+				<OffCanvasHeader>Product Detail</OffCanvasHeader>
+				<OffCanvasBody><ProductDetailCanvas productDetails = {productDetails}/></OffCanvasBody>
+				
+			</OffCanvas>
 		</PageWrapper>
 	)
 

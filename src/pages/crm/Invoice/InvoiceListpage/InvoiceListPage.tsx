@@ -99,6 +99,7 @@ const InvoiceListPage = () => {
         } finally {
             setIsLoading(false);
             getInvoiceList();
+            setDeleteModal(false)
         }
 	};
  
