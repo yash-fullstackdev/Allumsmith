@@ -120,7 +120,6 @@ const productsSchema = Yup.object().shape({
 const editProductSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     hsn: Yup.string().required('HSN is required'),
-    rate: Yup.number().required('Rate is required'),
     productCode: Yup.string().required('Product Code is required'),
     thickness: Yup.number().required('Thickness is required'),
     length: Yup.number().required('Length is required'),
