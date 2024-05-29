@@ -28,7 +28,9 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditBranchModal from '../BranchesPage/EditBranchModal';
+import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import { toast } from 'react-toastify';
+import BranchDetailCanvas from './BranchDetailCanvas';
 
 
 
@@ -43,6 +45,8 @@ const BranchesListPage = () => {
     const [isEditModal, setIsEditModal] = useState(false);
     const [deleteModal,setDeleteModal] = useState<boolean>(false);
     const [deleteId,setDeleteId] = useState<string>('');
+    const [branchDetailModal,setBranchDetailModal] = useState<boolean>(false)
+    const [branchDetail,setBranchDetail] = useState<any>()
 
     const navigate = useNavigate();
 
@@ -156,6 +160,14 @@ const BranchesListPage = () => {
                         </svg>
 
                     </Button>
+                    <Button icon='HeroInformationCircle' onClick={() =>{
+						setBranchDetail(info.row.original)
+						setBranchDetailModal(true)}}
+						>
+					
+					
+						
+					</Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);
@@ -178,7 +190,7 @@ const BranchesListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
         }),
 
 
@@ -275,7 +287,11 @@ const BranchesListPage = () => {
 					</ModalFooterChild>
 				</ModalFooter>
 			</Modal>
-
+            <OffCanvas isOpen={branchDetailModal} setIsOpen={setBranchDetailModal}>
+				<OffCanvasHeader>Product Detail</OffCanvasHeader>
+				<OffCanvasBody><BranchDetailCanvas branchDetails = {branchDetail}/></OffCanvasBody>
+				
+			</OffCanvas>
         </PageWrapper>
     )
 
