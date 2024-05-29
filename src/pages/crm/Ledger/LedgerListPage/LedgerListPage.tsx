@@ -362,7 +362,7 @@ const LedgerListPage = () => {
         columnHelper.accessor('credit_amount', {
             cell: (info) => (
                 <div className=''>
-                    {`${(info.getValue() || 0).toFixed(2)} `}
+                    {`${(info.getValue() || 0)?.toFixed(2)} `}
                 </div>
             ),
             header: 'Credit Amount',
@@ -370,7 +370,7 @@ const LedgerListPage = () => {
         columnHelper.accessor('pending_amount', {
             cell: (info) => (
                 <div className=''>
-                    {`${info.getValue().toFixed(2) || 0} `}
+                    {`${info.getValue()?.toFixed(2) || 0} `}
                 </div>
             ),
             header: 'Pending Amount',

@@ -339,6 +339,30 @@ const AddPurchaseOrderForm = () => {
         };
     
         try {
+          const check = await formik.validateForm();
+
+            const handleNestedErrors = (errors: any, prefix = '') => {
+                //  logic to touch the field which are not validated
+                Object.keys(errors).forEach((errorField) => {
+                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+
+                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                        // Recursive call for nested errors
+                        handleNestedErrors(errors[errorField], fieldName);
+                    } else {
+                        // Set the field as touched and set the error
+                        formik.setFieldTouched(fieldName, true, false);
+                        formik.setFieldError(fieldName, errors[errorField]);
+                    }
+                });
+            };
+
+            if (Object.keys(check).length > 0) {
+                handleNestedErrors(check);
+
+                toast.error(`Please fill all the mandatory fields and check all formats`);
+                return;
+            }
           console.log('api-data', finalValues);
           
           const { data } = await post("/purchase-order", finalValues);
@@ -389,7 +413,7 @@ const AddPurchaseOrderForm = () => {
                     name='vendor'
                   />
                   {formik.errors.vendor && formik.touched.vendor && (
-                    <div className='text-red-500'>{formik.errors.vendorName}</div>
+                    <div className='text-red-500'>{formik.errors.vendor}</div>
                   )}
                   </div>
                   

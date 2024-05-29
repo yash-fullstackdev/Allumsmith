@@ -46,6 +46,30 @@ const ColorsPage = () => {
     }
     const handleSaveEntries = async (type: any) => {
         try {
+            const check = await formik.validateForm();
+
+            const handleNestedErrors = (errors: any, prefix = '') => {
+                //  logic to touch the field which are not validated
+                Object.keys(errors).forEach((errorField) => {
+                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+
+                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                        // Recursive call for nested errors
+                        handleNestedErrors(errors[errorField], fieldName);
+                    } else {
+                        // Set the field as touched and set the error
+                        formik.setFieldTouched(fieldName, true, false);
+                        formik.setFieldError(fieldName, errors[errorField]);
+                    }
+                });
+            };
+
+            if (Object.keys(check).length > 0) {
+                handleNestedErrors(check);
+
+                toast.error(`Please fill all the mandatory fields and check all formats`);
+                return;
+            }
             const promises = formik.values.entries.map(async (entry: any) => {
                 const { data } = await post("/colors", { ...entry, type });
                 return data;

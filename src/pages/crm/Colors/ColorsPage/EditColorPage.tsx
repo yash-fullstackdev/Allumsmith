@@ -12,7 +12,8 @@ import CreatableSelect from 'react-select/creatable';
 import { toast } from "react-toastify";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import { Switch } from "@mui/material";
-
+import { useFormik } from "formik";
+import * as Yup from 'yup';
 
 const EditColorPage = () => {
     const navigate = useNavigate();
@@ -22,6 +23,16 @@ const EditColorPage = () => {
         code: '',
         type: '',
     });
+    const validationSchema = Yup.object().shape({
+        name:Yup.string().required('Name is Required'),
+        code:Yup.string().required('Code is Required'),
+    });
+    const formik: any = useFormik({
+        initialValues: {},
+        validationSchema,
+        onSubmit: () => { }
+    });
+
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
         setFormData((prevState: any) => ({
@@ -29,13 +40,16 @@ const EditColorPage = () => {
             [name]: type === 'checkbox' ? checked : value
         }));
     };
-    const {id} = useParams();
+    const { id } = useParams();
     const fetchColorById = async () => {
         try {
-            const colorData = await get(`/colors/${id}`);
-            const { name, code,type } = colorData.data;
-            setFormData({ name, code, type });
-            setColorState(type === "anodize");
+            const { data } = await get(`/colors/${id}`);
+            // const { name, code,type } = colorData.data;
+            // setFormData({ name, code, type });
+            // setColorState(type === "anodize");
+            formik.setFieldValue('name', data.name);
+            formik.setFieldValue('code', data.code);
+            formik.setFieldValue('type', data.type);
         } catch (error) {
             console.error("Error fetching Color Data:", error);
         }
@@ -47,19 +61,41 @@ const EditColorPage = () => {
 
     const editColor = async () => {
         try {
-            const editedBranch = await put(`/colors/${id}`, formData);
+            const check = await formik.validateForm();
+
+            const handleNestedErrors = (errors: any, prefix = '') => {
+                //  logic to touch the field which are not validated
+                Object.keys(errors).forEach((errorField) => {
+                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+
+                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                        // Recursive call for nested errors
+                        handleNestedErrors(errors[errorField], fieldName);
+                    } else {
+                        // Set the field as touched and set the error
+                        formik.setFieldTouched(fieldName, true, false);
+                        formik.setFieldError(fieldName, errors[errorField]);
+                    }
+                });
+            };
+
+            if (Object.keys(check).length > 0) {
+                handleNestedErrors(check);
+
+                toast.error(`Please fill all the mandatory fields and check all formats`);
+                return;
+            }
+            const editedBranch = await put(`/colors/${id}`, formik.values);
             console.log("edited Branch", editedBranch);
             toast.success('Color edited Successfully!')
-
+            navigate(PathRoutes.colors)
         } catch (error: any) {
             toast.error('Error updating Color', error);
         }
-        finally {
-            navigate(PathRoutes.colors)
-        }
+        
     };
-return(<>
-<PageWrapper name='Edit Color' isProtectedRoute={true}>
+    return (<>
+        <PageWrapper name='Edit Color' isProtectedRoute={true}>
             <Subheader>
                 <SubheaderLeft>
                     <Button
@@ -86,9 +122,12 @@ return(<>
                                 <Input
                                     id="name"
                                     name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
+                                    value={formik.values.name}
+                                    onChange={formik.handleChange}
                                 />
+                                {formik.touched.name && formik.errors.name && (
+                                    <div className='text-red-500'>{formik.errors.name}</div>
+                                )}
                             </div>
 
                             <div className='col-span-12 lg:col-span-4'>
@@ -98,9 +137,12 @@ return(<>
                                 <Input
                                     id="code"
                                     name="code"
-                                    value={formData.code}
-                                    onChange={handleChange}
+                                    value={formik.values.code}
+                                    onChange={formik.handleChange}
                                 />
+                                {formik.touched.code && formik.errors.code && (
+                                    <div className='text-red-500'>{formik.errors.code}</div>
+                                )}
                             </div>
 
 
@@ -113,7 +155,7 @@ return(<>
                     </CardBody>
                 </Card>
             </Container>
-</PageWrapper >
-</>)
+        </PageWrapper >
+    </>)
 }
 export default EditColorPage;

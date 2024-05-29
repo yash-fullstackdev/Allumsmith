@@ -158,7 +158,7 @@ const branchSchema = Yup.object().shape({
 });
 
 const purchaseOrderSchema = Yup.object().shape({
-	vendorName: Yup.string().required('Vendor is required'),
+	vendor: Yup.string().required('Vendor is required'),
 	entries: Yup.array().of(
 	  Yup.object().shape({
 		product: Yup.string().required('Product is required'),

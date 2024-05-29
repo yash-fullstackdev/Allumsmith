@@ -31,6 +31,7 @@ import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '..
 import VendorProductList from './ProductList/ProductList';
 import { toast } from 'react-toastify';
 import PurchaseEntryDetail from './PurchaseEntryDetail';
+import Tooltip from '../../../../components/ui/Tooltip';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -75,15 +76,15 @@ const PurchaseOrderListPage = () => {
         }
     };
     const handleClickDelete = (id: any) => {
-		setDeleteModal(true);
-		setDeleteId(id);
-	};
+        setDeleteModal(true);
+        setDeleteId(id);
+    };
 
     const handlePurchaseOrderDelete = async (id: any) => {
-		console.log("id", id)
+        console.log("id", id)
         try {
             const { data } = await deleted(`/purchase-order/${id}`);
-            
+
             toast.success('Purchase Order  deleted Successfully!')
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -94,13 +95,13 @@ const PurchaseOrderListPage = () => {
             fetchData();
             setDeleteModal(false);
         }
-	};
+    };
     useEffect(() => {
         fetchData();
         fetchBranchData()
     }, [])
 
-   
+
 
     const columns = [
 
@@ -157,26 +158,33 @@ const PurchaseOrderListPage = () => {
         columnHelper.display({
             cell: (info) => (
                 <div className=''>
-                    <Button onClick={() => {
-						navigate(`${PathRoutes.edit_purchase_order}/${info.row.original._id}`)
-                    }
-					}
-                    isDisable = {(info.row.original.status !== 'pending')}
-                    >
-						<svg
-							xmlns='http://www.w3.org/2000/svg'
-							fill='none'
-							viewBox='0 0 24 24'
-							strokeWidth='1.5'
-							stroke='currentColor'
-							className='h-6 w-6'>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-							/>
-						</svg>
-					</Button>
+                            
+                        <Button onClick={() => {
+                            navigate(`${PathRoutes.edit_purchase_order}/${info.row.original._id}`)
+                        }
+                        }
+                            isDisable={(info.row.original.status !== 'pending')}
+                        >
+                            <>
+                            
+                                <svg
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                    strokeWidth='1.5'
+                                    stroke='currentColor'
+                                    className='h-6 w-6'>
+                                    <path
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
+                                    />
+                                </svg>
+                               
+                            </>
+                        </Button>
+                        
+                    
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
@@ -212,7 +220,7 @@ const PurchaseOrderListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
         }),
 
 
@@ -309,25 +317,25 @@ const PurchaseOrderListPage = () => {
                     </ModalBody>
                 </Modal>
                 <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handlePurchaseOrderDelete(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>        
+                    <ModalHeader>Are you sure?</ModalHeader>
+                    <ModalFooter>
+                        <ModalFooterChild>
+                            Do you really want to delete these records? This cannot be undone.
+                        </ModalFooterChild>
+                        <ModalFooterChild>
+                            <Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+                                Cancel
+                            </Button>
+                            <Button
+                                variant='solid'
+                                onClick={() => {
+                                    handlePurchaseOrderDelete(deleteId);
+                                }}>
+                                Delete
+                            </Button>
+                        </ModalFooterChild>
+                    </ModalFooter>
+                </Modal>
             </PageWrapper>
         </>
     )
