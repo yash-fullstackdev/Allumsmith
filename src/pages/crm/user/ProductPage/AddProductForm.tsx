@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import Button from '../../../../../components/ui/Button';
-import Card, { CardBody } from '../../../../../components/ui/Card';
-import Label from '../../../../../components/form/Label';
-import Input from '../../../../../components/form/Input';
-import { useFormik } from 'formik';
-import { get, post } from '../../../../../utils/api-helper.util';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { PathRoutes } from '../../../../../utils/routes/enum';
-import CreatableSelect from 'react-select/creatable';
-import { toast } from 'react-toastify';
-import { productsSchema } from '../../../../../utils/formValidations';
+
 import { entries } from 'lodash';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { productsSchema } from '../../../../utils/formValidations';
+import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
+import { get, post } from '../../../../utils/api-helper.util';
+import { PathRoutes } from '../../../../utils/routes/enum';
+import Card, { CardBody } from '../../../../components/ui/Card';
+import Button from '../../../../components/ui/Button';
+import Label from '../../../../components/form/Label';
+import Input from '../../../../components/form/Input';
 
 const AddproductForm = () => {
 	const [dropDownValues, setDropDownValues] = useState<any>({});
@@ -175,7 +175,7 @@ const AddproductForm = () => {
 										// 	console.log(formik.touched.entries?.[index]?.name, formik.errors.entries?.[index]?.name);
 										// }}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].name = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -200,7 +200,7 @@ const AddproductForm = () => {
 										name={`entries[${index}].hsn`}
 										value={entry.hsn}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].hsn = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -223,7 +223,7 @@ const AddproductForm = () => {
 										name={`entries[${index}].productCode`}
 										value={entry?.productCode}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].productCode = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -249,7 +249,7 @@ const AddproductForm = () => {
 										type='number'
 										value={entry.thickness}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].thickness = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -274,7 +274,7 @@ const AddproductForm = () => {
 										type='number'
 										value={entry.length}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].length = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -300,7 +300,7 @@ const AddproductForm = () => {
 										min={0}
 										value={entry.weight}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].weight = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -325,7 +325,7 @@ const AddproductForm = () => {
 										value={entry.wooden_rate}
 										onBlur={formik.handleBlur}
 										min={0}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].wooden_rate = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -350,7 +350,7 @@ const AddproductForm = () => {
 										value={entry.commercial_rate}
 										min={0}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].commercial_rate = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -375,7 +375,7 @@ const AddproductForm = () => {
 										value={entry.anodize_rate}
 										min={0}
 										onBlur={formik.handleBlur}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].anodize_rate = e.target.value;
 											formik.setFieldValue('entries', newEntries);
@@ -400,7 +400,7 @@ const AddproductForm = () => {
 										value={entry.premium_rate}
 										onBlur={formik.handleBlur}
 										min={0}
-										onChange={(e) => {
+										onChange={(e:any) => {
 											const newEntries = [...formik.values.entries];
 											newEntries[index].premium_rate = e.target.value;
 											formik.setFieldValue('entries', newEntries);
