@@ -95,13 +95,10 @@ const EditWorkerPage = () => {
             const editedWorker = await put(`/workers/${id}`, formData);
             console.log("edited worker", editedWorker)
             toast.success("Worker edited Successfully!")
+            navigate(PathRoutes.worker);
         } catch (error: any) {
             console.error("Error Updating Worker", error);
-            toast.error('Error Updating Worker', error)
-        }
-        finally {
-            navigate(PathRoutes.worker);
-
+            toast.error(error.response.data.message, error)
         }
     };
 

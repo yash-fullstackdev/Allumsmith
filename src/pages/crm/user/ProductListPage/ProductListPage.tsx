@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
 	
 	createColumnHelper,
@@ -37,6 +37,7 @@ import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
 import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
+import _ from "lodash"
 
 const columnHelper = createColumnHelper<any>();
 
@@ -55,6 +56,9 @@ const ProductListPage = () => {
     const [deleteId,setDeleteId] = useState<string>('');
 	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
 	const [productDetails, setProductDetails] = useState<any>('');
+	const [searchTerm,setSearchTerm] = useState<any>('');
+	const [productData,setProductData] = useState<any>()
+
 	const navigate = useNavigate();
 
 
@@ -104,9 +108,34 @@ const ProductListPage = () => {
 	}, [])
 
 
+	const searchProduct = async (query:string) => {
+		try {
+			if(query){
+				const data = await get(`/products/search?name=${query}`)				
+				setProductData(data)
+			}
+		} catch (error:any) {
+			console.log(error.message);
+		}
+	}
 
+	const debouncedSearch = useCallback(
+		_.debounce((query:string) => searchProduct(query),900),
+		[]
+	)
 
+	const handleSearchChange = (query:string) =>{
+		setSearchTerm(query)
+		debouncedSearch(searchTerm)
+	}
 
+	useEffect(() => {
+        if (globalFilter) {
+            handleSearchChange(globalFilter);
+        } else {
+            fetchData();
+        }
+    }, [globalFilter]);
 
 	const columns = [
 		columnHelper.accessor('name', {

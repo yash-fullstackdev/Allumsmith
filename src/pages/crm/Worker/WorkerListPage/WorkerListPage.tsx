@@ -52,6 +52,8 @@ const WorkerListPage = () => {
         setIsLoading(true);
         try {
             const { data: workerData } = await get(`/workers`);
+            console.log(workerData);
+            
             workerData.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setWorkerList(workerData);
             setIsLoading(false);

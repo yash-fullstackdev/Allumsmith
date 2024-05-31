@@ -369,7 +369,7 @@ const AddPurchaseOrderForm = () => {
           toast.success('Purchase Order Created Successfully!');
           navigate(PathRoutes.purchase_order);
         } catch (error: any) {
-          toast.error('Error Creating Purchase Order', error);
+          toast.error(error.response.data.message, error);
         }
     
       };

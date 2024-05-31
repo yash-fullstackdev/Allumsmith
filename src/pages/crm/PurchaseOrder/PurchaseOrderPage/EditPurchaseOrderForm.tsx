@@ -152,7 +152,7 @@ const EditPurchaseOrderForm = () => {
                                                     variant='outlined'
                                                     className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
                                                 >
-                                                    Add Purchase Order
+                                                    Edit Purchase Order
                                                 </Button>
                                             </div>
                                         </div>
@@ -226,7 +226,7 @@ const EditPurchaseOrderForm = () => {
                                                         <div className='col-span-12 lg:col-span-3'>
                                                             <Label htmlFor={`hsn-${index}`}>
                                                                 Quantity
-                                                                <span className='ml-1 text-red-500'>*</span>
+                                                                {/* <span className='ml-1 text-red-500'>*</span> */}
                                                             </Label>
                                                             <Input
                                                                 type='number'
@@ -240,9 +240,9 @@ const EditPurchaseOrderForm = () => {
                                                                     setEntries(updatedEntries);
                                                                 }}
                                                             />
-                                                            {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].requiredQuantity && (
+                                                            {/* {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].requiredQuantity && (
                                                                 <div className='text-red-500'>{formik.errors.entries[index].requiredQuantity}</div>
-                                                            )}
+                                                            )} */}
 
                                                         </div>
                                                         <div className='col-span-12 lg:col-span-3 mt-5'>

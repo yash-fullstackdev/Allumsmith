@@ -10,7 +10,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { Link, useNavigate } from 'react-router-dom';
-
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, {
@@ -27,7 +27,6 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get, post } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import JobsBatch from './JobsBatch';
 import Subheader, { SubheaderLeft, SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
@@ -63,6 +62,7 @@ const JobsListPage = () => {
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
+    const [deleteModal,setDeleteModal] = useState<boolean>(false);
     
 
 
@@ -121,6 +121,7 @@ const JobsListPage = () => {
         fetchData();
         fetchDatajobwm()
     }, [])
+
     const handleClickDelete = async (id: any, value: boolean) => {
 
         try {
@@ -138,6 +139,7 @@ const JobsListPage = () => {
             toast.error('Error deleting Jobs', error);
         } finally {
             setIsLoading(false);
+            setDeleteModal(true)
             fetchData();
             fetchDatajobwm()
         }
@@ -558,7 +560,7 @@ const JobsListPage = () => {
                         </div>
                     </Collapse>
                 </Card>
-
+                
             </Container>
 
             {/* end of without material */}
@@ -617,6 +619,7 @@ const JobsListPage = () => {
                     {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>
+            
 
         </PageWrapper >
     )

@@ -213,6 +213,18 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
     }, [])
 
     const purchaseEntryColumns = [
+        columnHelper.accessor('date', {
+            cell: (info) => (
+                <div>
+                    {new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }).format(new Date(info?.row?.original?.createdAt)) || '-'}
+                </div>
+            ),
+            header: 'Date',
+        }),
         columnHelper.accessor('products', {
             cell: (info) => (
                 <div>
@@ -244,16 +256,6 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             ),
             header: 'Branch',
         }),
-
-        // columnHelper.accessor('date', {
-        //     cell: (info) => (
-        //         <div>
-        //             {/* {Moment(info.row?.original?.createdAt).format('DD-MM-YYYY')} */}
-        //             console.log('Info')
-        //         </div>
-        //     ),
-        //     header: 'Date',
-        // }),
     ];
 
 

@@ -57,7 +57,7 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
             getPowderList();
         } catch (error: any) {
             console.error("Error Saving Powder", error)
-            toast.error('Error Saving Powder', error)
+            toast.error(error.response.data.message, error)
         }
         
     }

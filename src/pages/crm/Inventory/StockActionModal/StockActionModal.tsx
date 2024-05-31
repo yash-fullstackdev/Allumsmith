@@ -61,8 +61,9 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                 console.log("data", data)
                 toast.success('Stock Action Completed');
                 SetStockActionModal();
-            } catch (error) {
+            } catch (error:any) {
                 console.error("Error Adding stocks", error);
+                toast.error(error?.response.data.message,error)
             }
         }
     };
@@ -300,6 +301,7 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                                             id={`hsn-${index}`}
                                             name={`hsn-${index}`}
                                             value={entry.requiredQuantity}
+                                            min={0}
                                             onChange={(e) => {
                                                 const updatedEntries = [...entries];
                                                 updatedEntries[index].requiredQuantity = e.target.value;

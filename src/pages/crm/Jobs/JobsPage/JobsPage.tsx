@@ -44,6 +44,7 @@ const JobsPage = () => {
             console.error("Error Fetching Products", error);
         }
     }
+    
     const getCustomerOrderDetails = async () => {
         try {
             const { data } = await get('/customer-order');
@@ -108,7 +109,7 @@ const JobsPage = () => {
                 mm:entry?.mm
             }));
         }
-
+        
         setProcessReviewData(finalValues);
 
         const allProductIds = [
@@ -342,7 +343,7 @@ const JobsPage = () => {
                                                                     {customerOrderData?.map((co: any) => {
                                                                         return (
                                                                             <option key={co._id} value={co._id}>
-                                                                                {co.customer.name}
+                                                                                {co.customer.name} ({co.customerOrderNumber})
                                                                             </option>
                                                                         );
                                                                     })}
@@ -382,7 +383,7 @@ const JobsPage = () => {
                                                                             Pick Quantity(Pcs)
                                                                         </Label>
                                                                         <Input
-                                                                            type='text'
+                                                                            type='number'
                                                                             id={`pickQuantity${productIndex}`}
                                                                             name={`pickQuantity${productIndex}`}
                                                                             value={product.pickQuantity}
@@ -394,6 +395,7 @@ const JobsPage = () => {
                                                                                 updatedOrders[index].products = updatedProducts;
                                                                                 setCustomerOrders(updatedOrders);
                                                                             }}
+                                                                            min={0}
                                                                         />
                                                                     </div>
 
@@ -513,7 +515,7 @@ const JobsPage = () => {
                             Review Job Process
                         </ModalHeader>
                         <ModalBody>
-                            <ReviewQuantityStatus productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal={setQuantityStatusModal} />
+                            <ReviewQuantityStatus pendingQuantity={0} productIds={productIdsForReview} processReviewData={processReviewData} productQuantityDetails={productQuantityDetails} setProcessReviewData={setProcessReviewData} setQuantityStatusModal={setQuantityStatusModal} />
                         </ModalBody>
                     </Modal>
                 </Container>) :

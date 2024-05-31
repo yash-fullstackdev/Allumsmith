@@ -61,15 +61,18 @@ const AllLedger = ({ handleGeneratePdf, associatedLedger, formik, fetchLedgerDet
 
     const columns: any = [
         columnHelper.accessor('createdAt', {
-            cell: (info) => (
-                <div className=''>
-                    {new Intl.DateTimeFormat('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    }).format(new Date(info.getValue())) || '-'}
-                </div>
-            ),
+            cell: (info) => {
+                const dateString = info?.row?.original?.createdAt.split('T')[0];
+                
+                const [year, month, day] = dateString.split('-');
+                const formattedDate = `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+                
+                return (
+                    <div className=''>
+                        {formattedDate || '-'}
+                    </div>
+                );
+            },
             header: 'Created Date',
         }),
 

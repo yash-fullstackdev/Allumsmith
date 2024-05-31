@@ -123,7 +123,11 @@ const LedgerPage = () => {
   const handleGeneratePdf = async() =>{
     try {
         setIsLoading(true);
-        const payload = associatedLedger
+        const payload = {
+          ledgerData: associatedLedger,
+          from: formik.values.startDate,
+          to: formik.values.endDate
+        }
         console.log("payload",payload)
         toast.success('Please Wait Pdf is being generated...')
         const response = await post(`/ledger/pdf`, payload);

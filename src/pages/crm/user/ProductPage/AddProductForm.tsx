@@ -22,7 +22,7 @@ const AddproductForm = () => {
 		initialValues: {
 			entries: [{
 				name: '',
-				hsn: '760410',
+				hsn: '',
 				rate: '',
 				productCode: '',
 				thickness: '',

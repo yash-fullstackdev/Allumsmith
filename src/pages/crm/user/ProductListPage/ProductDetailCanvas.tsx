@@ -82,4 +82,4 @@ const ProductDetailCanvas = ({productDetails}:any) => {
   )
 }
 
-export default ProductDetailCanvas
+export default ProductDetailCanvas;

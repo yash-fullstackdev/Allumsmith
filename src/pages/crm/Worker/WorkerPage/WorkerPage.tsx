@@ -114,11 +114,9 @@ const WorkerPage = () => {
             const worker = await post('/workers', formik.values);
             console.log("worker", worker);
             toast.success('worker added Successfully!')
+            navigate(PathRoutes.worker);
         } catch (error: any) {
             console.error("Error Saving worker", error)
-        }
-        finally {
-            navigate(PathRoutes.worker);
         }
 
     };
@@ -172,7 +170,7 @@ const WorkerPage = () => {
                                                     onBlur={formik.handleBlur}
                                                 />
                                                 {formik.errors.name && typeof formik.errors.name === 'string' && (
-                                                    <div>{formik.errors.name}</div>
+                                                    <div className="text-red-500">{formik.errors.name}</div>
                                                 )}
                                                 {/* ... Error handling for name field */}
                                             </div>
@@ -188,7 +186,7 @@ const WorkerPage = () => {
                                                     onBlur={formik.handleBlur}
                                                 />
                                                 {formik.errors.email && typeof formik.errors.email === 'string' && (
-                                                    <div>{formik.errors.email}</div>
+                                                    <div className="text-red-500">{formik.errors.email}</div>
                                                 )}
                                                 {/* ... Error handling for email field */}
                                             </div>
@@ -203,7 +201,7 @@ const WorkerPage = () => {
                                                     onChange={handleChange}
                                                 />
                                                 {formik.errors.phone && typeof formik.errors.phone === 'string' && (
-                                                    <div>{formik.errors.phone}</div>
+                                                    <div className="text-red-500">{formik.errors.phone}</div>
                                                 )}
                                                 {/* ... Error handling for phone field */}
                                             </div>

@@ -128,15 +128,15 @@ const editProductSchema = Yup.object().shape({
 
 const wrokersSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    email: Yup.string().required('email is required'),
+    email: Yup.string().optional(),
     phone: Yup.number().required('Phone is required'),
-    company: Yup.string().required('Company Name is required'),
-    address_line1: Yup.string().required('Address is required'),
-    address_line2: Yup.string().required('Address is required'),
-    city: Yup.string().required('City is required'),
-	state: Yup.string().required('State is required'),
-	zipcode: Yup.number().required('Zipcode is required'),
-	pancard: Yup.string().required('PanCard is required'),
+    company: Yup.string().optional(),
+    address_line1: Yup.string().optional(),
+    address_line2: Yup.string().optional(),
+    city: Yup.string().optional(),
+	state: Yup.string().optional(),
+	zipcode: Yup.number().optional(),
+	pancard: Yup.string().optional(),
 });
 
 const vendorSchema =Yup.object().shape({

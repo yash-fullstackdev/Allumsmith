@@ -258,6 +258,10 @@ const AddInvoice = () => {
                     }
                     console.log(finalPayload.delieveryQuantity)
                     console.log(entry?.itemSummary?.coatingQuantity)
+                    if(!entry?.itemSummary.coatingQuantity || entry?.itemSummary.coatingQuantity === 0 || isNaN(entry?.itemSummary.coatingQuantity)){
+                        toast.error('No Avilable quantity,please finish the job first')
+                        throw new Error('No Avilable quantity,please finish the job first')
+                    }
                     if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
                         toast.error('Delivery Quantity Should be less than Available Quantity');
                         throw new Error('Delivery Quantity Should be less than Available Quantity');
@@ -284,8 +288,8 @@ const AddInvoice = () => {
             console.log('Response:', respones);
             toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
-        } catch (error) {
-            console.error('Error saving data:', error);
+        } catch (error:any) {
+            toast.error(error.response.data.message)
         }
     };
 
@@ -438,7 +442,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`product${index}`}
                                                                         name={`product${index}`}
-                                                                        value={entry?.product?.length}
+                                                                        value={entry?.length || entry?.product?.length}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
                                                                             updatedProducts[index] = { ...updatedProducts[index], product: { ...updatedProducts[index].product, length: e.target.value } };
