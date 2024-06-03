@@ -114,7 +114,7 @@ export const TableFooterTemplate: FC<ITableFooterTemplateProps> = ({ table }) =>
 								'text-left': header.id !== 'Actions',
 								'text-center': header.id === 'Actions',
 							})}>
-								{''}
+							{''}
 							{/* {header.isPlaceholder ? null : (
 								<div
 									key={header.id}
@@ -182,14 +182,19 @@ TableTemplate.defaultProps = {
 interface ITableCardFooterTemplateProps extends Partial<ITableProps> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	table: TTableProps<any>;
+	onChangesPageSize?: (pageSize: number) => void;
+	onChangePage?: (pageNumber: number) => void;
+	count?: number;
+	pageSize?: number;
 }
-export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ table }) => {
+
+export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ table, onChangesPageSize = null, onChangePage = null, pageSize = null, count }) => {
 	const pageSizeOptions = [10, 20, 30, 40, 50, 'All'];
 	return (
 		<CardFooter>
 			<CardFooterChild>
 				<Select
-					value={
+					value={pageSize !== null ? count === Object.values(table?.getRowModel().rowsById).length ? "All" : pageSize :
 						table.getState().pagination.pageSize ===
 							Object.values(table?.getRowModel().rowsById).length
 							? 'All'
@@ -198,9 +203,10 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 					onChange={(e) => {
 						const selectedPageSize =
 							e.target.value === 'All'
-								? Object.values(table?.getRowModel().rowsById).length
+								? count ? count : Object.values(table?.getRowModel().rowsById).length
 								: Number(e.target.value);
 						table.setPageSize(selectedPageSize);
+						onChangesPageSize && onChangesPageSize(selectedPageSize)
 					}}
 					className='!w-fit'
 					name='pageSize'>
@@ -211,15 +217,22 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 					))}
 				</Select>
 			</CardFooterChild>
+
 			<CardFooterChild>
 				<Button
-					onClick={() => table.setPageIndex(0)}
+					onClick={() => {
+						table.setPageIndex(0);
+						onChangePage && onChangePage(0)
+					}}
 					isDisable={!table.getCanPreviousPage()}
 					icon='HeroChevronDoubleLeft'
 					className='!px-0'
 				/>
 				<Button
-					onClick={() => table.previousPage()}
+					onClick={() => {
+						table.previousPage()
+						onChangePage && onChangePage(table.getState().pagination.pageIndex)
+					}}
 					isDisable={!table.getCanPreviousPage()}
 					icon='HeroChevronLeft'
 					className='!px-0'
@@ -232,6 +245,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 							onChange={(e) => {
 								const page = e.target.value ? Number(e.target.value) - 1 : 0;
 								table.setPageIndex(page);
+								onChangePage && onChangePage(page)
 							}}
 							className='inline-flex !w-12 text-center'
 							name='page'
@@ -240,13 +254,19 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 					</strong>
 				</span>
 				<Button
-					onClick={() => table.nextPage()}
+					onClick={() => {
+						table.nextPage()
+						onChangePage && onChangePage(table.getState().pagination.pageIndex + 2);
+					}}
 					isDisable={!table.getCanNextPage()}
 					icon='HeroChevronRight'
 					className='!px-0'
 				/>
 				<Button
-					onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+					onClick={() => {
+						table.setPageIndex(table.getPageCount() - 1)
+						onChangePage && onChangePage(table.getPageCount() - 1);
+					}}
 					isDisable={!table.getCanNextPage()}
 					icon='HeroChevronDoubleRight'
 					className='!px-0'

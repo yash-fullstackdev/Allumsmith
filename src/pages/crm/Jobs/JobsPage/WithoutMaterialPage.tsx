@@ -29,7 +29,7 @@ const WithoutMaterialPage = () => {
         try {
             const { data } = await get('/products');
             console.log('Data of Products', data);
-            const productsWithData = data.filter((item: any) => item.name);
+            const productsWithData = data?.data?.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
             console.error("Error Fetching Products", error);

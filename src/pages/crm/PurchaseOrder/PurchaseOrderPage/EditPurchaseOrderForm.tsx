@@ -63,7 +63,7 @@ const EditPurchaseOrderForm = () => {
     const fetchData = async () => {
         try {
             const { data: allProductList } = await get(`/products`);
-            setProductListData(allProductList);
+            setProductListData(allProductList?.data);
         } catch (error: any) {
             console.error('Error fetching products:', error.message);
         }

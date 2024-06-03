@@ -43,7 +43,7 @@ const AddCustomerOrderForm = () => {
   const getProductDetails = async () => {
     try {
       const { data } = await get('/products');
-      const productsWithData = data.filter((item: any) => item.name);
+      const productsWithData = data?.data?.filter((item: any) => item.name);
       setProductsData(productsWithData);
     } catch (error) {
       console.error("Error Fetching Products", error);

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-	
+
 	createColumnHelper,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -41,7 +41,6 @@ import _ from "lodash"
 
 const columnHelper = createColumnHelper<any>();
 
-
 const ProductListPage = () => {
 
 
@@ -49,15 +48,16 @@ const ProductListPage = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [apiData, setApiData] = useState<any[]>([]);
+	const [tableCount, setTableCount] = useState<number>(0);
+	const [pageSize, setPageSize] = useState(10);
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [editProductId, setEditProductId] = useState<any>('')
 	const [globalFilter, setGlobalFilter] = useState<string>('');
-	const [deleteModal,setDeleteModal] = useState<boolean>(false);
-    const [deleteId,setDeleteId] = useState<string>('');
+	const [deleteModal, setDeleteModal] = useState<boolean>(false);
+	const [deleteId, setDeleteId] = useState<string>('');
 	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
 	const [productDetails, setProductDetails] = useState<any>('');
-	const [searchTerm,setSearchTerm] = useState<any>('');
-	const [productData,setProductData] = useState<any>()
+	const [searchTerm, setSearchTerm] = useState<any>('');
 
 	const navigate = useNavigate();
 
@@ -84,58 +84,46 @@ const ProductListPage = () => {
 			setDeleteModal(false);
 		}
 	};
-	const fetchData = async () => {
+	const fetchData = async (pageSize: number | null = null, page: number | null = null, search = "") => {
 		setIsLoading(true);
 		try {
-			const { data: allUsers } = await get(`/products`);
-			allUsers.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-			setApiData(allUsers);
-	
-			setApiData(allUsers);
+			const pageSizeValue = pageSize || 10;
+			const pageValue = page || 1
+			const { data: allUsers } = await get(`/products?page=${pageValue}&limit=${pageSizeValue}&name=${search || globalFilter}`);
+			allUsers?.data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			setApiData(allUsers?.data);
+			setTableCount(allUsers?.count)
 			setIsLoading(false);
+			table.setPageIndex(pageValue -1);
 		} catch (error: any) {
-			console.error('Error fetching users:', error.message);
 			setIsLoading(false);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	
-	
 	useEffect(() => {
 		fetchData();
 	}, [])
 
+	const debounce = (func: Function, delay: number) => {
+		let timer: NodeJS.Timeout;
+		return (query: any) => {
+				clearTimeout(timer);
+				timer = setTimeout(() => func(table?.getState().pagination.pageSize, 1, query), delay);
+		};
+};
 
-	const searchProduct = async (query:string) => {
-		try {
-			if(query){
-				const data = await get(`/products/search?name=${query}`)				
-				setProductData(data)
-			}
-		} catch (error:any) {
-			console.log(error.message);
-		}
-	}
-
-	const debouncedSearch = useCallback(
-		_.debounce((query:string) => searchProduct(query),900),
-		[]
-	)
-
-	const handleSearchChange = (query:string) =>{
-		setSearchTerm(query)
-		debouncedSearch(searchTerm)
-	}
+const debouncedFetchData = useCallback(debounce(fetchData, 700), []);
 
 	useEffect(() => {
-        if (globalFilter) {
-            handleSearchChange(globalFilter);
-        } else {
-            fetchData();
-        }
-    }, [globalFilter]);
+		if (globalFilter) {
+			debouncedFetchData(globalFilter);
+		} else {
+			fetchData();
+		}
+	}, [globalFilter]);
+
 
 	const columns = [
 		columnHelper.accessor('name', {
@@ -212,13 +200,14 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
-					<Button icon='HeroInformationCircle' onClick={() =>{
+					<Button icon='HeroInformationCircle' onClick={() => {
 						setProductDetails(info.row.original)
-						setProductDetailModal(true)}}
-						>
-					
-					
-						
+						setProductDetailModal(true)
+					}}
+					>
+
+
+
 					</Button>
 					<Button
 						onClick={() => {
@@ -252,17 +241,24 @@ const ProductListPage = () => {
 		columns,
 		state: {
 			sorting,
-			globalFilter,
 		},
+		pageCount: Number(Math.ceil(tableCount ? tableCount / pageSize : tableCount / 10)),
+		autoResetPageIndex: false,
 		onSortingChange: setSorting,
 		enableGlobalFilter: true,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
+		manualPagination: true
 	});
 
-
+	const handleChangePageSize = (pageSize: number) => {
+		fetchData(pageSize, 1)
+		setPageSize(pageSize)
+	};
+	const handleChangePage = (page: number) => {
+		fetchData(null, page)
+	}
 
 	return (
 		<PageWrapper name='Product List'>
@@ -319,15 +315,21 @@ const ProductListPage = () => {
 								className='table-fixed max-md:min-w-[70rem]'
 								table={table}
 							/>
-							) : (
+						) : (
 							!isLoading && <p className="text-center text-gray-500">No records found</p>
 						)}
 						<div className='flex justify-center'>
 							{isLoading && <LoaderDotsCommon />}
 						</div>
 					</CardBody>
-					{ table.getFilteredRowModel().rows.length > 0 && 
-							<TableCardFooterTemplate table={table} />
+					{table.getFilteredRowModel().rows.length > 0 &&
+						<TableCardFooterTemplate
+							table={table}
+							onChangesPageSize={handleChangePageSize}
+							onChangePage={handleChangePage}
+							count={tableCount}
+							pageSize={pageSize}
+						/>
 					}
 				</Card>
 			</Container>
@@ -364,8 +366,8 @@ const ProductListPage = () => {
 			</Modal>
 			<OffCanvas isOpen={productDetailModal} setIsOpen={setProductDetailModal}>
 				<OffCanvasHeader>Product Detail</OffCanvasHeader>
-				<OffCanvasBody><ProductDetailCanvas productDetails = {productDetails}/></OffCanvasBody>
-				
+				<OffCanvasBody><ProductDetailCanvas productDetails={productDetails} /></OffCanvasBody>
+
 			</OffCanvas>
 		</PageWrapper>
 	)

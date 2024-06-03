@@ -38,13 +38,13 @@ const JobsPage = () => {
     const getProductDetails = async () => {
         try {
             const { data } = await get('/products');
-            const productsWithData = data.filter((item: any) => item.name);
+            const productsWithData = data?.data?.filter((item: any) => item.name);
             setProductsData(productsWithData);
         } catch (error) {
             console.error("Error Fetching Products", error);
         }
     }
-    
+
     const getCustomerOrderDetails = async () => {
         try {
             const { data } = await get('/customer-order');
@@ -87,7 +87,7 @@ const JobsPage = () => {
                 quantity: Number(product.pickQuantity),
                 coating: { id: product?.coating?._id, name: product?.coating?.name },
                 color: { id: product?.color?._id, name: product?.color?.name },
-                mm:product?.mm
+                mm: product?.mm
             }))
         }));
         const finalValues: any = {
@@ -106,10 +106,10 @@ const JobsPage = () => {
                 quantity: entry.quantity,
                 coating: { id: entry.coating.id, name: entry.coating.name },
                 color: { id: entry.color.id, name: entry.color.name },
-                mm:entry?.mm
+                mm: entry?.mm
             }));
         }
-        
+
         setProcessReviewData(finalValues);
 
         const allProductIds = [
@@ -349,125 +349,126 @@ const JobsPage = () => {
                                                                     })}
                                                                 </Select>
                                                             </div>
+                                                            {order.products
+                                                                ?.filter((item: any) => item?.coating?.name && item?.color?.name)
+                                                                ?.map((product: any, productIndex: any) => (
+                                                                    <div key={productIndex} className='mt-[10px] col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
 
-                                                            {order.products.map((product: any, productIndex: any) => (
-                                                                <div key={productIndex} className='mt-[10px] col-span-12 lg:col-span-12 grid grid-cols-12 gap-1'>
+
+                                                                        <div className='col-span-12 lg:col-span-2'>
+                                                                            <Label htmlFor={`product${productIndex}`}>
+                                                                                Product {productIndex + 1}
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='text'
+                                                                                id={`product${productIndex}`}
+                                                                                name={`product${productIndex}`}
+                                                                                value={product.product.name}
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        <div className='col-span-12 lg:col-span-2'>
+                                                                            <Label htmlFor={`quantity${productIndex}`}>
+                                                                                Pending Quantity(Pcs)
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='text'
+                                                                                id={`quantity${productIndex}`}
+                                                                                name={`quantity${productIndex}`}
+                                                                                value={product.pendingQuantity || product.quantity}
+
+                                                                            />
+                                                                        </div>
+                                                                        <div className='col-span-12 lg:col-span-2'>
+                                                                            <Label htmlFor={`pickQuantity${productIndex}`}>
+                                                                                Pick Quantity(Pcs)
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='number'
+                                                                                id={`pickQuantity${productIndex}`}
+                                                                                name={`pickQuantity${productIndex}`}
+                                                                                value={product.pickQuantity}
+                                                                                onChange={(e) => {
+                                                                                    const updatedProduct = { ...product, pickQuantity: e.target.value };
+                                                                                    const updatedProducts = [...order.products];
+                                                                                    updatedProducts[productIndex] = updatedProduct;
+                                                                                    const updatedOrders = [...customerOrders];
+                                                                                    updatedOrders[index].products = updatedProducts;
+                                                                                    setCustomerOrders(updatedOrders);
+                                                                                }}
+                                                                                min={0}
+                                                                            />
+                                                                        </div>
+
+                                                                        <div className='col-span-12 lg:col-span-2'>
+
+                                                                            <Label htmlFor={`coating${productIndex}`}>
+                                                                                Coating
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='text'
+                                                                                id={`coating${productIndex}`}
+                                                                                name={`coating${productIndex}`}
+                                                                                value={product?.coating?.name}
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        <div className='col-span-12 lg:col-span-2'>
+                                                                            <Label htmlFor={`color${productIndex}`}>
+                                                                                Color
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='text'
+                                                                                id={`color${productIndex}`}
+                                                                                name={`color${productIndex}`}
+                                                                                value={product?.color?.name}
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        {product?.mm && (<div className='col-span-12 lg:col-span-1'>
+                                                                            <Label htmlFor={`mm${productIndex}`}>
+                                                                                MM
+                                                                            </Label>
+                                                                            <Input
+                                                                                type='text'
+                                                                                id={`mm${productIndex}`}
+                                                                                name={`mm${productIndex}`}
+                                                                                value={product?.mm}
+                                                                                disabled
+                                                                            />
+                                                                        </div>)}
 
 
-                                                                    <div className='col-span-12 lg:col-span-2'>
-                                                                        <Label htmlFor={`product${productIndex}`}>
-                                                                            Product {productIndex + 1}
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`product${productIndex}`}
-                                                                            name={`product${productIndex}`}
-                                                                            value={product.product.name}
-                                                                            disabled
-                                                                        />
+                                                                        <div className='col-span-12 lg:col-span-1 mt-[20px]'>
+                                                                            <Button
+                                                                                variant='outlined'
+                                                                                color='red'
+                                                                                onClick={() => {
+                                                                                    const updatedProducts = [...order.products];
+                                                                                    updatedProducts.splice(productIndex, 1);
+                                                                                    const updatedOrders = [...customerOrders];
+                                                                                    updatedOrders[index].products = updatedProducts;
+                                                                                    setCustomerOrders(updatedOrders);
+                                                                                }}
+                                                                            >
+                                                                                <svg
+                                                                                    xmlns='http://www.w3.org/2000/svg'
+                                                                                    fill='none'
+                                                                                    viewBox='0 0 24 24'
+                                                                                    strokeWidth='1.5'
+                                                                                    stroke='currentColor'
+                                                                                    data-slot='icon'
+                                                                                    className='h-6 w-6'>
+                                                                                    <path
+                                                                                        strokeLinecap='round'
+                                                                                        strokeLinejoin='round'
+                                                                                        d='M6 18 18 6M6 6l12 12'
+                                                                                    />
+                                                                                </svg>
+                                                                            </Button>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className='col-span-12 lg:col-span-2'>
-                                                                        <Label htmlFor={`quantity${productIndex}`}>
-                                                                            Pending Quantity(Pcs)
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`quantity${productIndex}`}
-                                                                            name={`quantity${productIndex}`}
-                                                                            value={product.pendingQuantity || product.quantity}
-
-                                                                        />
-                                                                    </div>
-                                                                    <div className='col-span-12 lg:col-span-2'>
-                                                                        <Label htmlFor={`pickQuantity${productIndex}`}>
-                                                                            Pick Quantity(Pcs)
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='number'
-                                                                            id={`pickQuantity${productIndex}`}
-                                                                            name={`pickQuantity${productIndex}`}
-                                                                            value={product.pickQuantity}
-                                                                            onChange={(e) => {
-                                                                                const updatedProduct = { ...product, pickQuantity: e.target.value };
-                                                                                const updatedProducts = [...order.products];
-                                                                                updatedProducts[productIndex] = updatedProduct;
-                                                                                const updatedOrders = [...customerOrders];
-                                                                                updatedOrders[index].products = updatedProducts;
-                                                                                setCustomerOrders(updatedOrders);
-                                                                            }}
-                                                                            min={0}
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className='col-span-12 lg:col-span-2'>
-
-                                                                        <Label htmlFor={`coating${productIndex}`}>
-                                                                            Coating
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`coating${productIndex}`}
-                                                                            name={`coating${productIndex}`}
-                                                                            value={product?.coating?.name}
-                                                                            disabled
-                                                                        />
-                                                                    </div>
-                                                                    <div className='col-span-12 lg:col-span-2'>
-                                                                        <Label htmlFor={`color${productIndex}`}>
-                                                                            Color
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`color${productIndex}`}
-                                                                            name={`color${productIndex}`}
-                                                                            value={product?.color?.name}
-                                                                            disabled
-                                                                        />
-                                                                    </div>
-                                                                    {product?.mm && (<div className='col-span-12 lg:col-span-1'>
-                                                                        <Label htmlFor={`mm${productIndex}`}>
-                                                                            MM
-                                                                        </Label>
-                                                                        <Input
-                                                                            type='text'
-                                                                            id={`mm${productIndex}`}
-                                                                            name={`mm${productIndex}`}
-                                                                            value={product?.mm}
-                                                                            disabled
-                                                                        />
-                                                                    </div>)}
-
-
-                                                                    <div className='col-span-12 lg:col-span-1 mt-[20px]'>
-                                                                        <Button
-                                                                            variant='outlined'
-                                                                            color='red'
-                                                                            onClick={() => {
-                                                                                const updatedProducts = [...order.products];
-                                                                                updatedProducts.splice(productIndex, 1);
-                                                                                const updatedOrders = [...customerOrders];
-                                                                                updatedOrders[index].products = updatedProducts;
-                                                                                setCustomerOrders(updatedOrders);
-                                                                            }}
-                                                                        >
-                                                                            <svg
-                                                                                xmlns='http://www.w3.org/2000/svg'
-                                                                                fill='none'
-                                                                                viewBox='0 0 24 24'
-                                                                                strokeWidth='1.5'
-                                                                                stroke='currentColor'
-                                                                                data-slot='icon'
-                                                                                className='h-6 w-6'>
-                                                                                <path
-                                                                                    strokeLinecap='round'
-                                                                                    strokeLinejoin='round'
-                                                                                    d='M6 18 18 6M6 6l12 12'
-                                                                                />
-                                                                            </svg>
-                                                                        </Button>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
+                                                                ))}
                                                         </div>
                                                     </div>
                                                 </Collapse>
