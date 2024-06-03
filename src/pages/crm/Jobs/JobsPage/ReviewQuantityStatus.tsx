@@ -169,7 +169,9 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                 branch: processReviewData.branchId.id,
                 batch: processReviewData.batch.map((batch: any) => ({
                     coEntry: batch.coEntry,
-                    products: batch.products.map((product: any) => ({
+                    products: batch.products
+                    ?.filter((item: any) => item?.coating?.name && item?.color?.name)
+                    ?.map((product: any) => ({
                         product: product.product.id,
                         quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,
                         coating: product.coating.id,
@@ -234,7 +236,9 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                                         {processReviewData.batch.map((batch: any, batchIndex: number) => (
                                             <div key={batchIndex} className='mt-4'>
                                                 <h2 className='text-lg font-semibold mb-2'>Customer {batchIndex+1}</h2>
-                                                {batch.products.map((product: any, productIndex: number) => (
+                                                {batch.products
+                                                ?.filter((item: any) => item?.coating?.name && item?.color?.name)
+                                                ?.map((product: any, productIndex: number) => (
                                                     <div className='col-span-12 lg:col-span-12 flex items-center gap-2' key={productIndex}>
                                                         <div className='mt-2'>
                                                             <Label htmlFor={`productQuantity-${productIndex}`}>
