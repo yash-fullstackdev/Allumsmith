@@ -42,9 +42,11 @@ const AssociatedJobsModal = ({ associatedJobs }: any) => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
+        try {            
             const { data: workerData } = await get(`/workers/${associatedJobs}`);
-            setWorkerData(workerData);
+            console.log('data',workerData);
+            
+            setWorkerData(workerData);           
             setIsLoading(false);
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -83,28 +85,28 @@ const AssociatedJobsModal = ({ associatedJobs }: any) => {
             header: 'Branch Name',
         },
         ),
-        columnHelper.accessor('powder.name', {
-            cell: (info) => (
+        // columnHelper.accessor('associatedJobs.powder.powder.name', {
+        //     cell: (info) => (
 
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
+        //         <div className=''>
+        //             {`${info.getValue()}`}
+        //         </div>
 
-            ),
-            header: 'powder Name',
-        },
-        ),
-        columnHelper.accessor('powderQuantity', {
-            cell: (info) => (
+        //     ),
+        //     header: 'Powder Name',
+        // },
+        // ),
+        // columnHelper.accessor('associatedJobs.powder.powderInKgs', {
+        //     cell: (info) => (
 
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
+        //         <div className=''>
+        //             {`${info.getValue()}`}
+        //         </div>
 
-            ),
-            header: 'Powder Quantity',
-        },
-        )
+        //     ),
+        //     header: 'Powder Quantity',
+        // },
+        // )
 
     ];
 

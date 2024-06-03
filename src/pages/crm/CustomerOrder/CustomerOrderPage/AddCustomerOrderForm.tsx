@@ -128,7 +128,7 @@ const AddCustomerOrderForm = () => {
       product: '',
       quantity: '',
       coating: lastEntry.coating || null,
-      color: lastEntry.color || null,
+      color: '',
       length: '',
       weight: '',
       coating_rate: '',
@@ -186,10 +186,9 @@ const AddCustomerOrderForm = () => {
       }
       const { data } = await post('/customer-order', finalValues);
       toast.success('Customer order created successfully!');
+      navigate(PathRoutes.customer_order)
     } catch (error: any) {
       toast.error('Error Creating customer order', error);
-    } finally {
-      navigate(PathRoutes.customer_order)
     }
   };
 
@@ -216,7 +215,7 @@ const AddCustomerOrderForm = () => {
 
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const colorId = e.target.value;
+    const colorId = e.target.value;    
     const updatedEntries = [...entries];
     updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
     setEntries(updatedEntries);
@@ -280,8 +279,6 @@ const AddCustomerOrderForm = () => {
         const rate = product[productCoatingRate] || 0;
         return rate;
     };
-
-    // Calculate coating rate and update entries state whenever product, coating, or quantity changes
     const updatedEntries = entries.map((entry: any) => {
         const { product, coating, quantity } = entry;
         return {
@@ -336,7 +333,7 @@ const AddCustomerOrderForm = () => {
     let totalCoatingCharges: number = 0;
     for (const entry of entries) {
       const product = productsData?.find((product:any) => product._id.toString() === entry.product.toString())
-      totalCoatingCharges += (entry.quantity * entry.coating_rate * (product?.length || entry.length || 0))
+      totalCoatingCharges += (entry?.quantity * entry?.coating_rate * (entry?.length ||product?.length  || 0))
     }
     if (discount) {
       const discountedValue = (totalCoatingCharges * discount / 100)
@@ -400,7 +397,8 @@ const AddCustomerOrderForm = () => {
                   id='customerOrderNumber'
                   name='customerOrderNumber'
                   value={customerOrderNumber}
-
+                  disabled
+                  className='cursor-not-allowed'
                 />
               </div>
               <div className='col-span-12 lg:col-span-12'>
@@ -465,6 +463,7 @@ const AddCustomerOrderForm = () => {
                               name={`length-${index}`}
                               value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
                               onChange={(e) => handleLengthChange(e, index)}
+                              min={0}
                             />
 
                           </div>
@@ -477,8 +476,9 @@ const AddCustomerOrderForm = () => {
                               type='number'
                               id={`weight-${index}`}
                               name={`weight-${index}`}
-                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight || ''}
+                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight ||  ''}
                               onChange={(e) => handleWeightChange(e, index)}
+                              min={0}
                             />
                           </div>
                           </>
@@ -515,6 +515,7 @@ const AddCustomerOrderForm = () => {
                           id={`hsn-${index}`}
                           name={`hsn-${index}`}
                           value={entry.quantity}
+                          min={0}
                           onChange={(e) => {
                             const updatedEntries = [...entries];
                             updatedEntries[index].quantity = e.target.value;
@@ -596,7 +597,7 @@ const AddCustomerOrderForm = () => {
                             type='number'
                             id={`hsn-${index}`}
                             name={`hsn-${index}`}
-                            value={entry.quantity * (productsData.find((item: any) => item._id === entry.product)?.weight || entry.weight || 0)}
+                            value={ parseFloat((entry.quantity * (entry.weight || (productsData.find((item: any) => item._id === entry.product)?.weight)) || 0).toFixed(2))}
                             min={0}
                             disabled
                           />
@@ -611,7 +612,7 @@ const AddCustomerOrderForm = () => {
                             type='number'
                             id={`hsn-${index}`}
                             name={`hsn-${index}`}
-                            value={entry.quantity * (productsData.find((item: any) => item._id === entry.product)?.length || entry.length || 0) * entry.coating_rate}
+                            value={entry.quantity * (entry.length || productsData.find((item: any) => item._id === entry.product)?.length || 0) * entry.coating_rate}
                             min={0}
                             disabled
                           />
@@ -751,7 +752,7 @@ const AddCustomerOrderForm = () => {
                     </div>
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='estimatedRate'>
-                        Product Rate(rs)
+                        Total Product Rate(rs)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input

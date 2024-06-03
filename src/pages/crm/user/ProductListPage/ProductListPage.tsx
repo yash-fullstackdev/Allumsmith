@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
 	
 	createColumnHelper,
@@ -35,6 +35,9 @@ import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subhead
 import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
+import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
+import ProductDetailCanvas from './ProductDetailCanvas';
+import _ from "lodash"
 
 const columnHelper = createColumnHelper<any>();
 
@@ -51,6 +54,11 @@ const ProductListPage = () => {
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const [deleteModal,setDeleteModal] = useState<boolean>(false);
     const [deleteId,setDeleteId] = useState<string>('');
+	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
+	const [productDetails, setProductDetails] = useState<any>('');
+	const [searchTerm,setSearchTerm] = useState<any>('');
+	const [productData,setProductData] = useState<any>()
+
 	const navigate = useNavigate();
 
 
@@ -100,9 +108,34 @@ const ProductListPage = () => {
 	}, [])
 
 
+	const searchProduct = async (query:string) => {
+		try {
+			if(query){
+				const data = await get(`/products/search?name=${query}`)				
+				setProductData(data)
+			}
+		} catch (error:any) {
+			console.log(error.message);
+		}
+	}
 
+	const debouncedSearch = useCallback(
+		_.debounce((query:string) => searchProduct(query),900),
+		[]
+	)
 
+	const handleSearchChange = (query:string) =>{
+		setSearchTerm(query)
+		debouncedSearch(searchTerm)
+	}
 
+	useEffect(() => {
+        if (globalFilter) {
+            handleSearchChange(globalFilter);
+        } else {
+            fetchData();
+        }
+    }, [globalFilter]);
 
 	const columns = [
 		columnHelper.accessor('name', {
@@ -179,6 +212,14 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
+					<Button icon='HeroInformationCircle' onClick={() =>{
+						setProductDetails(info.row.original)
+						setProductDetailModal(true)}}
+						>
+					
+					
+						
+					</Button>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -201,7 +242,7 @@ const ProductListPage = () => {
 				</div>
 			),
 			header: 'Actions',
-			size: 80,
+			size: 120,
 		}),
 
 	];
@@ -321,6 +362,11 @@ const ProductListPage = () => {
 					</ModalFooterChild>
 				</ModalFooter>
 			</Modal>
+			<OffCanvas isOpen={productDetailModal} setIsOpen={setProductDetailModal}>
+				<OffCanvasHeader>Product Detail</OffCanvasHeader>
+				<OffCanvasBody><ProductDetailCanvas productDetails = {productDetails}/></OffCanvasBody>
+				
+			</OffCanvas>
 		</PageWrapper>
 	)
 

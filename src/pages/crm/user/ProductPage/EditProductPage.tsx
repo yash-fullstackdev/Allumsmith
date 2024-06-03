@@ -368,7 +368,7 @@ const EditProductPage = () => {
                                 </div>
 
                                 {/* Rate */}
-                                <div className='col-span-12 lg:col-span-3'>
+                                {/* <div className='col-span-12 lg:col-span-3'>
                                     <Label htmlFor='rate'>
                                         Rate
                                     </Label>
@@ -382,7 +382,7 @@ const EditProductPage = () => {
                                     {formik.touched.rate && formik.errors.rate ? (
                                         <div className='text-red-500'>{formik.errors.rate}</div>
                                     ) : null}
-                                </div>
+                                </div> */}
 
                                 {/* Product Code */}
                                 <div className='col-span-12 lg:col-span-3'>

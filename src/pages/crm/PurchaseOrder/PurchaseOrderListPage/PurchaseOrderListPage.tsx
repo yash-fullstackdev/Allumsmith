@@ -9,7 +9,7 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
@@ -27,10 +27,11 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import VendorProductList from './ProductList/ProductList';
 import { toast } from 'react-toastify';
 import PurchaseEntryDetail from './PurchaseEntryDetail';
+import Tooltip from '../../../../components/ui/Tooltip';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -43,17 +44,18 @@ const PurchaseOrderListPage = () => {
     const [vendorId, setVenorId] = useState()
     const [branchesData, setBranchesData] = useState<any>()
     const [vendorInfo, setVendorInfo] = useState<any>()
-
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<any>('');
 
     console.log("vendorInfo", vendorInfo)
 
-
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data: purchaseOrderList } = await get(`/purchase-order`);
-            purchaseOrderList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            purchaseOrderList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setPurchaseOrderList(purchaseOrderList);
             setIsLoading(false);
         } catch (error: any) {
@@ -73,17 +75,16 @@ const PurchaseOrderListPage = () => {
         } finally {
         }
     };
+    const handleClickDelete = (id: any) => {
+        setDeleteModal(true);
+        setDeleteId(id);
+    };
 
-    useEffect(() => {
-        fetchData();
-        fetchBranchData()
-    }, [])
-
-    const handleClickDelete = async (id: any) => {
-        console.log('Id', id);
+    const handlePurchaseOrderDelete = async (id: any) => {
+        console.log("id", id)
         try {
-            const { data: allUsers } = await deleted(`/purchase-order/${id}`);
-            console.log("allUsers", allUsers);
+            const { data } = await deleted(`/purchase-order/${id}`);
+
             toast.success('Purchase Order  deleted Successfully!')
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
@@ -92,10 +93,33 @@ const PurchaseOrderListPage = () => {
         } finally {
             setIsLoading(false);
             fetchData();
+            setDeleteModal(false);
         }
-    }
+    };
+    useEffect(() => {
+        fetchData();
+        fetchBranchData()
+    }, [])
+
+
 
     const columns = [
+
+        columnHelper.accessor('createdAt', {
+            cell: (info) => (
+
+                <div className=''>
+                    {new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }).format(new Date(info.getValue())) || '-'}
+                </div>
+
+            ),
+            header: 'Date',
+        }),
+
         columnHelper.accessor('name', {
             cell: (info) => (
 
@@ -107,25 +131,38 @@ const PurchaseOrderListPage = () => {
             header: 'Name',
         }),
 
-        columnHelper.accessor('phone', {
-            cell: (info) => (
-
-                <div className=''>
-                    {`${info?.row?.original?.vendor?.phone}`}</div>
-            ),
-            header: 'Phone',
-        }),
-        columnHelper.accessor('email', {
+     
+        columnHelper.accessor('status', {
             cell: (info) => (
 
 
-                <div className=''>{`${info?.row?.original?.vendor?.email}`}</div>
+                <div className=''>{`${info.getValue()}`}</div>
             ),
-            header: 'Email',
+            header: 'Status',
         }),
         columnHelper.display({
             cell: (info) => (
-                <div className='font-bold'>
+                <div className='' style={{display:"flex", justifyContent:"center"}}>
+                    <Button onClick={() => {
+						navigate(`${PathRoutes.edit_purchase_order}/${info.row.original._id}`)
+                    }
+					}
+                    isDisable = {(info.row.original.status !== 'pending')}
+                    >
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'
+							strokeWidth='1.5'
+							stroke='currentColor'
+							className='h-6 w-6'>
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
+							/>
+						</svg>
+					</Button>
                     <Button
                         onClick={() => {
                             setVendorProductModal(true),
@@ -161,7 +198,8 @@ const PurchaseOrderListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
+            
         }),
 
 
@@ -221,9 +259,9 @@ const PurchaseOrderListPage = () => {
                                 {isLoading && <LoaderDotsCommon />}
                             </div>
                         </CardBody>
-                       { table.getFilteredRowModel().rows.length > 0 &&
-                       <TableCardFooterTemplate table={table} />
-                       }
+                        {table.getFilteredRowModel().rows.length > 0 &&
+                            <TableCardFooterTemplate table={table} />
+                        }
                     </Card>
 
                 </Container>
@@ -257,7 +295,26 @@ const PurchaseOrderListPage = () => {
                         <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} />
                     </ModalBody>
                 </Modal>
-
+                <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
+                    <ModalHeader>Are you sure?</ModalHeader>
+                    <ModalFooter>
+                        <ModalFooterChild>
+                            Do you really want to delete these records? This cannot be undone.
+                        </ModalFooterChild>
+                        <ModalFooterChild>
+                            <Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+                                Cancel
+                            </Button>
+                            <Button
+                                variant='solid'
+                                onClick={() => {
+                                    handlePurchaseOrderDelete(deleteId);
+                                }}>
+                                Delete
+                            </Button>
+                        </ModalFooterChild>
+                    </ModalFooter>
+                </Modal>
             </PageWrapper>
         </>
     )

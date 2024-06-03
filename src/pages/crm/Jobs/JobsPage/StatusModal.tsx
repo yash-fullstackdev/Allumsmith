@@ -47,9 +47,9 @@ const StatusModal = ({ status, setStatus,jobId, setStatusModal, fetchData}: any)
             toast.success('Status Updated Successfully');
             setStatusModal(false);
             fetchData();
-        } catch (error) {
+        } catch (error:any) {
             console.error('Error Updating Status', error);
-            toast.error('Failed to update status');
+            toast.error(error.response.data.message,error);
         } finally {
             // setStatusModal(false);
             // fetchData();

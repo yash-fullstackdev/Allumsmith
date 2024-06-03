@@ -52,7 +52,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
         collapsibleEntryList: false,
 
     });
-    const[currentState, setCurrentState] = useState<any>('');
+    const [currentState, setCurrentState] = useState<any>('');
     const navigate = useNavigate()
 
 
@@ -77,7 +77,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             },
         }));
     }
-        const columns = [
+    const columns = [
         columnHelper.accessor('product.name', {
             cell: (info) => (
                 <div className=''>{`${info.getValue()}`}</div>
@@ -129,14 +129,14 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
                         name={`receivedQuantity-${info.row.id}`}
                         placeholder='Received Quantity'
                         onClick={() => setCurrentState(info.row.id)}
-                        autoFocus = {info.row.id === currentState}
-                        
+                        autoFocus={info.row.id === currentState}
+
                     />
 
                 </div>
 
             ),
-           
+
 
 
 
@@ -213,6 +213,18 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
     }, [])
 
     const purchaseEntryColumns = [
+        columnHelper.accessor('date', {
+            cell: (info) => (
+                <div>
+                    {new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }).format(new Date(info?.row?.original?.createdAt)) || '-'}
+                </div>
+            ),
+            header: 'Date',
+        }),
         columnHelper.accessor('products', {
             cell: (info) => (
                 <div>
@@ -244,16 +256,6 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             ),
             header: 'Branch',
         }),
-
-        // columnHelper.accessor('date', {
-        //     cell: (info) => (
-        //         <div>
-        //             {/* {Moment(info.row?.original?.createdAt).format('DD-MM-YYYY')} */}
-        //             console.log('Info')
-        //         </div>
-        //     ),
-        //     header: 'Date',
-        // }),
     ];
 
 
@@ -290,7 +292,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             requiredQuantity: parseFloat(row.original.requiredQuantity),
             branch: selectedBranches[index],
         }));
-        const UpdatedEntries: any = saveData.filter(entry => entry.ProductStaus !== 'completed');
+        const UpdatedEntries: any = saveData.filter(entry => entry.ProductStaus !== 'completed' && entry?.branch && entry.receivedQuantity);
         try {
             const invalidEntries = purchaseOrderData?.products?.some((entry: any) =>
                 (entry.requiredQuantity - entry.receivedQuantity) < UpdatedEntries?.receivedQuantity
@@ -314,7 +316,8 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             toast.success('Product added to inventory');
             getPurchaseOrderByid()
             getPurchaseEntryData();
-            setEditedData({})
+            setEditedData({});
+            setSelectedBranches({})
             setIsNewPurchaseEntry(false)
 
         } catch (error: any) {
@@ -322,6 +325,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             toast.error('Error Saving Branch', error);
         }
         finally {
+            
             navigate(PathRoutes.purchase_order);
         }
     };

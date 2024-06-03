@@ -20,6 +20,7 @@ const PowderInventoryListPage = () => {
         setExpandedProduct(prevProduct => prevProduct === productName ? null : productName);
     };
 
+
     const getPowderList = async () => {
         const { data } = await get('/utility_inventory')
         setPowderInventoryList(data);
@@ -86,26 +87,12 @@ const PowderInventoryListPage = () => {
                                         <React.Fragment key={productName}>
                                             <TableRow onClick={() => handleProductClick(productName)}>
                                                 {/* <TableCell><h4>{productName}</h4></TableCell> */}
-                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={
-                                                    expandedProduct ?
-                                                        'HeroChevronUp'
-                                                        : 'HeroChevronDown'
-                                                } /></h4></TableCell>
+                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={expandedProduct === productName ? 'HeroChevronUp' : 'HeroChevronDown'} />
+                                                </h4></TableCell>
                                                 <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
                                             </TableRow>
-                                            {expandedProduct && renderBranches(items)}
-                                            {/* {expandedProduct === productName && (
-                                                <TableRow>
-                                                    <TableCell><h3>Branch</h3></TableCell>
-                                                    <TableCell><h3>Quantity</h3></TableCell>
-                                                </TableRow>
-                                            )}
-                                            {expandedProduct === productName && items.map((item: any) => (
-                                                <TableRow key={item._id}>
-                                                    <TableCell><h4>{item.branch.name}</h4></TableCell>
-                                                    <TableCell><h4>{item.quantity}</h4></TableCell>
-                                                </TableRow>
-                                            ))} */}
+                                            {expandedProduct === productName && renderBranches(items)}
+                                           
                                         </React.Fragment>
                                     ))}
                                 </TableBody>

@@ -35,6 +35,8 @@ import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import EditVendorModal from '../VendorPage/EditVendorModal';
 import { toast } from 'react-toastify';
+import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
+import VendorDetailCanvas from './VendorDetailCanvas';
 
 
 
@@ -49,6 +51,9 @@ const VendorListPage = () => {
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
     const [deleteModal,setDeleteModal] = useState<boolean>(false);
     const [deleteId,setDeleteId] = useState<string>('');
+    const [vendorDetailModal, setVendorDetailModal] = useState<boolean>(false);
+    const [vendorDetails,setVendorDetails] = useState<any>()
+
     const navigate = useNavigate();
     const fetchData = async () => {
         setIsLoading(true);
@@ -168,6 +173,14 @@ const VendorListPage = () => {
                         </svg>
 
                     </Button>
+                    <Button icon='HeroInformationCircle' onClick={() =>{
+						setVendorDetails(info.row.original)
+						setVendorDetailModal(true)}}
+						>
+					
+					
+						
+					</Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);
@@ -190,7 +203,7 @@ const VendorListPage = () => {
                 </div>
             ),
             header: 'Actions',
-            size: 80,
+            size: 120,
         }),
 
 
@@ -285,7 +298,12 @@ const VendorListPage = () => {
 						</Button>
 					</ModalFooterChild>
 				</ModalFooter>
-			</Modal>       
+			</Modal>
+            <OffCanvas isOpen={vendorDetailModal} setIsOpen={setVendorDetailModal}>
+				<OffCanvasHeader>Product Detail</OffCanvasHeader>
+				<OffCanvasBody><VendorDetailCanvas vendorDetails = {vendorDetails}/></OffCanvasBody>
+				
+			</OffCanvas>       
         </PageWrapper>
     )
 

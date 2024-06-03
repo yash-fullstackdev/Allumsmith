@@ -84,13 +84,13 @@ const FinishInventoryListPage = () => {
                                             <TableRow onClick={() => handleProductClick(productName)}>
                                                 {/* <TableCell><h4>{productName}</h4></TableCell> */}
                                                 <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={
-                                                    expandedProduct ?
+                                                    expandedProduct === productName ?
                                                         'HeroChevronUp'
                                                         : 'HeroChevronDown'
                                                 } /></h4></TableCell>
                                                 <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
                                             </TableRow>
-                                            {expandedProduct && renderBranches(items)}
+                                            {expandedProduct === productName && renderBranches(items)}
                                             {/* {expandedProduct === productName && (  
                                                 <TableRow>
                                                     <TableCell><h3>Branch</h3></TableCell>

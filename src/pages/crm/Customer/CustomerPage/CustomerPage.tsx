@@ -51,11 +51,10 @@ const CustomerPage = () => {
             const customer = await post('/customers', formData);
             console.log("customer", customer);
             toast.success('customer added Successfully!')
+            navigate(PathRoutes.customer);
         } catch (error: any) {
             console.error("Error Saving customer", error)
-        }
-        finally {
-            navigate(PathRoutes.customer);
+            toast.error(error.response.data.message, error)
         }
 
     };
@@ -100,6 +99,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='name'>
                                                     Name
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     id="name"
@@ -219,6 +219,8 @@ const CustomerPage = () => {
                                                     name="anodize_discount"
                                                     value={formData.anodize_discount}
                                                     onChange={handleChange}
+                                                    min={0}
+                                                    max={100}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
@@ -233,6 +235,8 @@ const CustomerPage = () => {
                                                     name="commercial_discount"
                                                     value={formData.commercial_discount}
                                                     onChange={handleChange}
+                                                    min={0}
+                                                    max={100}
                                                 />
                                                 {/* ... Error handling for zipcode field */}
                                             </div>
@@ -263,7 +267,7 @@ const CustomerPage = () => {
 
                                         </div>
                                         <div className='flex mt-2 gap-2'>
-                                            <Button variant='solid' color='blue' type='button' onClick={createCustomer}>
+                                            <Button variant='solid' color='blue' type='button' isDisable= {formData.name === ''} onClick={createCustomer}>
                                                 Save Customer
                                             </Button>
                                         </div>

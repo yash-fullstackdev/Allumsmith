@@ -184,7 +184,7 @@ const CoatingPage = () => {
                                                     </Label>
                                                     <SelectReact
                                                         name='colors'
-                                                        options={filteredColors.map((color: any) => ({
+                                                        options={colorData && colorData.map((color: any) => ({
                                                             value: color._id,
                                                             label: color.name,
                                                         }))}

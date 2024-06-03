@@ -11,22 +11,7 @@ import AddPurchaseOrderForm from "./AddPurchaseOrderForm";
 const AddPurchaseOrderPage = () => {
     const navigation = useNavigate();
 
-    const handleFiles = async (event: any) => {
-        try {
-            const files = event.target.files;
-            const formData = new FormData();
-            formData.append("csvFile", files[0]);
 
-            const { data } = await post("/products/uploadcsv", formData);
-            console.log("data", data);
-
-            // Handle success or additional logic if needed
-
-        } catch (error) {
-            console.error("Error uploading CSV file:", error);
-            // Handle error
-        }
-    };
 
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -41,18 +26,7 @@ const AddPurchaseOrderPage = () => {
                     </Button>
                     <SubheaderSeparator />
                 </SubheaderLeft>
-                {/* <SubheaderRight>
-                    <div className='col-span-1'>
-                        <input
-                            type={"file"}
-                            id={"csvFileInput"}
-                            accept=".csv"
-                            onChange={handleFiles}
-
-                        />
-                    </div>
-                    <Button variant='solid' onClick={handleFiles}>Add File</Button>
-                </SubheaderRight> */}
+              
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>

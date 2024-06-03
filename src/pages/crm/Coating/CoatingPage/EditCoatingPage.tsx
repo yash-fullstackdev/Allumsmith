@@ -24,7 +24,6 @@ const EditCoatingPage = () => {
     const [formData, setFormData] = useState<any>({
         name: '',
         code: '',
-        rate: '',
         colors: [],
         type : ''
     });
@@ -93,7 +92,7 @@ const EditCoatingPage = () => {
             toast.success('Coating edited Successfully!')
         } catch (error: any) {
             console.error("Error updatin Coating", error);
-            toast.error('Error updating Coating', error);
+            toast.error(error.response.data.message, error);
         }
         finally {
             navigate(PathRoutes.coating)
@@ -175,17 +174,6 @@ return(<>
                                     id="code"
                                     name="code"
                                     value={formData.code}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className='col-span-12 lg:col-span-3'>
-                                <Label htmlFor='rate'>
-                                    Rate
-                                </Label>
-                                <Input
-                                    id="rate"
-                                    name="rate"
-                                    value={formData.rate}
                                     onChange={handleChange}
                                 />
                             </div>

@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// const EditBranchPage = () => {
-//     return (
-//         <div>EditBranchPage</div>
-//     )
-// }
-
-// export default EditBranchPage
 
 import React, { useEffect, useState } from "react";
 import { get, put } from "../../../../utils/api-helper.util";

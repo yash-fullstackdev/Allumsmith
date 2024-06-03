@@ -23,9 +23,13 @@ export const appPages: any = {
 			text: 'Purchase Order',
 			icon: 'DuoCart1',
 		},
+		addPageLink: {
+			id:'addPageLink',
+			to:'/add-purchase-order'
+		},
 		editPageLink: {
 			id: 'editPageLink',
-			to: '/add-purchase-order',
+			to: '/edit-purchase-order',
 		},
 		identifier: 'purchase-order'
 	},

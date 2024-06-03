@@ -264,7 +264,7 @@ import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import { purchaseOrderSchema } from '../../../../utils/formValidations';
 
-const AddproductForm = () => {
+const AddPurchaseOrderForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [entries, setEntries] = useState([{ product: '', requiredQuantity: '' }]);
   const [vendorId, setVendorId] = useState('');
@@ -339,13 +339,37 @@ const AddproductForm = () => {
         };
     
         try {
+          const check = await formik.validateForm();
+
+            const handleNestedErrors = (errors: any, prefix = '') => {
+                //  logic to touch the field which are not validated
+                Object.keys(errors).forEach((errorField) => {
+                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+
+                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+                        // Recursive call for nested errors
+                        handleNestedErrors(errors[errorField], fieldName);
+                    } else {
+                        // Set the field as touched and set the error
+                        formik.setFieldTouched(fieldName, true, false);
+                        formik.setFieldError(fieldName, errors[errorField]);
+                    }
+                });
+            };
+
+            if (Object.keys(check).length > 0) {
+                handleNestedErrors(check);
+
+                toast.error(`Please fill all the mandatory fields and check all formats`);
+                return;
+            }
           console.log('api-data', finalValues);
           
           const { data } = await post("/purchase-order", finalValues);
           toast.success('Purchase Order Created Successfully!');
           navigate(PathRoutes.purchase_order);
         } catch (error: any) {
-          toast.error('Error Creating Purchase Order', error);
+          toast.error(error.response.data.message, error);
         }
     
       };
@@ -389,7 +413,7 @@ const AddproductForm = () => {
                     name='vendor'
                   />
                   {formik.errors.vendor && formik.touched.vendor && (
-                    <div className='text-red-500'>{formik.errors.vendorName}</div>
+                    <div className='text-red-500'>{formik.errors.vendor}</div>
                   )}
                   </div>
                   
@@ -475,4 +499,4 @@ const AddproductForm = () => {
   );
 };
 
-export default AddproductForm;
+export default AddPurchaseOrderForm;

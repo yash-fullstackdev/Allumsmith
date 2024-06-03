@@ -86,7 +86,7 @@ const PaymentPage = () => {
                 });
             };
 
-            if (formik.values.status !== 'DRAFT' && Object.keys(check).length > 0) {
+            if (Object.keys(check).length > 0) {
                 handleNestedErrors(check);
 
                 toast.error(`Please fill all the mandatory fields and check all formats`);
@@ -110,8 +110,8 @@ const PaymentPage = () => {
             const { data } = await post('/ledger', payload)
             toast.success("ledger created")
             navigate(PathRoutes.ledger_list);
-        } catch (error) {
-            toast.error('Error Saving Ledger');
+        } catch (error:any) {
+            toast.error(error.response.data.message);
         }
     }
     const today = new Date().toISOString().split("T")[0];
