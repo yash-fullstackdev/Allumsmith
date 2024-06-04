@@ -296,7 +296,7 @@ const debouncedFetchData = useCallback(debounce(fetchData, 700), []);
 								variant='outline'
 								className='border-transparent px-4'
 								rounded='rounded-full'>
-								{table.getFilteredRowModel().rows.length} items
+								{tableCount} items
 							</Badge>
 						</CardHeaderChild>
 

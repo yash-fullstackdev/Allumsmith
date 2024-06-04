@@ -203,7 +203,7 @@ const AddInvoice = () => {
 
             // Calculate total coatingTotal
             const totalCoatingTotal = purchaseOrderData.entries.reduce((acc: number, entry: any, index: number) => {
-                const coatingTotal = (parseFloat(entry.coating?.coatingWeight) || 0) * parseFloat(entry.coating.rate);
+                const coatingTotal = (parseFloat(entry?.coating?.coatingWeight) || 0) * parseFloat(entry?.coating?.rate);
                 const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100);
                 return acc + (finalCoatingTotal || 0);
             }, 0);
@@ -211,70 +211,77 @@ const AddInvoice = () => {
             // Calculate amountBeforeTax
             amountBeforeTax = totalSpecificProductPrice + totalCoatingTotal;
 
-
-
             const payload = {
-                customerOrder_id: purchaseOrderData._id || '',
-                customerName: purchaseOrderData.customer?._id || '',
-                customerEmail: purchaseOrderData.customer?.email || '',
-                customerPhone: purchaseOrderData.customer?.phone || '',
-                products: purchaseOrderData.entries.map((entry: any, index: any) => {
-                    const specificProductPrice = entry.product?.weight * parseInt(entry.product?.rate) * deliveredQuantities[index];
-                    const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
-                    const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
+                customerOrder_id: purchaseOrderData?._id || '',
+                customerName: purchaseOrderData?.customer?._id || '',
+                customerEmail: purchaseOrderData?.customer?.email || '',
+                customerPhone: purchaseOrderData?.customer?.phone || '',
+                products: purchaseOrderData?.entries.map((entry: any, index: any) => {
+                    const specificProductPrice = entry?.product?.weight * parseInt(entry?.product?.rate) * deliveredQuantities?.[index];
+                    const coatingTotal = (entry?.coating?.coatingWeight || 0) * entry?.coating?.rate;
+                    const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts?.[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
-                    let finalPayload : any= {}
+                    let finalPayload: any = {}
                     if (entry?.mm) {
                         finalPayload = {
-                            product: entry.product._id,
+                            product: entry?.product?._id,
                             name: entry?.product?.name,
-                            color: entry.color?._id || '',
-                            coating: entry.coating?._id || '',
-                            delieveryQuantity: deliveredQuantities[index] || '',
+                            color: entry?.color?._id || '',
+                            coating: entry?.coating?._id || '',
+                            delieveryQuantity: deliveredQuantities?.[index] || '',
                             weight: parseFloat(entry?.product?.weight) || '',
-                            length: entry.product?.length || '',
-                            rate: entry.product?.rate || '',
-                            coatingRate: parseFloat(entry.coating_rate),
+                            length: entry?.product?.length || '',
+                            rate: entry?.product?.rate || '',
+                            coatingRate: parseFloat(entry?.coating_rate),
                             coatingName: entry?.coating?.name,
                             mm: entry?.mm,
-                            total_weight: totalWeights[index] || 0,
-                            total_coating_rate: totalCoatingRate[index] || 0
+                            total_weight: totalWeights?.[index] || 0,
+                            total_coating_rate: totalCoatingRate?.[index] || 0
                         };
                     } else {
                         finalPayload = {
-                            product: entry.product._id,
+                            product: entry?.product._id,
                             name: entry?.product?.name,
-                            color: entry.color?._id || '',
-                            coating: entry.coating?._id || '',
-                            delieveryQuantity: deliveredQuantities[index] || '',
+                            color: entry?.color?._id || '',
+                            coating: entry?.coating?._id || '',
+                            delieveryQuantity: deliveredQuantities?.[index] || '',
                             weight: parseFloat(entry?.product?.weight) || '',
-                            length: entry.product?.length || '',
-                            rate: entry.product?.rate || '',
-                            coatingRate: parseFloat(entry.coating_rate),
-                            coatingName: entry?.coating?.name,
-                            total_weight: totalWeights[index] || 0,
-                            total_coating_rate: totalCoatingRate[index] || 0,
+                            length: entry?.product?.length || '',
+                            rate: entry?.product?.rate || '',
+                            coatingRate: parseFloat(entry?.coating_rate),
+                            coatingName: entry?.coating?.name || '',
+                            total_weight: totalWeights?.[index] || 0,
+                            total_coating_rate: totalCoatingRate?.[index] || 0,
                         }
                     }
-                    console.log(finalPayload.delieveryQuantity)
-                    console.log(entry?.itemSummary?.coatingQuantity)
-                    if(!entry?.itemSummary.coatingQuantity || entry?.itemSummary.coatingQuantity === 0 || isNaN(entry?.itemSummary.coatingQuantity)){
-                        toast.error('No Avilable quantity,please finish the job first')
-                        throw new Error('No Avilable quantity,please finish the job first')
+
+                    if (entry?.itemSummary) {
+                        if (
+                            !(entry?.itemSummary?.coatingQuantity) ||
+                            entry?.itemSummary?.coatingQuantity === 0 ||
+                            isNaN(entry?.itemSummary?.coatingQuantity)
+                        ) {
+                            toast.error("No Avilable quantity,please finish the job first");
+                            throw new Error("No Avilable quantity,please finish the job first");
+                        }
+                    } else if ( entry?.quantity &&  entry?.quantity < deliveredQuantities?.[index]) {
+                        toast.error("No Avilable quantity,please finish the job first");
+                        throw new Error("No Avilable quantity,please finish the job first");
                     }
-                    if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
+
+                    if (finalPayload?.delieveryQuantity > entry?.itemSummary?.coatingQuantity) {
                         toast.error('Delivery Quantity Should be less than Available Quantity');
                         throw new Error('Delivery Quantity Should be less than Available Quantity');
                     }
                     return finalPayload;
                 }),
-               
-                send_mail: entries.send_mail || false,
-                gst: parseFloat(entries.gst) || '',
-                other_tax: parseFloat(entries.tax) || '',
+
+                send_mail: entries?.send_mail || false,
+                gst: parseFloat(entries?.gst) || '',
+                other_tax: parseFloat(entries?.tax) || '',
                 totalAmount: parseFloat(totalAmount) || '',
                 origin_point: branchId || '',
-                delivery_point: entries.delivery_point || '',
+                delivery_point: entries?.delivery_point || '',
                 totalCoatingCharges: finalCoatingPrice,
                 totalProductPrice: totalProductPrice,
                 amountBeforeTax: amountBeforeTaxAndGst,
@@ -282,7 +289,6 @@ const AddInvoice = () => {
                 invoiceNumber,
 
             };
-            console.log('Payload', payload);
 
             const respones = await post('/invoice', payload)
             console.log('Response:', respones);
@@ -393,7 +399,7 @@ const AddInvoice = () => {
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
-                                                        {console.log(entry)}
+                                                            {console.log(entry)}
                                                             <div className='flex items-end justify-end mt-2'>
                                                                 <div className='flex items-end justify-end'>
                                                                     <Button
@@ -500,6 +506,7 @@ const AddInvoice = () => {
                                                                             updatedProducts[index] = { ...updatedProducts[index], coating_rate: e.target.value };
                                                                             setPurchaseOrderData({ ...purchaseOrderData, entries: updatedProducts });
                                                                         }}
+                                                                        disabled={!entry?.coating?.name}
 
                                                                     />
                                                                 </div>
@@ -543,7 +550,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingQuantity${index}`}
                                                                         name={`coatingQuantity${index}`}
-                                                                        value={entry?.itemSummary?.coatingQuantity}
+                                                                        value={entry?.itemSummary?.coatingQuantity || entry?.quantity}
                                                                         disabled
                                                                         style={{cursor:'no-drop'}}
                                                                     />
@@ -684,7 +691,7 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={finalCoatingPrice || 0}
+                                                                    value={finalCoatingPrice?.toFixed(2) || 0}
                                                                     name="totalCoatingCharges"
                                                                     disabled
                                                                 />
@@ -754,7 +761,7 @@ const AddInvoice = () => {
                                                                     {branch &&
                                                                         branch.length > 0 &&
                                                                         branch?.map((data: any) => (
-                                                                            <option key={data._id} value={data._id}>
+                                                                            <option key={data._id} value={data._id} className='text-neutral-950'>
                                                                                 {data.name}
                                                                             </option>
                                                                         ))}
