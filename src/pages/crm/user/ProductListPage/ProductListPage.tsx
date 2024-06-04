@@ -37,7 +37,7 @@ import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
 import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
-import _ from "lodash"
+import _, { debounce } from "lodash"
 
 const columnHelper = createColumnHelper<any>();
 
@@ -89,12 +89,12 @@ const ProductListPage = () => {
 		try {
 			const pageSizeValue = pageSize || 10;
 			const pageValue = page || 1
-			const { data: allUsers } = await get(`/products?page=${pageValue}&limit=${pageSizeValue}&name=${search || globalFilter}`);
+			const { data: allUsers } = await get(`/products?page=${pageValue}&limit=${pageSizeValue}${!!(globalFilter || search) ? `&name=${search || globalFilter}` : ""} `);
 			allUsers?.data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 			setApiData(allUsers?.data);
 			setTableCount(allUsers?.count)
 			setIsLoading(false);
-			table.setPageIndex(pageValue -1);
+			table.setPageIndex(pageValue - 1);
 		} catch (error: any) {
 			setIsLoading(false);
 		} finally {
@@ -106,15 +106,12 @@ const ProductListPage = () => {
 		fetchData();
 	}, [])
 
-	const debounce = (func: Function, delay: number) => {
-		let timer: NodeJS.Timeout;
-		return (query: any) => {
-				clearTimeout(timer);
-				timer = setTimeout(() => func(table?.getState().pagination.pageSize, 1, query), delay);
-		};
-};
+	console.log('globalFilter :>> ', globalFilter);
 
-const debouncedFetchData = useCallback(debounce(fetchData, 700), []);
+
+	const debouncedFetchData = useCallback(debounce((query: string) => {
+		fetchData(table?.getState().pagination.pageSize, 1, query)
+	}, 1000), []);
 
 	useEffect(() => {
 		if (globalFilter) {
@@ -256,8 +253,12 @@ const debouncedFetchData = useCallback(debounce(fetchData, 700), []);
 		fetchData(pageSize, 1)
 		setPageSize(pageSize)
 	};
-	const handleChangePage = (page: number) => {
-		fetchData(null, page)
+	const handleDouncedFetchData = useCallback(debounce((pageSize, page, query: string) => {
+		fetchData(pageSize, page, query)
+	}, 700), []);
+
+	const handleChangePage = (page: number, isDebounce: boolean = false) => {
+		isDebounce ? handleDouncedFetchData(pageSize, page, globalFilter) : fetchData(null, page)
 	}
 
 	return (
