@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import classNames from 'classnames';
 import { flexRender, Table as TTableProps } from '@tanstack/react-table';
 import { object } from 'yup';
@@ -8,6 +8,7 @@ import { CardFooter, CardFooterChild } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/form/Input';
 import Select from '../../components/form/Select';
+import { debounce } from 'lodash';
 
 interface ITableHeaderTemplateProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -188,8 +189,10 @@ interface ITableCardFooterTemplateProps extends Partial<ITableProps> {
 	pageSize?: number;
 }
 
+
 export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ table, onChangesPageSize = null, onChangePage = null, pageSize = null, count }) => {
 	const pageSizeOptions = [10, 20, 30, 40, 50, 'All'];
+	const debouncedFetchData = useCallback(debounce(onChangePage as any, 700), []);
 	return (
 		<CardFooter>
 			<CardFooterChild>
@@ -245,7 +248,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 							onChange={(e) => {
 								const page = e.target.value ? Number(e.target.value) - 1 : 0;
 								table.setPageIndex(page);
-								onChangePage && onChangePage(page)
+								onChangePage && debouncedFetchData((page + 1));
 							}}
 							className='inline-flex !w-12 text-center'
 							name='page'
