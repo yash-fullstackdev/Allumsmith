@@ -106,9 +106,6 @@ const ProductListPage = () => {
 		fetchData();
 	}, [])
 
-	console.log('globalFilter :>> ', globalFilter);
-
-
 	const debouncedFetchData = useCallback(debounce((query: string) => {
 		fetchData(table?.getState().pagination.pageSize, 1, query)
 	}, 1000), []);
@@ -117,7 +114,7 @@ const ProductListPage = () => {
 		if (globalFilter) {
 			debouncedFetchData(globalFilter);
 		} else {
-			fetchData();
+			fetchData(table?.getState().pagination.pageSize, 1);
 		}
 	}, [globalFilter]);
 
@@ -253,12 +250,12 @@ const ProductListPage = () => {
 		fetchData(pageSize, 1)
 		setPageSize(pageSize)
 	};
-	const handleDouncedFetchData = useCallback(debounce((pageSize, page, query: string) => {
+	const handleDebouncedFetchData = useCallback(debounce((pageSize, page, query: string) => {
 		fetchData(pageSize, page, query)
 	}, 700), []);
 
 	const handleChangePage = (page: number, isDebounce: boolean = false) => {
-		isDebounce ? handleDouncedFetchData(pageSize, page, globalFilter) : fetchData(null, page)
+		isDebounce ? handleDebouncedFetchData(pageSize, page, globalFilter) : fetchData(table?.getState().pagination.pageSize, page)
 	}
 
 	return (
