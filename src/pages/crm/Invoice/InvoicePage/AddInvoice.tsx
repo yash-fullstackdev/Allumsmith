@@ -32,11 +32,12 @@ const AddInvoice = () => {
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>({});
     const [customerId, setCustomerId] = useState<any>('');
     const [branchId, setBranchId] = useState<any>('');
+    const [branchName, setBranchName] = useState<any>({})
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
     const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
     const [totalAmount, setTotalAmount] = useState<any>(0);
     const [invoiceNumber, setInvoiceNumber] = useState<any>('');
-    const [branch, setBranch] = useState<any>([]);
+    const [branch, setBranch] = useState<any>({});
     const [totalWeights, setTotalWeights] = useState<Array<number>>([]);
     const [totalCoatingRate, setTotalCoatingRate] = useState<Array<number>>([]);
     const [totalProductWeight, setTotalProducWeight] = useState<any>(0);
@@ -45,7 +46,6 @@ const AddInvoice = () => {
     const [finalCoatingPrice, setFinalCoatingPrice] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [amountBeforeTaxAndGst, setAmountBeforeTaxAndGst] = useState<number>(0);
-
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -105,7 +105,6 @@ const AddInvoice = () => {
         const updatedTotalWeights = [...totalWeights];
         updatedTotalWeights[index] = parseFloat(totalWeight.toFixed(2));
         setTotalWeights((updatedTotalWeights));
-        console.log(purchaseOrderData)
         const totalRate = purchaseOrderData.entries[index]?.coating?.coating_rate ? purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating?.coating_rate : purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating_rate;
         const updatedTotalCoatingRate = [...totalCoatingRate];
         updatedTotalCoatingRate[index] = parseFloat(totalRate.toFixed(2));
@@ -255,6 +254,12 @@ const AddInvoice = () => {
                         }
                     }
 
+                    if (!finalPayload?.color && !finalPayload?.coating) {
+                        delete finalPayload?.color
+                        delete finalPayload?.coating
+                        finalPayload.branch = branchName?.[index]
+                    }
+
                     if (entry?.itemSummary) {
                         if (
                             !(entry?.itemSummary?.coatingQuantity) ||
@@ -264,7 +269,7 @@ const AddInvoice = () => {
                             toast.error("No Avilable quantity,please finish the job first");
                             throw new Error("No Avilable quantity,please finish the job first");
                         }
-                    } else if ( entry?.quantity &&  entry?.quantity < deliveredQuantities?.[index]) {
+                    } else if (entry?.quantity && entry?.quantity < deliveredQuantities?.[index]) {
                         toast.error("No Avilable quantity,please finish the job first");
                         throw new Error("No Avilable quantity,please finish the job first");
                     }
@@ -273,6 +278,8 @@ const AddInvoice = () => {
                         toast.error('Delivery Quantity Should be less than Available Quantity');
                         throw new Error('Delivery Quantity Should be less than Available Quantity');
                     }
+
+
                     return finalPayload;
                 }),
 
@@ -289,12 +296,10 @@ const AddInvoice = () => {
                 invoiceNumber,
 
             };
-
             const respones = await post('/invoice', payload)
-            console.log('Response:', respones);
             toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error(error.response.data.message)
         }
     };
@@ -399,7 +404,6 @@ const AddInvoice = () => {
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
-                                                            {console.log(entry)}
                                                             <div className='flex items-end justify-end mt-2'>
                                                                 <div className='flex items-end justify-end'>
                                                                     <Button
@@ -499,7 +503,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingRate${index}`}
                                                                         name={`coating_rate${index}`}
-                                                                        value={ entry?.coating_rate || ''}
+                                                                        value={entry?.coating_rate || ''}
                                                                         min={0}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
@@ -550,9 +554,9 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingQuantity${index}`}
                                                                         name={`coatingQuantity${index}`}
-                                                                        value={entry?.itemSummary?.coatingQuantity || entry?.quantity}
+                                                                        value={entry?.coating?.name ? entry?.itemSummary?.coatingQuantity : entry?.itemSummary?.coatingQuantity ?? entry?.quantity}
                                                                         disabled
-                                                                        style={{cursor:'no-drop'}}
+                                                                        style={{ cursor: 'no-drop' }}
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-3'>
@@ -598,6 +602,34 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
+                                                                {!entry?.coating?.name ? (
+                                                                    <div className='col-span-12 lg:col-span-3'>
+                                                                        <Label htmlFor={`total_rate${index}`} className='!text-sm'>
+                                                                            Branch
+                                                                            <span className='ml-1 text-red-500'>*</span>
+                                                                        </Label>
+                                                                        <Select
+                                                                            id='originPoint'
+                                                                            name='originPoint'
+                                                                            value={branchId.name}
+                                                                            placeholder='Select Branch'
+                                                                            onChange={(e: any) => {
+                                                                                setBranchName( {
+                                                                                    ...branchName,
+                                                                                    [index]: e.target.value
+                                                                                })
+                                                                            }}
+                                                                        >
+                                                                            {branch &&
+                                                                                branch.length > 0 &&
+                                                                                branch?.map((data: any) => (
+                                                                                    <option key={data._id} value={data._id} className='text-neutral-950'>
+                                                                                        {data.name}
+                                                                                    </option>
+                                                                                ))}
+                                                                        </Select>
+                                                                    </div>
+                                                                ) : null}
 
                                                             </div>
 
@@ -638,7 +670,7 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={alluminiumRate }
+                                                                    value={alluminiumRate}
                                                                     name="gst"
                                                                     onChange={(e) => setAlluminiumRate(parseInt(e.target.value))}
                                                                 />

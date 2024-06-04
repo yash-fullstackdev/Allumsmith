@@ -127,7 +127,7 @@ const AddCustomerOrderForm = () => {
     const newEntry = {
       product: '',
       quantity: '',
-      coating: lastEntry.coating || null,
+      coating: "" || null,
       color: '',
       length: '',
       weight: '',
