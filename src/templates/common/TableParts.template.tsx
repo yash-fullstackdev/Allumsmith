@@ -268,7 +268,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 				<Button
 					onClick={() => {
 						table.setPageIndex(table.getPageCount() - 1)
-						onChangePage && onChangePage(table.getPageCount() - 1);
+						onChangePage && onChangePage(table.getPageCount());
 					}}
 					isDisable={!table.getCanNextPage()}
 					icon='HeroChevronDoubleRight'
