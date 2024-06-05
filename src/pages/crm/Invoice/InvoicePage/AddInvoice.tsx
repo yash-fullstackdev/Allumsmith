@@ -292,7 +292,7 @@ const AddInvoice = () => {
             toast.error(error.response.data.message)
         }
     };
-
+ console.log("cusomterList", customerList)
 
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
@@ -340,7 +340,7 @@ const AddInvoice = () => {
                                                             value: data._id,
                                                             label: `${data.customer.name} (${data?.customerOrderNumber || 'NA'})`
                                                         }))}
-                                                        value={{ value: customerId, label: customerList.find((customer: any) => customer._id === customerId)?.customer.name || 'Select Customer' }}
+                                                        value={{ value: customerId, label: `${ customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
                                                         onChange={(selectedOption: any) => {
                                                             setCustomerId(selectedOption.value);
                                                         }}
