@@ -591,7 +591,7 @@ const AddCustomerOrderForm = () => {
 
                       <div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
-                            Product Weight(kg)
+                            Total Weight(kg)
                           </Label>
                           <Input
                             type='number'
@@ -606,7 +606,7 @@ const AddCustomerOrderForm = () => {
                       
                       <div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
-                            Total Coating Rate(rs)
+                            Total Coating Rate(RFT)
                           </Label>
                           <Input
                             type='number'
@@ -690,7 +690,7 @@ const AddCustomerOrderForm = () => {
                   <div className='mt-2 grid grid-cols-6 gap-2' >
                   <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='discount'>
-                        Discount(%)
+                        Coating Discount(%)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
