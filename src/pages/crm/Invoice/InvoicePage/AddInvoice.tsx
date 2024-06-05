@@ -731,7 +731,7 @@ const AddInvoice = () => {
 
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='discount'>
-                                                                    Discount(%)
+                                                                    Coating Discount(%)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
 
