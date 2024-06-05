@@ -114,7 +114,7 @@ const CoatingPage = () => {
     console.log(formik.touched.name && formik.errors.name)
     return (
         <PageWrapper name='ADD Colors' isProtectedRoute={true}>
-            {/* <Subheader>
+            <Subheader>
                 <SubheaderLeft>
                     <Button
                         icon='HeroArrowLeft'
@@ -123,12 +123,12 @@ const CoatingPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
-                    <div className='flex items-center justify-center ml-4' >
+                    {/* <div className='flex items-center justify-center ml-4' >
                         <h4>Coating</h4>  <Switch {...Label} checked={coatingState} onClick={() => setCoatingState(!coatingState)} /><h4>Anodize</h4>
-                    </div>
+                    </div> */}
                     <SubheaderSeparator />
                 </SubheaderLeft>
-            </Subheader> */}
+            </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
                 <div className='flex h-full flex-wrap content-start'>
                     <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>

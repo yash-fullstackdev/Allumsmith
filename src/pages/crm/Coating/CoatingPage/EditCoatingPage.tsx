@@ -12,7 +12,7 @@ import CreatableSelect from 'react-select/creatable';
 import { toast } from "react-toastify";
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import SelectReact from "../../../../components/form/SelectReact";
-import { Switch } from "@mui/material";
+import Select from "../../../../components/form/Select";
 
 interface ColorOption {
     value: any;
@@ -25,8 +25,15 @@ const EditCoatingPage = () => {
         name: '',
         code: '',
         colors: [],
-        type : ''
+        type: ''
     });
+    
+    const coatingTypes = [
+        { value: 'anodize', label: 'Anodize' },
+        { value: 'wooden', label: 'Wooden' },
+        { value: 'premium', label: 'Premium' },
+        { value: 'commercial', label: 'Commercial' }
+    ];
     const [colorOptions, setColorOptions] = useState<ColorOption[]>([]);
     const [existingColors, setExistingColors] = useState<ColorOption[]>([]);
     const [coatingState, setCoatingState] = useState<boolean>(true);
@@ -68,7 +75,7 @@ const EditCoatingPage = () => {
     } else {
         console.error('Invalid or empty color data.');
     }
-    const {id} = useParams();
+    const { id } = useParams();
     const fetchCoatingById = async () => {
         try {
             const coatingData = await get(`/coatings/${id}`);
@@ -133,8 +140,8 @@ const EditCoatingPage = () => {
         existingColors.some((color: any) => color._id === option.value)
     );
     console.log("Filtered Options", filteredOptions);
-return(<>
-<PageWrapper name='Edit Color' isProtectedRoute={true}>
+    return (<>
+        <PageWrapper name='Edit Color' isProtectedRoute={true}>
             <Subheader>
                 <SubheaderLeft>
                     <Button
@@ -194,6 +201,25 @@ return(<>
 
                             </div>
 
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='Colors'>
+                                    Coating Type
+                                </Label>
+                                <Select
+                                    id='type'
+                                    name='type'
+                                    value={formData.type}
+                                    placeholder='Select Type'
+                                    onChange={handleChange}
+                                >
+                                    {coatingTypes.map((coating: any, index) => (
+                                        <option key={index} value={coating.value}>
+                                            {coating.label}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
+
 
                         </div>
                         <div className='flex mt-4 gap-2'>
@@ -204,7 +230,7 @@ return(<>
                     </CardBody>
                 </Card>
             </Container>
-</PageWrapper >
-</>)
+        </PageWrapper >
+    </>)
 }
 export default EditCoatingPage;
