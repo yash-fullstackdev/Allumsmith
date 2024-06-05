@@ -329,7 +329,7 @@ const AddInvoice = () => {
                                             <div className='mt-2 grid grid-cols-12 gap-1'>
                                                 <div className='col-span-4 lg:col-span-3 mt-5'>
                                                     <Label htmlFor='customerName'>
-                                                        Customer
+                                                        Customer Order
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
 
@@ -486,7 +486,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
-                                                                        Coating/Anodize Rate(rf)
+                                                                        Coating/Anodize Rate(RFT)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
@@ -692,7 +692,7 @@ const AddInvoice = () => {
 
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='discount'>
-                                                                    Discount(%)
+                                                                    Coating Discount(%)
                                                                     <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
 
