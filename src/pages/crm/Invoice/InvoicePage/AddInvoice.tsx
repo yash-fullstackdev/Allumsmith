@@ -366,7 +366,6 @@ const AddInvoice = () => {
                                                         <div className='col-span-4 lg:col-span-3 mt-5'>
                                                             <Label htmlFor='customerName'>
                                                                 Customer Email
-                                                                <span className='ml-1 text-red-500'>*</span>
                                                             </Label>
                                                             <Input
                                                                 type='text'
@@ -378,7 +377,6 @@ const AddInvoice = () => {
                                                         <div className='col-span-4 lg:col-span-3 mt-5'>
                                                             <Label htmlFor='customerName'>
                                                                 Customer Number
-                                                                <span className='ml-1 text-red-500'>*</span>
                                                             </Label>
                                                             <Input
                                                                 type='text'
@@ -442,6 +440,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`product${index}`}
                                                                         name={`product${index}`}
+                                                                        disabled
                                                                         value={entry?.length || entry?.product?.length}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];

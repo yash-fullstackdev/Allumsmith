@@ -68,13 +68,6 @@ const CustomerOrderListPage = () => {
         }
 	};
 
-
-
-    console.log("customerId", customerId)
-    console.log("vendorInfo", vendorInfo)
-
-
-
     const fetchCoData = async () => {
         setIsLoading(true);
         try {

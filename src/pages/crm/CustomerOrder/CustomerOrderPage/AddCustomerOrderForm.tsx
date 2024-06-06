@@ -464,6 +464,7 @@ const AddCustomerOrderForm = () => {
                               value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
                               onChange={(e) => handleLengthChange(e, index)}
                               min={0}
+                              disabled
                             />
 
                           </div>
@@ -523,11 +524,17 @@ const AddCustomerOrderForm = () => {
                           }}
                         />
                         {entry.product && entry.quantity && (
-                          <div style={{ fontSize: '11px', color: 'green', marginTop: '0.5rem' }}>
-                            {`${entry.product ? (productsArray.find((product: any) => product.productId === entry.product)?.productName || entry?.product) : 'No product selected'} has ${(productsArray.find((product: any) => product.productId === entry.product)?.totalQuantity || 0)} quantity`}
+                          <div style={{ fontSize: '11px', marginTop: '0.5rem', color: productsArray.find((product: any) => product.productId === entry.product) ? 'green' : 'red' }}>
+                            {(() => {
+                              const product = productsArray.find((product: any) => product.productId === entry.product);
+                              if (product) {
+                                return `${product.productName} has ${product.totalQuantity} quantity`;
+                              } else {
+                                return 'This product is not available in inventory still you can create CO now';
+                              }
+                            })()}
                           </div>
                         )}
-                            
                       </div>
                       <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor={`hsn-${index}`}>
@@ -553,7 +560,7 @@ const AddCustomerOrderForm = () => {
                         (<div className='col-span-12 lg:col-span-2'>
                           <Label htmlFor={`hsn-${index}`}>
                             Color
-                            <span className='ml-1 text-red-500'>*</span>
+                            <span className='ml-1 text-red-500 '>*</span>
                           </Label>
                           <Select
                             placeholder='Select Color'
