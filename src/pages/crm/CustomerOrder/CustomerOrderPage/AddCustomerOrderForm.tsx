@@ -444,7 +444,7 @@ const AddCustomerOrderForm = () => {
                             name={`product-${index}`}
                             options={productsData.map((product: any) => ({
                               value: product._id,
-                              label: `${product.name} (${product.productCode}) (${product.length})`
+                              label: `${product.name} (${product.productCode}) (${product.length}) (${product.thickness}) `
                             }))}
                             onChange={(selectedOption) => handleProductChange(selectedOption, index)}
                           />
@@ -466,7 +466,6 @@ const AddCustomerOrderForm = () => {
                               min={0}
                               disabled
                             />
-
                           </div>
                           <div className='col-span-12 lg:col-span-2'>
                             <Label htmlFor={`Weight-${index}`}>
