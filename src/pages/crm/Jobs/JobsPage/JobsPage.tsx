@@ -375,11 +375,11 @@ const JobsPage = () => {
                                                                                 type='text'
                                                                                 id={`quantity${productIndex}`}
                                                                                 name={`quantity${productIndex}`}
-                                                                                value={product.pendingQuantity ?? 0}
+                                                                                value={product.pendingQuantity || product.quantity}
 
                                                                             />
                                                                         </div>
-                                                                        <div className='col-span-12 lg:col-span-2'> 
+                                                                        <div className='col-span-12 lg:col-span-2'>
                                                                             <Label htmlFor={`pickQuantity${productIndex}`}>
                                                                                 Pick Quantity(Pcs)
                                                                             </Label>
