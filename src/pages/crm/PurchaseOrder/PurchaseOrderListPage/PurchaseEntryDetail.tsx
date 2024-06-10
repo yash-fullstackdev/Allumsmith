@@ -55,8 +55,6 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
     const [currentState, setCurrentState] = useState<any>('');
     const navigate = useNavigate()
 
-
-
     const getPurchaseOrderByid = async () => {
 
         try {
@@ -144,32 +142,42 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             header: 'Received Quantity',
         }),
 
+
         columnHelper.accessor('selectBranch', {
-            cell: (info) => (
-                <div className=''>
-                    <Select
-                        id={`branch-${info.row.id}`}
-                        name={`branch-${info.row.id}`}
-                        value={selectedBranches[info.row.id] ?? selectedBranches[info.row.id]}
-                        placeholder='Select branch'
-                        onChange={(e: any) => {
-                            setSelectedBranches((prevBranches: any) => ({
-                                ...prevBranches,
-                                [info.row.id]: e.target.value,
-                            }));
-                        }}
-                        disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
-                    >
-                        {branchesData &&
-                            branchesData.length > 0 &&
-                            branchesData?.map((data: any) => (
-                                <option key={data._id} value={data._id}>
-                                    {data.name}
-                                </option>
-                            ))}
-                    </Select>
-                </div>
-            ),
+            cell: (info) => {
+                return (
+                    <div className=''>
+                        <Select
+                            id={`branch-${info.row.id}`}
+                            name={`branch-${info.row.id}`}
+                            value={selectedBranches[info.row.id] ?? selectedBranches[info.row.id]}
+                            placeholder='Select branch'
+                            onChange={(e: any) => {
+                                if (info.row.id === '0') {
+                                    const obj = {} as any;
+                                    purchaseOrderData?.products.forEach((_: any, index: number) => {
+                                        obj[index] =e.target.value;
+                                    });
+                                    setSelectedBranches(obj);
+                                }
+                                setSelectedBranches((prevBranches: any) => ({
+                                    ...prevBranches,
+                                    [info.row.id]: e.target.value,
+                                }));
+                            }}
+                            disabled={!isNewPurchaseEntry || info.row.original.status === 'completed'}
+                        >
+                            {branchesData &&
+                                branchesData.length > 0 &&
+                                branchesData?.map((data: any) => (
+                                    <option key={data._id} value={data._id}>
+                                        {data.name}
+                                    </option>
+                                ))}
+                        </Select>
+                    </div>
+                )
+            },
             header: 'Select Branch',
         }),
 
@@ -325,7 +333,7 @@ const PurchaseEntryDetail = ({ branchesData, poId }: any) => {
             toast.error('Error Saving Branch', error);
         }
         finally {
-            
+
             navigate(PathRoutes.purchase_order);
         }
     };
