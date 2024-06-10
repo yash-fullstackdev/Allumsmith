@@ -45,7 +45,7 @@ const AddInvoice = () => {
     const [finalCoatingPrice, setFinalCoatingPrice] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [amountBeforeTaxAndGst, setAmountBeforeTaxAndGst] = useState<number>(0);
-
+    console.log('deliveredQuantities :>> ', deliveredQuantities, totalWeights, totalCoatingRate);
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -63,6 +63,21 @@ const AddInvoice = () => {
         try {
             const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
             setPurchaseOrderData(allPurchaseOrderById);
+            setAlluminiumRate(allPurchaseOrderById?.alluminium_rate)
+            setEntries({ ...entries, gst: allPurchaseOrderById?.gst })
+            console.log('allPurchaseOrderById :>> ', allPurchaseOrderById?.entries);
+            const deliverQTY = [] as any[]
+            const total = [] as any[]
+            const productCoatingRate = [] as any[]
+            allPurchaseOrderById?.entries?.forEach((entries: any) => {
+                deliverQTY?.push(entries?.itemSummary?.coatingQuantity || 0)
+                total?.push(entries?.itemSummary?.coatingQuantity * entries?.product?.weight || 0)
+                productCoatingRate?.push(entries?.product?.length * entries?.coating_rate * entries?.itemSummary?.coatingQuantity)
+            })
+            
+            setDeliveredQuantities(deliverQTY)
+            setTotalWeights(total)
+            setTotalCoatingRate(productCoatingRate)
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
         } finally {
@@ -101,11 +116,10 @@ const AddInvoice = () => {
         setDeliveredQuantities(updatedDeliveredQuantities);
 
         // Calculate total weight for the current entry
-        const totalWeight = purchaseOrderData.entries[index]?.product?.weight * parseFloat(value);
+        const totalWeight = purchaseOrderData.entries[index]?.product?.weight * parseFloat(value) || 0;
         const updatedTotalWeights = [...totalWeights];
         updatedTotalWeights[index] = parseFloat(totalWeight.toFixed(2));
         setTotalWeights((updatedTotalWeights));
-        console.log(purchaseOrderData)
         const totalRate = purchaseOrderData.entries[index]?.coating?.coating_rate ? purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating?.coating_rate : purchaseOrderData.entries[index]?.product?.length * parseFloat(value) * purchaseOrderData.entries[index]?.coating_rate;
         const updatedTotalCoatingRate = [...totalCoatingRate];
         updatedTotalCoatingRate[index] = parseFloat(totalRate.toFixed(2));
@@ -223,7 +237,7 @@ const AddInvoice = () => {
                     const coatingTotal = (entry.coating?.coatingWeight || 0) * entry.coating.rate;
                     const finalCoatingTotal = coatingTotal - (coatingTotal * (parseFloat(quantityAndDiscounts[index]?.coating_discount) || 0) / 100)
                     const amount = specificProductPrice + finalCoatingTotal;
-                    let finalPayload : any= {}
+                    let finalPayload: any = {}
                     if (entry?.mm) {
                         finalPayload = {
                             product: entry.product._id,
@@ -256,19 +270,17 @@ const AddInvoice = () => {
                             total_coating_rate: totalCoatingRate[index] || 0,
                         }
                     }
-                    console.log(finalPayload.delieveryQuantity)
-                    console.log(entry?.itemSummary?.coatingQuantity)
-                    if(!entry?.itemSummary.coatingQuantity || entry?.itemSummary.coatingQuantity === 0 || isNaN(entry?.itemSummary.coatingQuantity)){
+                    if (!entry?.itemSummary.coatingQuantity || entry?.itemSummary.coatingQuantity === 0 || isNaN(entry?.itemSummary.coatingQuantity)) {
                         toast.error('No Avilable quantity,please finish the job first')
                         throw new Error('No Avilable quantity,please finish the job first')
                     }
-                    if(finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity){
+                    if (finalPayload.delieveryQuantity > entry?.itemSummary?.coatingQuantity) {
                         toast.error('Delivery Quantity Should be less than Available Quantity');
                         throw new Error('Delivery Quantity Should be less than Available Quantity');
                     }
                     return finalPayload;
                 }),
-               
+
                 send_mail: entries.send_mail || false,
                 gst: parseFloat(entries.gst) || '',
                 other_tax: parseFloat(entries.tax) || '',
@@ -282,17 +294,14 @@ const AddInvoice = () => {
                 invoiceNumber,
 
             };
-            console.log('Payload', payload);
 
             const respones = await post('/invoice', payload)
-            console.log('Response:', respones);
             toast.success('Invoice Generated Successfully')
             navigate(PathRoutes.invoice_list)
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error(error.response.data.message)
         }
     };
- console.log("cusomterList", customerList)
 
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
@@ -340,7 +349,7 @@ const AddInvoice = () => {
                                                             value: data._id,
                                                             label: `${data.customer.name} (${data?.customerOrderNumber || 'NA'})`
                                                         }))}
-                                                        value={{ value: customerId, label: `${ customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
+                                                        value={{ value: customerId, label: `${customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
                                                         onChange={(selectedOption: any) => {
                                                             setCustomerId(selectedOption.value);
                                                         }}
@@ -391,7 +400,6 @@ const AddInvoice = () => {
                                                 <div className='col-span-12 lg:col-span-12'>
                                                     {customerId && Array.isArray(purchaseOrderData.entries) && purchaseOrderData.entries.map((entry: any, index: number) => {
                                                         return (<>
-                                                        {console.log(entry)}
                                                             <div className='flex items-end justify-end mt-2'>
                                                                 <div className='flex items-end justify-end'>
                                                                     <Button
@@ -492,7 +500,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingRate${index}`}
                                                                         name={`coating_rate${index}`}
-                                                                        value={ entry?.coating_rate || ''}
+                                                                        value={entry?.coating_rate || ''}
                                                                         min={0}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
@@ -544,7 +552,7 @@ const AddInvoice = () => {
                                                                         name={`coatingQuantity${index}`}
                                                                         value={entry?.itemSummary?.coatingQuantity}
                                                                         disabled
-                                                                        style={{cursor:'no-drop'}}
+                                                                        style={{ cursor: 'no-drop' }}
                                                                     />
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-3'>
@@ -630,7 +638,7 @@ const AddInvoice = () => {
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
-                                                                    value={alluminiumRate }
+                                                                    value={alluminiumRate}
                                                                     name="gst"
                                                                     onChange={(e) => setAlluminiumRate(parseInt(e.target.value))}
                                                                 />
