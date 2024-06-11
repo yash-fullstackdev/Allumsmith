@@ -208,13 +208,17 @@ const InventoryListPage = () => {
                     </CardHeader>
                     <CardBody>
                         {!isLoading ? (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                                renderSubComponent={renderSubComponent}
-                            />
+                            table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className="table-fixed max-md:min-w-[70rem]"
+                                    table={table}
+                                    renderSubComponent={renderSubComponent}
+                                />
+                            ) : (
+                                <p className="text-center text-gray-500">No records found</p>
+                            )
                         ) : (
-                            <div className='flex justify-center'>
+                            <div className="flex justify-center">
                                 <LoaderDotsCommon />
                             </div>
                         )}

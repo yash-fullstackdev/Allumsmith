@@ -12,10 +12,13 @@ import { get } from '../../../../utils/api-helper.util';
 import _ from 'lodash';
 import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
 import TableTemplate from '../../../../templates/common/TableParts.template';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 
 const columnHelper = createColumnHelper<any>();
 const PowderInventoryListPage = () => {
     const [powderInventoryList, setPowderInventoryList] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
     const [addPowderModal, setAddPowderModal] = useState<any>();
     const [powderQuantityModal, setPowderQuantityModal] = useState<any>();
@@ -27,8 +30,15 @@ const PowderInventoryListPage = () => {
 
 
     const getPowderList = async () => {
-        const { data } = await get('/utility_inventory')
-        setPowderInventoryList(data);
+        setIsLoading(true);
+        try {
+            const { data } = await get('/utility_inventory')
+            setPowderInventoryList(data)
+        } catch (error: any) {
+            console.error('Error fetching inventory:', error.message);
+        } finally {
+            setIsLoading(false);
+        }
     }
     useEffect(() => {
         getPowderList();
@@ -166,11 +176,22 @@ const PowderInventoryListPage = () => {
                         </div>
                     </CardHeader>
                     <CardBody>
-                        <TableTemplate
-                            className='table-fixed max-md:min-w-[70rem]'
-                            table={table}
-                            renderSubComponent={renderSubComponent}
-                        />
+
+                        {!isLoading ? (
+                            table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={table}
+                                    renderSubComponent={renderSubComponent}
+                                />
+                            ) : (
+                                <p className="text-center text-gray-500">No records found</p>
+                            )
+                        ) : (
+                            <div className="flex justify-center">
+                                <LoaderDotsCommon />
+                            </div>
+                        )}
                     </CardBody>
                 </Card>
                 <Modal isOpen={addPowderModal} setIsOpen={setAddPowderModal} isScrollable fullScreen='2xl'>

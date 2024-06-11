@@ -10,11 +10,13 @@ import { finishInvList } from '../../../../mocks/db/finishInventoryList.db';
 import { get } from '../../../../utils/api-helper.util';
 import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
 import TableTemplate from '../../../../templates/common/TableParts.template';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 
 const columnHelper = createColumnHelper<any>();
 const FinishInventoryListPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const [finishInventoryList, setFinishInventoryList] = useState<any[]>([]);
-    console.log("🚀 ~ FinishInventoryListPage ~ finishInventoryList:", finishInventoryList)
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
     const [expanded, setExpanded] = React.useState<ExpandedState>({})
 
@@ -26,8 +28,14 @@ const FinishInventoryListPage = () => {
     };
 
     const getFinishInventory = async () => {
-        const { data } = await get('/finish_inventory');
-        setFinishInventoryList(data);
+        try {
+            const { data } = await get('/finish_inventory');
+            setFinishInventoryList(data);
+        } catch (error: any) {
+            console.error('Error fetching inventory:', error.message);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -132,12 +140,21 @@ const FinishInventoryListPage = () => {
 
                     </CardHeader>
                     <CardBody>
-
-                        <TableTemplate
-                            className='table-fixed max-md:min-w-[70rem]'
-                            table={table}
-                            renderSubComponent={renderSubComponent}
-                        />
+                        {!isLoading ? (
+                            table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className="table-fixed max-md:min-w-[70rem]"
+                                    table={table}
+                                    renderSubComponent={renderSubComponent}
+                                />
+                            ) : (
+                                <p className="text-center text-gray-500">No records found</p>
+                            )
+                        ) : (
+                            <div className="flex justify-center">
+                                <LoaderDotsCommon />
+                            </div>
+                        )}
                     </CardBody>
                 </Card>
 
