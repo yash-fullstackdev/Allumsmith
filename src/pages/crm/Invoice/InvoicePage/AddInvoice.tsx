@@ -303,7 +303,7 @@ const AddInvoice = () => {
             toast.error(error.response.data.message)
         }
     };
-
+ console.log("cusomterList", customerList)
 
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
@@ -340,7 +340,7 @@ const AddInvoice = () => {
                                             <div className='mt-2 grid grid-cols-12 gap-1'>
                                                 <div className='col-span-4 lg:col-span-3 mt-5'>
                                                     <Label htmlFor='customerName'>
-                                                        Customer
+                                                        Customer Order
                                                         <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
 
@@ -351,7 +351,7 @@ const AddInvoice = () => {
                                                             value: data._id,
                                                             label: `${data.customer.name} (${data?.customerOrderNumber || 'NA'})`
                                                         }))}
-                                                        value={{ value: customerId, label: customerList.find((customer: any) => customer._id === customerId)?.customer.name || 'Select Customer' }}
+                                                        value={{ value: customerId, label: `${ customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
                                                         onChange={(selectedOption: any) => {
                                                             setCustomerId(selectedOption.value);
                                                         }}
@@ -377,7 +377,6 @@ const AddInvoice = () => {
                                                         <div className='col-span-4 lg:col-span-3 mt-5'>
                                                             <Label htmlFor='customerName'>
                                                                 Customer Email
-                                                                <span className='ml-1 text-red-500'>*</span>
                                                             </Label>
                                                             <Input
                                                                 type='text'
@@ -389,7 +388,6 @@ const AddInvoice = () => {
                                                         <div className='col-span-4 lg:col-span-3 mt-5'>
                                                             <Label htmlFor='customerName'>
                                                                 Customer Number
-                                                                <span className='ml-1 text-red-500'>*</span>
                                                             </Label>
                                                             <Input
                                                                 type='text'
@@ -452,6 +450,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`product${index}`}
                                                                         name={`product${index}`}
+                                                                        disabled
                                                                         value={entry?.length || entry?.product?.length}
                                                                         onChange={(e) => {
                                                                             const updatedProducts = [...purchaseOrderData.entries];
@@ -496,7 +495,7 @@ const AddInvoice = () => {
                                                                 </div>
                                                                 <div className='col-span-12 lg:col-span-2'>
                                                                     <Label htmlFor={`coatingRate`} className='!text-sm'>
-                                                                        Coating/Anodize Rate(rf)
+                                                                        Coating/Anodize Rate(RFT)
                                                                         <span className='ml-1 text-red-500'>*</span>
                                                                     </Label>
                                                                     <Input
