@@ -78,6 +78,7 @@ const AddInvoice = () => {
             setDeliveredQuantities(deliverQTY)
             setTotalWeights(total)
             setTotalCoatingRate(productCoatingRate)
+            setDiscount(allPurchaseOrderById?.customer_discount)
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
         } finally {
