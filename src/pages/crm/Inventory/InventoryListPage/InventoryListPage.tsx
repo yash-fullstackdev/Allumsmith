@@ -71,6 +71,7 @@ const InventoryListPage = () => {
             const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
             const resultArray = Object.keys(groupedData).map((productId) => {
                 const productData = groupedData[productId];
+                console.log('productData :>> ', productData);
                 if (!productData[0]?.product) return null;
 
                 const branches = productData.map((item) => {
@@ -87,6 +88,9 @@ const InventoryListPage = () => {
                     productName: productData[0].product.name,
                     totalQuantity,
                     branches,
+                    thickness: productData[0].product.thickness,
+                    length: productData[0].product.length,
+                    productCode: productData[0].product.productCode,
                 };
             }).filter(Boolean);
 
@@ -146,6 +150,33 @@ const InventoryListPage = () => {
             header: 'Product Name',
 
         }),
+        columnHelper.accessor('productCode', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Product Code',
+        }),
+        columnHelper.accessor('thickness', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Thickness',
+        }),
+        columnHelper.accessor('length', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Length',
+        }),
         columnHelper.accessor('totalQuantity', {
             cell: (info) => (
                 <div className=''>
@@ -162,7 +193,8 @@ const InventoryListPage = () => {
             <SubTable data={row.original?.branches} />
         )
     }
-
+    
+    console.log('productsArray :>> ', productsArray);
     const table = useReactTable({
         data: productsArray || [],
         columns,
