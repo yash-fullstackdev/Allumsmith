@@ -20,43 +20,6 @@ import TableTemplate from '../../../../templates/common/TableParts.template';
 
 const columnHelper = createColumnHelper<any>();
 
-const SubTable = ({ data }: any) => {
-    const subColumns = [
-        columnHelper.accessor('branchName', {
-            cell: (info) => (
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Branch Name',
-        }),
-        columnHelper.accessor('quantity', {
-            cell: (info) => (
-                <div className=''>
-                    {`${info.getValue()}`}
-                </div>
-
-            ),
-            header: 'Quantity',
-        }),
-    ];
-
-    const table = useReactTable({
-        data: data || [],
-        columns: subColumns,
-        getCoreRowModel: getCoreRowModel(),
-    });
-
-
-    return (
-        <TableTemplate
-            className='table-fixed max-md:min-w-[70rem]'
-            table={table}
-            hasFooter={false}
-        />
-    )
-}
 
 
 const InventoryListPage = () => {
@@ -132,68 +95,88 @@ const InventoryListPage = () => {
         columnHelper.accessor('productName', {
             cell: (info) => {
                 return (
-                    <div className='' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
-                        {`${info.getValue()}`}
+                    <div className='text-xl min-h-[30px] flex items-center' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
                         {info?.row.getCanExpand() ? (
-
                             <Button
-
                                 rightIcon={
                                     info?.row.getIsExpanded() ?
-                                        'HeroChevronUp'
-                                        : 'HeroChevronDown'
-                                } />
+                                        'HeroMinus' : 'HeroPlus'
+                                }
+                            />
                         ) : null}
+                        {`${info.getValue()}`}
                     </div>
                 )
             },
-            header: 'Product Name',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Product Name
+                </div>
+            )
 
         }),
         columnHelper.accessor('productCode', {
             cell: (info) => (
-                <div className=''>
+                <div className='text-xl'>
                     {`${info.getValue()}`}
                 </div>
 
             ),
-            header: 'Product Code',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Product Code
+                </div>
+            )
         }),
         columnHelper.accessor('thickness', {
             cell: (info) => (
-                <div className=''>
+                <div className='text-xl'>
                     {`${info.getValue()}`}
                 </div>
 
             ),
-            header: 'Thickness',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Thickness
+                </div>
+            )
         }),
         columnHelper.accessor('length', {
             cell: (info) => (
-                <div className=''>
+                <div className='text-xl'>
                     {`${info.getValue()}`}
                 </div>
 
             ),
-            header: 'Length',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Length
+                </div>
+            )
         }),
         columnHelper.accessor('totalQuantity', {
             cell: (info) => (
-                <div className=''>
+                <div className='text-xl'>
                     {`${info.getValue()}`}
                 </div>
 
             ),
-            header: 'Total Quantity(Pcs)',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Total Quantity(Pcs)
+                </div>
+            )
         }),
     ];
 
     const renderSubComponent = ({ row }: { row: any }) => {
         return (
-            <SubTable data={row.original?.branches} />
+            <div className='pl-3.5'>
+                <SubTable data={row.original?.branches} />
+            </div>
         )
     }
-    
+
     console.log('productsArray :>> ', productsArray);
     const table = useReactTable({
         data: productsArray || [],
@@ -252,5 +235,43 @@ const InventoryListPage = () => {
         </PageWrapper>
     );
 };
+
+const SubTable = ({ data }: any) => {
+    const subColumns = [
+        columnHelper.accessor('branchName', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Branch Name',
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: data || [],
+        columns: subColumns,
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+
+    return (
+        <TableTemplate
+            className='table-fixed max-md:min-w-[70rem]'
+            table={table}
+            hasFooter={false}
+        />
+    )
+}
 
 export default InventoryListPage;

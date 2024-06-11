@@ -92,30 +92,38 @@ const PowderInventoryListPage = () => {
         columnHelper.accessor('name', {
             cell: (info) => {
                 return (
-                    <div className='' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
-                        {`${info.getValue()}`}
+                    <div className='text-xl  min-h-[30px]  flex items-center' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
                         {info?.row.getCanExpand() ? (
                             <Button
                                 rightIcon={
                                     info?.row.getIsExpanded() ?
-                                        'HeroChevronUp'
-                                        : 'HeroChevronDown'
+                                        'HeroMinus' : 'HeroPlus'
                                 }
                             />
                         ) : null}
+                        {`${info.getValue()}`}
+
                     </div>
                 )
             },
-            header: 'Product Name',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Product Name
+                </div>
+            )
 
         }),
         columnHelper.accessor('totalQty', {
             cell: (info) => (
-                <div className=''>
+                <div className='text-xl  min-h-[30px] flex items-center'>
                     {`${info.getValue()}`}
                 </div>
             ),
-            header: 'Total Quantity',
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Total Quantity
+                </div>
+            )
         }),
     ];
 
@@ -134,7 +142,9 @@ const PowderInventoryListPage = () => {
 
     const renderSubComponent = ({ row }: { row: any }) => {
         return (
-            <SubTable data={row.original?.subData} />
+            <div className='pl-3.5'>
+                <SubTable data={row.original?.subData} />
+            </div>
         )
     }
 
