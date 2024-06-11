@@ -1,15 +1,20 @@
-const renderAmount = (pendingAmount: number, creditedAmount: number) => {
+const renderAmount = (
+	pendingAmount: number,
+	creditedAmount: number,
+	colorPending?: string,
+	colorCredit?: string,
+) => {
 	let text = '';
 	let color = '';
 
 	switch (true) {
 		case pendingAmount > 0:
 			text = `${pendingAmount} Dr`;
-			color = 'red';
+			color = colorPending || 'red';
 			break;
 		case creditedAmount > 0:
 			text = `${creditedAmount} Cr`;
-			color = 'green';
+			color = colorCredit || 'green';
 			break;
 		default:
 			text = '0';
