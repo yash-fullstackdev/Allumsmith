@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
@@ -8,11 +8,16 @@ import Button from '../../../../components/ui/Button';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import { finishInvList } from '../../../../mocks/db/finishInventoryList.db';
 import { get } from '../../../../utils/api-helper.util';
+import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
+import TableTemplate from '../../../../templates/common/TableParts.template';
 
+const columnHelper = createColumnHelper<any>();
 const FinishInventoryListPage = () => {
     const [finishInventoryList, setFinishInventoryList] = useState<any[]>([]);
     console.log("🚀 ~ FinishInventoryListPage ~ finishInventoryList:", finishInventoryList)
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
+    const [expanded, setExpanded] = React.useState<ExpandedState>({})
+
     const [addFinishModal, setAddFinishModal] = useState<any>();
     const [finishQuantityModal, setFinishQuantityModal] = useState<any>();
 
@@ -28,37 +33,87 @@ const FinishInventoryListPage = () => {
     useEffect(() => {
         getFinishInventory();
     }, [])
-    const renderBranches = (items: any) => {
-        console.log('Branches', items)
+    const renderSubComponent = ({ row }: { row: any }) => {
         return (
-            <TableRow>
-                <TableCell colSpan={3}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><h3>Branch</h3></TableCell>
-                                    <TableCell><h3>Coating</h3></TableCell>
-                                    <TableCell><h3>Color</h3></TableCell>
-                                    <TableCell><h3>Quantity</h3></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {items && items.map((branch: any) => (
-                                    <TableRow key={branch._id}>
-                                    <TableCell><h4>{branch?.branch?.name || "NA"}</h4></TableCell>
-                                    <TableCell><h4>{branch?.coating?.name || "NA"}</h4></TableCell>
-                                    <TableCell><h4>{branch?.color?.name || "NA"}</h4></TableCell>
-                                    <TableCell><h4>{branch?.quantity || "NA"}</h4></TableCell>
-                                </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TableCell>
-            </TableRow>
-        );
-    };
+            <SubTable data={row.original?.subData} />
+        )
+    }
+
+    const finishInventoryData = useMemo(() => {
+        const aggregatedData = [] as any[];
+        finishInventoryList.forEach(item => {
+            const { name: productName } = item.product;
+            const existingProduct = aggregatedData.find(product => product.name === productName);
+
+            const subDataEntry = {
+                branch: item.branch.name,
+                coating: item.coating.name,
+                color: item.color.name,
+                quantity: item.quantity
+            };
+
+            if (existingProduct) {
+                existingProduct.totalQty += item.quantity;
+                existingProduct.subData.push(subDataEntry);
+            } else {
+                aggregatedData.push({
+                    name: productName,
+                    totalQty: item.quantity,
+                    subData: [subDataEntry]
+                });
+            }
+        });
+        return aggregatedData;
+    }, [finishInventoryList]);
+
+
+    const columns = [
+        columnHelper.accessor('name', {
+            cell: (info) => {
+                return (
+                    <div className='' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
+                        {`${info.getValue()}`}
+                        {info?.row.getCanExpand() ? (
+
+                            <Button
+
+                                rightIcon={
+                                    info?.row.getIsExpanded() ?
+                                        'HeroChevronUp'
+                                        : 'HeroChevronDown'
+                                } />
+                        ) : null}
+                    </div>
+                )
+            },
+            header: 'Product Name',
+
+        }),
+        columnHelper.accessor('totalQty', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+            ),
+            header: 'Total Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: finishInventoryData || [],
+        columns,
+        state: {
+            expanded,
+        },
+        onExpandedChange: setExpanded,
+        getSubRows: (row) => {
+            return row.subRows
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
+        getRowCanExpand: () => true
+    });
+
     return (
         <PageWrapper name='Finish Inventory List'>
             <Container>
@@ -70,48 +125,12 @@ const FinishInventoryListPage = () => {
 
                     </CardHeader>
                     <CardBody>
-                        <TableContainer>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell><h3>Product Name</h3></TableCell>
-                                        <TableCell><h3>Total Quantity</h3></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {Object.entries(_.groupBy(finishInventoryList, 'product.name')).map(([productName, items]) => (
-                                        <React.Fragment key={productName}>
-                                            <TableRow onClick={() => handleProductClick(productName)}>
-                                                {/* <TableCell><h4>{productName}</h4></TableCell> */}
-                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={
-                                                    expandedProduct === productName ?
-                                                        'HeroChevronUp'
-                                                        : 'HeroChevronDown'
-                                                } /></h4></TableCell>
-                                                <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
-                                            </TableRow>
-                                            {expandedProduct === productName && renderBranches(items)}
-                                            {/* {expandedProduct === productName && (  
-                                                <TableRow>
-                                                    <TableCell><h3>Branch</h3></TableCell>
-                                                    <TableCell><h3>Coating</h3></TableCell>
-                                                    <TableCell><h3>Color</h3></TableCell>
-                                                    <TableCell><h3>Quantity</h3></TableCell>
-                                                </TableRow>
-                                            )}
-                                            {expandedProduct === productName && items.map((item: any) => (
-                                                <TableRow key={item._id}>
-                                                    <TableCell><h4>{item?.branch?.name || "NA"}</h4></TableCell>
-                                                    <TableCell><h4>{item?.coating?.name || "NA"}</h4></TableCell>
-                                                    <TableCell><h4>{item?.color?.name || "NA"}</h4></TableCell>
-                                                    <TableCell><h4>{item?.quantity || "NA"}</h4></TableCell>
-                                                </TableRow>
-                                            ))} */}
-                                        </React.Fragment>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+
+                        <TableTemplate
+                            className='table-fixed max-md:min-w-[70rem]'
+                            table={table}
+                            renderSubComponent={renderSubComponent}
+                        />
                     </CardBody>
                 </Card>
 
@@ -119,5 +138,61 @@ const FinishInventoryListPage = () => {
         </PageWrapper>
     );
 };
+
+const SubTable = ({ data }: any) => {
+    const subColumns = [
+        columnHelper.accessor('branch', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Branch',
+        }),
+        columnHelper.accessor('coating', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Coating',
+        }),
+        columnHelper.accessor('color', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Color',
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: data || [],
+        columns: subColumns,
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+
+    return (
+        <TableTemplate
+            className='table-fixed max-md:min-w-[70rem]'
+            table={table}
+            hasFooter={false}
+        />
+    )
+}
 
 export default FinishInventoryListPage;

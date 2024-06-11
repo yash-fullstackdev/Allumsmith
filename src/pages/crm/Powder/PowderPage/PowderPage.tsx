@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
@@ -10,12 +10,17 @@ import AddPowderQuantity from '../AddPowderQuantity';
 import AddPowderModal from '../AddPowderModal/AddPowderModal';
 import { get } from '../../../../utils/api-helper.util';
 import _ from 'lodash';
+import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
+import TableTemplate from '../../../../templates/common/TableParts.template';
 
+const columnHelper = createColumnHelper<any>();
 const PowderInventoryListPage = () => {
     const [powderInventoryList, setPowderInventoryList] = useState<any[]>([]);
     const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
     const [addPowderModal, setAddPowderModal] = useState<any>();
     const [powderQuantityModal, setPowderQuantityModal] = useState<any>();
+    const [expanded, setExpanded] = React.useState<ExpandedState>({});
+
     const handleProductClick = (productName: string) => {
         setExpandedProduct(prevProduct => prevProduct === productName ? null : productName);
     };
@@ -45,9 +50,9 @@ const PowderInventoryListPage = () => {
                             <TableBody>
                                 {items && items.map((branch: any) => (
                                     <TableRow key={branch._id}>
-                                    <TableCell><h4>{branch?.branch?.name || "NA"}</h4></TableCell>
-                                    <TableCell><h4>{branch?.quantity || "NA"}</h4></TableCell>
-                                </TableRow>
+                                        <TableCell><h4>{branch?.branch?.name || "NA"}</h4></TableCell>
+                                        <TableCell><h4>{branch?.quantity || "NA"}</h4></TableCell>
+                                    </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
@@ -56,6 +61,83 @@ const PowderInventoryListPage = () => {
             </TableRow>
         );
     };
+
+    const powderInventoryData = useMemo(() => {
+        const aggregatedData = [] as any[];
+        powderInventoryList.forEach(item => {
+            const { name: productName } = item.utility;
+            console.log('productName :>> ', productName);
+            const existingProduct = aggregatedData.find(product => product.name === productName);
+            console.log('existingProduct :>> ', existingProduct);
+            const subDataEntry = {
+                branch: item?.branch?.name,
+                quantity: item?.quantity
+            };
+
+            if (existingProduct) {
+                existingProduct.totalQty += item.quantity;
+                existingProduct.subData.push(subDataEntry);
+            } else {
+                aggregatedData.push({
+                    name: productName,
+                    totalQty: item.quantity,
+                    subData: [subDataEntry]
+                });
+            }
+        });
+        return aggregatedData;
+    }, [powderInventoryList]);
+
+    const columns = [
+        columnHelper.accessor('name', {
+            cell: (info) => {
+                return (
+                    <div className='' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
+                        {`${info.getValue()}`}
+                        {info?.row.getCanExpand() ? (
+                            <Button
+                                rightIcon={
+                                    info?.row.getIsExpanded() ?
+                                        'HeroChevronUp'
+                                        : 'HeroChevronDown'
+                                }
+                            />
+                        ) : null}
+                    </div>
+                )
+            },
+            header: 'Product Name',
+
+        }),
+        columnHelper.accessor('totalQty', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+            ),
+            header: 'Total Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: powderInventoryData || [],
+        columns,
+        state: {
+            expanded,
+        },
+        onExpandedChange: setExpanded,
+        getSubRows: (row) => row.subRows,
+        getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
+        getRowCanExpand: () => true
+    });
+
+    const renderSubComponent = ({ row }: { row: any }) => {
+        return (
+            <SubTable data={row.original?.subData} />
+        )
+    }
+
     return (
         <PageWrapper name='Powder Inventory List'>
             <Container>
@@ -74,30 +156,11 @@ const PowderInventoryListPage = () => {
                         </div>
                     </CardHeader>
                     <CardBody>
-                        <TableContainer>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell><h3>Product Name</h3></TableCell>
-                                        <TableCell><h3>Total Quantity</h3></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {Object.entries(_.groupBy(powderInventoryList, 'utility.name')).map(([productName, items]) => (
-                                        <React.Fragment key={productName}>
-                                            <TableRow onClick={() => handleProductClick(productName)}>
-                                                {/* <TableCell><h4>{productName}</h4></TableCell> */}
-                                                <TableCell className='cursor-pointer'><h4> {productName} <Button rightIcon={expandedProduct === productName ? 'HeroChevronUp' : 'HeroChevronDown'} />
-                                                </h4></TableCell>
-                                                <TableCell><h4>{items.reduce((acc, item) => acc + item.quantity, 0)}</h4></TableCell>
-                                            </TableRow>
-                                            {expandedProduct === productName && renderBranches(items)}
-                                           
-                                        </React.Fragment>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <TableTemplate
+                            className='table-fixed max-md:min-w-[70rem]'
+                            table={table}
+                            renderSubComponent={renderSubComponent}
+                        />
                     </CardBody>
                 </Card>
                 <Modal isOpen={addPowderModal} setIsOpen={setAddPowderModal} isScrollable fullScreen='2xl'>
@@ -107,7 +170,7 @@ const PowderInventoryListPage = () => {
                         Add Raw Material
                     </ModalHeader>
                     <ModalBody>
-                        <AddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} getPowderList = {getPowderList}/>
+                        <AddPowderModal SetAddPowderModal={() => setAddPowderModal(false)} getPowderList={getPowderList} />
                     </ModalBody>
                 </Modal>
                 <Modal isOpen={powderQuantityModal} setIsOpen={setPowderQuantityModal} isScrollable fullScreen='2xl'>
@@ -117,12 +180,50 @@ const PowderInventoryListPage = () => {
                         Add Raw Material Quantity
                     </ModalHeader>
                     <ModalBody>
-                        <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} getPowderList = {getPowderList} />
+                        <AddPowderQuantity setPowderQuantityModal={setPowderQuantityModal} getPowderList={getPowderList} />
                     </ModalBody>
                 </Modal>
             </Container>
         </PageWrapper>
     );
 };
+
+const SubTable = ({ data }: any) => {
+    const subColumns = [
+        columnHelper.accessor('branch', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Branch',
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: data || [],
+        columns: subColumns,
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+
+    return (
+        <TableTemplate
+            className='table-fixed max-md:min-w-[70rem]'
+            table={table}
+            hasFooter={false}
+        />
+    )
+}
 
 export default PowderInventoryListPage;
