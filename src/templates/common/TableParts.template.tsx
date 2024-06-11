@@ -1,4 +1,4 @@
-import React, { FC, type ReactNode } from 'react';
+import React, { FC, useCallback, useEffect, type ReactNode  } from 'react';
 import classNames from 'classnames';
 import { flexRender, Table as TTableProps } from '@tanstack/react-table';
 import { object } from 'yup';
@@ -8,6 +8,7 @@ import { CardFooter, CardFooterChild } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/form/Input';
 import Select from '../../components/form/Select';
+import { debounce } from 'lodash';
 
 interface ITableHeaderTemplateProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,13 +195,20 @@ interface ITableCardFooterTemplateProps extends Partial<ITableProps> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	table: TTableProps<any>;
 	onChangesPageSize?: (pageSize: number) => void;
-	onChangePage?: (pageNumber: number) => void;
+	onChangePage?: (pageNumber: number, isDebounce?: boolean) => void;
 	count?: number;
 	pageSize?: number;
 }
 
+
 export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ table, onChangesPageSize = null, onChangePage = null, pageSize = null, count }) => {
 	const pageSizeOptions = [10, 20, 30, 40, 50, 'All'];
+
+	const handleChangePage = (pageValue: number) => {
+		const page = table.getPageCount() >  pageValue ? pageValue : table.getPageCount()
+		onChangePage &&	onChangePage(page, true)
+	}
+
 	return (
 		<CardFooter>
 			<CardFooterChild>
@@ -222,7 +230,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 					className='!w-fit'
 					name='pageSize'>
 					{pageSizeOptions.map((pageSize) => (
-						<option key={pageSize} value={pageSize}>
+						<option key={pageSize} value={pageSize} className='text-neutral-950'>
 							{pageSize === 'All' ? 'Show All' : `Show ${pageSize}`}
 						</option>
 					))}
@@ -256,7 +264,8 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 							onChange={(e) => {
 								const page = e.target.value ? Number(e.target.value) - 1 : 0;
 								table.setPageIndex(page);
-								onChangePage && onChangePage(page)
+								console.log('table.getPageCount() - 1 :>> ', table.getPageCount(), page, table.getPageCount() >  page);
+								onChangePage && handleChangePage((page + 1));
 							}}
 							className='inline-flex !w-12 text-center'
 							name='page'
@@ -276,7 +285,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({ tab
 				<Button
 					onClick={() => {
 						table.setPageIndex(table.getPageCount() - 1)
-						onChangePage && onChangePage(table.getPageCount() - 1);
+						onChangePage && onChangePage(table.getPageCount());
 					}}
 					isDisable={!table.getCanNextPage()}
 					icon='HeroChevronDoubleRight'

@@ -16,7 +16,7 @@ import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
 
 const AddCustomerOrderForm = () => {
-  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '',coating_rate: '' ,withoutMaterial: '',length: '' }]);
+  const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', coating_rate: '', withoutMaterial: '', length: '', finish_inventory: '' }]);
   const [customerId, setCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerData, setCustomerData] = useState([]);
@@ -127,12 +127,13 @@ const AddCustomerOrderForm = () => {
     const newEntry = {
       product: '',
       quantity: '',
-      coating: lastEntry.coating || null,
+      coating: "" || null,
       color: '',
       length: '',
       weight: '',
       coating_rate: '',
-      withoutMaterial: ''
+      withoutMaterial: '',
+      finish_inventory: '',
     };
     setEntries([...entries, newEntry]);
 
@@ -210,12 +211,12 @@ const AddCustomerOrderForm = () => {
       const { data } = await get(`/coatings/${coatingId}`);
     } catch (error) {
       console.error("Error fetching coating details", error);
-    } 
+    }
   };
 
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const colorId = e.target.value;    
+    const colorId = e.target.value;
     const updatedEntries = [...entries];
     updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
     setEntries(updatedEntries);
@@ -266,25 +267,25 @@ const AddCustomerOrderForm = () => {
 
   useEffect(() => {
     const calculateCoatingRate = (productId: string, coatingId: string) => {
-        const product = productsData.find((item: any) => item._id === productId);
-        const coating = coatingData.find((item: any) => item._id === coatingId);
-        
-        if (!product || !coating) {
-            return 0; // Handle if product or coating is not found
-        }
+      const product = productsData.find((item: any) => item._id === productId);
+      const coating = coatingData.find((item: any) => item._id === coatingId);
 
-        const type = coating.type;
-      
-        const productCoatingRate = `${type}_rate`;
-        const rate = product[productCoatingRate] || 0;
-        return rate;
+      if (!product || !coating) {
+        return 0; // Handle if product or coating is not found
+      }
+
+      const type = coating.type;
+
+      const productCoatingRate = `${type}_rate`;
+      const rate = product[productCoatingRate] || 0;
+      return rate;
     };
     const updatedEntries = entries.map((entry: any) => {
-        const { product, coating, quantity } = entry;
-        return {
-            ...entry,
-            coating_rate: calculateCoatingRate(product, coating) || entry?.coating_rate
-        };
+      const { product, coating, quantity } = entry;
+      return {
+        ...entry,
+        coating_rate: calculateCoatingRate(product, coating) || entry?.coating_rate
+      };
     });
 
     setEntries(updatedEntries);
@@ -312,7 +313,7 @@ const AddCustomerOrderForm = () => {
     setGrandTotal(parseFloat(grand_total));
   }
 
-  useEffect(() => {    
+  useEffect(() => {
     let totalWeight: number = 0;
     for (const entry of entries) {
       const product = productsData?.find((prod: any) => prod._id.toString() === entry.product.toString())
@@ -322,13 +323,13 @@ const AddCustomerOrderForm = () => {
     }
     setEstimateWeight(totalWeight)
   }, [entries,productsData])
-  
+
   useEffect(() => {
     let totalRate: number = 0;
     totalRate = estimateWeight * (alluminiumRate || 0)
     setEstimateRate(totalRate)
   }, [estimateWeight, alluminiumRate])
-  
+
   useEffect(() => {
     let totalCoatingCharges: number = 0;
     for (const entry of entries) {
@@ -341,7 +342,7 @@ const AddCustomerOrderForm = () => {
     }
     setCoatingCharges(totalCoatingCharges)
   }, [entries, productsData, discount])
-  
+
   useEffect(() => {
     calculateGrandTotal(estimateRate,coatingCharges,gst)
   },[estimateRate,coatingCharges,gst])
@@ -452,35 +453,35 @@ const AddCustomerOrderForm = () => {
                         </div>
                         {entry.product && (
                           <>
-                          <div className='col-span-12 lg:col-span-2'>
-                            <Label htmlFor={`length-${index}`}>
-                              Length(ft)
-                              <span className='ml-1 text-red-500'>*</span>
-                            </Label>
-                            <Input
-                              type='number'
-                              id={`length-${index}`}
-                              name={`length-${index}`}
-                              value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
-                              onChange={(e) => handleLengthChange(e, index)}
-                              min={0}
-                              disabled
-                            />
-                          </div>
-                          <div className='col-span-12 lg:col-span-2'>
-                            <Label htmlFor={`Weight-${index}`}>
-                              Weight(kg)
-                              <span className='ml-1 text-red-500'>*</span>
-                            </Label>
-                            <Input
-                              type='number'
-                              id={`weight-${index}`}
-                              name={`weight-${index}`}
+                            <div className='col-span-12 lg:col-span-2'>
+                              <Label htmlFor={`length-${index}`}>
+                                Length(ft)
+                                <span className='ml-1 text-red-500'>*</span>
+                              </Label>
+                              <Input
+                                type='number'
+                                id={`length-${index}`}
+                                name={`length-${index}`}
+                                value={entry.length || productsData.find((item: any) => item._id === entry.product)?.length || ''}
+                                onChange={(e) => handleLengthChange(e, index)}
+                                min={0}
+                              />
+
+                            </div>
+                            <div className='col-span-12 lg:col-span-2'>
+                              <Label htmlFor={`Weight-${index}`}>
+                                Weight(kg)
+                                <span className='ml-1 text-red-500'>*</span>
+                              </Label>
+                              <Input
+                                type='number'
+                                id={`weight-${index}`}
+                                name={`weight-${index}`}
                               value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight ||  ''}
-                              onChange={(e) => handleWeightChange(e, index)}
-                              min={0}
-                            />
-                          </div>
+                                onChange={(e) => handleWeightChange(e, index)}
+                                min={0}
+                              />
+                            </div>
                           </>
                         )}
                       </>
@@ -575,53 +576,53 @@ const AddCustomerOrderForm = () => {
                             ))}
                           </Select>
                         </div>)}
-                      
-                        <div className='col-span-12 lg:col-span-2'>
-                          <Label htmlFor={`hsn-${index}`}>
-                            Coating Rate(rs)
-                            <span className='ml-1 text-red-500'>*</span>
-                          </Label>
-                          <Input
-                            type='number'
-                            id={`hsn-${index}`}
-                            name={`hsn-${index}`}
-                            value={entry.coating_rate}
-                            min={0}
-                            onChange={(e) => {
-                              const updatedEntries = [...entries];
-                              updatedEntries[index].coating_rate = e.target.value;
-                              setEntries(updatedEntries);
-                            }}
-                          />
+
+                      <div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor={`hsn-${index}`}>
+                          Coating Rate(rs)
+                          <span className='ml-1 text-red-500'>*</span>
+                        </Label>
+                        <Input
+                          type='number'
+                          id={`hsn-${index}`}
+                          name={`hsn-${index}`}
+                          value={entry.coating_rate}
+                          min={0}
+                          onChange={(e) => {
+                            const updatedEntries = [...entries];
+                            updatedEntries[index].coating_rate = e.target.value;
+                            setEntries(updatedEntries);
+                          }}
+                        />
                       </div>
 
                       <div className='col-span-12 lg:col-span-2'>
-                          <Label htmlFor={`hsn-${index}`}>
-                            Total Weight(kg)
-                          </Label>
-                          <Input
-                            type='number'
-                            id={`hsn-${index}`}
-                            name={`hsn-${index}`}
+                        <Label htmlFor={`hsn-${index}`}>
+                          Product Weight(kg)
+                        </Label>
+                        <Input
+                          type='number'
+                          id={`hsn-${index}`}
+                          name={`hsn-${index}`}
                             value={ parseFloat((entry.quantity * (entry.weight || (productsData.find((item: any) => item._id === entry.product)?.weight)) || 0).toFixed(2))}
-                            min={0}
-                            disabled
-                          />
+                          min={0}
+                          disabled
+                        />
                       </div>
 
-                      
+
                       <div className='col-span-12 lg:col-span-2'>
-                          <Label htmlFor={`hsn-${index}`}>
-                            Total Coating Rate(RFT)
-                          </Label>
-                          <Input
-                            type='number'
-                            id={`hsn-${index}`}
-                            name={`hsn-${index}`}
-                            value={entry.quantity * (entry.length || productsData.find((item: any) => item._id === entry.product)?.length || 0) * entry.coating_rate}
-                            min={0}
-                            disabled
-                          />
+                        <Label htmlFor={`hsn-${index}`}>
+                          Total Coating Rate(rs)
+                        </Label>
+                        <Input
+                          type='number'
+                          id={`hsn-${index}`}
+                          name={`hsn-${index}`}
+                          value={entry.quantity * (entry.length || productsData.find((item: any) => item._id === entry.product)?.length || 0) * entry.coating_rate}
+                          min={0}
+                          disabled
+                        />
                       </div>
 
                       <div className='col-span-12 lg:col-span-2'>
@@ -640,6 +641,26 @@ const AddCustomerOrderForm = () => {
                             updatedEntries[index].withoutMaterial = target.checked; // Update with the checked value
                             setEntries(updatedEntries);
                           }}
+                        />
+                      </div>
+                      <div className='col-span-12 lg:col-span-2'>
+                        <Label htmlFor='finish_inventory'>
+                          Finish Inventory
+                          <span className='ml-1 text-red-500'>*</span>
+                        </Label>
+                        <Checkbox
+                          label='Finish Inventory'
+                          id='finish_inventory'
+                          name='finish_inventory'
+                          checked={entries[index].finish_inventory} // Assuming entries is an array of objects
+                          onChange={(e) => {
+                            const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
+                            const updatedEntries = [...entries];
+                            updatedEntries[index].finish_inventory = target.checked; // Update with the checked value
+                            setEntries(updatedEntries);
+                          }}
+                          inputClassName='disabled:bg-zinc-200 disabled:dark:bg-zinc-800 disabled:cursor-not-allowed'
+                          disabled={!(entry.color || selectedColor[index]) || !(entry.coating || selectedCoatings[index])}
                         />
                       </div>
                       {coatingData.find((coating: any) => coating._id === entry.coating)?.type === 'anodize' && (<div className='col-span-12 lg:col-span-2'>
@@ -694,7 +715,7 @@ const AddCustomerOrderForm = () => {
               <div className='mt-2 grid grid-cols-12 gap-1'>
                 <div className='col-span-12 lg:col-span-12'>
                   <div className='mt-2 grid grid-cols-6 gap-2' >
-                  <div className='col-span-4 lg:col-span-2 mt-5'>
+                    <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='discount'>
                         Coating Discount(%)
                         <span className='ml-1 text-red-500'>*</span>
@@ -771,7 +792,7 @@ const AddCustomerOrderForm = () => {
                         }}
                       />
                     </div>
-                    
+
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='coatingCharges'>
                         Coating Charges(rs)
@@ -787,7 +808,7 @@ const AddCustomerOrderForm = () => {
                         }}
                       />
                     </div>
-                    
+
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='grandTotal'>
                         Grand Total(rs)
@@ -803,20 +824,20 @@ const AddCustomerOrderForm = () => {
                         }}
                       />
                     </div>
-                
+
                   </div>
                 </div>
               </div>
             </div>
             <div className='mt-5'>
               <Button variant='solid' color='blue' type='button' onClick={handleSaveEntries} >
-                  Save Entries
+                Save Entries
               </Button>
             </div>
           </CardBody>
         </Card>
       </div>
-      
+
     </PageWrapper>
   );
 };
