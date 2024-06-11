@@ -74,7 +74,7 @@ const AddInvoice = () => {
                 total?.push(entries?.itemSummary?.coatingQuantity * entries?.product?.weight || 0)
                 productCoatingRate?.push(entries?.product?.length * entries?.coating_rate * entries?.itemSummary?.coatingQuantity)
             })
-            
+
             setDeliveredQuantities(deliverQTY)
             setTotalWeights(total)
             setTotalCoatingRate(productCoatingRate)
@@ -627,7 +627,7 @@ const AddInvoice = () => {
                                                                             value={branchId.name}
                                                                             placeholder='Select Branch'
                                                                             onChange={(e: any) => {
-                                                                                setBranchName( {
+                                                                                setBranchName({
                                                                                     ...branchName,
                                                                                     [index]: e.target.value
                                                                                 })
@@ -712,7 +712,11 @@ const AddInvoice = () => {
                                                                     type='number'
                                                                     value={totalProductWeight}
                                                                     name="totalProductWeight"
-
+                                                                    onChange={(e) => {
+                                                                        if (e.target.value >= '0' || e.target.value === '') {
+                                                                            setTotalProducWeight(e.target.value)
+                                                                        }
+                                                                    }}
                                                                 />
                                                             </div>
 
@@ -826,7 +830,6 @@ const AddInvoice = () => {
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Send Mail
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Checkbox label='Send Mail'
                                                                     id='send_mail'

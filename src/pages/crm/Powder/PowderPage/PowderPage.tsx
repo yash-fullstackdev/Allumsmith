@@ -131,7 +131,7 @@ const PowderInventoryListPage = () => {
             ),
             header: () => (
                 <div className='text-xl min-h-[30px] flex items-center'>
-                    Total Quantity
+                    Total Quantity(kg)
                 </div>
             )
         }),

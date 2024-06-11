@@ -643,7 +643,7 @@ const AddCustomerOrderForm = () => {
                           }}
                         />
                       </div>
-                      <div className='col-span-12 lg:col-span-2'>
+                      {/* <div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor='finish_inventory'>
                           Finish Inventory
                           <span className='ml-1 text-red-500'>*</span>
@@ -662,7 +662,7 @@ const AddCustomerOrderForm = () => {
                           inputClassName='disabled:bg-zinc-200 disabled:dark:bg-zinc-800 disabled:cursor-not-allowed'
                           disabled={!(entry.color || selectedColor[index]) || !(entry.coating || selectedCoatings[index])}
                         />
-                      </div>
+                      </div> */}
                       {coatingData.find((coating: any) => coating._id === entry.coating)?.type === 'anodize' && (<div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor={`anodize-${index}`}>
                           Anodize Thickness
@@ -749,7 +749,7 @@ const AddCustomerOrderForm = () => {
 
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='alluminiumRate'>
-                        Alluminium Rate(rs)
+                        Alluminium Rate(rs/kg)
                         <span className='ml-1 text-red-500'>*</span>
                       </Label>
                       <Input
