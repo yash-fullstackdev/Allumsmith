@@ -63,6 +63,22 @@ const AddInvoice = () => {
         try {
             const { data: allPurchaseOrderById } = await get(`/customer-order/${customerId}`);
             setPurchaseOrderData(allPurchaseOrderById);
+            setAlluminiumRate(allPurchaseOrderById?.alluminium_rate)
+            setEntries({ ...entries, gst: allPurchaseOrderById?.gst })
+            console.log('allPurchaseOrderById :>> ', allPurchaseOrderById?.entries);
+            const deliverQTY = [] as any[]
+            const total = [] as any[]
+            const productCoatingRate = [] as any[]
+            allPurchaseOrderById?.entries?.forEach((entries: any) => {
+                deliverQTY?.push(entries?.itemSummary?.coatingQuantity || 0)
+                total?.push(entries?.itemSummary?.coatingQuantity * entries?.product?.weight || 0)
+                productCoatingRate?.push(entries?.product?.length * entries?.coating_rate * entries?.itemSummary?.coatingQuantity)
+            })
+
+            setDeliveredQuantities(deliverQTY)
+            setTotalWeights(total)
+            setTotalCoatingRate(productCoatingRate)
+            setDiscount(allPurchaseOrderById?.customer_discount)
         } catch (error: any) {
             console.error('Error fetching users:', error.message);
         } finally {
@@ -101,7 +117,7 @@ const AddInvoice = () => {
         setDeliveredQuantities(updatedDeliveredQuantities);
 
         // Calculate total weight for the current entry
-        const totalWeight = purchaseOrderData.entries[index]?.product?.weight * parseFloat(value);
+        const totalWeight = purchaseOrderData.entries[index]?.product?.weight * parseFloat(value) || 0;
         const updatedTotalWeights = [...totalWeights];
         updatedTotalWeights[index] = parseFloat(totalWeight.toFixed(2));
         setTotalWeights((updatedTotalWeights));
@@ -303,7 +319,6 @@ const AddInvoice = () => {
             toast.error(error.response.data.message)
         }
     };
- console.log("cusomterList", customerList)
 
     return (
         <PageWrapper name='ADD INVOICE' isProtectedRoute={true}>
@@ -351,7 +366,7 @@ const AddInvoice = () => {
                                                             value: data._id,
                                                             label: `${data.customer.name} (${data?.customerOrderNumber || 'NA'})`
                                                         }))}
-                                                        value={{ value: customerId, label: `${ customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
+                                                        value={{ value: customerId, label: `${customerList && customerList.find((customer: any) => customer._id === customerId)?.customer.name || ''} ${customerList && customerList.find((customer: any) => customer._id === customerId)?.customerOrderNumber || 'Select Customer'}  ` || 'Select Customer' }}
                                                         onChange={(selectedOption: any) => {
                                                             setCustomerId(selectedOption.value);
                                                         }}
@@ -613,7 +628,7 @@ const AddInvoice = () => {
                                                                             value={branchId.name}
                                                                             placeholder='Select Branch'
                                                                             onChange={(e: any) => {
-                                                                                setBranchName( {
+                                                                                setBranchName({
                                                                                     ...branchName,
                                                                                     [index]: e.target.value
                                                                                 })
@@ -698,7 +713,11 @@ const AddInvoice = () => {
                                                                     type='number'
                                                                     value={totalProductWeight}
                                                                     name="totalProductWeight"
-
+                                                                    onChange={(e) => {
+                                                                        if (e.target.value >= '0' || e.target.value === '') {
+                                                                            setTotalProducWeight(e.target.value)
+                                                                        }
+                                                                    }}
                                                                 />
                                                             </div>
 
@@ -812,7 +831,6 @@ const AddInvoice = () => {
                                                             <div className='col-span-4 lg:col-span-4 mt-5'>
                                                                 <Label htmlFor='customerName'>
                                                                     Send Mail
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Checkbox label='Send Mail'
                                                                     id='send_mail'

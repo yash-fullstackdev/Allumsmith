@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, type ReactNode  } from 'react';
 import classNames from 'classnames';
 import { flexRender, Table as TTableProps } from '@tanstack/react-table';
 import { object } from 'yup';
@@ -72,27 +72,37 @@ export const TableHeaderTemplate: FC<ITableHeaderTemplateProps> = ({ table }) =>
 interface ITableBodyTemplateProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	table: TTableProps<any>;
+	renderSubComponent?: ReactNode | null | any;
 }
-export const TableBodyTemplate: FC<ITableBodyTemplateProps> = ({ table }) => {
+export const TableBodyTemplate: FC<ITableBodyTemplateProps> = ({ table, renderSubComponent = null }) => {
 	return (
 		<TBody>
 			{table.getRowModel().rows.map((row) => (
-				<Tr key={row.id}>
-					{row.getVisibleCells().map((cell) => (
-						<Td
-							key={cell.id}
-							style={{
-								width: cell.column.getSize(),
-								padding: '0.25rem',
-							}}
-							className={classNames({
-								'text-left': cell.column.id !== 'Actions',
-								'text-center': cell.column.id === 'Actions',
-							})}>
-							{flexRender(cell.column.columnDef.cell, cell.getContext())}
-						</Td>
-					))}
-				</Tr>
+				<>
+					<Tr key={row.id}>
+						{row.getVisibleCells().map((cell) => (
+							<Td
+								key={cell.id}
+								style={{
+									width: cell.column.getSize(),
+									padding: '0.25rem',
+								}}
+								className={classNames({
+									'text-left': cell.column.id !== 'Actions',
+									'text-center': cell.column.id === 'Actions',
+								})}>
+								{flexRender(cell.column.columnDef.cell, cell.getContext())}
+							</Td>
+						))}
+					</Tr>
+					{row.getIsExpanded() && renderSubComponent && (
+						<Tr>
+							<Td colSpan={row.getVisibleCells().length}>
+								{renderSubComponent && renderSubComponent({ row })}
+							</Td>
+						</Tr>
+					)}
+				</>
 			))}
 		</TBody>
 	);
@@ -159,16 +169,17 @@ interface ITableTemplateProps extends Partial<ITableProps> {
 	table: TTableProps<any>;
 	hasHeader?: boolean;
 	hasFooter?: boolean;
+	renderSubComponent?: any;
 }
 const TableTemplate: FC<ITableTemplateProps> = (props) => {
-	const { children, hasHeader, hasFooter, table, ...rest } = props;
+	const { children, hasHeader, hasFooter, table, renderSubComponent = null, ...rest } = props;
 
 	return (
 		<Table {...rest}>
 			{children || (
 				<>
 					{hasHeader && <TableHeaderTemplate table={table} />}
-					<TableBodyTemplate table={table} />
+					<TableBodyTemplate table={table} renderSubComponent={renderSubComponent} />
 					{hasFooter && <TableFooterTemplate table={table} />}
 				</>
 			)}

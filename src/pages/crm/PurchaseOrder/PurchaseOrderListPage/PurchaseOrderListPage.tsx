@@ -285,11 +285,6 @@ const PurchaseOrderListPage = () => {
                                 GST Number: {vendorInfo?.vendor?.gstNumber}
                             </h4>
                         </div>
-
-
-
-
-
                     </ModalHeader>
                     <ModalBody>
                         <PurchaseEntryDetail branchesData={branchesData} poId={vendorId} />

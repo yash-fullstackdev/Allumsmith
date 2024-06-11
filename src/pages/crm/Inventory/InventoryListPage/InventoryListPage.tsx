@@ -15,23 +15,26 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import _ from 'lodash';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import StockActionModal from '../StockActionModal/StockActionModal';
+import { createColumnHelper, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
+import TableTemplate from '../../../../templates/common/TableParts.template';
+
+const columnHelper = createColumnHelper<any>();
+
+
 
 const InventoryListPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [inventoryList, setInventoryList] = useState<any>([]);
     const [productsArray, setProductsArray] = useState<any>([]);
     const [stockActionModal, setStockActionModal] = useState<any>()
-    console.log('productsArray??', productsArray);
-    console.log('Prod');
-
-
-
+    const [expanded, setExpanded] = React.useState<ExpandedState>({})
 
     useEffect(() => {
         if (inventoryList.length > 0) {
             const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
             const resultArray = Object.keys(groupedData).map((productId) => {
                 const productData = groupedData[productId];
+                console.log('productData :>> ', productData);
                 if (!productData[0]?.product) return null;
 
                 const branches = productData.map((item) => {
@@ -48,6 +51,9 @@ const InventoryListPage = () => {
                     productName: productData[0].product.name,
                     totalQuantity,
                     branches,
+                    thickness: productData[0].product.thickness,
+                    length: productData[0].product.length,
+                    productCode: productData[0].product.productCode,
                 };
             }).filter(Boolean);
 
@@ -84,33 +90,108 @@ const InventoryListPage = () => {
     useEffect(() => {
         fetchData();
     }, [stockActionModal]);
-    const renderBranches = (branches: any) => {
-        console.log('Branches', branches)
+
+    const columns = [
+        columnHelper.accessor('productName', {
+            cell: (info) => {
+                return (
+                    <div className='text-xl min-h-[30px] flex items-center' onClick={info?.row.getToggleExpandedHandler()} style={{ cursor: "pointer" }}>
+                        {info?.row.getCanExpand() ? (
+                            <Button
+                                rightIcon={
+                                    info?.row.getIsExpanded() ?
+                                        'HeroMinus' : 'HeroPlus'
+                                }
+                            />
+                        ) : null}
+                        {`${info.getValue()}`}
+                    </div>
+                )
+            },
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Product Name
+                </div>
+            )
+
+        }),
+        columnHelper.accessor('productCode', {
+            cell: (info) => (
+                <div className='text-xl'>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Product Code
+                </div>
+            )
+        }),
+        columnHelper.accessor('thickness', {
+            cell: (info) => (
+                <div className='text-xl'>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Thickness
+                </div>
+            )
+        }),
+        columnHelper.accessor('length', {
+            cell: (info) => (
+                <div className='text-xl'>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Length
+                </div>
+            )
+        }),
+        columnHelper.accessor('totalQuantity', {
+            cell: (info) => (
+                <div className='text-xl'>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: () => (
+                <div className='text-xl min-h-[30px] flex items-center'>
+                    Total Quantity(Pcs)
+                </div>
+            )
+        }),
+    ];
+
+    const renderSubComponent = ({ row }: { row: any }) => {
         return (
-            <TableRow>
-                <TableCell colSpan={3}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><h5>Branch Name</h5></TableCell>
-                                    <TableCell><h5>Quantity(Pcs)</h5></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {branches && branches.map((branch: any) => (
-                                    <TableRow key={branch.branchId}>
-                                        <TableCell><h6>{branch.branchName}</h6></TableCell>
-                                        <TableCell><h6>{branch.quantity}</h6></TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TableCell>
-            </TableRow>
-        );
-    };
+            <div className='pl-3.5'>
+                <SubTable data={row.original?.branches} />
+            </div>
+        )
+    }
+
+    console.log('productsArray :>> ', productsArray);
+    const table = useReactTable({
+        data: productsArray || [],
+        columns,
+        state: {
+            expanded,
+        },
+        onExpandedChange: setExpanded,
+        getSubRows: (row) => {
+            return row.subRows
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
+        getRowCanExpand: () => true
+    });
 
     return (
         <PageWrapper name='Inventory List'>
@@ -127,33 +208,17 @@ const InventoryListPage = () => {
                     </CardHeader>
                     <CardBody>
                         {!isLoading ? (
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><h3>Product Name</h3></TableCell>
-                                            <TableCell><h3>Total Quantity(Pcs)</h3></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {productsArray.map((item: any) => (
-                                            <React.Fragment key={item.productId}>
-                                                <TableRow onClick={() => handleProductClick(item.productId)}>
-                                                    <TableCell className='cursor-pointer'><h4> {item.productName} <Button rightIcon={
-                                                        item.expanded ?
-                                                            'HeroChevronUp'
-                                                            : 'HeroChevronDown'
-                                                    } /></h4></TableCell>
-                                                    <TableCell><h4>{item.totalQuantity}</h4></TableCell>
-                                                </TableRow>
-                                                {item.expanded && renderBranches(item.branches)}
-                                            </React.Fragment>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className="table-fixed max-md:min-w-[70rem]"
+                                    table={table}
+                                    renderSubComponent={renderSubComponent}
+                                />
+                            ) : (
+                                <p className="text-center text-gray-500">No records found</p>
+                            )
                         ) : (
-                            <div className='flex justify-center'>
+                            <div className="flex justify-center">
                                 <LoaderDotsCommon />
                             </div>
                         )}
@@ -174,5 +239,43 @@ const InventoryListPage = () => {
         </PageWrapper>
     );
 };
+
+const SubTable = ({ data }: any) => {
+    const subColumns = [
+        columnHelper.accessor('branchName', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Branch Name',
+        }),
+        columnHelper.accessor('quantity', {
+            cell: (info) => (
+                <div className=''>
+                    {`${info.getValue()}`}
+                </div>
+
+            ),
+            header: 'Quantity',
+        }),
+    ];
+
+    const table = useReactTable({
+        data: data || [],
+        columns: subColumns,
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+
+    return (
+        <TableTemplate
+            className='table-fixed max-md:min-w-[70rem]'
+            table={table}
+            hasFooter={false}
+        />
+    )
+}
 
 export default InventoryListPage;
