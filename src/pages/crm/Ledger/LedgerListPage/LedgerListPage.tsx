@@ -24,6 +24,11 @@ import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
 import renderAmount from '../../../../utils/renderAmount';
+import { useFormik } from 'formik';
+import Label from '../../../../components/form/Label';
+import Select from '../../../../components/form/Select';
+import { formatDate } from '@fullcalendar/core/index.js';
+import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -38,6 +43,60 @@ const LedgerListPage = () => {
 	const [ledgerModal, setLedgerModal] = useState<boolean>(false);
 	const [customerData, setCustomerData] = useState<any>();
 	const [globalFilter, setGlobalFilter] = useState<string>('');
+	const [isPdfLoading, setIsPdfLoading] = useState(false);
+
+	const formik: any = useFormik({
+		initialValues: {
+			startDate: '',
+			endDate: '',
+		},
+		enableReinitialize: true,
+
+		onSubmit: () => {},
+	});
+
+	const fetchLedgerDetails = async () => {
+		try {
+			setIsPdfLoading(true);
+			const formatDate = (dateString: any) => {
+				const date = new Date(dateString);
+				const day = date.getDate().toString().padStart(2, '0');
+				const month = (date.getMonth() + 1).toString().padStart(2, '0');
+				const year = date.getFullYear();
+				return `${day}-${month}-${year}`;
+			};
+
+			const fromDate = formik.values.startDate ? formatDate(formik.values.startDate) : '';
+			const toDate = formik.values.endDate ? formatDate(formik.values.endDate) : '';
+
+			const queryParams = new URLSearchParams();
+			if (fromDate) queryParams.append('fromDate', fromDate);
+			if (toDate) queryParams.append('toDate', toDate);
+
+			const response = await get(`/ledger/allLedger?${queryParams.toString()}`);
+			if (response && response.data && response.data.data) {
+				const pdfData = response.data.data;
+
+				const url = window.URL.createObjectURL(
+					new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }),
+				);
+				window.open(url, '_blank');
+			} else {
+				console.error('Error: PDF data not found in response');
+			}
+		} catch (error) {
+			console.error('Error Fetching Invoices for Customer:', error);
+		} finally {
+			setIsPdfLoading(false);
+			resetFilters();
+		}
+	};
+
+	const resetFilters = () => {
+		formik.values.startDate = '';
+		formik.values.endDate = '';
+		formik.resetForm();
+	};
 
 	const fetchData = async (search = '') => {
 		setIsLoading(true);
@@ -195,6 +254,48 @@ const LedgerListPage = () => {
 			<Container>
 				<Card>
 					<CardBody>
+						<div className='mb-2 mt-4 grid grid-cols-12 gap-1'>
+							<div className='col-span-12 lg:col-span-2 '>
+								<Label htmlFor='startDate'>Start Date</Label>
+								<Input
+									type='date'
+									id={`startDate`}
+									name={`startDate`}
+									value={formik.values.startDate}
+									onChange={formik.handleChange}
+								/>
+							</div>
+							<div className='col-span-12 lg:col-span-2'>
+								<Label htmlFor='endDate'>End Date</Label>
+								<Input
+									type='date'
+									id={`endDate`}
+									name={`endDate`}
+									value={formik.values.endDate}
+									onChange={formik.handleChange}
+								/>
+							</div>
+							<div className='col-span-12 mt-4 w-[200px] sm:col-span-7 lg:col-span-2 '>
+								<Button
+									className='mt-2'
+									variant='solid'
+									color='blue'
+									type='submit'
+									onClick={resetFilters}>
+									Reset Filter
+								</Button>
+							</div>
+							<div className='col-span-12 mt-4 w-[200px] justify-items-end sm:col-span-4 lg:col-span-3 lg:ml-5'>
+								<Button
+									className='mt-2 h-[32px] w-[130px]'
+									variant='solid'
+									color='blue'
+									type='submit'
+									onClick={fetchLedgerDetails}>
+									{isPdfLoading ? <LoaderDotsCommon /> : 'Generate PDF'}
+								</Button>
+							</div>
+						</div>
 						{!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
 							<TableTemplate
 								className='table-fixed max-md:min-w-[70rem]'
