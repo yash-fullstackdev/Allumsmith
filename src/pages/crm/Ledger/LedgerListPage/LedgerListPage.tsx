@@ -27,8 +27,8 @@ import renderAmount from '../../../../utils/renderAmount';
 import { useFormik } from 'formik';
 import Label from '../../../../components/form/Label';
 import Select from '../../../../components/form/Select';
-import { formatDate } from '@fullcalendar/core/index.js';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
+import { formatDate } from '../../../../utils/date.util';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -58,14 +58,6 @@ const LedgerListPage = () => {
 	const fetchLedgerDetails = async () => {
 		try {
 			setIsPdfLoading(true);
-			const formatDate = (dateString: any) => {
-				const date = new Date(dateString);
-				const day = date.getDate().toString().padStart(2, '0');
-				const month = (date.getMonth() + 1).toString().padStart(2, '0');
-				const year = date.getFullYear();
-				return `${day}-${month}-${year}`;
-			};
-
 			const fromDate = formik.values.startDate ? formatDate(formik.values.startDate) : '';
 			const toDate = formik.values.endDate ? formatDate(formik.values.endDate) : '';
 
@@ -162,16 +154,16 @@ const LedgerListPage = () => {
 				<div
 					className={
 						renderAmount(
-							info.row.original.credit_amount || 0,
 							info.row.original.pending_amount || 0,
-							'text-green-500',
+							info.row.original.credit_amount || 0,
 							'text-red-500',
+							'text-green-500',
 						).color
 					}>
 					{
 						renderAmount(
-							(info.row.original.credit_amount || 0).toFixed(2),
 							(info.row.original.pending_amount || 0).toFixed(2),
+							(info.row.original.credit_amount || 0).toFixed(2),
 						).text
 					}
 				</div>
@@ -263,6 +255,7 @@ const LedgerListPage = () => {
 									name={`startDate`}
 									value={formik.values.startDate}
 									onChange={formik.handleChange}
+									max={formik.values.endDate}
 								/>
 							</div>
 							<div className='col-span-12 lg:col-span-2'>
@@ -273,21 +266,23 @@ const LedgerListPage = () => {
 									name={`endDate`}
 									value={formik.values.endDate}
 									onChange={formik.handleChange}
+									min={formik.values.startDate}
 								/>
 							</div>
-							<div className='col-span-12 mt-4 w-[200px] sm:col-span-7 lg:col-span-2 '>
+
+							<div className='col-span-12 mt-5 w-[200px] sm:col-span-7 lg:col-span-2 '>
 								<Button
 									className='mt-2'
 									variant='solid'
 									color='blue'
 									type='submit'
 									onClick={resetFilters}>
-									Reset Filter
+									Reset Pdf Filter
 								</Button>
 							</div>
-							<div className='col-span-12 mt-4 w-[200px] justify-items-end sm:col-span-4 lg:col-span-3 lg:ml-5'>
+							<div className='col-span-12 mt-5 w-[200px] justify-items-end sm:col-span-4 lg:col-span-6 lg:ml-5'>
 								<Button
-									className='mt-2 h-[32px] w-[130px]'
+									className='mt-2 h-[33px] w-[130px]'
 									variant='solid'
 									color='blue'
 									type='submit'
