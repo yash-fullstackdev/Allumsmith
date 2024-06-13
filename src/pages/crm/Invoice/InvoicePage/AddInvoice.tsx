@@ -32,7 +32,7 @@ const AddInvoice = () => {
     const [purchaseOrderData, setPurchaseOrderData] = useState<any>({});
     const [customerId, setCustomerId] = useState<any>('');
     const [branchId, setBranchId] = useState<any>('');
-    const [branchName, setBranchName] = useState<any>({})
+    const [branchName, setBranchName] = useState<any>("")
     const [deliveredQuantities, setDeliveredQuantities] = useState<Array<number>>([]);
     const [quantityAndDiscounts, setQuantityAndDiscounts] = useState<any[]>([]);
     const [totalAmount, setTotalAmount] = useState<any>(0);
@@ -46,6 +46,7 @@ const AddInvoice = () => {
     const [finalCoatingPrice, setFinalCoatingPrice] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [amountBeforeTaxAndGst, setAmountBeforeTaxAndGst] = useState<number>(0);
+    
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -273,7 +274,6 @@ const AddInvoice = () => {
                     if (!finalPayload?.color && !finalPayload?.coating) {
                         delete finalPayload?.color
                         delete finalPayload?.coating
-                        finalPayload.branch = branchName?.[index]
                     }
 
                     if (entry?.itemSummary) {
@@ -310,6 +310,7 @@ const AddInvoice = () => {
                 amountBeforeTax: amountBeforeTaxAndGst,
                 discount,
                 invoiceNumber,
+                branch: branchName
 
             };
             const respones = await post('/invoice', payload)
@@ -401,7 +402,7 @@ const AddInvoice = () => {
                                                             />
                                                         </div>
                                                         <div className='col-span-4 lg:col-span-3 mt-5'>
-                                                            <Label htmlFor='customerName'>
+                                                            {/* <Label htmlFor='customerName'>
                                                                 Customer Number
                                                             </Label>
                                                             <Input
@@ -410,7 +411,30 @@ const AddInvoice = () => {
                                                                 name="customer_number"
                                                                 disabled
 
-                                                            />
+                                                            /> */}
+
+                                                            <Label htmlFor={`total_rate`}>
+                                                                Branch
+                                                                <span className='ml-1 text-red-500'>*</span>
+                                                            </Label>
+
+                                                            <Select
+                                                                id='originPoint'
+                                                                name='originPoint'
+                                                                value={branchName}
+                                                                placeholder='Select Branch'
+                                                                onChange={(e: any) => {
+                                                                    setBranchName(e.target.value)
+                                                                }}
+                                                            >
+                                                                {branch &&
+                                                                    branch.length > 0 &&
+                                                                    branch?.map((data: any) => (
+                                                                        <option key={data._id} value={data._id} className='text-neutral-950'>
+                                                                            {data.name}
+                                                                        </option>
+                                                                    ))}
+                                                            </Select>
                                                         </div>
                                                     </>
                                                 }
@@ -616,7 +640,7 @@ const AddInvoice = () => {
                                                                         disabled
                                                                     />
                                                                 </div>
-                                                                {!entry?.coating?.name ? (
+                                                                {/* {!entry?.coating?.name ? (
                                                                     <div className='col-span-12 lg:col-span-3'>
                                                                         <Label htmlFor={`total_rate${index}`} className='!text-sm'>
                                                                             Branch
@@ -643,7 +667,7 @@ const AddInvoice = () => {
                                                                                 ))}
                                                                         </Select>
                                                                     </div>
-                                                                ) : null}
+                                                                ) : null} */}
 
                                                             </div>
 
@@ -687,6 +711,7 @@ const AddInvoice = () => {
                                                                     value={alluminiumRate}
                                                                     name="gst"
                                                                     onChange={(e) => setAlluminiumRate(parseInt(e.target.value))}
+                                                                    min={0}
                                                                 />
                                                             </div>
 
