@@ -16,25 +16,26 @@ import { shouldRedirectOrShowLoader } from '../utils/common.util';
 const App = () => {
 	const navigate = useNavigate();
 	const pathName = useLocation();
-	const [isLoading, setIsLoading] = useState(true);
 	const { isSignedIn, isLoaded } = useUser();
 	getOS();
 
 	const { fontSize } = useFontSize();
 
 	useEffect(() => {
-		if (isLoaded) {
-			setIsLoading(false);
-		}
-	}, [isLoaded]);
-
-	useEffect(() => {
-		if (shouldRedirectOrShowLoader(isSignedIn, isLoading, pathName)) {
+		if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
 			navigate('/sign-in');
 		}
-	}, [isSignedIn, isLoading, navigate, pathName]);
+	}, [isSignedIn, isLoaded, navigate, pathName]);
 
-	if (isLoading || !isLoaded || shouldRedirectOrShowLoader(isSignedIn, isLoading, pathName)) {
+	if (
+		!pathName.pathname.startsWith('/sign-in') &&
+		!pathName.pathname.startsWith('/sign-up') &&
+		!isLoaded
+	) {
+		return <FullScreenLoader />;
+	}
+
+	if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
 		return <FullScreenLoader />;
 	}
 
