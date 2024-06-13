@@ -1,5 +1,4 @@
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import AsideRouter from '../components/router/AsideRouter';
 import Wrapper from '../components/layouts/Wrapper/Wrapper';
@@ -8,28 +7,36 @@ import ContentRouter from '../components/router/ContentRouter';
 import FooterRouter from '../components/router/FooterRouter';
 import useFontSize from '../hooks/useFontSize';
 import getOS from '../utils/getOS.util';
-import { Router, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '@clerk/clerk-react';
+import FullScreenLoader from '../components/layouts/common/FullScreenLoader';
+import { shouldRedirectOrShowLoader } from '../utils/common.util';
 
 const App = () => {
-	// const navigate = useNavigate();
-	// const pathName = useLocation();
-	// const [isLoading, setIsLoading] = useState(true)
+	const navigate = useNavigate();
+	const pathName = useLocation();
+	const [isLoading, setIsLoading] = useState(true);
+	const { isSignedIn, isLoaded } = useUser();
 	getOS();
 
 	const { fontSize } = useFontSize();
-	dayjs.extend(localizedFormat);
 
-	// const userLoggedIn = localStorage.getItem('accesstoken');
-	// useEffect(() => {
-	// 	const checkPath = pathName.pathname.includes("login") || pathName.pathname.includes('signup');
-	// 	if (!userLoggedIn && !checkPath) {
-	// 		navigate('/login'); // Redirect to login page
-	// 		setIsLoading(false)
-	// 	} else {
-	// 		setIsLoading(false)
-	// 	}
-	// }, [userLoggedIn]);
+	useEffect(() => {
+		if (isLoaded) {
+			setIsLoading(false);
+		}
+	}, [isLoaded]);
+
+	useEffect(() => {
+		if (shouldRedirectOrShowLoader(isSignedIn, isLoading, pathName)) {
+			navigate('/sign-in');
+		}
+	}, [isSignedIn, isLoading, navigate, pathName]);
+
+	if (isLoading || !isLoaded || shouldRedirectOrShowLoader(isSignedIn, isLoading, pathName)) {
+		return <FullScreenLoader />;
+	}
 
 	return (
 		<>
