@@ -282,12 +282,12 @@ const AddInvoice = () => {
                             entry?.itemSummary?.coatingQuantity === 0 ||
                             isNaN(entry?.itemSummary?.coatingQuantity)
                         ) {
-                            toast.error("No Avilable quantity,please finish the job first");
-                            throw new Error("No Avilable quantity,please finish the job first");
+                            toast.error("No Available quantity,please finish the job first");
+                            throw new Error("No Available quantity,please finish the job first");
                         }
                     } else if (entry?.quantity && entry?.quantity < deliveredQuantities?.[index]) {
-                        toast.error("No Avilable quantity,please finish the job first");
-                        throw new Error("No Avilable quantity,please finish the job first");
+                        toast.error("No Available quantity,please finish the job first");
+                        throw new Error("No Available quantity,please finish the job first");
                     }
 
                     if (finalPayload?.delieveryQuantity > entry?.itemSummary?.coatingQuantity) {

@@ -16,6 +16,7 @@ import ReviewQuantityStatus from './ReviewQuantityStatus';
 import SelfProducts from './SelfProducts';
 import { Switch } from '@mui/material';
 import WithoutMaterialPage from './WithoutMaterialPage';
+import { toast } from 'react-toastify';
 
 
 const JobsPage = () => {
@@ -120,6 +121,17 @@ const JobsPage = () => {
             branchId: branchId.id,
             products: allProductIds
         };
+        finalValues?.selfProducts.forEach((selfProducts: any) => {
+            if (selfProducts?.productId && !selfProducts?.coating?.id) {
+                toast.error('Please Select a Coating')
+                throw new Error('Please Select a Coating')
+            }
+            if (selfProducts?.productId && !selfProducts?.color?.id) {
+                toast.error('Please Select a Color')
+                throw new Error('Please Select a Color')
+            }
+        })
+
         setQuantityStatusModal(true);
         try {
             const reviewProducts = await post('/inventory/findQuantity', reviewQuantityFromBranch);
@@ -492,8 +504,6 @@ const JobsPage = () => {
                                                     <Button
                                                         variant='outlined'
                                                         className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-
-
                                                     >
                                                         Self Product Data
                                                     </Button>
