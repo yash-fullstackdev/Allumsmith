@@ -264,7 +264,6 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({
 				<Button
 					onClick={() => {
 						table.previousPage();
-						console.log(table.getState().pagination.pageIndex, 'SAdasdasdas');
 						onChangePage && onChangePage(table.getState().pagination.pageIndex);
 					}}
 					isDisable={!table.getCanPreviousPage()}
