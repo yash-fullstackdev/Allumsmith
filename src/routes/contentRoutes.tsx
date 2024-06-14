@@ -43,15 +43,17 @@ import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/Edit
 import PaymentPage from '../pages/crm/Payment/PaymentPage';
 import EditPurchaseOrderForm from '../pages/crm/PurchaseOrder/PurchaseOrderPage/EditPurchaseOrderForm';
 import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
-
+import EditBulkProductPage from '../pages/crm/user/EditBulkProductPage/EditBulkProductPage';
 
 const contentRoutes: RouteProps[] = [
-
 	{
 		path: appPages.productPage.listPage.to,
 		element: <ProductListPage />,
 	},
-
+	{
+		path: appPages.productPage.editMultiplePageLink.to,
+		element: <EditBulkProductPage />,
+	},
 	{
 		path: `${appPages.productPage.addPageLink.to}`,
 		element: <AddProductPage />,
@@ -185,7 +187,7 @@ const contentRoutes: RouteProps[] = [
 	},
 	{
 		path: `${appPages.jobsPage.editwihtoutPageLink.to}/:id`,
-		element: <EditWithoutMaterial/>,
+		element: <EditWithoutMaterial />,
 	},
 	{
 		path: `${appPages.powderPage.listPage.to}`,
@@ -216,8 +218,8 @@ const contentRoutes: RouteProps[] = [
 	// 	element: <EditLedgerPag />,
 	// },
 	{
-		path:`${appPages.payment.addPageLink.to}`,
-		element:<PaymentPage/>
+		path: `${appPages.payment.addPageLink.to}`,
+		element: <PaymentPage />,
 	},
 	// { path: authPages.loginPage.to, element: <LoginPage /> },
 	// { path: authPages.signUpPage.to, element: <SignupPage /> },
