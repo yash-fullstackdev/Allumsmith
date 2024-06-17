@@ -188,15 +188,22 @@ const transportSchema = Yup.object().shape({
 		}),
 	batch: Yup.array().of(
 		Yup.object().shape({
-			co_id: Yup.string()
-				.required('Customer Order is required'),
+			cp_id: Yup.string(),
 			products: Yup.array().of(
 				Yup.object().shape({
+					itemSummary:Yup.string().notRequired(),
 					pickQuantity: Yup.string()
-						.required('Pick Quantity is required')
 						.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
-							return Number(value) <= this.parent?.itemSummary?.coatingQuantity;
-						}),
+							return !value || Number(value) <= this.parent?.itemSummary?.coatingQuantity;
+						})
+						.when('itemSummary', {
+							is: (val: any) => {
+								return Boolean(val);
+							},
+							then: (schema) => schema.required('Pick Quantity is required'),
+							otherwise: (schema) => schema.notRequired(),
+						})
+						.notRequired(),
 				})
 			),
 		})

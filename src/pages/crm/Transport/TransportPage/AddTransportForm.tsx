@@ -14,6 +14,7 @@ import Collapse from '../../../../components/utils/Collapse';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import Container from '../../../../components/layouts/Container/Container';
+import { toast } from 'react-toastify';
 
 
 const AddPurchaseOrderForm = () => {
@@ -33,7 +34,6 @@ const AddPurchaseOrderForm = () => {
   }
 
 
-
   const processProducts = (products: any) => {
     return products?.map((product: any) => {
       const obj = {
@@ -49,40 +49,51 @@ const AddPurchaseOrderForm = () => {
     });
   }
 
-  const handleSubmit = (value: any) => {
-    const batch = value?.batch?.map((item: any) => ({
-      co_id: item?.co_id,
-      products: processProducts(item?.products)
-    }));
+  const handleSubmit = async (value: any) => {
+    try {
+      const batch = value?.batch?.map((item: any) => ({
+        co_id: item?.co_id,
+        products: processProducts(item?.products)
+      }))?.filter((item: any) => item?.co_id);
 
-    const self_products = value?.self_products?.map((item: any) => {
-      if (item?.product?._id) {
-        const obj = {
-          product_id: item?.product?._id,
-          name: item?.product?.name,
-          coating: item?.coating?._id,
-          color: item?.color?._id,
-          pick_quantity: Number(item?.pickQuantity) || 0,
-          mm: item?.mm,
-          raw_product: !item?.coating && !item?.color
-        };
-        removeNullOrUndefined(obj);
-        return obj;
+      const self_products = value?.self_products?.map((item: any) => {
+        if (item?.product?._id) {
+          const obj = {
+            product_id: item?.product?._id,
+            name: item?.product?.name,
+            coating: item?.coating?._id,
+            color: item?.color?._id,
+            pick_quantity: Number(item?.pickQuantity) || 0,
+            mm: item?.mm,
+            raw_product: !item?.coating && !item?.color
+          };
+          removeNullOrUndefined(obj);
+          return obj;
+        }
+      }).filter(Boolean);
+
+
+      const payload = {
+        dispatch_date: value?.dispatch_date,
+        from_branch: value?.from_branch,
+        to_branch: value?.to_branch,
+        vehicle_no: value?.vehicle_no,
+        batch,
+        self_products
+      };
+
+      if (!payload?.batch?.length && !payload?.self_products?.length) {
+        toast.error('Please enter Customer Order Products or Self Products');
+        return;
       }
-    }).filter(Boolean);
 
-
-    const payload = {
-      dispatch_date: value?.dispatch_date,
-      from_branch: value?.from_branch,
-      to_branch: value?.to_branch,
-      vehicle_no: value?.vehicle_no,
-      batch,
-      self_products
-    };
-    console.log('payload :>> ', payload);
+      const response = await post('/transport', payload);
+      navigation(`${PathRoutes.transport}`)
+    } catch (error: any) {
+      console.log('error :>> ', error, error.response?.data?.message, error.message);
+      toast.error( error.response?.data?.message || error.message);
+    }
   }
-
 
   const formik: any = useFormik({
     initialValues: {
@@ -101,8 +112,6 @@ const AddPurchaseOrderForm = () => {
       handleSubmit(value);
     }
   });
-  console.log('productsData :>> ', productsData, formik?.values);
-
   const handleAddOder = () => {
     const newBatchList = [...formik?.values?.batch, { co_id: '', products: [] }];
     formik?.setFieldValue('batch', newBatchList);
@@ -111,6 +120,7 @@ const AddPurchaseOrderForm = () => {
     const newBatchList = [...formik?.values?.self_products, {}];
     formik?.setFieldValue('self_products', newBatchList);
   };
+  console.log("formik", formik)
 
   const handleDeleteBatch = (index: number) => {
     const newBatchList = formik?.values?.batch?.filter((_: any, idx: number) => idx !== index);
@@ -495,17 +505,20 @@ const AddPurchaseOrderForm = () => {
                                             disabled
                                           />
                                         </div>)}
-                                        <div className='col-span-12 lg:col-span-1 mt-[20px]'>
-                                          <Button
-                                            type='button'
-                                            onClick={() => handleDeleteBatchList(index, productIndex)}
-                                            variant='outlined'
-                                            color='red'
-                                            rightIcon={'CrossIcon'}
-                                            className='py-1.5 px-5'
-                                            style={{ fontSize: 20 }}
-                                          />
-                                        </div>
+                                        {batch?.products
+                                          ?.filter((item: any) => item?.coating?.name && item?.color?.name)?.length > 1 ? (
+                                          <div className='col-span-12 lg:col-span-1 mt-[20px]'>
+                                            <Button
+                                              type='button'
+                                              onClick={() => handleDeleteBatchList(index, productIndex)}
+                                              variant='outlined'
+                                              color='red'
+                                              rightIcon={'CrossIcon'}
+                                              className='py-1.5 px-5'
+                                              style={{ fontSize: 20 }}
+                                            />
+                                          </div>
+                                        ) : null}
                                       </div>
                                     )
                                   })
