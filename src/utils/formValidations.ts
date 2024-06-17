@@ -191,7 +191,6 @@ const transportSchema = Yup.object().shape({
 			cp_id: Yup.string(),
 			products: Yup.array().of(
 				Yup.object().shape({
-					itemSummary:Yup.string().notRequired(),
 					pickQuantity: Yup.string()
 						.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
 							return !value || Number(value) <= this.parent?.itemSummary?.coatingQuantity;
