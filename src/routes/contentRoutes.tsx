@@ -43,6 +43,9 @@ import EditWithoutMaterial from '../pages/crm/Jobs/JobsPage/WithoutMaterial/Edit
 import PaymentPage from '../pages/crm/Payment/PaymentPage';
 import EditPurchaseOrderForm from '../pages/crm/PurchaseOrder/PurchaseOrderPage/EditPurchaseOrderForm';
 import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
+import TransportPage from '../pages/crm/Transport/TransportListPage/Transport';
+import AddTransport from '../pages/crm/Transport/TransportPage/AddTransport';
+import AddTransportForm from '../pages/crm/Transport/TransportPage/AddTransportForm';
 
 
 const contentRoutes: RouteProps[] = [
@@ -190,6 +193,14 @@ const contentRoutes: RouteProps[] = [
 	{
 		path: `${appPages.powderPage.listPage.to}`,
 		element: <PowderPage />,
+	},
+	{
+		path: `${appPages.transportPage.listPage.to}`,
+		element: <TransportPage />,
+	},
+	{
+		path: `${appPages.transportPage.addPageLink.to}`,
+		element: <AddTransportForm />,
 	},
 	{
 		path: `${appPages.invoicePage.listPage.to}`,

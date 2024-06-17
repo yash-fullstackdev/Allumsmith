@@ -39,4 +39,6 @@ export enum PathRoutes {
 	ledger_list = '/ledger-list',
 	add_ledger = '/add-ledger',
 	edit_ledger = '/edit-ledger',
+	transport ='/transport',
+	add_transport ='/add-transport'
 }

@@ -4,6 +4,7 @@ export { default as HeroAdjustmentsVertical } from './AdjustmentsVertical';
 export { default as HeroArchiveBoxArrowDown } from './ArchiveBoxArrowDown';
 export { default as HeroArchiveBoxXMark } from './ArchiveBoxXMark';
 export { default as HeroArchiveBox } from './ArchiveBox';
+export { default as CrossIcon } from './CrossIcon';
 export { default as HeroArrowDownCircle } from './ArrowDownCircle';
 export { default as HeroArrowDownLeft } from './ArrowDownLeft';
 export { default as HeroArrowDownOnSquareStack } from './ArrowDownOnSquareStack';

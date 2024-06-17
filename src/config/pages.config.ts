@@ -24,8 +24,8 @@ export const appPages: any = {
 			icon: 'DuoCart1',
 		},
 		addPageLink: {
-			id:'addPageLink',
-			to:'/add-purchase-order'
+			id: 'addPageLink',
+			to: '/add-purchase-order'
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -93,6 +93,19 @@ export const appPages: any = {
 			icon: 'DuoOption',
 		},
 		identifier: 'raw-material'
+	},
+	transportPage: {
+		listPage: {
+			id: 'transportPage',
+			to: '/transport',
+			text: 'Transport',
+			icon: 'HeroTruck',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-transport',
+		},
+		identifier: 'transport'
 	},
 	branchesPage: {
 		listPage: {
@@ -249,18 +262,18 @@ export const appPages: any = {
 		},
 		identifier: 'ledger'
 	},
-	payment:{
-		listPage:{
+	payment: {
+		listPage: {
 			id: 'payment',
 			to: '/add-payment',
 			text: 'Payment',
 			icon: 'HeroReceiptPercent',
 		},
-		addPageLink:{
+		addPageLink: {
 			id: 'addPageLink',
 			to: '/add-payment',
 		},
-		identifier:'payment',
+		identifier: 'payment',
 	},
 	projectAppPages: {
 		subPages: {
