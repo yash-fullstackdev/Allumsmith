@@ -1,4 +1,13 @@
 export const appPages: any = {
+	adminPage: {
+		userPermissionPage: {
+			id: 'permissionPage',
+			to: '/add-users-permissions',
+			text: 'Users Permissions',
+			icon: 'DuoKey',
+		},
+		identifier: 'user-permissions',
+	},
 	productPage: {
 		listPage: {
 			id: 'productPage',

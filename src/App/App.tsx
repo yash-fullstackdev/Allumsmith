@@ -9,47 +9,59 @@ import useFontSize from '../hooks/useFontSize';
 import getOS from '../utils/getOS.util';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { useUser } from '@clerk/clerk-react';
+import { ClerkProvider, useUser } from '@clerk/clerk-react';
 import FullScreenLoader from '../components/layouts/common/FullScreenLoader';
 import { shouldRedirectOrShowLoader } from '../utils/common.util';
+import AuthRouter from '../components/router/AuthRouter';
 
 const App = () => {
 	const navigate = useNavigate();
 	const pathName = useLocation();
-	const { isSignedIn, isLoaded } = useUser();
+	// const { isSignedIn, isLoaded } = useUser();
 	getOS();
 
 	const { fontSize } = useFontSize();
 
-	useEffect(() => {
-		if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
-			navigate('/sign-in');
-		}
-	}, [isSignedIn, isLoaded, navigate, pathName]);
+	// useEffect(() => {
+	// 	if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
+	// 		navigate('/sign-in');
+	// 	}
+	// }, [isSignedIn, isLoaded, navigate, pathName]);
 
-	if (
-		!pathName.pathname.startsWith('/sign-in') &&
-		!pathName.pathname.startsWith('/sign-up') &&
-		!isLoaded
-	) {
-		return <FullScreenLoader />;
-	}
+	// if (
+	// 	!pathName.pathname.startsWith('/sign-in') &&
+	// 	!pathName.pathname.startsWith('/sign-up') &&
+	// 	!isLoaded
+	// ) {
+	// 	return <FullScreenLoader />;
+	// }
 
-	if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
-		return <FullScreenLoader />;
-	}
+	// if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
+	// 	return <FullScreenLoader />;
+	// }
 
 	return (
 		<>
 			<style>{`:root {font-size: ${fontSize}px}`}</style>
 			<div data-component-name='App' className='flex grow flex-col'>
-				<AsideRouter />
-				<Wrapper>
-					<ToastContainer />
-					<HeaderRouter />
-					<ContentRouter />
-					<FooterRouter />
-				</Wrapper>
+				<ClerkProvider
+					routerPush={(to) => navigate(to)}
+					routerReplace={(to) => navigate(to, { replace: true })}
+					appearance={{
+						variables: {
+							colorPrimary: 'hsl(263.4, 70%, 50.4%)',
+						},
+					}}
+					publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+					<AuthRouter />
+					<AsideRouter />
+					<Wrapper>
+						<ToastContainer />
+						<HeaderRouter />
+						<ContentRouter />
+						<FooterRouter />
+					</Wrapper>
+				</ClerkProvider>
 			</div>
 		</>
 	);

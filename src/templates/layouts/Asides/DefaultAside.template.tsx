@@ -25,6 +25,10 @@ const DefaultAsideTemplate = () => {
 				<Nav>
 					<NavTitle>Module</NavTitle>
 					<NavItem
+						{...appPages.adminPage.userPermissionPage}
+						identifier={appPages.adminPage.identifier}
+					/>
+					<NavItem
 						{...appPages.productPage.listPage}
 						identifier={appPages.productPage.identifier}
 					/>
@@ -92,7 +96,7 @@ const DefaultAsideTemplate = () => {
 				</Nav>
 			</AsideBody>
 			<AsideFooter>
-				<div className='hover:black my-3 ml-3 flex cursor-pointer items-center gap-3 overflow-hidden text-zinc-500 '>
+				<div className='hover:black my-3 ml-3 flex  h-fit cursor-pointer items-center gap-3 overflow-hidden text-zinc-500 '>
 					<UserButton afterSignOutUrl='/sign-in' />
 					<span onClick={() => openUserProfile()}>{user?.fullName}</span>
 				</div>
