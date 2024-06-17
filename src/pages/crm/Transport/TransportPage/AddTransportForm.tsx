@@ -176,7 +176,7 @@ const AddPurchaseOrderForm = () => {
         ...item,
         finish_inventory: false,
         value: item?.product?._id,
-        label: `${item?.product?.name} (${item?.branch?.name}) (raw product)`
+        label: `${item?.product?.name} (${item?.branch?.name}) (L ${item?.product?.length}) (T ${item?.product?.thickness}) (raw product)`
       }))
 
       setProductsData([...finishInventory, ...inventory]);
