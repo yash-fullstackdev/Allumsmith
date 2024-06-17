@@ -73,6 +73,7 @@ const UserPermissionForm = () => {
 	// useEffect(() => {
 	// 	fetchVendorData();
 	// }, []);
+
 	const formik: any = useFormik({
 		initialValues: {
 			entries: [
@@ -148,7 +149,11 @@ const UserPermissionForm = () => {
 								<div
 									key={app.identifier}
 									className='w-1/2 px-4 md:w-1/3 lg:w-1/5 xl:w-1/6'>
-									<h2 className='mb-4 text-lg font-bold'>{app.identifier}</h2>
+									<h2 className='mb-4 text-lg font-bold'>
+										{app.identifier !== 'cuo'
+											? app.identifier
+											: 'customer-order'}
+									</h2>
 									{Object.values(app).map((page: any) => {
 										if (page.id && page.to && page.text && page.icon) {
 											return (
