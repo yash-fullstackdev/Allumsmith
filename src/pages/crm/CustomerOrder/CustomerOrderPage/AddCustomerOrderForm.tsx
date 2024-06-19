@@ -15,6 +15,7 @@ import Checkbox from '../../../../components/form/Checkbox';
 import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
 import AddCustomerModal from './AddCustomerModal';
+import AddCoatingModal from './AddCoatingModal';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', coating_rate: '', withoutMaterial: '', length: '', finish_inventory: '' }]);
@@ -42,6 +43,8 @@ const AddCustomerOrderForm = () => {
   const [grandTotal, setGrandTotal] = useState<number>(0);
   const [createCustomer, setCreateCustomer] = useState("");
   const [isCreateCustomerOpen, setIsCreateCustomerOpen] = useState<boolean>(false);
+  const [createCoating, setCreateCoating] = useState({ name: "", index: null });
+  const [isCreateCoatingOpen, setIsCreateCoatingOpen] = useState<boolean>(false);
 
   const getProductDetails = async () => {
     try {
@@ -79,7 +82,6 @@ const AddCustomerOrderForm = () => {
       setProductsArray(resultArray);
     }
   }, [inventoryList]);
-  console.log('Products Array', productsArray);
   const fetchData = async () => {
 
     try {
@@ -103,6 +105,15 @@ const AddCustomerOrderForm = () => {
     try {
       const { data } = await get('/coatings');
       setCoatingData(data);
+    } catch (error) {
+      console.error("Error Fetching Coating", error);
+    }
+  }
+  const getCoatingAndUpdateColorDetails = async (value: any, index: number) => {
+    try {
+      const { data } = await get('/coatings');
+      setCoatingData(data);
+      updateColorOptions(value, index, data);
     } catch (error) {
       console.error("Error Fetching Coating", error);
     }
@@ -142,7 +153,7 @@ const AddCustomerOrderForm = () => {
 
     // Update color options for the new entry based on the selected coating
     if (lastEntry.coating) {
-      updateColorOptions(lastEntry.coating, entries.length);
+      updateColorOptions(lastEntry.coating, entries.length, coatingData);
     }
   };
 
@@ -153,7 +164,6 @@ const AddCustomerOrderForm = () => {
     }, 0);
   }
 
-  console.log('Entries', entries)
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
@@ -184,7 +194,6 @@ const AddCustomerOrderForm = () => {
     };
 
     try {
-      console.log('Final Values', finalValues);
       if (!customerId || customerId === '') {
         toast.error('Please select customer')
       }
@@ -203,12 +212,12 @@ const AddCustomerOrderForm = () => {
   }
 
 
-  const handleCoatingChange = async (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const coatingId = e.target.value;
+  const handleCoatingChange = async (e: any, index: number) => {
+    const coatingId = e;
     const updatedEntries = [...entries];
     updatedEntries[index].coating = coatingId;
     setEntries(updatedEntries);
-    updateColorOptions(coatingId, index);
+    updateColorOptions(coatingId, index, coatingData);
 
     try {
       const { data } = await get(`/coatings/${coatingId}`);
@@ -218,8 +227,8 @@ const AddCustomerOrderForm = () => {
   };
 
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const colorId = e.target.value;
+  const handleColorChange = (e: any, index: number) => {
+    const colorId = e;
     const updatedEntries = [...entries];
     updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
     setEntries(updatedEntries);
@@ -235,8 +244,8 @@ const AddCustomerOrderForm = () => {
   useEffect(() => {
     getCustomerOrderCounter();
   }, [])
-  const updateColorOptions = (coatingId: any, entryIndex: number) => {
-    const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
+  const updateColorOptions = (coatingId: any, entryIndex: number, data: any[]) => {
+    const selectedCoating = (data || []).find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
       const newColorDataList = [...colorDataList];
       newColorDataList[entryIndex] = selectedCoating.colors;
@@ -247,7 +256,6 @@ const AddCustomerOrderForm = () => {
       setColorDataList(newColorDataList);
     }
   };
-
 
   const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newValue = e.target.value;
@@ -371,7 +379,27 @@ const AddCustomerOrderForm = () => {
       color: "black",
       paddingLeft: 2
     }),
-  }
+  };
+  const selectedCostingStyle = {
+    control: (baseStyles: any, state: any) => ({
+      ...baseStyles,
+      borderColor: state.isFocused ? 'grey' : 'red',
+      backgroundColor: "#f4f4f5",
+      border: "none",
+      height: "32px",
+      minHeight: "32px",
+      borderRadius: 8,
+    }),
+    indicatorSeparator: (baseStyles: any) => ({
+      ...baseStyles,
+      display: "none"
+    }),
+    dropdownIndicator: (baseStyles: any) => ({
+      ...baseStyles,
+      display: "none"
+    }),
+  };
+
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
       {/* <Container className='flex shrink-0 grow basis-auto flex-col pb-0'> */}
@@ -477,7 +505,6 @@ const AddCustomerOrderForm = () => {
                               label: `${product.name} (${product.productCode}) (${product.length}) (${product.thickness}) `
                             }))}
                             onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                            onCreateOption={() => { console.log('55555 :>> ', 55555); }}
                           />
 
                         </div>
@@ -571,20 +598,25 @@ const AddCustomerOrderForm = () => {
                           Coating
                           <span className='ml-1 text-red-500'>*</span>
                         </Label>
-                        <Select
+                        <CreatableSelect
                           placeholder='Select Coating'
                           id={`coating-${index}`}
                           name={`coating-${index}`}
-                          // value={entry.coating }
-                          value={entry.coating || selectedCoatings[index]}
-                          onChange={(e) => handleCoatingChange(e, index)}
-                        >
-                          {coatingData.map((coating: any) => (
-                            <option key={coating._id} value={coating._id}>
-                              {coating.name}
-                            </option>
-                          ))}
-                        </Select>
+                          options={coatingData.map((customer: any) => ({
+                            value: customer._id,
+                            label: customer.name,
+                          }))}
+                          value={(entry.coating || selectedCoatings[index]) ? { value: entry.coating, label: coatingData?.find((item: any) => item?._id === entry.coating)?.name } : null}
+                          onChange={(selectedOption: any) => {
+                            const value = selectedOption.value
+                            handleCoatingChange(value, index)
+                          }}
+                          onCreateOption={(e) => {
+                            setCreateCoating({ name: e, index });
+                            setIsCreateCoatingOpen(true);
+                          }}
+                          styles={selectedCostingStyle}
+                        />
                       </div>
                       {entry.coating &&
                         (<div className='col-span-12 lg:col-span-2'>
@@ -878,7 +910,16 @@ const AddCustomerOrderForm = () => {
           setCustomerId={setCustomerId}
         /> : null
       }
-
+      {isCreateCoatingOpen ?
+        <AddCoatingModal
+          isOpen={true}
+          setIsOpen={setIsCreateCoatingOpen}
+          defaultValue={createCoating}
+          fetchData={getCoatingAndUpdateColorDetails}
+          entries={entries}
+          setEntries={setEntries}
+        /> : null
+      }
     </PageWrapper>
   );
 };
