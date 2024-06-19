@@ -104,45 +104,45 @@ const conversionComponentSchema = Yup.object().shape({
 	convertedQuantity: Yup.string().required('Converted Quantity is Required'),
 });
 const productsSchema = Yup.object().shape({
-    entries: Yup.array().of(
-        Yup.object().shape({
-            name: Yup.string().required('Name is required'),
-            hsn: Yup.string().required('HSN is required'),
-            productCode: Yup.string().required('Product Code is required'),
-            thickness: Yup.string().required('Thickness is required'),
-            length: Yup.string().required('Length is required'),
+	entries: Yup.array().of(
+		Yup.object().shape({
+			name: Yup.string().required('Name is required'),
+			hsn: Yup.string().required('HSN is required'),
+			productCode: Yup.string().required('Product Code is required'),
+			thickness: Yup.string().required('Thickness is required'),
+			length: Yup.string().required('Length is required'),
 			weight: Yup.string().required('Weight is required'),
-			
-        })
-    ),
+
+		})
+	),
 });
 
 const editProductSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    hsn: Yup.string().required('HSN is required'),
-    productCode: Yup.string().required('Product Code is required'),
-    thickness: Yup.number().required('Thickness is required'),
-    length: Yup.number().required('Length is required'),
-    weight: Yup.number().required('Weight is required'),
+	name: Yup.string().required('Name is required'),
+	hsn: Yup.string().required('HSN is required'),
+	productCode: Yup.string().required('Product Code is required'),
+	thickness: Yup.number().required('Thickness is required'),
+	length: Yup.number().required('Length is required'),
+	weight: Yup.number().required('Weight is required'),
 });
 
 const wrokersSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().optional(),
-    phone: Yup.number().required('Phone is required'),
-    company: Yup.string().optional(),
-    address_line1: Yup.string().optional(),
-    address_line2: Yup.string().optional(),
-    city: Yup.string().optional(),
+	name: Yup.string().required('Name is required'),
+	email: Yup.string().optional(),
+	phone: Yup.number().required('Phone is required'),
+	company: Yup.string().optional(),
+	address_line1: Yup.string().optional(),
+	address_line2: Yup.string().optional(),
+	city: Yup.string().optional(),
 	state: Yup.string().optional(),
 	zipcode: Yup.number().optional(),
 	pancard: Yup.string().optional(),
 });
 
-const vendorSchema =Yup.object().shape({
+const vendorSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
 	email: Yup.string().email('Invalid email address').required('Email is required'),
-	
+
 });
 
 const branchSchema = Yup.object().shape({
@@ -154,35 +154,72 @@ const branchSchema = Yup.object().shape({
 	phone: Yup.string().required('Phone is required'),
 	contact_name: Yup.string().required('Contact Name is required'),
 	contact_phone: Yup.string().required('Contact Phone is required'),
-	
+
+});
+
+const addCustomerModalSchema = Yup.object().shape({
+	name: Yup.string()
+		.required('Name is required'),
+	email: Yup.string()
+		.email('Invalid Email')
+		.nullable(),
+	phone: Yup.number().required('Phone Number is required'),
+	zipcode: Yup.number().nullable(),
+	city: Yup.string()
+		.required('City is required'),
+	state: Yup.string()
+		.required('State is required'),
+	commercial_discount: Yup.number().positive("Commercial Discount much be positive").nullable(),
+	premium_discount: Yup.number().positive("Premium Discount much be positive").nullable(),
+	anodize_discount: Yup.number().positive("Anodize Discount much be positive").nullable(),
+	address_line1: Yup.string().nullable(),
+	address_line2: Yup.string().nullable(),
+}).test({
+	test(value) {
+		const { address_line1, address_line2 } = value;
+		if (!address_line1 && !address_line2) {
+			throw this.createError({
+				message: 'At least one of address is required',
+				path: 'address_line1',
+			});
+		}
+		return true;
+	},
 });
 
 const purchaseOrderSchema = Yup.object().shape({
 	vendor: Yup.string().required('Vendor is required'),
 	entries: Yup.array().of(
-	  Yup.object().shape({
-		product: Yup.string().required('Product is required'),
-		requiredQuantity: Yup.number().required('Quantity is required'),
-	  })
+		Yup.object().shape({
+			product: Yup.string().required('Product is required'),
+			requiredQuantity: Yup.number().required('Quantity is required'),
+		})
 	),
-  });
+});
 
-  const CoatingSchema = Yup.object().shape({
-    name: Yup.string()
-        .required('Name is required'),
-    code: Yup.string()
-        .required('Code is required'),
-    colors: Yup.array()
-		  .min(1, 'At least one color must be selected'),
+const CoatingSchema = Yup.object().shape({
+	name: Yup.string()
+		.required('Name is required'),
+	code: Yup.string()
+		.required('Code is required'),
+	colors: Yup.array()
+		.min(1, 'At least one color must be selected'),
 	type: Yup.string().required('Type of the coating is required')
+});
+
+const colorsSchema = Yup.object().shape({
+	entries: Yup.array().of(
+		Yup.object().shape({
+			name: Yup.string().required('Name is required'),
+			code: Yup.string().required('Code is required'),
+		})
+	),
 });
 
 const PaymentSchema = Yup.object().shape({
 	payment_mode: Yup.string().required('Payment Mode is required'),
-	customer_id:Yup.string().required('Customer Name is Required'),
-	amount_payable:Yup.number().required('Payable Amount is Required').positive('Amount Must be greated than 0')
-
-
+	customer_id: Yup.string().required('Customer Name is Required'),
+	amount_payable: Yup.number().required('Payable Amount is Required').positive('Amount Must be greated than 0')
 })
 
 
@@ -195,5 +232,7 @@ export {
 	branchSchema,
 	purchaseOrderSchema,
 	CoatingSchema,
-	PaymentSchema
+	PaymentSchema,
+	addCustomerModalSchema,
+	colorsSchema,
 };

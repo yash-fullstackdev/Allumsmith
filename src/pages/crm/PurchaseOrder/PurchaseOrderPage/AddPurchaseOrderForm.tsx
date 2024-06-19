@@ -20,7 +20,6 @@
 //   const [vendorId, setVendorId] = useState('');
 //   const [vendorName, setVendorName] = useState('');
 //   const [vendorData, setVendorData] = useState([])
-//   console.log("🚀 ~ AddproductForm ~ vendorData:", vendorData)
 //   const [productListData, setProductListData] = useState<any>([])
 //   const [products, setProducts] = useState()
 //   const navigate = useNavigate()
@@ -324,6 +323,7 @@ const AddPurchaseOrderForm = () => {
     return `${name} (${productCode}) (${length}) (${thickness})`
   }
 
+
   const handleSaveEntries = async () => {
         const duplicateProductIds = entries
           .map((entry: any) => entry.product)
@@ -363,7 +363,6 @@ const AddPurchaseOrderForm = () => {
                 toast.error(`Please fill all the mandatory fields and check all formats`);
                 return;
             }
-          console.log('api-data', finalValues);
           
           const { data } = await post("/purchase-order", finalValues);
           toast.success('Purchase Order Created Successfully!');
@@ -379,7 +378,7 @@ const AddPurchaseOrderForm = () => {
     newEntries.splice(index, 1);
     setEntries(newEntries);
   };
-  console.log('Formik Values:', formik.values);
+
   return (
     <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
       <Card>
@@ -442,7 +441,7 @@ const AddPurchaseOrderForm = () => {
                     <SelectReact
                       options={productListData.map((product: any) => ({
                         value: product._id,
-                        label: `${product.name} (${product.productCode}) (${product.length})`,
+                        label: `${product.name} (${product.productCode}) (L ${product.length}) (T ${product?.thickness})`,
                       }))}
                       value={entry.product ? { value: entry.product, label: showProductDetails(productListData,entry.product) } : null}
                       onChange={(selectedOption: any) => {
