@@ -1,15 +1,15 @@
 import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
 import Button from '../../../../components/ui/Button';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import { useFormik } from 'formik';
 import SelectReact from '../../../../components/form/SelectReact';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { appPages } from '../../../../config/pages.config';
 import { Switch } from '@mui/material';
+import { getAllInnerPages } from '../../../../utils/common.util';
+import { get, post } from '../../../../utils/api-helper.util';
+import { toast } from 'react-toastify';
 
-// Define types for the appPages object and the page objects it contains
 interface Page {
 	id: string;
 	to: string;
@@ -17,52 +17,16 @@ interface Page {
 	icon: string;
 }
 
-interface AppPages {
-	[key: string]: {
-		identifier: string;
-		[key: string]: Page | string; // Allow for any additional properties in each section
-	};
-}
-
 const UserPermissionForm = () => {
-	const [customerData, setCustomerData] = useState([]);
+	const [usersData, setUsersData] = useState([]);
 	const [customerId, setCustomerId] = useState('');
 	const [customerName, setCustomerName] = useState('');
 	const [currentCustomerData, setCurrentCustomerData] = useState<any>({});
 	const [permissions, setPermissions] = useState<any>({});
 
-	// Function to toggle permission for a route
-	const togglePermission = (pageId: string) => {
-		setPermissions((prevPermissions: any) => ({
-			...prevPermissions,
-			[pageId]: !prevPermissions[pageId],
-		}));
-	};
-
-	// const fetchVendorData = async () => {
+	// const getAllUsersData = async () => {
 	// 	try {
-	// 		const clientId = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-	// 		const clientSecret = import.meta.env.VITE_CLERK_ID;
-
-	// 		const authEndpoint =
-	// 			'https://corsproxy.io/?' +
-	// 			encodeURIComponent('https://api.clerk.com/auth/v1/token');
-	// 		const token = axios.post(authEndpoint, {
-	// 			client_id: clientId,
-	// 			client_secret: clientSecret,
-	// 		});
-
-	// 		const data = await axios.get(
-	// 			'https://corsproxy.io/?' +
-	// 				encodeURIComponent(
-	// 					'https:api.clerk.com/v1/users?offset=0&order_by=-created_at',
-	// 				),
-	// 			{
-	// 				headers: {
-	// 					Authorization: `Bearer ${token}`,
-	// 				},
-	// 			},
-	// 		);
+	// 		const data = await get('');
 	// 		console.log(data, 'data');
 	// 		// setCustomerData(allVendorData);
 	// 	} catch (error: any) {
@@ -70,9 +34,41 @@ const UserPermissionForm = () => {
 	// 	}
 	// };
 
+	// const handleSavePermissions = async () => {
+	// 	try {
+	// 		const response = await post('/api/save-permissions', permissions);
+	// 		toast.success('Permissions saved successfully:');
+	// 	} catch (error: any) {
+	// 		console.error('Error saving permissions:', error.message);
+	// 	}
+	// };
+
 	// useEffect(() => {
-	// 	fetchVendorData();
+	// 	getAllUsersData();
 	// }, []);
+
+	const togglePermission = (pageId: any) => {
+		console.log(pageId, 'ASd');
+		setPermissions((prevPermissions: any) => {
+			let updatedPermissions = {
+				...prevPermissions,
+				[pageId.to]: !prevPermissions[pageId.to],
+			};
+
+			// Allow all inner routes if the parent route is allowed
+			if (updatedPermissions[pageId.to]) {
+				const pagesToUpdate = getAllInnerPages(pageId, appPages);
+				pagesToUpdate.forEach((page: any) => {
+					updatedPermissions = {
+						...updatedPermissions,
+						[page]: true,
+					};
+				});
+			}
+			console.log(updatedPermissions, 'Ads');
+			return updatedPermissions;
+		});
+	};
 
 	const formik: any = useFormik({
 		initialValues: {
@@ -98,7 +94,7 @@ const UserPermissionForm = () => {
 
 	const SetCurrentCustomerData = (id: string) => {
 		setCurrentCustomerData(
-			customerData.find((customer: any) => customer._id.toString() === id.toString()),
+			usersData.find((customer: any) => customer._id.toString() === id.toString()),
 		);
 	};
 
@@ -127,7 +123,7 @@ const UserPermissionForm = () => {
 									<SelectReact
 										id={`name`}
 										name={`name`}
-										options={customerData.map((customer: any) => ({
+										options={usersData.map((customer: any) => ({
 											value: customer._id,
 											label: customer.name,
 										}))}
@@ -146,9 +142,7 @@ const UserPermissionForm = () => {
 						{Object.keys(appPages).map((appKey) => {
 							const app = appPages[appKey];
 							return (
-								<div
-									key={app.identifier}
-									className='w-1/2 px-4 md:w-1/3 lg:w-1/5 xl:w-1/6'>
+								<div key={appKey} className='w-1/2 px-4 md:w-1/3 lg:w-1/5 xl:w-1/6'>
 									<h2 className='mb-4 text-lg font-bold'>
 										{app.identifier !== 'cuo'
 											? app.identifier
@@ -157,12 +151,12 @@ const UserPermissionForm = () => {
 									{Object.values(app).map((page: any) => {
 										if (page.id && page.to && page.text && page.icon) {
 											return (
-												<div key={page.id} className='mb-4'>
+												<div key={page.to} className='mb-4'>
 													<Switch
-														{...Label}
-														// label={page.text}
 														checked={permissions[page.to] || false}
-														onClick={() => togglePermission(page.to)}
+														onClick={() =>
+															togglePermission({ ...page, appKey })
+														}
 													/>
 												</div>
 											);

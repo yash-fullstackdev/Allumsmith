@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import contentRoutes from '../../routes/contentRoutes';
 import PageWrapper from '../layouts/PageWrapper/PageWrapper';
 import Container from '../layouts/Container/Container';
@@ -10,17 +10,19 @@ import useAllowedRoutes from '../../hooks/useAllowedRoutes';
 import NotFoundPage from '../../pages/NotFound.page';
 
 const ContentRouter = () => {
-	const allowedRoutes = useAllowedRoutes(contentRoutes);
+	const allowedRoutes = useAllowedRoutes(contentRoutes, true);
+	const { pathname } = useLocation();
 
-	// // Determine if the current route matches any allowed route
-	// const isCurrentRouteAllowed = allowedRoutes.some((route: any) =>
-	// 	window.location.pathname.startsWith(route.to),
-	// );
+	// Determine if the current route matches any allowed route
+	const isCurrentRouteAllowed = allowedRoutes.some((route: any) => {
+		const pathRegex = new RegExp(`^${route.path.replace(/:[^\s/]+/g, '[^/]+')}`);
+		return pathRegex.test(pathname);
+	});
 
-	// // If current route is not allowed, redirect to NotFoundPage
-	// if (!isCurrentRouteAllowed) {
-	// 	return <NotFoundPage />;
-	// }
+	// If current route is not allowed, redirect to NotFoundPage
+	if (!isCurrentRouteAllowed) {
+		return <NotFoundPage />;
+	}
 
 	return (
 		<Suspense

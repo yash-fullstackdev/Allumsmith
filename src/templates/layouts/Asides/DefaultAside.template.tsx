@@ -14,7 +14,7 @@ const DefaultAsideTemplate = () => {
 	const { user } = useUser();
 
 	// Filter allowed routes based on permissions
-	const allowedRoutes = useAllowedRoutes(Object.values(appPages));
+	const allowedRoutes = useAllowedRoutes(Object.values(appPages), false);
 
 	if (currentPath.startsWith('/sign-in') || currentPath.startsWith('/sign-up')) {
 		return null;
@@ -29,7 +29,12 @@ const DefaultAsideTemplate = () => {
 				<Nav>
 					<NavTitle>Module</NavTitle>
 					{allowedRoutes.map((page: any, index: any) => (
-						<NavItem key={index} {...page.listPage} identifier={page.identifier} />
+						<NavItem
+							key={index}
+							{...page.listPage}
+							{...page.userPermissionPage}
+							identifier={page.identifier}
+						/>
 					))}
 				</Nav>
 			</AsideBody>
