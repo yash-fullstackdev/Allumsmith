@@ -8,14 +8,13 @@ import FullScreenLoader from '../layouts/common/FullScreenLoader';
 const AsideRouter = () => {
 	const navigate = useNavigate();
 	const pathName = useLocation();
-	const { isSignedIn, isLoaded } = useUser();
+	const { isSignedIn, isLoaded }: any = useUser();
 
 	useEffect(() => {
 		if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
 			navigate('/sign-in');
 		}
 	}, [isSignedIn, isLoaded, navigate, pathName]);
-
 	if (
 		!pathName.pathname.startsWith('/sign-in') &&
 		!pathName.pathname.startsWith('/sign-up') &&

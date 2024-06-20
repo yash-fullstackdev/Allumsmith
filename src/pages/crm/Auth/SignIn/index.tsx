@@ -12,7 +12,7 @@ const SignInComponent = () => {
 				<div className='flex h-screen w-96 items-center justify-center '>
 					<SignIn
 						path='/sign-in'
-						signUpUrl={`${import.meta.env.VITE_LOCAL_SERVER_URL}/sign-up`}
+						signUpUrl={`${import.meta.env.VITE_LOCAL_SERVER_URL}/`}
 					/>
 				</div>
 			</div>

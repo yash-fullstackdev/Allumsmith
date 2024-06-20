@@ -16,29 +16,9 @@ import AuthRouter from '../components/router/AuthRouter';
 
 const App = () => {
 	const navigate = useNavigate();
-	const pathName = useLocation();
-	// const { isSignedIn, isLoaded } = useUser();
 	getOS();
 
 	const { fontSize } = useFontSize();
-
-	// useEffect(() => {
-	// 	if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
-	// 		navigate('/sign-in');
-	// 	}
-	// }, [isSignedIn, isLoaded, navigate, pathName]);
-
-	// if (
-	// 	!pathName.pathname.startsWith('/sign-in') &&
-	// 	!pathName.pathname.startsWith('/sign-up') &&
-	// 	!isLoaded
-	// ) {
-	// 	return <FullScreenLoader />;
-	// }
-
-	// if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {
-	// 	return <FullScreenLoader />;
-	// }
 
 	return (
 		<>

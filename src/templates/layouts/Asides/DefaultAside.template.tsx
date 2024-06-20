@@ -8,14 +8,14 @@ import { useLocation } from 'react-router-dom';
 import useAllowedRoutes from '../../../hooks/useAllowedRoutes';
 
 const DefaultAsideTemplate = () => {
-	const location = useLocation();
-	const currentPath = location.pathname;
-	const { openUserProfile, signOut } = useClerk();
 	const { user } = useUser();
+	const location = useLocation();
+	const allowedRoutes = useAllowedRoutes(Object.values(appPages), false);
+	const currentPath = location.pathname;
+	const { openUserProfile } = useClerk();
+	const admins = ['sachaniyadev09@gmail.com', 'allumsmith2023@yopmail.com'];
 
 	// Filter allowed routes based on permissions
-	const allowedRoutes = useAllowedRoutes(Object.values(appPages), false);
-
 	if (currentPath.startsWith('/sign-in') || currentPath.startsWith('/sign-up')) {
 		return null;
 	}
@@ -28,6 +28,16 @@ const DefaultAsideTemplate = () => {
 			<AsideBody>
 				<Nav>
 					<NavTitle>Module</NavTitle>
+					{admins.includes(user?.emailAddresses[0]?.emailAddress || '') &&
+						!allowedRoutes.some(
+							(route: any) => route.identifier === 'user-permissions',
+						) && (
+							<NavItem
+								key={200}
+								{...appPages.adminPage?.userPermissionPage}
+								identifier='user-permissions'
+							/>
+						)}
 					{allowedRoutes.map((page: any, index: any) => (
 						<NavItem
 							key={index}

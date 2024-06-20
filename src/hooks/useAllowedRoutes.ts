@@ -1,11 +1,12 @@
+import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Assuming you are using React Router
 
 const useAllowedRoutes = (contentRoutes: any, isContentRoutes: boolean) => {
 	const [allowedRoutes, setAllowedRoutes] = useState<any>([]);
+	const { user }: any = useUser();
 
 	useEffect(() => {
-		const permissions = JSON.parse(localStorage.getItem('permissions') || '{}');
+		const permissions = user?.publicMetadata?.permissions || '{}';
 
 		if (isContentRoutes) {
 			// Filter contentRoutes based on permissions for each set of routes
@@ -17,7 +18,6 @@ const useAllowedRoutes = (contentRoutes: any, isContentRoutes: boolean) => {
 			// Filter asideRoutes based on permissions for each set of routes
 			const filteredRoutes = contentRoutes?.filter((route: any) => {
 				if (route.userPermissionPage) {
-					console.log(route?.userPermissionPage?.to, 'route?.userPermissionPage?.to');
 					return permissions[route?.userPermissionPage?.to];
 				}
 				return permissions[route?.path || route?.listPage?.to];
@@ -25,7 +25,7 @@ const useAllowedRoutes = (contentRoutes: any, isContentRoutes: boolean) => {
 
 			setAllowedRoutes(filteredRoutes);
 		}
-	}, []);
+	}, [user]);
 
 	return allowedRoutes;
 };

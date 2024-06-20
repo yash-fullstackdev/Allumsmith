@@ -1,0 +1,32 @@
+const admins = ['sachaniyadev09@gmail.com', 'allumsmith2023@yopmail.com'];
+const userInitialPermission = {
+	'/product': true,
+	'/purchase-order': true,
+	'/add-payment': true,
+	'/branches': true,
+	'/coating': true,
+	'/colors': true,
+	'/cuo-order': true,
+	'/customer': true,
+	'/edit-branches': true,
+	'/edit-coating': true,
+	'/edit-colors': true,
+	'/edit-cuo-order': true,
+	'/edit-customer': true,
+	'/edit-invoice': true,
+	'/edit-jobs': true,
+	'/edit-jobs-withoutmaterial': true,
+	'/edit-ledger': true,
+	'/edit-vendor': true,
+	'/edit-worker': true,
+	'/finish-storage': true,
+	'/inventory': true,
+	'/invoice-list': true,
+	'/jobs': true,
+	'/ledger-list': true,
+	'/raw-material': true,
+	'/vendor': true,
+	'/worker': true,
+};
+
+export { admins, userInitialPermission };

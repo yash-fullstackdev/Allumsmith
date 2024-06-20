@@ -8,10 +8,21 @@ import Header, { HeaderLeft, HeaderRight } from '../layouts/Header/Header';
 import Card from '../ui/Card';
 import useAllowedRoutes from '../../hooks/useAllowedRoutes';
 import NotFoundPage from '../../pages/NotFound.page';
+import UsersPermissionPage from '../../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
+import { useUser } from '@clerk/clerk-react';
+import { admins } from '../../constants/common/data';
 
 const ContentRouter = () => {
-	const allowedRoutes = useAllowedRoutes(contentRoutes, true);
-	const { pathname } = useLocation();
+	let allowedRoutes: any = useAllowedRoutes(contentRoutes, true);
+	const { pathname }: any = useLocation();
+	const { user } = useUser();
+
+	if (admins.includes(user?.emailAddresses[0]?.emailAddress || '')) {
+		allowedRoutes?.unshift({
+			path: '/add-users-permissions',
+			element: <UsersPermissionPage />,
+		});
+	}
 
 	// Determine if the current route matches any allowed route
 	const isCurrentRouteAllowed = allowedRoutes.some((route: any) => {

@@ -8,7 +8,7 @@ const SignUpComponent = () => {
 				<LogoTemplate className='h-[180px] w-[180px]' />
 				<span className='text-[80px] font-normal leading-4'>Allumsmith</span>
 			</div>
-			<div className='flex w-full items-center justify-center bg-white lg:w-[40%]'>
+			<div className='flex w-full items-center justify-center lg:w-[40%]'>
 				<div className='w-96'>
 					<SignUp
 						path='/sign-up'
