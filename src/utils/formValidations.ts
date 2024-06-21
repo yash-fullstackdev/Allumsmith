@@ -151,7 +151,26 @@ const userCreateSchema = Yup.object().shape({
 		.min(8, 'Password must be at least 8 characters')
 		.required('Password is required'),
 	phoneNo: Yup.string()
-		.matches(/^[0-9]+$/, 'Phone number must only contain digits')
+		.matches(/^\d+$/, 'Phone number must only contain digits')
+		.min(10, 'Phone number must be at least 10 digits')
+		.max(15, 'Phone number cannot be longer than 15 digits')
+		.required('Phone number is required'),
+	userName: Yup.string()
+		.min(3, 'Username must be at least 3 characters')
+		.max(20, 'Username must be at most 20 characters')
+		.required('Username is required'),
+	userRole: Yup.string().required('userRole is required'),
+});
+const userEditSchema = Yup.object().shape({
+	email: Yup.string().email('Invalid email address').required('Email is required'),
+	firstName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('First Name is required'),
+	lastName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('Last Name is required'),
+	phoneNo: Yup.string()
+		.matches(/^\d+$/, 'Phone number must only contain digits')
 		.min(10, 'Phone number must be at least 10 digits')
 		.max(15, 'Phone number cannot be longer than 15 digits')
 		.required('Phone number is required'),
@@ -208,4 +227,5 @@ export {
 	CoatingSchema,
 	PaymentSchema,
 	userCreateSchema,
+	userEditSchema,
 };

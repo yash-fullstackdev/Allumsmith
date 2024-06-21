@@ -34,7 +34,7 @@ const DefaultAsideTemplate = () => {
 						) && (
 							<NavItem
 								key={200}
-								{...appPages.adminPage?.userPermissionPage}
+								{...appPages.adminPage?.userListPage}
 								identifier='user-permissions'
 							/>
 						)}
@@ -42,7 +42,7 @@ const DefaultAsideTemplate = () => {
 						<NavItem
 							key={index}
 							{...page.listPage}
-							{...page.userPermissionPage}
+							{...page.userListPage}
 							identifier={page.identifier}
 						/>
 					))}
@@ -50,11 +50,11 @@ const DefaultAsideTemplate = () => {
 			</AsideBody>
 
 			<AsideFooter>
-				<div className='hover:black my-3 ml-3 flex cursor-pointer items-center gap-3 overflow-hidden text-zinc-500 '>
+				<div className='hover:black my-3 ml-3 flex  cursor-pointer items-center gap-3 overflow-hidden text-zinc-500 '>
 					<UserButton afterSignOutUrl='/sign-in' />
 					<span onClick={() => openUserProfile()}>{user?.fullName}</span>
 				</div>
-				{/* <NavItem text='Logout' icon='HeroArrowRightOnRectangle' onClick={() => signOut()} /> */}
+
 				<DarkModeSwitcherPart />
 			</AsideFooter>
 		</Aside>

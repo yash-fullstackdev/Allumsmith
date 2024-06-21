@@ -44,11 +44,16 @@ import PaymentPage from '../pages/crm/Payment/PaymentPage';
 import EditPurchaseOrderForm from '../pages/crm/PurchaseOrder/PurchaseOrderPage/EditPurchaseOrderForm';
 import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
 import UsersPermissionPage from '../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
+import UserListPage from '../pages/crm/PermissionPage/UserListPage/UserListPage';
 
 const contentRoutes: RouteProps[] = [
 	{
 		path: appPages.adminPage.userPermissionPage.to,
 		element: <UsersPermissionPage />,
+	},
+	{
+		path: appPages.adminPage.userListPage.to,
+		element: <UserListPage />,
 	},
 	{
 		path: appPages.productPage.listPage.to,

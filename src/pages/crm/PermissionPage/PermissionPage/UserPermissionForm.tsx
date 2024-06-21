@@ -7,234 +7,244 @@ import Card, {
 	CardTitle,
 } from '../../../../components/ui/Card';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { appPages } from '../../../../config/pages.config';
 import { Switch } from '@mui/material';
-import { getAllInnerPages } from '../../../../utils/common.util';
-import { get, post } from '../../../../utils/api-helper.util';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
+import {
+	filterPermissions,
+	togglePermissionAndUpdateInnerPages,
+} from '../../../../utils/common.util';
 import Container from '../../../../components/layouts/Container/Container';
 import Input from '../../../../components/form/Input';
 import Icon from '../../../../components/icon/Icon';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { userCreateSchema } from '../../../../utils/formValidations';
+import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
 import { userInitialPermission } from '../../../../constants/common/data';
+import { useLocation } from 'react-router-dom';
+import { userInitialValues } from '../../../../utils/initialValues';
+import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 
 const UserPermissionForm = () => {
 	const [passwordShowStatus, setPasswordShowStatus] = useState(false);
+	const [permissions, setPermissions] = useState<any>({});
+	const [isAllPermissions, setIsAllPermissions] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const initialValues = {
-		email: '',
-		firstName: '',
-		lastName: '',
-		phoneNo: '',
-		password: '',
-		userName: '',
-		userRole: '',
-	};
 
-	const [permissions, setPermissions] = useState<any>(userInitialPermission);
+	const location = useLocation();
+	const searchParams = new URLSearchParams(location.search);
+	const userId = searchParams.get('id');
+
 	const formik: any = useFormik({
-		initialValues,
+		initialValues: userInitialValues,
 		enableReinitialize: true,
-		validationSchema: userCreateSchema,
+		validationSchema: userId ? userEditSchema : userCreateSchema,
 		onSubmit: (values: any, { resetForm }) => {
-			handleSavePermissions(values);
-			resetForm();
-			setPermissions({});
+			handleSaveUser(values, resetForm);
 		},
 	});
 
-	const handleSavePermissions = async (values: any) => {
+	const fetchUserById = async () => {
+		try {
+			const userData = await axios.get(
+				`https://4818-122-179-153-131.ngrok-free.app/user/${userId}`,
+				{
+					headers: {
+						'ngrok-skip-browser-warning': 'true',
+					},
+				},
+			);
+			return userData.data;
+		} catch (error) {
+			console.error('Error fetching product data:', error);
+			return null;
+		}
+	};
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const userData = await fetchUserById();
+			if (userData) {
+				const { email, firstName, lastName, phonenumber, username, permission } = userData;
+				formik.setValues({
+					email,
+					firstName,
+					lastName,
+					phoneNo: phonenumber,
+					password: '',
+					userName: username,
+					userRole: permission.userRole,
+				});
+				setPermissions(permission.permissions);
+			}
+		};
+
+		if (userId) {
+			fetchData();
+		}
+	}, []);
+
+	const handleSaveUser = async (values: any, resetForm: any) => {
 		try {
 			setIsLoading(true);
-			await axios.post('https://a57e-122-179-153-131.ngrok-free.app/clerk', {
+			const userData: any = {
 				emailAddress: [values?.email],
 				username: values?.userName,
 				firstName: values?.firstName,
 				lastName: values?.lastName,
-				phoneNumber: [values?.phoneNo],
-				password: values?.password,
+				phoneNumber: [values?.phoneNo.trim()],
 				publicMetadata: {
-					permissions: permissions,
+					permissions: filterPermissions(permissions),
 					userRole: values?.userRole,
 				},
-			});
+			};
 
-			toast.success('User created successfully');
+			// If it's a new user (userId not present), assign password
+			if (!userId) {
+				userData.password = values?.password;
+			}
+
+			const apiUrl = !userId
+				? 'https://4818-122-179-153-131.ngrok-free.app/user'
+				: `https://4818-122-179-153-131.ngrok-free.app/user/${userId}`;
+
+			!userId ? await axios.post(apiUrl, userData) : await axios.put(apiUrl, userData);
+
+			setPermissions({});
+			setIsAllPermissions(false);
+			resetForm();
+
+			toast.success(!userId ? 'User created successfully' : 'User updated successfully');
 		} catch (error: any) {
-			toast.error(error?.message);
-			console.error('Error saving permissions:', error.message);
+			console.error('Error saving permissions:', error);
+			if (error?.response?.data?.errors?.length > 0) {
+				toast.error(error.response.data.errors[0].longMessage);
+			} else {
+				toast.error('Error saving permissions. Please try again.');
+			}
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
+	const checkAllPermission = (permissionValue: boolean) => {
+		setIsAllPermissions(permissionValue);
+		if (permissionValue) {
+			setPermissions(userInitialPermission);
+		} else {
+			setPermissions({});
+		}
+	};
+
 	const togglePermission = (pageId: any) => {
 		setPermissions((prevPermissions: any) => {
-			let updatedPermissions = {
-				...prevPermissions,
-				[pageId.to]: !prevPermissions[pageId.to],
-			};
-
-			// Allow all inner routes if the parent route is allowed
-			if (updatedPermissions[pageId.to]) {
-				const pagesToUpdate = getAllInnerPages(pageId, appPages);
-				pagesToUpdate.forEach((page: any) => {
-					updatedPermissions = {
-						...updatedPermissions,
-						[page]: true,
-					};
-				});
-			}
-			return updatedPermissions;
+			return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, appPages);
 		});
+	};
+
+	const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
+		if (!userId) {
+			return trueValue;
+		} else {
+			return falseValue;
+		}
 	};
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
 			<Card>
 				<CardBody>
-					<PageWrapper>
-						<Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
-							<div className='flex h-full flex-wrap content-start'>
-								<div className='mb-4 grid w-full grid-cols-12 gap-1'>
-									<div className='col-span-12 flex flex-col gap-1 '>
-										<Card>
-											<CardHeader>
-												<CardHeaderChild>
-													<CardTitle>
+					<Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
+						<div className='flex h-full flex-wrap content-start'>
+							<div className='mb-4 grid w-full grid-cols-12 gap-1'>
+								<div className='col-span-12 flex flex-col gap-1 '>
+									<Card>
+										<CardHeader>
+											<CardHeaderChild>
+												<CardTitle>
+													<div>
 														<div>
-															<div>Accounts Creation</div>
-															<div className='text-lg font-normal text-zinc-500'>
-																Here you can create users account
-															</div>
+															{checkUserId(
+																userId,
+																'Accounts Creation',
+																'Edit User',
+															)}
 														</div>
-													</CardTitle>
-												</CardHeaderChild>
-											</CardHeader>
-											<CardBody>
-												<form onSubmit={formik.handleSubmit}>
-													<div className='grid grid-cols-8 gap-3'>
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='email'>Email</Label>
-															<Input
-																id='email'
-																name='email'
-																onChange={formik.handleChange}
-																value={formik.values.email}
-																autoComplete='email'
-																required
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.email &&
-															formik.errors.email ? (
-																<div className='text-red-500'>
-																	{formik.errors.email}
-																</div>
-															) : null}
+														<div className='text-lg font-normal text-zinc-500'>
+															Here you can
+															{checkUserId(
+																userId,
+																' create ',
+																' edit ',
+															)}
+															users account
 														</div>
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='phoneNo'>
-																Phone No
-															</Label>
-															<Input
-																id='phoneNo'
-																name='phoneNo'
-																onChange={formik.handleChange}
-																value={formik.values.phoneNo}
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.phoneNo &&
-															formik.errors.phoneNo ? (
-																<div className='text-red-500'>
-																	{formik.errors.phoneNo}
-																</div>
-															) : null}
+													</div>
+												</CardTitle>
+											</CardHeaderChild>
+										</CardHeader>
+										<CardBody>
+											<form
+												onSubmit={formik.handleSubmit}
+												className='space-y-4'>
+												<div className='grid grid-cols-12 gap-4'>
+													{[
+														'email',
+														'phoneNo',
+														'firstName',
+														'lastName',
+														'userName',
+														'userRole',
+													].map((fieldName, index) => (
+														<div
+															key={index}
+															className='col-span-12 lg:col-span-3'>
+															{fieldName && (
+																<>
+																	<Label
+																		htmlFor={fieldName}
+																		className='capitalize'>
+																		{fieldName}
+																	</Label>
+																	<Input
+																		id={fieldName}
+																		name={fieldName}
+																		type='text'
+																		value={
+																			formik.values[fieldName]
+																		}
+																		onChange={
+																			formik.handleChange
+																		}
+																		onBlur={formik.handleBlur}
+																		autoComplete={
+																			fieldName === 'email'
+																				? 'email'
+																				: 'off'
+																		}
+																		disabled={
+																			fieldName === 'email' &&
+																			!!userId
+																		}
+																		required={
+																			fieldName === 'email'
+																		}
+																	/>
+																	<ErrorMessage
+																		touched={formik.touched}
+																		errors={formik.errors}
+																		fieldName={fieldName}
+																	/>
+																</>
+															)}
 														</div>
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='firstName'>
-																First Name
-															</Label>
-															<Input
-																id='firstName'
-																name='firstName'
-																onChange={formik.handleChange}
-																value={formik.values.firstName}
-																// isTouched={formik.touched.firstName}
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.firstName &&
-															formik.errors.firstName ? (
-																<div className='text-red-500'>
-																	{formik.errors.firstName}
-																</div>
-															) : null}
-															{/* <ErrorMessage name='firstName' /> */}
-														</div>
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='lastName'>
-																Last Name
-															</Label>
-															<Input
-																id='lastName'
-																name='lastName'
-																onChange={formik.handleChange}
-																value={formik.values.lastName}
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.lastName &&
-															formik.errors.lastName ? (
-																<div className='text-red-500'>
-																	{formik.errors.lastName}
-																</div>
-															) : null}
-														</div>
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='userName'>
-																UserName
-															</Label>
-															<Input
-																id='userName'
-																name='userName'
-																onChange={formik.handleChange}
-																value={formik.values.userName}
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.userName &&
-															formik.errors.userName ? (
-																<div className='text-red-500'>
-																	{formik.errors.userName}
-																</div>
-															) : null}
-														</div>
-
-														<div className='col-span-12 lg:col-span-3'>
-															<Label htmlFor='userRole'>
-																UserRole
-															</Label>
-															<Input
-																id='userRole'
-																name='userRole'
-																onChange={formik.handleChange}
-																value={formik.values.userRole}
-																onBlur={formik.handleBlur}
-															/>
-															{formik.touched.userRole &&
-															formik.errors.userRole ? (
-																<div className='text-red-500'>
-																	{formik.errors.userRole}
-																</div>
-															) : null}
-														</div>
-
-														{/* {isNewUser && ( */}
+													))}
+													{!userId && (
 														<div className='col-span-12 lg:col-span-3'>
 															<Label htmlFor='password'>
 																Password
 															</Label>
-															{/* <FieldWrap> */}
+
 															<div className='relative'>
 																<Input
 																	type={
@@ -262,96 +272,105 @@ const UserPermissionForm = () => {
 																	}}
 																/>
 															</div>
-															{formik.touched.password &&
-																formik.errors.password && (
-																	<div className='text-red-500'>
-																		{formik.errors.password}
-																	</div>
-																)}
-															{/* </FieldWrap> */}
+															<ErrorMessage
+																touched={formik.touched}
+																errors={formik.errors}
+																fieldName='password'
+															/>
 														</div>
-														{/* )} */}
-													</div>
+													)}
+												</div>
 
-													<div className='mt-7 flex flex-wrap '>
-														<Label htmlFor='Add Access Permission'>
-															Add Access Permission
-														</Label>
-														{Object.keys(appPages).map((appKey) => {
-															const app = appPages[appKey];
-															return (
-																<div
-																	key={appKey}
-																	className='mt-4 w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/6'>
-																	<h2 className='mb-4 text-lg font-bold capitalize'>
-																		{app.identifier !== 'cuo'
-																			? app.identifier
-																			: 'customer-order'}
-																	</h2>
-																	{Object.values(app).map(
-																		(page: any) => {
-																			if (
-																				page.id &&
-																				page.to &&
-																				page.text &&
-																				page.icon
-																			) {
-																				return (
-																					<div
-																						key={
-																							page.to
-																						}
-																						className='mb-4'>
-																						<Switch
-																							checked={
-																								permissions[
-																									page
-																										.to
-																								] ||
-																								false
-																							}
-																							onClick={() =>
-																								togglePermission(
-																									{
-																										...page,
-																										appKey,
-																									},
-																								)
-																							}
-																						/>
-																					</div>
-																				);
-																			} else {
-																				return null;
-																			}
-																		},
-																	)}
-																</div>
-															);
-														})}
-													</div>
-													<div className='flex gap-2'>
-														<Button
-															variant='solid'
-															color='blue'
-															isDisable={isLoading}
-															className=' h-[35px] w-[150px]'
-															type='submit'>
-															{!isLoading ? (
-																'Create User'
-															) : (
-																<div className='h-6 w-6 animate-spin rounded-full border-[2px] border-b-blue-500'></div>
-															)}
-														</Button>
-													</div>
-												</form>
-											</CardBody>
-										</Card>
-									</div>
+												{/* Permission section */}
+												<div className='mt-7 flex items-center gap-2'>
+													<Label htmlFor='Add Access Permission'>
+														Add Access Permission
+													</Label>
+													<Switch
+														id='Add Access Permission'
+														checked={isAllPermissions}
+														onClick={() => {
+															checkAllPermission(!isAllPermissions);
+														}}
+													/>
+													<Label
+														htmlFor='Add Access Permission'
+														className='font-medium'>
+														Select All Permission
+													</Label>
+												</div>
+
+												<div className='grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6'>
+													{/* Loop through permission categories */}
+													{Object.keys(appPages).map((appKey) => {
+														const app = appPages[appKey];
+														return Object.values(app).map(
+															(page: any) => {
+																if (
+																	page.id &&
+																	page.to &&
+																	page.text &&
+																	page.icon
+																) {
+																	return (
+																		<div
+																			key={page.to}
+																			className='mb-4'>
+																			<h2 className='mb-4 text-lg font-bold capitalize'>
+																				{app.identifier !==
+																				'cuo'
+																					? app.identifier
+																					: 'customer-order'}
+																			</h2>
+																			<Switch
+																				checked={
+																					permissions[
+																						page.to
+																					] || false
+																				}
+																				onClick={() =>
+																					togglePermission(
+																						{
+																							...page,
+																							appKey,
+																						},
+																					)
+																				}
+																			/>
+																		</div>
+																	);
+																}
+																return null;
+															},
+														);
+													})}
+												</div>
+
+												<div className='flex gap-2'>
+													<Button
+														variant='solid'
+														color='blue'
+														isDisable={isLoading}
+														className='h-[35px] w-[150px]'
+														type='submit'>
+														{!isLoading ? (
+															checkUserId(
+																userId,
+																'Create User',
+																'Edit User',
+															)
+														) : (
+															<div className='h-6 w-6 animate-spin rounded-full border-[2px] border-b-blue-500'></div>
+														)}
+													</Button>
+												</div>
+											</form>
+										</CardBody>
+									</Card>
 								</div>
 							</div>
-						</Container>
-					</PageWrapper>
+						</div>
+					</Container>
 				</CardBody>
 			</Card>
 		</div>

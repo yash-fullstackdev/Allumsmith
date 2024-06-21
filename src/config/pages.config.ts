@@ -1,10 +1,14 @@
 export const appPages: any = {
 	adminPage: {
-		userPermissionPage: {
-			id: 'permissionPage',
-			to: '/add-users-permissions',
-			text: 'Users Permissions',
+		userListPage: {
+			id: 'usersListPage',
+			to: '/users',
+			text: 'Users',
 			icon: 'DuoKey',
+		},
+		userPermissionPage: {
+			id: 'add-users-Page',
+			to: '/add-users-permissions',
 		},
 		identifier: 'user-permissions',
 	},
