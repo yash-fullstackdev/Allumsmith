@@ -116,9 +116,12 @@ const CustomerListPage = () => {
 		}),
 		columnHelper.display({
 			cell: (info) => (
-				<div className='font-bold' style={{ display: 'flex', justifyContent: 'center' }}>
+				<div
+					className='justify-center font-bold'
+					style={{ display: 'flex', justifyContent: 'center' }}>
 					<Button
-						size='xs'
+						size='small'
+						className='px-1'
 						onClick={() => {
 							navigate(`${PathRoutes.edit_customer}/${info.row.original._id}`);
 						}}>
@@ -137,7 +140,8 @@ const CustomerListPage = () => {
 						</svg>
 					</Button>
 					<Button
-						size='xs'
+						size='small'
+						className='px-1'
 						onClick={() => {
 							setCustomerDetailsModal(true), setCustomerDetails(info?.row?.original);
 						}}>
@@ -161,7 +165,8 @@ const CustomerListPage = () => {
 						</svg>
 					</Button>
 					<Button
-						size='xs'
+						size='small'
+						className='px-1'
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
 						}}>
@@ -199,8 +204,6 @@ const CustomerListPage = () => {
 		getSortedRowModel: getSortedRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 	});
-
-	console.log(custmoerList, 'custmoerList');
 
 	return (
 		<PageWrapper name='Customer List'>

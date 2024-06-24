@@ -62,7 +62,7 @@ const CustomerPage = () => {
 
 		try {
 			const customer = await axios.post(
-				'https://b625-122-179-153-131.ngrok-free.app/customers',
+				'https://e073-122-179-153-131.ngrok-free.app/customers',
 				formDataValue,
 				{
 					headers: {
@@ -103,7 +103,7 @@ const CustomerPage = () => {
 				errors.push(`${file.name} is not a valid file type.`);
 			}
 		}
-		console.log(fileData, 'files');
+
 		if (errors.length > 0) {
 			setFileErrors(errors);
 		} else {
@@ -304,7 +304,7 @@ const CustomerPage = () => {
 															name='file'
 															type='file'
 															multiple
-															className='w-[108px]'
+															className='w-[107px]'
 															accept='.pdf,.jpeg,.png'
 															onChange={handleFileChange}
 															id='file-upload'
