@@ -228,7 +228,7 @@ const AddCustomerOrderForm = () => {
 
 
   const handleColorChange = (e: any, index: number) => {
-    const colorId = e;
+    const colorId = e.target.value;
     const updatedEntries = [...entries];
     updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
     setEntries(updatedEntries);
