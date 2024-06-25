@@ -48,7 +48,9 @@
 	a {
 		@apply transition-opacity hover:opacity-75;
 	}
-
+	option {
+		@apply bg-white dark:bg-black;
+	}
 	[type='color'],
 	[type='date'],
 	[type='datetime-local'],
