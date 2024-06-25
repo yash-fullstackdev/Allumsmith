@@ -12,8 +12,10 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import Checkbox from '../../../../components/form/Checkbox';
-import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
+import AddCustomerModal from './AddCustomerModal';
+import AddCoatingModal from './AddCoatingModal';
+import CreateSelectReact from '../../../../components/form/CreateSelectReact';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', coating_rate: '', withoutMaterial: '', length: '', finish_inventory: '' }]);
@@ -31,7 +33,7 @@ const AddCustomerOrderForm = () => {
   const [inventoryList, setInventoryList] = useState<any>([]);
   const [productsArray, setProductsArray] = useState<any>([]);
   const [entriesString, setEntriesString] = useState('');
-  const [estimateRate,setEstimateRate] = useState<number>(0)
+  const [estimateRate, setEstimateRate] = useState<number>(0)
   const [estimateWeight, setEstimateWeight] = useState<number>(0)
   const [currentCustomerData, setCurrentCustomerData] = useState<any>({})
   const [discount, setDiscount] = useState<number>(0);
@@ -39,6 +41,10 @@ const AddCustomerOrderForm = () => {
   const [coatingCharges, setCoatingCharges] = useState<number>(0)
   const [gst, setGst] = useState<number>(0);
   const [grandTotal, setGrandTotal] = useState<number>(0);
+  const [createCustomer, setCreateCustomer] = useState("");
+  const [isCreateCustomerOpen, setIsCreateCustomerOpen] = useState<boolean>(false);
+  const [createCoating, setCreateCoating] = useState({ name: "", index: null });
+  const [isCreateCoatingOpen, setIsCreateCoatingOpen] = useState<boolean>(false);
 
   const getProductDetails = async () => {
     try {
@@ -76,7 +82,6 @@ const AddCustomerOrderForm = () => {
       setProductsArray(resultArray);
     }
   }, [inventoryList]);
-  console.log('Products Array', productsArray);
   const fetchData = async () => {
 
     try {
@@ -100,6 +105,15 @@ const AddCustomerOrderForm = () => {
     try {
       const { data } = await get('/coatings');
       setCoatingData(data);
+    } catch (error) {
+      console.error("Error Fetching Coating", error);
+    }
+  }
+  const getCoatingAndUpdateColorDetails = async (value: any, index: number) => {
+    try {
+      const { data } = await get('/coatings');
+      setCoatingData(data);
+      updateColorOptions(value, index, data);
     } catch (error) {
       console.error("Error Fetching Coating", error);
     }
@@ -139,18 +153,17 @@ const AddCustomerOrderForm = () => {
 
     // Update color options for the new entry based on the selected coating
     if (lastEntry.coating) {
-      updateColorOptions(lastEntry.coating, entries.length);
+      updateColorOptions(lastEntry.coating, entries.length, coatingData);
     }
   };
 
-  const calcCoatingChargeBeforeDiscount = (productsArray:any) => {
+  const calcCoatingChargeBeforeDiscount = (productsArray: any) => {
     return productsArray?.reduce((acc: number, curr: any) => {
       const product = productsData?.find((prod: any) => prod._id === curr.product)
       return acc + ((product?.length || curr.length) * curr.quantity * curr.coating_rate)
-    },0);
+    }, 0);
   }
 
-  console.log('Entries', entries)
   const handleSaveEntries = async () => {
     const updatedEntries = entries.map((entry: any) => ({
       ...entry,
@@ -181,7 +194,6 @@ const AddCustomerOrderForm = () => {
     };
 
     try {
-      console.log('Final Values', finalValues);
       if (!customerId || customerId === '') {
         toast.error('Please select customer')
       }
@@ -200,12 +212,12 @@ const AddCustomerOrderForm = () => {
   }
 
 
-  const handleCoatingChange = async (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const coatingId = e.target.value;
+  const handleCoatingChange = async (e: any, index: number) => {
+    const coatingId = e;
     const updatedEntries = [...entries];
     updatedEntries[index].coating = coatingId;
     setEntries(updatedEntries);
-    updateColorOptions(coatingId, index);
+    updateColorOptions(coatingId, index, coatingData);
 
     try {
       const { data } = await get(`/coatings/${coatingId}`);
@@ -215,7 +227,7 @@ const AddCustomerOrderForm = () => {
   };
 
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  const handleColorChange = (e: any, index: number) => {
     const colorId = e.target.value;
     const updatedEntries = [...entries];
     updatedEntries[index] = { ...updatedEntries[index], color: colorId }; // Update the color for the specific entry
@@ -232,8 +244,8 @@ const AddCustomerOrderForm = () => {
   useEffect(() => {
     getCustomerOrderCounter();
   }, [])
-  const updateColorOptions = (coatingId: any, entryIndex: number) => {
-    const selectedCoating = coatingData.find((coating: any) => coating._id === coatingId);
+  const updateColorOptions = (coatingId: any, entryIndex: number, data: any[]) => {
+    const selectedCoating = (data || []).find((coating: any) => coating._id === coatingId);
     if (selectedCoating) {
       const newColorDataList = [...colorDataList];
       newColorDataList[entryIndex] = selectedCoating.colors;
@@ -244,7 +256,6 @@ const AddCustomerOrderForm = () => {
       setColorDataList(newColorDataList);
     }
   };
-
 
   const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newValue = e.target.value;
@@ -260,8 +271,8 @@ const AddCustomerOrderForm = () => {
     setEntries(updatedEntries)
   }
 
-  const SetCurrentCustomerData = (id:string) => {
-    setCurrentCustomerData(customerData.find((customer:any)=> customer._id.toString() === id.toString()))
+  const SetCurrentCustomerData = (id: string) => {
+    setCurrentCustomerData(customerData.find((customer: any) => customer._id.toString() === id.toString()))
   }
 
 
@@ -295,7 +306,7 @@ const AddCustomerOrderForm = () => {
   const handleProductChange = (selectedOption: any, index: any) => {
     const selectedProduct = productsArray.find((product: any) => product.productId === selectedOption.value);
     if (selectedProduct) {
-      const { productId, productName, totalQuantity,wooden_rate,commercial_rate,premium_rate,anodize_rate } = selectedProduct;
+      const { productId, productName, totalQuantity, wooden_rate, commercial_rate, premium_rate, anodize_rate } = selectedProduct;
       const updatedEntries = [...entries];
       updatedEntries[index].product = productId;
       setEntries(updatedEntries);
@@ -306,7 +317,7 @@ const AddCustomerOrderForm = () => {
     }
   };
 
-  const calculateGrandTotal = (estimateRate:number,coating_charges:number,gst:number) => {
+  const calculateGrandTotal = (estimateRate: number, coating_charges: number, gst: number) => {
     const totalPrice = estimateRate + coating_charges
     const gstAmount = totalPrice * (gst / 100)
     const grand_total = (totalPrice + gstAmount).toFixed(2)
@@ -322,7 +333,7 @@ const AddCustomerOrderForm = () => {
       totalWeight = parseFloat(totalWeight.toFixed(2))
     }
     setEstimateWeight(totalWeight)
-  }, [entries,productsData])
+  }, [entries, productsData])
 
   useEffect(() => {
     let totalRate: number = 0;
@@ -333,8 +344,8 @@ const AddCustomerOrderForm = () => {
   useEffect(() => {
     let totalCoatingCharges: number = 0;
     for (const entry of entries) {
-      const product = productsData?.find((product:any) => product._id.toString() === entry.product.toString())
-      totalCoatingCharges += (entry?.quantity * entry?.coating_rate * (entry?.length ||product?.length  || 0))
+      const product = productsData?.find((product: any) => product._id.toString() === entry.product.toString())
+      totalCoatingCharges += (entry?.quantity * entry?.coating_rate * (entry?.length || product?.length || 0))
     }
     if (discount) {
       const discountedValue = (totalCoatingCharges * discount / 100)
@@ -344,9 +355,44 @@ const AddCustomerOrderForm = () => {
   }, [entries, productsData, discount])
 
   useEffect(() => {
-    calculateGrandTotal(estimateRate,coatingCharges,gst)
-  },[estimateRate,coatingCharges,gst])
+    calculateGrandTotal(estimateRate, coatingCharges, gst)
+  }, [estimateRate, coatingCharges, gst])
 
+  const selectedStyle = {
+    control: (baseStyles: any, state: any) => ({
+      ...baseStyles,
+      borderColor: state.isFocused ? 'grey' : 'red',
+      backgroundColor: "#f4f4f5",
+      border: "none",
+      height: "32px",
+      minHeight: "32px",
+    }),
+    indicatorSeparator: (baseStyles: any) => ({
+      ...baseStyles,
+      marginTop: "5px",
+      height: 22,
+    }),
+   
+  };
+  const selectedCostingStyle = {
+    control: (baseStyles: any, state: any) => ({
+      ...baseStyles,
+      borderColor: state.isFocused ? 'grey' : 'red',
+      backgroundColor: "#f4f4f5",
+      border: "none",
+      height: "32px",
+      minHeight: "32px",
+      borderRadius: 8,
+    }),
+    indicatorSeparator: (baseStyles: any) => ({
+      ...baseStyles,
+      display: "none"
+    }),
+    dropdownIndicator: (baseStyles: any) => ({
+      ...baseStyles,
+      display: "none"
+    }),
+  };
 
   return (
     <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -374,7 +420,7 @@ const AddCustomerOrderForm = () => {
                   Customer
                   <span className='ml-1 text-red-500'>*</span>
                 </Label>
-                <SelectReact
+                <CreateSelectReact
                   id={`name`}
                   name={`name`}
                   options={customerData.map((customer: any) => ({
@@ -387,11 +433,16 @@ const AddCustomerOrderForm = () => {
                     setCustomerName(selectedOption.label);
                     SetCurrentCustomerData(selectedOption.value)
                   }}
+                  onCreateOption={(e) => {
+                    setCreateCustomer(e);
+                    setIsCreateCustomerOpen(true);
+                  }}
+                  styles={selectedStyle}
                 />
               </div>
               <div className='col-span-4 lg:col-span-4 mt-5'>
                 <Label htmlFor='customerOrderNumber'>
-                  Customer Number
+                  Order Number
                   <span className='ml-1 text-red-500'>*</span>
                 </Label>
                 <Input
@@ -440,7 +491,7 @@ const AddCustomerOrderForm = () => {
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
 
-                          <CreatableSelect
+                          <CreateSelectReact
                             id={`product-${index}`}
                             name={`product-${index}`}
                             options={productsData.map((product: any) => ({
@@ -448,6 +499,7 @@ const AddCustomerOrderForm = () => {
                               label: `${product.name} (${product.productCode}) (${product.length}) (${product.thickness}) `
                             }))}
                             onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                            styles={selectedStyle}
                           />
 
                         </div>
@@ -477,7 +529,7 @@ const AddCustomerOrderForm = () => {
                                 type='number'
                                 id={`weight-${index}`}
                                 name={`weight-${index}`}
-                              value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight ||  ''}
+                                value={entry.weight || productsData.find((item: any) => item._id === entry.product)?.weight || ''}
                                 onChange={(e) => handleWeightChange(e, index)}
                                 min={0}
                               />
@@ -541,20 +593,25 @@ const AddCustomerOrderForm = () => {
                           Coating
                           <span className='ml-1 text-red-500'>*</span>
                         </Label>
-                        <Select
+                        <CreateSelectReact
                           placeholder='Select Coating'
                           id={`coating-${index}`}
                           name={`coating-${index}`}
-                          // value={entry.coating }
-                          value={entry.coating || selectedCoatings[index]}
-                          onChange={(e) => handleCoatingChange(e, index)}
-                        >
-                          {coatingData.map((coating: any) => (
-                            <option key={coating._id} value={coating._id}>
-                              {coating.name}
-                            </option>
-                          ))}
-                        </Select>
+                          options={coatingData.map((customer: any) => ({
+                            value: customer._id,
+                            label: customer.name,
+                          }))}
+                          value={(entry.coating || selectedCoatings[index]) ? { value: entry.coating, label: coatingData?.find((item: any) => item?._id === entry.coating)?.name } : null}
+                          onChange={(selectedOption: any) => {
+                            const value = selectedOption.value
+                            handleCoatingChange(value, index)
+                          }}
+                          onCreateOption={(e) => {
+                            setCreateCoating({ name: e, index });
+                            setIsCreateCoatingOpen(true);
+                          }}
+                          styles={selectedCostingStyle}
+                        />
                       </div>
                       {entry.coating &&
                         (<div className='col-span-12 lg:col-span-2'>
@@ -604,7 +661,7 @@ const AddCustomerOrderForm = () => {
                           type='number'
                           id={`hsn-${index}`}
                           name={`hsn-${index}`}
-                            value={ parseFloat((entry.quantity * (entry.weight || (productsData.find((item: any) => item._id === entry.product)?.weight)) || 0).toFixed(2))}
+                          value={parseFloat((entry.quantity * (entry.weight || (productsData.find((item: any) => item._id === entry.product)?.weight)) || 0).toFixed(2))}
                           min={0}
                           disabled
                         />
@@ -838,6 +895,26 @@ const AddCustomerOrderForm = () => {
         </Card>
       </div>
 
+      {isCreateCustomerOpen ?
+        <AddCustomerModal
+          isOpen={true}
+          setIsOpen={setIsCreateCustomerOpen}
+          customerName={createCustomer}
+          fetchVendorData={fetchVendorData}
+          setCustomerName={setCustomerName}
+          setCustomerId={setCustomerId}
+        /> : null
+      }
+      {isCreateCoatingOpen ?
+        <AddCoatingModal
+          isOpen={true}
+          setIsOpen={setIsCreateCoatingOpen}
+          defaultValue={createCoating}
+          fetchData={getCoatingAndUpdateColorDetails}
+          entries={entries}
+          setEntries={setEntries}
+        /> : null
+      }
     </PageWrapper>
   );
 };

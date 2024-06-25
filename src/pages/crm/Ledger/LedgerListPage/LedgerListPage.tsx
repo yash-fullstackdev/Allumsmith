@@ -103,16 +103,16 @@ const LedgerListPage = () => {
 				<div
 					className={
 						renderAmount(
-							info.row.original.credit_amount || 0,
 							info.row.original.pending_amount || 0,
-							'text-green-500',
+							info.row.original.credit_amount || 0,
 							'text-red-500',
+							'text-green-500',
 						).color
 					}>
 					{
 						renderAmount(
-							(info.row.original.credit_amount || 0).toFixed(2),
 							(info.row.original.pending_amount || 0).toFixed(2),
+							(info.row.original.credit_amount || 0).toFixed(2),
 						).text
 					}
 				</div>
