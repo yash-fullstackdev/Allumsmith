@@ -12,10 +12,10 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
 import Checkbox from '../../../../components/form/Checkbox';
-import CreatableSelect from 'react-select/creatable'
 import _, { size } from 'lodash';
 import AddCustomerModal from './AddCustomerModal';
 import AddCoatingModal from './AddCoatingModal';
+import CreateSelectReact from '../../../../components/form/CreateSelectReact';
 
 const AddCustomerOrderForm = () => {
   const [entries, setEntries] = useState<any>([{ product: '', quantity: '', coating: '', color: '', coating_rate: '', withoutMaterial: '', length: '', finish_inventory: '' }]);
@@ -372,13 +372,7 @@ const AddCustomerOrderForm = () => {
       marginTop: "5px",
       height: 22,
     }),
-    dropdownIndicator: (baseStyles: any) => ({
-      ...baseStyles,
-      padding: 5,
-      marginTop: -2,
-      color: "black",
-      paddingLeft: 2
-    }),
+   
   };
   const selectedCostingStyle = {
     control: (baseStyles: any, state: any) => ({
@@ -426,7 +420,7 @@ const AddCustomerOrderForm = () => {
                   Customer
                   <span className='ml-1 text-red-500'>*</span>
                 </Label>
-                <CreatableSelect
+                <CreateSelectReact
                   id={`name`}
                   name={`name`}
                   options={customerData.map((customer: any) => ({
@@ -497,7 +491,7 @@ const AddCustomerOrderForm = () => {
                             <span className='ml-1 text-red-500'>*</span>
                           </Label>
 
-                          <CreatableSelect
+                          <CreateSelectReact
                             id={`product-${index}`}
                             name={`product-${index}`}
                             options={productsData.map((product: any) => ({
@@ -598,7 +592,7 @@ const AddCustomerOrderForm = () => {
                           Coating
                           <span className='ml-1 text-red-500'>*</span>
                         </Label>
-                        <CreatableSelect
+                        <CreateSelectReact
                           placeholder='Select Coating'
                           id={`coating-${index}`}
                           name={`coating-${index}`}
