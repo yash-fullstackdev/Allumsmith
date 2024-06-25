@@ -1,3 +1,5 @@
+import { pagesToCheck } from '../constants/common/data';
+
 const shouldRedirectOrShowLoader = (
 	isSignedIn: boolean | undefined,
 	isLoading: boolean,

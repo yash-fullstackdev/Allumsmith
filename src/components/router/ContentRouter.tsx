@@ -11,16 +11,22 @@ import NotFoundPage from '../../pages/NotFound.page';
 import UsersPermissionPage from '../../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
 import { useUser } from '@clerk/clerk-react';
 import { admins } from '../../constants/common/data';
+import UserListPage from '../../pages/crm/PermissionPage/UserListPage/UserListPage';
 
 const ContentRouter = () => {
 	let allowedRoutes: any = useAllowedRoutes(contentRoutes, true);
 	const { pathname }: any = useLocation();
-	const { user } = useUser();
+	const { user }: any = useUser();
+	localStorage.setItem('userId', user?.id);
 
-	if (admins.includes(user?.emailAddresses[0]?.emailAddress || '')) {
+	if (admins.includes(user?.emailAddresses[0]?.emailAddress)) {
 		allowedRoutes?.unshift({
 			path: '/add-users-permissions',
 			element: <UsersPermissionPage />,
+		});
+		allowedRoutes?.unshift({
+			path: '/users',
+			element: <UserListPage />,
 		});
 	}
 

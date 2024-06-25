@@ -3,7 +3,6 @@ import {
 	createColumnHelper,
 	getCoreRowModel,
 	getFilteredRowModel,
-	getPaginationRowModel,
 	getSortedRowModel,
 	SortingState,
 	useReactTable,
@@ -18,7 +17,6 @@ import Card, {
 	CardTitle,
 } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
@@ -26,26 +24,13 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, {
-	ModalBody,
-	ModalFooter,
-	ModalFooterChild,
-	ModalHeader,
-} from '../../../../components/ui/Modal';
+import Modal, { ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
 import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
-import OffCanvas, {
-	OffCanvasBody,
-	OffCanvasFooter,
-	OffCanvasHeader,
-} from '../../../../components/ui/OffCanvas';
 import _, { debounce } from 'lodash';
-import axios from 'axios';
-import Select from '../../../../components/form/Select';
-import SelectReact from '../../../../components/form/SelectReact';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -55,14 +40,9 @@ const UserListPage = () => {
 	const [apiData, setApiData] = useState<any[]>([]);
 	const [tableCount, setTableCount] = useState<number>(0);
 	const [pageSize, setPageSize] = useState(10);
-	const [editModal, setEditModal] = useState<boolean>(false);
-	const [editProductId, setEditProductId] = useState<any>('');
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const [deleteModal, setDeleteModal] = useState<boolean>(false);
 	const [deleteId, setDeleteId] = useState<string>('');
-	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
-	const [productDetails, setProductDetails] = useState<any>('');
-	const [searchTerm, setSearchTerm] = useState<any>('');
 
 	const router = useNavigate();
 
@@ -80,18 +60,13 @@ const UserListPage = () => {
 		try {
 			const pageSizeValue = pageSize || 10;
 			const pageValue = page || 1;
-			const { data } = await axios.get(
-				`https://4818-122-179-153-131.ngrok-free.app/user?page=${pageValue}&limit=${pageSizeValue}
+			const { data } = await get(
+				`/users?page=${pageValue}&limit=${pageSizeValue}
                 ${
 					!!(globalFilter.trim() || search.trim())
 						? `&searchTerm=${search.trim() || globalFilter.trim()}`
 						: ''
 				} `,
-				{
-					headers: {
-						'ngrok-skip-browser-warning': 'true',
-					},
-				},
 			);
 			setApiData(data?.data);
 			setTableCount(data?.count);
@@ -103,9 +78,10 @@ const UserListPage = () => {
 			setIsLoading(false);
 		}
 	};
+
 	const handleProductDelete = async (id: any) => {
 		try {
-			await deleted(`https://4818-122-179-153-131.ngrok-free.app/user/${id}`);
+			await deleted(`/users/${id}`);
 			toast.success('User deleted Successfully !');
 		} catch (error: any) {
 			console.error('Error deleting User:', error.message);
@@ -141,10 +117,12 @@ const UserListPage = () => {
 		columnHelper.accessor('username', {
 			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'User Name',
+			size: 200,
 		}),
 		columnHelper.accessor('email', {
 			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Email',
+			size: 300,
 		}),
 		columnHelper.accessor('firstName', {
 			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
@@ -159,28 +137,27 @@ const UserListPage = () => {
 			cell: (info) => <div className=''>{`${info.getValue()?.userRole}`}</div>,
 			header: 'User Role',
 		}),
-		columnHelper.accessor('permission', {
-			cell: (info) => {
-				const optionsData = info.getValue()?.permissions || [];
-				return (
-					<Select placeholder='User Permissions' id={`Permissions`} name={`Permissions`}>
-						{Object.keys(optionsData).length > 0 ? (
-							Object.keys(optionsData)?.map((options: any, index: number) => (
-								<option key={index} disabled value={options}>
-									{options?.split('/')[1]}
-								</option>
-							))
-						) : (
-							<option value='No data' disabled>
-								No Permissions
-							</option>
-						)}
-					</Select>
-				);
-			},
-			header: 'User Permissions',
-		}),
-
+		// columnHelper.accessor('permission', {
+		// 	cell: (info) => {
+		// 		const optionsData = info.getValue()?.permissions || [];
+		// 		return (
+		// 			<Select placeholder='User Permissions' id={`Permissions`} name={`Permissions`}>
+		// 				{Object.keys(optionsData).length > 0 ? (
+		// 					Object.keys(optionsData)?.map((options: any, index: number) => (
+		// 						<option key={index} disabled value={options}>
+		// 							{options?.split('/')[1]}
+		// 						</option>
+		// 					))
+		// 				) : (
+		// 					<option value='No data' disabled>
+		// 						No Permissions
+		// 					</option>
+		// 				)}
+		// 			</Select>
+		// 		);
+		// 	},
+		// 	header: 'User Permissions',
+		// }),
 		columnHelper.display({
 			cell: (info) => (
 				<div className='flex justify-center font-bold'>

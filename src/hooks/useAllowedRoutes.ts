@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 const useAllowedRoutes = (contentRoutes: any, isContentRoutes: boolean) => {
 	const [allowedRoutes, setAllowedRoutes] = useState<any>([]);
 	const { user }: any = useUser();
+	localStorage.setItem('userId', user?.id);
 
 	useEffect(() => {
 		const permissions = user?.publicMetadata?.permissions || '{}';

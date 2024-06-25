@@ -8,7 +8,8 @@ import FullScreenLoader from '../layouts/common/FullScreenLoader';
 const AsideRouter = () => {
 	const navigate = useNavigate();
 	const pathName = useLocation();
-	const { isSignedIn, isLoaded }: any = useUser();
+	const { isSignedIn, isLoaded, user }: any = useUser();
+	localStorage.setItem('userId', user?.id);
 
 	useEffect(() => {
 		if (shouldRedirectOrShowLoader(isSignedIn, !isLoaded, pathName)) {

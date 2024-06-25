@@ -6,14 +6,15 @@ import Nav, { NavItem, NavTitle } from '../../../components/layouts/Navigation/N
 import { UserButton, useClerk, useUser } from '@clerk/clerk-react';
 import { useLocation } from 'react-router-dom';
 import useAllowedRoutes from '../../../hooks/useAllowedRoutes';
+import { admins } from '../../../constants/common/data';
 
 const DefaultAsideTemplate = () => {
-	const { user } = useUser();
+	const { user }: any = useUser();
+	localStorage.setItem('userId', user?.id);
 	const location = useLocation();
 	const allowedRoutes = useAllowedRoutes(Object.values(appPages), false);
 	const currentPath = location.pathname;
 	const { openUserProfile } = useClerk();
-	const admins = ['sachaniyadev09@gmail.com', 'allumsmith2023@yopmail.com'];
 
 	// Filter allowed routes based on permissions
 	if (currentPath.startsWith('/sign-in') || currentPath.startsWith('/sign-up')) {
@@ -50,11 +51,10 @@ const DefaultAsideTemplate = () => {
 			</AsideBody>
 
 			<AsideFooter>
-				<div className='hover:black my-3 ml-3 flex  cursor-pointer items-center gap-3 overflow-hidden text-zinc-500 '>
+				<div className='hover:black my-3 ml-3 flex  cursor-pointer items-center gap-3 overflow-hidden p-2  text-zinc-500 '>
 					<UserButton afterSignOutUrl='/sign-in' />
 					<span onClick={() => openUserProfile()}>{user?.fullName}</span>
 				</div>
-
 				<DarkModeSwitcherPart />
 			</AsideFooter>
 		</Aside>

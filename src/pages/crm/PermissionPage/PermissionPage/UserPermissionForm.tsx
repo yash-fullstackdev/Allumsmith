@@ -9,7 +9,6 @@ import Card, {
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { appPages } from '../../../../config/pages.config';
-import { Switch } from '@mui/material';
 import {
 	filterPermissions,
 	togglePermissionAndUpdateInnerPages,
@@ -18,23 +17,27 @@ import Container from '../../../../components/layouts/Container/Container';
 import Input from '../../../../components/form/Input';
 import Icon from '../../../../components/icon/Icon';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
-import { userInitialPermission } from '../../../../constants/common/data';
+import { pagesToCheck, userInitialPermission } from '../../../../constants/common/data';
 import { useLocation } from 'react-router-dom';
 import { userInitialValues } from '../../../../utils/initialValues';
 import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
+import { get, post, put } from '../../../../utils/api-helper.util';
+import Checkbox from '../../../../components/form/Checkbox';
 
 const UserPermissionForm = () => {
+	// State variables
 	const [passwordShowStatus, setPasswordShowStatus] = useState(false);
 	const [permissions, setPermissions] = useState<any>({});
 	const [isAllPermissions, setIsAllPermissions] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
+	// Extracting userId from query params
 	const location = useLocation();
 	const searchParams = new URLSearchParams(location.search);
 	const userId = searchParams.get('id');
 
+	// Formik setup
 	const formik: any = useFormik({
 		initialValues: userInitialValues,
 		enableReinitialize: true,
@@ -44,16 +47,10 @@ const UserPermissionForm = () => {
 		},
 	});
 
+	// Function to fetch user data by userId
 	const fetchUserById = async () => {
 		try {
-			const userData = await axios.get(
-				`https://4818-122-179-153-131.ngrok-free.app/user/${userId}`,
-				{
-					headers: {
-						'ngrok-skip-browser-warning': 'true',
-					},
-				},
-			);
+			const userData = await get(`/users/${userId}`);
 			return userData.data;
 		} catch (error) {
 			console.error('Error fetching product data:', error);
@@ -61,6 +58,7 @@ const UserPermissionForm = () => {
 		}
 	};
 
+	// Effect to fetch user data if userId is present
 	useEffect(() => {
 		const fetchData = async () => {
 			const userData = await fetchUserById();
@@ -84,6 +82,7 @@ const UserPermissionForm = () => {
 		}
 	}, []);
 
+	// Function to handle save/update user
 	const handleSaveUser = async (values: any, resetForm: any) => {
 		try {
 			setIsLoading(true);
@@ -104,11 +103,9 @@ const UserPermissionForm = () => {
 				userData.password = values?.password;
 			}
 
-			const apiUrl = !userId
-				? 'https://4818-122-179-153-131.ngrok-free.app/user'
-				: `https://4818-122-179-153-131.ngrok-free.app/user/${userId}`;
+			const apiUrl = !userId ? '/users' : `/users/${userId}`;
 
-			!userId ? await axios.post(apiUrl, userData) : await axios.put(apiUrl, userData);
+			!userId ? await post(apiUrl, userData) : await put(apiUrl, userData);
 
 			setPermissions({});
 			setIsAllPermissions(false);
@@ -127,6 +124,7 @@ const UserPermissionForm = () => {
 		}
 	};
 
+	// Function to toggle all permissions
 	const checkAllPermission = (permissionValue: boolean) => {
 		setIsAllPermissions(permissionValue);
 		if (permissionValue) {
@@ -136,12 +134,14 @@ const UserPermissionForm = () => {
 		}
 	};
 
+	// Function to toggle individual permissions
 	const togglePermission = (pageId: any) => {
 		setPermissions((prevPermissions: any) => {
 			return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, appPages);
 		});
 	};
 
+	// Helper function to conditionally render elements based on userId presence
 	const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
 		if (!userId) {
 			return trueValue;
@@ -149,6 +149,16 @@ const UserPermissionForm = () => {
 			return falseValue;
 		}
 	};
+
+	// Function to check if all permissions are true
+	const allPermissionsTrue = pagesToCheck.every((page) => {
+		return permissions[page] === true;
+	});
+
+	// useEffect to set isAllPermissions based on permissions changes
+	useEffect(() => {
+		setIsAllPermissions(allPermissionsTrue);
+	}, [permissions]);
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
@@ -205,6 +215,9 @@ const UserPermissionForm = () => {
 																		htmlFor={fieldName}
 																		className='capitalize'>
 																		{fieldName}
+																		<span className='text-red-500'>
+																			*
+																		</span>
 																	</Label>
 																	<Input
 																		id={fieldName}
@@ -242,7 +255,10 @@ const UserPermissionForm = () => {
 													{!userId && (
 														<div className='col-span-12 lg:col-span-3'>
 															<Label htmlFor='password'>
-																Password
+																Password{' '}
+																<span className='text-red-500'>
+																	*
+																</span>
 															</Label>
 
 															<div className='relative'>
@@ -282,68 +298,96 @@ const UserPermissionForm = () => {
 												</div>
 
 												{/* Permission section */}
-												<div className='mt-7 flex items-center gap-2'>
+												<div className='mt-8 flex items-center gap-2'>
 													<Label htmlFor='Add Access Permission'>
 														Add Access Permission
 													</Label>
-													<Switch
-														id='Add Access Permission'
-														checked={isAllPermissions}
-														onClick={() => {
-															checkAllPermission(!isAllPermissions);
-														}}
-													/>
-													<Label
-														htmlFor='Add Access Permission'
-														className='font-medium'>
-														Select All Permission
-													</Label>
 												</div>
 
-												<div className='grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6'>
-													{/* Loop through permission categories */}
-													{Object.keys(appPages).map((appKey) => {
-														const app = appPages[appKey];
-														return Object.values(app).map(
-															(page: any) => {
-																if (
-																	page.id &&
-																	page.to &&
-																	page.text &&
-																	page.icon
-																) {
-																	return (
-																		<div
-																			key={page.to}
-																			className='mb-4'>
-																			<h2 className='mb-4 text-lg font-bold capitalize'>
-																				{app.identifier !==
-																				'cuo'
-																					? app.identifier
-																					: 'customer-order'}
-																			</h2>
-																			<Switch
-																				checked={
-																					permissions[
-																						page.to
-																					] || false
-																				}
-																				onClick={() =>
-																					togglePermission(
-																						{
-																							...page,
-																							appKey,
-																						},
-																					)
-																				}
-																			/>
-																		</div>
-																	);
-																}
-																return null;
-															},
-														);
-													})}
+												<div className='rounded-lg bg-white p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]'>
+													<div className='mb-4 flex w-fit items-center rounded-lg border border-gray-300 bg-white p-2 shadow-sm'>
+														<Checkbox
+															id='Add Access Permission'
+															checked={isAllPermissions}
+															onClick={() => {
+																checkAllPermission(
+																	!isAllPermissions,
+																);
+															}}
+															className='mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+														/>
+														<Label
+															htmlFor='Add Access Permission'
+															className='font-medium text-gray-700'>
+															Select All Permissions
+														</Label>
+													</div>
+													<div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+														{Object.keys(appPages)
+															.slice(1)
+															.map((appKey) => {
+																const app = appPages[appKey];
+																return Object.values(app).map(
+																	(page: any) => {
+																		if (
+																			page.id &&
+																			page.to &&
+																			page.text &&
+																			page.icon
+																		) {
+																			return (
+																				<div
+																					key={page.to}
+																					className='flex items-center rounded-lg border border-gray-200 bg-white p-2 shadow-sm'>
+																					<div className='flex items-center'>
+																						<Checkbox
+																							id={
+																								page.to
+																							}
+																							name={
+																								page.to
+																							}
+																							checked={
+																								permissions[
+																									page
+																										.to
+																								] ||
+																								false
+																							}
+																							onChange={(
+																								e,
+																							) => {
+																								const target =
+																									e.target as HTMLInputElement;
+																								togglePermission(
+																									{
+																										...page,
+																										appKey,
+																										checked:
+																											target.checked,
+																									},
+																								);
+																							}}
+																							className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
+																						/>
+																						<Label
+																							htmlFor={
+																								page.to
+																							}
+																							className='font-medium text-gray-700'>
+																							{
+																								page.text
+																							}
+																						</Label>
+																					</div>
+																				</div>
+																			);
+																		}
+																		return null;
+																	},
+																);
+															})}
+													</div>
 												</div>
 
 												<div className='flex gap-2'>
@@ -351,16 +395,13 @@ const UserPermissionForm = () => {
 														variant='solid'
 														color='blue'
 														isDisable={isLoading}
+														isLoading={isLoading}
 														className='h-[35px] w-[150px]'
 														type='submit'>
-														{!isLoading ? (
-															checkUserId(
-																userId,
-																'Create User',
-																'Edit User',
-															)
-														) : (
-															<div className='h-6 w-6 animate-spin rounded-full border-[2px] border-b-blue-500'></div>
+														{checkUserId(
+															userId,
+															'Create User',
+															'Edit User',
 														)}
 													</Button>
 												</div>

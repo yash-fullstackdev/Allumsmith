@@ -1,4 +1,4 @@
-const admins = ['sachaniyadev09@gmail.com', 'allumsmith2023@yopmail.com'];
+const admins = ['allumsmith2023@yopmail.com'];
 const userInitialPermission = {
 	'/product': true,
 	'/purchase-order': true,
@@ -29,4 +29,23 @@ const userInitialPermission = {
 	'/worker': true,
 };
 
-export { admins, userInitialPermission };
+const pagesToCheck = [
+	'/product',
+	'/purchase-order',
+	'/vendor',
+	'/customer',
+	'/worker',
+	'/raw-material',
+	'/branches',
+	'/colors',
+	'/coating',
+	'/jobs',
+	'/cuo-order',
+	'/inventory',
+	'/finish-storage',
+	'/invoice-list',
+	'/ledger-list',
+	'/add-payment',
+];
+
+export { admins, userInitialPermission, pagesToCheck };
