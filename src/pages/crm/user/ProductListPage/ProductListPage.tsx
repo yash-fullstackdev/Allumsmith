@@ -62,7 +62,6 @@ const ProductListPage = () => {
 	const [deleteId, setDeleteId] = useState<string>('');
 	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
 	const [productDetails, setProductDetails] = useState<any>('');
-	const [searchTerm, setSearchTerm] = useState<any>('');
 
 	const navigate = useNavigate();
 

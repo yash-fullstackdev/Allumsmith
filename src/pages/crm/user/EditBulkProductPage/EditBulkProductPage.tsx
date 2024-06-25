@@ -294,10 +294,10 @@ const EditBulkProductPage = () => {
 							)
 						}>
 						<Input
-							className='w-[320px] pl-8'
+							className='w-80 pl-8 sm:w-96'
 							id='searchBar'
 							name='searchBar'
-							autoComplete='false'
+							autoComplete='off'
 							placeholder='Search Product Code To Update...'
 							value={globalFilter ?? ''}
 							onChange={(e) => setGlobalFilter(e.target.value)}
