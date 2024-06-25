@@ -287,7 +287,7 @@ const ProductListPage = () => {
 
 						<CardHeaderChild>
 							<Link to={`${PathRoutes.multiple_edit_product}`}>
-								<Button variant='solid' icon='HeroPlus'>
+								<Button variant='solid' icon='DuoPen'>
 									Bulk Product Update
 								</Button>
 							</Link>

@@ -25,7 +25,7 @@ export const TableHeaderTemplate: FC<ITableHeaderTemplateProps> = ({ table }) =>
 							isColumnBorder={false}
 							style={{
 								width: header.column.getSize(),
-								padding: '0.50rem 0.25rem',
+								padding: '0.50rem 0.50rem',
 							}}
 							className={classNames({
 								'text-left': header.id !== 'Actions',
@@ -88,7 +88,7 @@ export const TableBodyTemplate: FC<ITableBodyTemplateProps> = ({
 								key={cell.id}
 								style={{
 									width: cell.column.getSize(),
-									padding: '0.25rem',
+									padding: '0.25rem 0.50rem',
 								}}
 								className={classNames({
 									'text-left': cell.column.id !== 'Actions',

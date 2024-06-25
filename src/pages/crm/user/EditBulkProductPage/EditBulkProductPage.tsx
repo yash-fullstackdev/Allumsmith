@@ -29,15 +29,14 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import { get, patch, put } from '../../../../utils/api-helper.util';
+import { get, put } from '../../../../utils/api-helper.util';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
 import { toast } from 'react-toastify';
-import CloseIcon from '../../../../components/svg/Close';
-import AddIcon from '../../../../components/svg/Add';
+import { Checkbox } from '@mui/material';
 
 const EditBulkProductPage = () => {
 	const navigate = useNavigate();
@@ -96,12 +95,13 @@ const EditBulkProductPage = () => {
 			};
 
 			// Perform the API call to update the products
-			// await put('/products/bulk-update', dataToUpdate);
+			await put('/products/bulk-update', dataToUpdate);
 			console.log(dataToUpdate, 'Updated data');
+			navigate('/product');
 			toast.success('Product Updated Successfully!');
 		} catch (error: any) {
 			console.error('Error Updating Products', error);
-			toast.error('Error Updating Products', error);
+			toast.error(error.response.data.message);
 		} finally {
 			setUpdateLoading(false);
 		}
@@ -190,6 +190,7 @@ const EditBulkProductPage = () => {
 		setMainData([]);
 		table.resetPagination();
 	};
+
 	useEffect(() => {
 		if (globalFilter !== '') {
 			debouncedFetchData(globalFilter);
@@ -205,6 +206,27 @@ const EditBulkProductPage = () => {
 	}, [isLoading]);
 
 	const columns = [
+		columnHelper.display({
+			cell: (info) => (
+				<div className='flex justify-start font-bold'>
+					<div className='ml-10 flex w-full'>
+						<Checkbox
+							id={info.row.original._id}
+							size='medium'
+							checked={!info.row.original.isRemoved}
+							onClick={() => {
+								handleToggleRemove(
+									info.row.original._id,
+									!info.row.original.isRemoved,
+								);
+							}}
+						/>
+					</div>
+				</div>
+			),
+			header: 'Select Product',
+			size: 120,
+		}),
 		columnHelper.accessor('name', {
 			cell: (info) => <div className=''>{`${info.getValue() || '-'}`}</div>,
 			header: 'Name',
@@ -227,35 +249,6 @@ const EditBulkProductPage = () => {
 		}),
 		columnHelper.accessor('anodize_rate', {
 			cell: (info) => <div className=''>{`${info.getValue() || '-'}`}</div>,
-		}),
-		columnHelper.display({
-			cell: (info) => (
-				<div className='flex font-bold'>
-					{!info.row.original.isRemoved ? (
-						<div className='flex w-full justify-center'>
-							<Button
-								className='h-fit w-fit'
-								onClick={() => {
-									handleToggleRemove(info.row.original._id, true);
-								}}>
-								<CloseIcon />
-							</Button>
-						</div>
-					) : (
-						<div className='flex w-full justify-center'>
-							<Button
-								className='h-fit w-fit'
-								onClick={() => {
-									handleToggleRemove(info.row.original._id, false);
-								}}>
-								<AddIcon />
-							</Button>
-						</div>
-					)}
-				</div>
-			),
-			header: 'Actions',
-			size: 120,
 		}),
 	];
 
@@ -301,9 +294,10 @@ const EditBulkProductPage = () => {
 							)
 						}>
 						<Input
-							className='w-[300px] pl-8'
+							className='w-[320px] pl-8'
 							id='searchBar'
 							name='searchBar'
+							autoComplete='false'
 							placeholder='Search Product Code To Update...'
 							value={globalFilter ?? ''}
 							onChange={(e) => setGlobalFilter(e.target.value)}
@@ -482,16 +476,14 @@ const EditBulkProductPage = () => {
 											))}
 
 											<div className='mt-4 flex gap-2'>
-												{!isUpdateLoding ? (
-													<Button
-														type='submit'
-														variant='solid'
-														color='blue'>
-														Update
-													</Button>
-												) : (
-													<LoaderDotsCommon />
-												)}
+												<Button
+													type='submit'
+													variant='solid'
+													isDisable={isUpdateLoding}
+													isLoading={isUpdateLoding}
+													color='blue'>
+													Update
+												</Button>
 											</div>
 										</form>
 									</CardBody>
