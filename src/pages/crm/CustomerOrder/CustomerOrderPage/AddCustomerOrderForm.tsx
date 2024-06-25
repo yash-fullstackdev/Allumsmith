@@ -499,6 +499,7 @@ const AddCustomerOrderForm = () => {
                               label: `${product.name} (${product.productCode}) (${product.length}) (${product.thickness}) `
                             }))}
                             onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                            styles={selectedStyle}
                           />
 
                         </div>
