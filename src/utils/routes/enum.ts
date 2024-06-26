@@ -1,6 +1,7 @@
 export enum PathRoutes {
 	product = '/product',
 	add_product = '/add-product',
+	multiple_edit_product = '/multiple-edit-product',
 	edit_product = '/edit-product',
 	purchase_order = '/purchase-order',
 	add_purchase_order = '/add-purchase-order',

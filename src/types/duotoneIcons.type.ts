@@ -433,6 +433,7 @@ export type TDuotoneIcons =
 	| 'DuoPenRuler'
 	| 'DuoPenToolVector'
 	| 'DuoPencil'
+	| 'DuoPen'
 	| 'DuoPhone'
 	| 'DuoPicker'
 	| 'DuoPicture'
