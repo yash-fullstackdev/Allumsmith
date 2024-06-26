@@ -43,3 +43,4 @@ export enum PathRoutes {
 	add_ledger = '/add-ledger',
 	edit_ledger = '/edit-ledger',
 }
+

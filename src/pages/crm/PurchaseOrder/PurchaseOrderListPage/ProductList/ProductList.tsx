@@ -22,6 +22,7 @@ import TableTemplate, {
 } from '../../../../../templates/common/TableParts.template';
 import Badge from '../../../../../components/ui/Badge';
 import { get } from '../../../../../utils/api-helper.util';
+import usePermissions from '../../../../../hooks/usePermission';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -29,6 +30,7 @@ const columnHelper = createColumnHelper<any>();
 const ProductList = ({ productsArray, vendorId }: any) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [purchaseEntry, setPurchaseEntry] = useState<any>()
+  
 
     const getPurchaseEntryData = async () => {
 

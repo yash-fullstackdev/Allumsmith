@@ -1,3 +1,4 @@
+import { permission } from 'process';
 import { pagesToCheck } from '../constants/common/data';
 
 const shouldRedirectOrShowLoader = (
@@ -13,20 +14,47 @@ const shouldRedirectOrShowLoader = (
 	);
 };
 
-const togglePermissionAndUpdateInnerPages = (pageId: any, prevPermissions: any, appPages: any) => {
-	let updatedPermissions = {
-		...prevPermissions,
-		[pageId.to]: !prevPermissions[pageId.to],
-	};
+const togglePermissionAndUpdateInnerPages = (
+	pageId: any,
+	prevPermissions: any,
+	appPages: any,
+	permission:any,
+	writeRemove?:any
+) => {
+	let updatedPermissions:any = {
+		...prevPermissions
+	}
 
-	// Allow all inner routes if the parent route is allowed
-	if (updatedPermissions[pageId.to]) {
+	if(permission === "read"){
+		 updatedPermissions = {
+			...prevPermissions,
+			[pageId.to]: !prevPermissions[pageId.to],
+		};
+	}
+ 
+    if( updatedPermissions[pageId.to] && writeRemove){
 		const pagesToUpdate = getAllInnerPages(pageId, appPages);
 		pagesToUpdate.forEach((page: any) => {
-			updatedPermissions = {
-				...updatedPermissions,
-				[page]: true,
-			};
+			// console.log(page !== updatedPermissions[pageId.to],page ,updatedPermissions[pageId.to],)
+			if(page !== pageId.to){
+				updatedPermissions = {
+					...updatedPermissions,
+					[page]: false,
+				};
+			}
+		});
+	}
+
+	// Allow all inner routes if the parent route is allowed
+	if ( permission === "write"&& !writeRemove) {
+		const pagesToUpdate = getAllInnerPages(pageId, appPages);
+		pagesToUpdate.forEach((page: any) => {
+			// if(page !== updatedPermissions[pageId.to]){
+				updatedPermissions = {
+					...updatedPermissions,
+					[page]: true,
+				};
+			// }
 		});
 	}
 

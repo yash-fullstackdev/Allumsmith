@@ -46,6 +46,7 @@ import OffCanvas, {
 } from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
 import _, { debounce } from 'lodash';
+import usePermissions from '../../../../hooks/usePermission';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -62,6 +63,10 @@ const ProductListPage = () => {
 	const [deleteId, setDeleteId] = useState<string>('');
 	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
 	const [productDetails, setProductDetails] = useState<any>('');
+	const permission = usePermissions()
+
+
+	console.log(permission,"Adssadsa")
 
 	const navigate = useNavigate();
 
