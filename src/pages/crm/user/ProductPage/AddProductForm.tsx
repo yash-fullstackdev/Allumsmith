@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { productsSchema } from '../../../../utils/formValidations';
 import { useFormik } from 'formik';
@@ -14,7 +13,6 @@ const initialValues = {
 	entries: [{
 		name: '',
 		hsn: '',
-		rate: '',
 		productCode: '',
 		thickness: '',
 		length: '',
@@ -46,21 +44,20 @@ const AddproductForm = () => {
 	const handleAddEntry = () => {
 		const { entries } = formik.values;
 		const lastEntry = entries[entries.length - 1];
-		const { name, hsn, rate, thickness, length, weight } = lastEntry;
+		const { name, hsn, thickness, length, weight } = lastEntry;
 
-		console.log("lastEntry", lastEntry)
+		console.log('lastEntry', lastEntry);
 
 		formik.setFieldValue('entries', [
 			...entries,
 			{
 				name,
 				hsn,
-				rate,
 				productCode: null,
 				thickness,
 				length,
-				weight
-			}
+				weight,
+			},
 		]);
 	};
 	const formik: any = useFormik({

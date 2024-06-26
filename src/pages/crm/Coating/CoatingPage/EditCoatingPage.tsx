@@ -13,8 +13,8 @@ import { CoatingSchema } from "../../../../utils/formValidations";
 import CoatingForm from "../../../../components/PageComponets/CoatingForm/CoatingForm";
 
 interface ColorOption {
-    value: any;
-    label: any;
+	value: any;
+	label: any;
 }
 
 const EditCoatingPage = () => {

@@ -17,7 +17,6 @@ import { toast } from 'react-toastify';
 import { ERPVendor } from '../../../../../mocks/db/users.db';
 import { appPages } from '../../../../../config/pages.config';
 import Button from '../../../../../components/ui/Button';
-import { firestore } from '../../../../..';
 import getUserRights from '../../../../../hooks/useUserRights';
 import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft } from '../../../../../components/layouts/Subheader/Subheader';
@@ -168,25 +167,6 @@ const InHouseComponentListPage = () => {
 		setIsLoading(true);
 		try {
 			// Define the collection reference
-			const componentCollectionRef = collection(firestore, firebaseMainKey);
-
-			const inHouseComponentDocRef = await getDocs(
-				query(componentCollectionRef, where('componentType', '==', 'IN HOUSE COMPONENT')),
-			);
-
-			const allComponentData = [];
-
-			for (const inHouseComp of inHouseComponentDocRef.docs) {
-				const inHouseCompData = {
-					...inHouseComp.data(),
-					id: inHouseComp.id,
-				};
-				allComponentData.push(inHouseCompData);
-			}
-
-			setInHouseComponentData(allComponentData);
-
-			if (allComponentData) setIsLoading(false);
 		} catch (error) {
 			console.error('Error fetching vendors: ', error);
 			setIsLoading(false);
@@ -205,7 +185,6 @@ const InHouseComponentListPage = () => {
 
 	const handleDeleteInHouseComponent = async () => {
 		try {
-			await deleteDoc(doc(firestore, firebaseMainKey, inHouseComponentId));
 			toast.success('In House Component Deleted Successfully !');
 			setDeleteModal(false);
 			getComponents();

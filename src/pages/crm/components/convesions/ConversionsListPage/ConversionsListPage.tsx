@@ -16,7 +16,6 @@ import { toast } from 'react-toastify';
 import { ERPVendor } from '../../../../../mocks/db/users.db';
 import { appPages } from '../../../../../config/pages.config';
 import Button from '../../../../../components/ui/Button';
-import { firestore } from '../../../../..';
 import getUserRights from '../../../../../hooks/useUserRights';
 import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft } from '../../../../../components/layouts/Subheader/Subheader';
@@ -170,28 +169,6 @@ const ConversionsListPage = () => {
 		setIsLoading(true);
 		try {
 			// Define the collection reference
-			const conversionsCollectionRef = collection(firestore, firebaseMainKey);
-
-			const conversionsRef = await getDocs(
-				query(
-					conversionsCollectionRef,
-					where('componentType', '==', 'CONVERTED COMPONENT'),
-				),
-			);
-
-			const allConvertedComponents = [];
-
-			for (const comp of conversionsRef.docs) {
-				const compWithData = {
-					...comp.data(),
-					id: comp.id,
-				};
-				allConvertedComponents.push(compWithData);
-			}
-
-			setConvertedComponents(allConvertedComponents);
-
-			if (allConvertedComponents) setIsLoading(false);
 		} catch (error) {
 			console.error('Error fetching convertedComponents: ', error);
 			setIsLoading(false);
@@ -213,7 +190,6 @@ const ConversionsListPage = () => {
 	// TODO
 	const handleDeleteComponent = async () => {
 		try {
-			await deleteDoc(doc(firestore, firebaseMainKey, componentID));
 			toast.success('Component Deleted Successfully...');
 			setDeleteModal(false);
 			getComponents();

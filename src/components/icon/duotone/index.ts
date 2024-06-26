@@ -432,6 +432,7 @@ export { default as DuoPause } from './Pause';
 export { default as DuoPenRuler } from './PenRuler';
 export { default as DuoPenToolVector } from './PenToolVector';
 export { default as DuoPencil } from './Pencil';
+export { default as DuoPen} from "./Pen"
 export { default as DuoPhone } from './Phone';
 export { default as DuoPicker } from './Picker';
 export { default as DuoPicture } from './Picture';

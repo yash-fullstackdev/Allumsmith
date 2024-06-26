@@ -11,8 +11,7 @@ const productsSchema = Yup.object().shape({
 			thickness: Yup.string().required('Thickness is required'),
 			length: Yup.string().required('Length is required'),
 			weight: Yup.string().required('Weight is required'),
-
-		})
+		}),
 	),
 });
 
@@ -40,6 +39,7 @@ const wrokersSchema = Yup.object().shape({
 
 const vendorSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
+
 	phone: Yup.number().required('Phone is required')
 		.test('valid-phone', 'Invalid Phone number', (value) => {
 			return phoneRegex.test(value.toString());
@@ -60,6 +60,48 @@ const vendorSchema = Yup.object().shape({
 	},
 });
 
+const userCreateSchema = Yup.object().shape({
+	email: Yup.string().email('Invalid email address').required('Email is required'),
+	firstName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('First Name is required'),
+	lastName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('Last Name is required'),
+	password: Yup.string()
+		.min(8, 'Password must be at least 8 characters')
+		.required('Password is required'),
+	phoneNo: Yup.string()
+		.matches(/^\d+$/, 'Phone number must only contain digits')
+		.min(10, 'Phone number must be at least 10 digits')
+		.max(15, 'Phone number cannot be longer than 15 digits')
+		.required('Phone number is required'),
+	userName: Yup.string()
+		.min(3, 'Username must be at least 3 characters')
+		.max(20, 'Username must be at most 20 characters')
+		.required('Username is required'),
+	userRole: Yup.string().required('userRole is required'),
+});
+const userEditSchema = Yup.object().shape({
+	email: Yup.string().email('Invalid email address').required('Email is required'),
+	firstName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('First Name is required'),
+	lastName: Yup.string()
+		.max(20, 'Must be 20 characters or less')
+		.required('Last Name is required'),
+	phoneNo: Yup.string()
+		.matches(/^\d+$/, 'Phone number must only contain digits')
+		.min(10, 'Phone number must be at least 10 digits')
+		.max(15, 'Phone number cannot be longer than 15 digits')
+		.required('Phone number is required'),
+	userName: Yup.string()
+		.min(3, 'Username must be at least 3 characters')
+		.max(20, 'Username must be at most 20 characters')
+		.required('Username is required'),
+	userRole: Yup.string().required('userRole is required'),
+});
+
 const branchSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
 	address_line1: Yup.string().required('Address Line 1 is required'),
@@ -71,42 +113,37 @@ const branchSchema = Yup.object().shape({
 			return phoneRegex.test(value.toString());
 		}),
 	contact_name: Yup.string().required('Contact Name is required'),
-	contact_phone: Yup.string().required('Contact Phone is required')
-		.test('valid-phone', 'Invalid Phone number', (value) => {
-			return phoneRegex.test(value.toString());
-		}),
-
+	contact_phone: Yup.string().required('Contact Phone is required'),
 });
 
-const addCustomerModalSchema = Yup.object().shape({
-	name: Yup.string()
-		.required('Name is required'),
-	email: Yup.string()
-		.email('Invalid Email')
-		.nullable(),
-	phone: Yup.number().required('Phone Number is required'),
-	zipcode: Yup.number().nullable(),
-	city: Yup.string()
-		.required('City is required'),
-	state: Yup.string()
-		.required('State is required'),
-	commercial_discount: Yup.number().positive("Commercial Discount much be positive").nullable(),
-	premium_discount: Yup.number().positive("Premium Discount much be positive").nullable(),
-	anodize_discount: Yup.number().positive("Anodize Discount much be positive").nullable(),
-	address_line1: Yup.string().nullable(),
-	address_line2: Yup.string().nullable(),
-}).test({
-	test(value) {
-		const { address_line1, address_line2 } = value;
-		if (!address_line1 && !address_line2) {
-			throw this.createError({
-				message: 'At least one of address is required',
-				path: 'address_line1',
-			});
-		}
-		return true;
-	},
-});
+const addCustomerModalSchema = Yup.object()
+	.shape({
+		name: Yup.string().required('Name is required'),
+		email: Yup.string().email('Invalid Email').nullable(),
+		phone: Yup.number().required('Phone Number is required'),
+		zipcode: Yup.number().nullable(),
+		city: Yup.string().required('City is required'),
+		state: Yup.string().required('State is required'),
+		commercial_discount: Yup.number()
+			.positive('Commercial Discount much be positive')
+			.nullable(),
+		premium_discount: Yup.number().positive('Premium Discount much be positive').nullable(),
+		anodize_discount: Yup.number().positive('Anodize Discount much be positive').nullable(),
+		address_line1: Yup.string().nullable(),
+		address_line2: Yup.string().nullable(),
+	})
+	.test({
+		test(value) {
+			const { address_line1, address_line2 } = value;
+			if (!address_line1 && !address_line2) {
+				throw this.createError({
+					message: 'At least one of address is required',
+					path: 'address_line1',
+				});
+			}
+			return true;
+		},
+	});
 
 const purchaseOrderSchema = Yup.object().shape({
 	vendor: Yup.string().required('Vendor is required'),
@@ -114,18 +151,15 @@ const purchaseOrderSchema = Yup.object().shape({
 		Yup.object().shape({
 			product: Yup.string().required('Product is required'),
 			requiredQuantity: Yup.number().required('Quantity is required'),
-		})
+		}),
 	),
 });
 
 const CoatingSchema = Yup.object().shape({
-	name: Yup.string()
-		.required('Name is required'),
-	code: Yup.string()
-		.required('Code is required'),
-	colors: Yup.array()
-		.min(1, 'At least one color must be selected'),
-	type: Yup.string().required('Type of the coating is required')
+	name: Yup.string().required('Name is required'),
+	code: Yup.string().required('Code is required'),
+	colors: Yup.array().min(1, 'At least one color must be selected'),
+	type: Yup.string().required('Type of the coating is required'),
 });
 
 const colorsSchema = Yup.object().shape({
@@ -133,7 +167,7 @@ const colorsSchema = Yup.object().shape({
 		Yup.object().shape({
 			name: Yup.string().required('Name is required'),
 			code: Yup.string().required('Code is required'),
-		})
+		}),
 	),
 });
 
@@ -165,6 +199,8 @@ export {
 	purchaseOrderSchema,
 	CoatingSchema,
 	PaymentSchema,
+	userCreateSchema,
+	userEditSchema,
 	addCustomerModalSchema,
 	colorsSchema,
 	AddRawMaterialSchema,
