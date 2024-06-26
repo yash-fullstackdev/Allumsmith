@@ -1,5 +1,7 @@
 export enum PathRoutes {
 	product = '/product',
+	add_users = '/add-users-permissions',
+	users = '/users',
 	add_product = '/add-product',
 	multiple_edit_product = '/multiple-edit-product',
 	edit_product = '/edit-product',

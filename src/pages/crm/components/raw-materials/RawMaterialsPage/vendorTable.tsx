@@ -15,7 +15,6 @@ import { collection, deleteDoc, doc, getDocs, orderBy, query } from 'firebase/fi
 import { toast } from 'react-toastify';
 import { appPages } from '../../../../../config/pages.config';
 import Button from '../../../../../components/ui/Button';
-import { firestore } from '../../../../..';
 import getUserRights from '../../../../../hooks/useUserRights';
 import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
 import Card, {
@@ -53,7 +52,6 @@ const VendorTable = ({
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [helperId, setHelperId] = useState<string>('');
-
 
 	const { id } = useParams();
 
@@ -111,7 +109,7 @@ const VendorTable = ({
 							</svg>
 						</Button>
 					) : // </Link>
-						null}
+					null}
 					{privileges.canDelete() ? (
 						<Button onClick={() => handleClickDelete(info)}>
 							<svg
@@ -196,18 +194,15 @@ const VendorTable = ({
 						</Badge>
 					</CardHeaderChild>
 					<CardHeaderChild>
-
 						<Link to={id === 'new' ? `${listLinkPath}new` : `${listLinkPath}${id}`}>
 							<Button
 								variant='solid'
 								icon='HeroPlus'
 								onClick={() => setScModal(true)}
-								isDisable={!privileges.canWrite()}
-							>
+								isDisable={!privileges.canWrite()}>
 								Add Vendor
 							</Button>
 						</Link>
-
 					</CardHeaderChild>
 				</CardHeader>
 				<CardBody className='overflow-auto'>

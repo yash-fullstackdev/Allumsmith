@@ -16,7 +16,6 @@ import { toast } from 'react-toastify';
 import { ERPVendor } from '../../../../../mocks/db/users.db';
 import { appPages } from '../../../../../config/pages.config';
 import Button from '../../../../../components/ui/Button';
-import { firestore } from '../../../../..';
 import getUserRights from '../../../../../hooks/useUserRights';
 import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft } from '../../../../../components/layouts/Subheader/Subheader';
@@ -172,25 +171,27 @@ const RawMaterialsListPage = () => {
 			// const vendorRef = await getDocs(collection(firestore, firebaseMainKey));
 
 			// Define the collection reference
-			const componentCollectionRef = collection(firestore, firebaseMainKey);
 
-			const RawMaterialDocRef = await getDocs(
-				query(componentCollectionRef, where('componentType', '==', 'RAW MATERIAL PURCHASE')),
-			);
+			// const RawMaterialDocRef = await getDocs(
+			// 	query(
+			// 		componentCollectionRef,
+			// 		where('componentType', '==', 'RAW MATERIAL PURCHASE'),
+			// 	),
+			// );
 
 			const allRawMaterialData = [];
 
-			for (const rawMaterialData of RawMaterialDocRef.docs) {
-				const rawMaterialsWithData = {
-					...rawMaterialData.data(),
-					id: rawMaterialData.id,
-				};
-				allRawMaterialData.push(rawMaterialsWithData);
-			}
+			// for (const rawMaterialData of RawMaterialDocRef.docs) {
+			// 	const rawMaterialsWithData = {
+			// 		...rawMaterialData.data(),
+			// 		id: rawMaterialData.id,
+			// 	};
+			// 	allRawMaterialData.push(rawMaterialsWithData);
+			// }
 
-			setRawMaterialData(allRawMaterialData);
+			// setRawMaterialData(allRawMaterialData);
 
-			if (allRawMaterialData) setIsLoading(false);
+			// if (allRawMaterialData) setIsLoading(false);
 		} catch (error) {
 			console.error('Error fetching Raw Material: ', error);
 			setIsLoading(false);
@@ -207,17 +208,6 @@ const RawMaterialsListPage = () => {
 		console.log('info', info);
 	};
 
-	const handleDeleteRawMaterial = async () => {
-		try {
-			await deleteDoc(doc(firestore, firebaseMainKey, rawMaterialId));
-			toast.success('Raw Material Deleted Successfully !');
-			setDeleteModal(false);
-			getComponents();
-		} catch (error) {
-			console.error('Error deleting Vendors: ', error);
-			toast.error('Error Deleting Vendors');
-		}
-	};
 	const privileges = getUserRights('components');
 
 	return privileges.canRead() ? (
@@ -296,7 +286,7 @@ const RawMaterialsListPage = () => {
 							variant='outlined'>
 							Cancel
 						</Button>
-						<Button onClick={handleDeleteRawMaterial} color='red' variant='solid'>
+						<Button color='red' variant='solid'>
 							Delete
 						</Button>
 					</ModalFooterChild>

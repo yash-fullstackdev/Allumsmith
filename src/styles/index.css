@@ -134,6 +134,10 @@
 			display: none;
 		}
 
+		.cl-headerTitle {
+			color: black !important;
+		}
+
 		/* Hide scrollbar for IE, Edge and Firefox */
 		.no-scrollbar {
 			-ms-overflow-style: none; /* IE and Edge */
