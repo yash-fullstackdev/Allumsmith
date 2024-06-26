@@ -9,6 +9,8 @@ const userInitialPermission = {
 	'/add-invoice': true,
 	'/add-jobs': true,
 	'/add-ledger': true,
+	'/transport': true,
+	'/add-transport': true,
 	'/add-payment': true,
 	'/add-product': true,
 	'/add-purchase-order': true,
@@ -64,6 +66,7 @@ const pagesToCheck = [
 	'/invoice-list',
 	'/ledger-list',
 	'/add-payment',
+	'/transport'
 ];
 
 export { admins, userInitialPermission, pagesToCheck };
