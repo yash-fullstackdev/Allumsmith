@@ -42,11 +42,8 @@ const CustomerPage = () => {
     const navigate = useNavigate();
 
 
-
-
     const createCustomer = async () => {
 
-        console.log("entries", formData)
         try {
             const customer = await post('/customers', formData);
             console.log("customer", customer);
@@ -112,6 +109,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='email'>
                                                     Email
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     id="email"
@@ -124,6 +122,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='phone'>
                                                     Phone
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     id="phone"
@@ -161,6 +160,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='city'>
                                                     City
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     id="city"
@@ -173,6 +173,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-3'>
                                                 <Label htmlFor='state'>
                                                     State
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     id="state"
@@ -244,6 +245,7 @@ const CustomerPage = () => {
                                             <div className='col-span-12 lg:col-span-6'>
                                                 <Label htmlFor='address_line1'>
                                                     Address Line 1
+                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Textarea
                                                     id="address_line1"

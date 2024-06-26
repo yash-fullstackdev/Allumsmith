@@ -220,6 +220,37 @@ const transportSchema = Yup.object().shape({
 const updateTransportStatusSchema = Yup.object().shape({
 	status: Yup.string()
 		.required('Required is required'),
+
+});
+
+const addCustomerModalSchema = Yup.object().shape({
+	name: Yup.string()
+		.required('Name is required'),
+	email: Yup.string()
+		.email('Invalid Email')
+		.nullable(),
+	phone: Yup.number().required('Phone Number is required'),
+	zipcode: Yup.number().nullable(),
+	city: Yup.string()
+		.required('City is required'),
+	state: Yup.string()
+		.required('State is required'),
+	commercial_discount: Yup.number().positive("Commercial Discount much be positive").nullable(),
+	premium_discount: Yup.number().positive("Premium Discount much be positive").nullable(),
+	anodize_discount: Yup.number().positive("Anodize Discount much be positive").nullable(),
+	address_line1: Yup.string().nullable(),
+	address_line2: Yup.string().nullable(),
+}).test({
+	test(value) {
+		const { address_line1, address_line2 } = value;
+		if (!address_line1 && !address_line2) {
+			throw this.createError({
+				message: 'At least one of address is required',
+				path: 'address_line1',
+			});
+		}
+		return true;
+	},
 });
 
 const purchaseOrderSchema = Yup.object().shape({
@@ -242,6 +273,15 @@ const CoatingSchema = Yup.object().shape({
 	type: Yup.string().required('Type of the coating is required')
 });
 
+const colorsSchema = Yup.object().shape({
+	entries: Yup.array().of(
+		Yup.object().shape({
+			name: Yup.string().required('Name is required'),
+			code: Yup.string().required('Code is required'),
+		})
+	),
+});
+
 const PaymentSchema = Yup.object().shape({
 	payment_mode: Yup.string().required('Payment Mode is required'),
 	customer_id: Yup.string().required('Customer Name is Required'),
@@ -260,5 +300,7 @@ export {
 	CoatingSchema,
 	PaymentSchema,
 	transportSchema,
-	updateTransportStatusSchema
+	updateTransportStatusSchema,
+	addCustomerModalSchema,
+	colorsSchema,
 };
