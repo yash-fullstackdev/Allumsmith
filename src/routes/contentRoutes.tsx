@@ -45,6 +45,7 @@ import EditPurchaseOrderForm from '../pages/crm/PurchaseOrder/PurchaseOrderPage/
 import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/AddPurchaseOrderPage';
 import UsersPermissionPage from '../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
 import UserListPage from '../pages/crm/PermissionPage/UserListPage/UserListPage';
+import EditBulkProductPage from '../pages/crm/user/EditBulkProductPage/EditBulkProductPage';
 
 const contentRoutes: RouteProps[] = [
 	{
@@ -59,7 +60,10 @@ const contentRoutes: RouteProps[] = [
 		path: appPages.productPage.listPage.to,
 		element: <ProductListPage />,
 	},
-
+	{
+		path: appPages.productPage.editMultiplePageLink.to,
+		element: <EditBulkProductPage />,
+	},
 	{
 		path: `${appPages.productPage.addPageLink.to}`,
 		element: <AddProductPage />,

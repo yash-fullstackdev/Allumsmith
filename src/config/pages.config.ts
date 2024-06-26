@@ -27,6 +27,10 @@ export const appPages: any = {
 			id: 'editPageLink',
 			to: '/edit-product',
 		},
+		editMultiplePageLink: {
+			id: 'multipleEditPageLink',
+			to: '/multiple-edit-product',
+		},
 		identifier: 'product',
 	},
 	purchaseOrderPage: {
