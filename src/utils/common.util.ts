@@ -32,6 +32,7 @@ const togglePermissionAndUpdateInnerPages = (pageId: any, prevPermissions: any, 
 
 	return updatedPermissions;
 };
+
 const getAllInnerPages = (pageId: any, appPages: any) => {
 	const page = appPages[pageId.appKey];
 	if (page) {

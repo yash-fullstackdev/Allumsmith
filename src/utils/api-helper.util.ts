@@ -6,7 +6,7 @@ axiosInstance = axios.create({
 	// baseURL:'http://localhost:3000',
 	// baseURL:'http://107.23.131.22:3000',
 	// baseURL:'https://allumsmithbe.onrender.com',
-	baseURL: 'https://d006-122-179-153-131.ngrok-free.app',
+	baseURL: 'https://6214-122-179-153-131.ngrok-free.app',
 	// baseURL: 'https://api.erp.bitontree.co/',
 	// baseURL: process.env.NODE_ENV === 'development' ? 'http://54.221.115.45:3000' : '/api/',
 	// baseURL: import.meta.env.VITE_APP_API_ENDPOINT,
