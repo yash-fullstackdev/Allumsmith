@@ -242,14 +242,20 @@ const LedgerPage = () => {
 												</div>
 												<Collapse isOpen={!accordionStates.customerInfo}>
 													<div className='mt-2 grid grid-cols-12 gap-[10px] '>
-														<div className='col-span-12 lg:col-span-8'>
+														<div className='col-span-12 lg:col-span-4'>
 															<Label
 																htmlFor='name'
-																className='flex gap-1'>
-																Customer Name :
+																className='flex gap-1 whitespace-nowrap text-sm font-medium '>
+																Customer Name
 																<span>
 																	<h5>
-																		{formik.values.customerName}
+																		:
+																		<span className='mx-[2px]   font-normal'>
+																			{
+																				formik.values
+																					.customerName
+																			}
+																		</span>
 																	</h5>
 																</span>
 															</Label>
@@ -258,45 +264,59 @@ const LedgerPage = () => {
 														<div className='col-span-12 lg:col-span-4'>
 															<Label
 																htmlFor='name'
-																className='flex gap-1'>
+																className='flex gap-1 text-sm font-medium'>
 																Phone :
 																<span>
-																	<h5>{formik.values.phone}</h5>
-																</span>
-															</Label>
-														</div>
-
-														<div className='col-span-12 lg:col-span-8'>
-															<Label
-																htmlFor='name'
-																className='flex gap-1'>
-																Address :
-																<span>
-																	<h5>
-																		{formik.values.address_line1?.toUpperCase()}
+																	<h5 className='font-normal'>
+																		{formik.values.phone}
 																	</h5>
 																</span>
 															</Label>
 														</div>
 														<div className='col-span-12 lg:col-span-4'>
 															<Label
-																htmlFor='name'
-																className='flex gap-1'>
-																Email:
+																htmlFor='email'
+																className='flex gap-1 text-sm font-medium '>
+																Email
 																<span>
-																	<h5>{formik.values.email}</h5>
+																	<h5>
+																		:
+																		<span className='mx-[2px]  font-normal'>
+																			{formik.values.email}
+																		</span>
+																	</h5>
 																</span>
 															</Label>
 														</div>
-														<div className='col-span-12 lg:col-span-6'>
+
+														<div className='col-span-12'>
 															<Label
 																htmlFor='name'
-																className='flex gap-1'>
-																Address Line 2 :
+																className='flex gap-1 text-sm font-medium '>
+																Address
 																<span>
 																	<h5>
-																		{formik?.values.address_line2?.toUpperCase() ||
-																			'NA'}
+																		:
+																		<span className='mx-[2px]  font-normal'>
+																			{formik.values.address_line1?.toUpperCase()}
+																		</span>
+																	</h5>
+																</span>
+															</Label>
+														</div>
+
+														<div className='col-span-12 '>
+															<Label
+																htmlFor='name'
+																className='flex gap-1 text-sm font-medium'>
+																Address Line 2
+																<span>
+																	<h5>
+																		:
+																		<span className='mx-[2px] font-normal'>
+																			{formik?.values.address_line2?.toUpperCase() ||
+																				'NA'}
+																		</span>
 																	</h5>
 																</span>
 															</Label>
