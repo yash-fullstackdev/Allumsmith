@@ -1,4 +1,17 @@
 export const appPages: any = {
+	adminPage: {
+		userListPage: {
+			id: 'usersListPage',
+			to: '/users',
+			text: 'Users',
+			icon: 'DuoKey',
+		},
+		userPermissionPage: {
+			id: 'add-users-Page',
+			to: '/add-users-permissions',
+		},
+		identifier: 'user-permissions',
+	},
 	productPage: {
 		listPage: {
 			id: 'productPage',
@@ -314,7 +327,7 @@ export const appPages: any = {
 export const authPages = {
 	loginPage: {
 		id: 'loginPage',
-		to: '/login',
+		to: '/sign-in/*',
 		text: 'Login',
 		icon: 'HeroArrowRightOnRectangle',
 	},
@@ -332,7 +345,7 @@ export const authPages = {
 	},
 	signUpPage: {
 		id: 'signupPage',
-		to: '/signup',
+		to: '/sign-up/*',
 		text: 'signup',
 		icon: 'HeroArrowRightOnRectangle',
 	},

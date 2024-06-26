@@ -46,9 +46,19 @@ import AddPurchaseOrderPage from '../pages/crm/PurchaseOrder/PurchaseOrderPage/A
 import TransportPage from '../pages/crm/Transport/TransportListPage/Transport';
 import AddTransportForm from '../pages/crm/Transport/TransportPage/AddTransportForm';
 
+import UsersPermissionPage from '../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
+import UserListPage from '../pages/crm/PermissionPage/UserListPage/UserListPage';
 import EditBulkProductPage from '../pages/crm/user/EditBulkProductPage/EditBulkProductPage';
 
 const contentRoutes: RouteProps[] = [
+	{
+		path: appPages.adminPage.userPermissionPage.to,
+		element: <UsersPermissionPage />,
+	},
+	{
+		path: appPages.adminPage.userListPage.to,
+		element: <UserListPage />,
+	},
 	{
 		path: appPages.productPage.listPage.to,
 		element: <ProductListPage />,
