@@ -15,7 +15,9 @@ import Subheader, {
 import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import Textarea from '../../../../components/form/Textarea';
-import axios from 'axios';
+import UploadFile from '../../../../components/form/UploadFile';
+import Icon from '../../../../components/icon/Icon';
+import Tooltip from '../../../../components/ui/Tooltip';
 
 const CustomerPage = () => {
 	const [formData, setFormData] = useState({
@@ -36,7 +38,7 @@ const CustomerPage = () => {
 	});
 
 	const [fileErrors, setFileErrors] = useState<string[]>([]);
-	const [selectedFileNames, setSelectedFileNames] = useState<any>('No file chosen');
+	const [selectedFileNames, setSelectedFileNames] = useState<any>([]);
 
 	const handleChange = (e: any) => {
 		const { name, value, type, checked } = e.target;
@@ -61,8 +63,8 @@ const CustomerPage = () => {
 		});
 
 		try {
-			const customer = await axios.post(
-				'https://e073-122-179-153-131.ngrok-free.app/customers',
+			const customer = await post(
+				'/customers',
 				formDataValue,
 				{
 					headers: {
@@ -89,6 +91,7 @@ const CustomerPage = () => {
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX files (Microsoft Word)
 			'application/vnd.apple.pages', // Apple Pages documents
 		];
+		setFileErrors([]);
 
 		const errors: string[] = [];
 		const selectedNames: string[] = [];
@@ -96,23 +99,25 @@ const CustomerPage = () => {
 
 		for (let i = 0; i < files?.length; i++) {
 			const file = files[i];
-			// Object.assign(file, { fieldname: 'file' });
-			fileData.push(file);
-			selectedNames.push(file.name);
-			if (!allowedTypes.includes(file.type)) {
-				errors.push(`${file.name} is not a valid file type.`);
+			if (!selectedFileNames?.includes(file.name)) {
+				fileData.push(file);
+				selectedNames.push(file.name);
+				if (!allowedTypes.includes(file.type)) {
+					errors.push(`${file.name} is not a valid file type.`);
+				}
 			}
 		}
+		const filesDate = [...formData.file, ...fileData];
+		const selectedFilesName = [...selectedFileNames, ...selectedNames];
 
 		if (errors?.length > 0) {
 			setFileErrors(errors);
 		} else {
-			setFileErrors([]);
-			setSelectedFileNames(selectedNames);
+			setSelectedFileNames(selectedFilesName);
 			// Update formData with selected files
 			setFormData((prevState: any) => ({
 				...prevState,
-				file: Array.from(fileData),
+				file: Array.from(filesDate),
 			}));
 		}
 	};
@@ -124,14 +129,25 @@ const CustomerPage = () => {
 		}
 	};
 
+	const handleRemoveFile = (index?: number | null) => {
+		if (index !== null) {
+			const fileArray = formData?.file?.filter((_: any, idx: number) => idx !== index)
+			const removeFileNames = selectedFileNames?.filter((_: any, idx: number) => idx !== index)
+			setSelectedFileNames(removeFileNames)
+			setFormData((prevState: any) => ({
+				...prevState,
+				file: fileArray,
+			}));
+		}
+	}
+
 	const removeFiles = () => {
-		setSelectedFileNames('No file chosen');
+		setSelectedFileNames([]);
 		setFormData((prevState) => ({
 			...prevState,
 			file: [],
 		}));
 	};
-
 	return (
 		<PageWrapper name='ADD Customer' isProtectedRoute={true}>
 			<Subheader>
@@ -294,39 +310,28 @@ const CustomerPage = () => {
 												{/* ... Error handling for zipcode field */}
 											</div>
 
-											<div className='col-span-12'>
-												<Label htmlFor='upload Documents'>
-													Upload Documents
-												</Label>
-												<div className='flex flex-col  gap-2'>
-													<div className='flex items-center gap-2 '>
-														<div className='w-[108px]'>
-															<Input
-																name='file'
-																type='file'
-																multiple
-																accept='.pdf,.jpeg,.png,.doc,.docx,.pages'
-																onChange={handleFileChange}
-																id='file-upload'
+											<div className='col-span-12 mt-2'>
+												<div className='flex items-center justify-between'>
+													<Label htmlFor='upload Documents'>
+														Upload Documents
+													</Label>
+													{selectedFileNames?.length > 0 ? (
+														<Tooltip text={"Remove All Files"} placement='left'>
+															<Icon
+																className='mx-2 cursor-pointer w-8 h-8'
+																icon={'CrossIcon'}
+																onClick={removeFiles}
 															/>
-														</div>
-
-														{selectedFileNames !== 'No file chosen' && (
-															<Button
-																variant='solid'
-																color='red'
-																className='border-1 h-fit w-fit px-2 py-1'
-																onClick={removeFiles}>
-																Remove Files
-															</Button>
-														)}
-														<label
-															htmlFor='file-upload'
-															className='flex cursor-pointer items-center gap-1'>
-															<span>{selectedFileNames}</span>
-														</label>
-													</div>
+														</Tooltip>
+													) : null}
 												</div>
+												<UploadFile
+													handleFileChange={handleFileChange}
+													multiple
+													value={selectedFileNames}
+													handleRemoveFile={handleRemoveFile}
+												/>
+
 												{fileErrors?.length > 0 && (
 													<ul className='text-red-500'>
 														{fileErrors.map((error, index) => (
