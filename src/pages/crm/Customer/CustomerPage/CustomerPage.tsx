@@ -300,15 +300,16 @@ const CustomerPage = () => {
 												</Label>
 												<div className='flex flex-col  gap-2'>
 													<div className='flex items-center gap-2 '>
-														<Input
-															name='file'
-															type='file'
-															multiple
-															className='w-[107px]'
-															accept='.pdf,.jpeg,.png'
-															onChange={handleFileChange}
-															id='file-upload'
-														/>
+														<div className='w-[108px]'>
+															<Input
+																name='file'
+																type='file'
+																multiple
+																accept='.pdf,.jpeg,.png,.doc,.docx,.pages'
+																onChange={handleFileChange}
+																id='file-upload'
+															/>
+														</div>
 
 														{selectedFileNames !== 'No file chosen' && (
 															<Button
