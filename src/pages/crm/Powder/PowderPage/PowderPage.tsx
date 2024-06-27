@@ -13,6 +13,7 @@ import _ from 'lodash';
 import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
 import TableTemplate from '../../../../templates/common/TableParts.template';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
+import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();
 const PowderInventoryListPage = () => {
@@ -167,12 +168,14 @@ const PowderInventoryListPage = () => {
                             <CardTitle><h1>Raw Material Inventory</h1></CardTitle>
                         </CardHeaderChild>
                         <div className='flex justify-end gap-5'>
+                            <PermissionGuard permissionType='write'>
                             <Button variant='solid' icon='HeroPlus' onClick={() => setAddPowderModal(true)}>
                                 Add Raw Material
                             </Button>
                             <Button variant='solid' icon='HeroPlus' onClick={() => setPowderQuantityModal(true)}>
                                 Add Raw Material Quantity
                             </Button>
+                            </PermissionGuard>
                         </div>
                     </CardHeader>
                     <CardBody>

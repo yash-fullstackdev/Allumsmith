@@ -12,7 +12,6 @@
 // import { toast } from 'react-toastify';
 // import SelectReact from '../../../../components/form/SelectReact';
 
-
 // const AddproductForm = () => {
 //   const [formSubmitted, setFormSubmitted] = useState(false);
 //   const [entries, setEntries] = useState<any>([{ product: '', requiredQuantity: '', }]);
@@ -31,13 +30,9 @@
 //     }
 //   };
 
-
-
 //   const handleAddEntry = () => {
 //     setEntries([...entries, { product: '', requiredQuantity: '', }]);
 //   };
-
-
 
 //   const handleSaveEntries = async () => {
 //     const duplicateProductIds = entries
@@ -65,7 +60,6 @@
 
 //   };
 
-
 //   const handleDeleteProduct = (index: any) => {
 //     const newProduct = [...entries]
 //     newProduct.splice(index, 1)
@@ -91,7 +85,6 @@
 //       console.error('Error fetching users:', error.message);
 //     }
 //   }
-
 
 //   useEffect(() => {
 //     fetchVendorData();
@@ -180,7 +173,7 @@
 //                       }}
 //                     >
 //                       {productListData.map((data: any) => (
-//                         <option key={data._id} value={data._id}>  
+//                         <option key={data._id} value={data._id}>
 //                           {data.name} ({data.productCode})
 //                         </option>
 //                       ))}
@@ -247,7 +240,6 @@
 
 // export default AddproductForm;
 
-
 import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import { useFormik } from 'formik';
@@ -264,238 +256,321 @@ import SelectReact from '../../../../components/form/SelectReact';
 import { purchaseOrderSchema } from '../../../../utils/formValidations';
 
 const AddPurchaseOrderForm = () => {
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [entries, setEntries] = useState([{ product: '', requiredQuantity: '' }]);
-  const [vendorId, setVendorId] = useState('');
-  const [vendorData, setVendorData] = useState<any>([]);
-  const [productListData, setProductListData] = useState<any>([]);
-  const [purchaseOrderNum, setPurchaseOrderNum] = useState<string>('');
-  const navigate = useNavigate();
+	const [formSubmitted, setFormSubmitted] = useState(false);
+	const [entries, setEntries] = useState([
+		{
+			product: '',
+			requiredQuantity: '',
+		},
+	]);
+	const [vendorId, setVendorId] = useState('');
+	const [vendorData, setVendorData] = useState<any>([]);
+	const [productListData, setProductListData] = useState<any>([]);
+	const [purchaseOrderNum, setPurchaseOrderNum] = useState<string>('');
+	const navigate = useNavigate();
 
-  const formik: any = useFormik({
-    initialValues: {
-      vendor: '',
-      entries: [{ product: '', requiredQuantity: '' }],
-    },
-    validationSchema: purchaseOrderSchema,
-    onSubmit:() => {}
-  });
+	const formik: any = useFormik({
+		initialValues: {
+			vendor: '',
+			entries: [{ product: '', requiredQuantity: '' }],
+		},
+		validationSchema: purchaseOrderSchema,
+		onSubmit: () => {},
+	});
 
-  const fetchPurchaseOrderNumber = async () => {
-    try {
-      const {data} = await get('/counter/purchaseOrderNumber')
-      setPurchaseOrderNum(`PO${data.value}`)
-    } catch (error:any) {
-      console.log(error.message);
-    }
-  }
-  
-  useEffect(() => {
-    fetchData();
-    fetchVendorData();
-    fetchPurchaseOrderNumber()
-  }, []);
+	const fetchPurchaseOrderNumber = async () => {
+		try {
+			const { data } = await get('/counter/purchaseOrderNumber');
+			setPurchaseOrderNum(`PO${data.value}`);
+		} catch (error: any) {
+			console.log(error.message);
+		}
+	};
 
-  const fetchData = async () => {
-    try {
-      const { data: allProductList } = await get(`/products`);
-      setProductListData(allProductList?.data);
-    } catch (error: any) {
-      console.error('Error fetching products:', error.message);
-    }
-  };
+	useEffect(() => {
+		fetchData();
+		fetchVendorData();
+		fetchPurchaseOrderNumber();
+	}, []);
 
-  const fetchVendorData = async () => {
-    try {
-      const { data: allVendorData } = await get('/vendors');
-      setVendorData(allVendorData);
-    } catch (error: any) {
-      console.error('Error fetching vendors:', error.message);
-    }
-  };
+	const fetchData = async () => {
+		try {
+			const { data: allProductList } = await get(`/products`);
+			setProductListData(allProductList?.data);
+		} catch (error: any) {
+			console.error('Error fetching products:', error.message);
+		}
+	};
 
-  const handleAddEntry = () => {
-    setEntries([...entries, { product: '', requiredQuantity: '' }]);
-  };
+	const fetchVendorData = async () => {
+		try {
+			const { data: allVendorData } = await get('/vendors');
+			setVendorData(allVendorData);
+		} catch (error: any) {
+			console.error('Error fetching vendors:', error.message);
+		}
+	};
 
-  const showProductDetails = (productArray: any, productId: string): string => {
-    const {name,productCode,length,thickness} = productArray.find((product:any) => product._id.toString() === productId.toString())
-    return `${name} (${productCode}) (${length}) (${thickness})`
-  }
+	const handleAddEntry = () => {
+		setEntries([
+			...entries,
+			{
+				product: '',
+				requiredQuantity: '',
+			},
+		]);
+	};
 
 
-  const handleSaveEntries = async () => {
-        const duplicateProductIds = entries
-          .map((entry: any) => entry.product)
-          .filter((productId: any, index: any, array: any) => array.indexOf(productId) !== index);
-        if (duplicateProductIds.length > 0) {
-          toast.error('You have selected the same product more than once');
-          return;
-        }
-        const finalValues = {
-          vendor: vendorId,
-          products: formik.values.entries,
-          po_number: purchaseOrderNum
-        };
-    
-        try {
-          const check = await formik.validateForm();
+	const showProductDetails = (productArray: any, productId: string): string => {
+		const { name, productCode, length, thickness } = productArray.find(
+			(product: any) => product._id.toString() === productId.toString(),
+		);
+		return `${name} (${productCode}) (${length}) (${thickness})`;
+	};
 
-            const handleNestedErrors = (errors: any, prefix = '') => {
-                //  logic to touch the field which are not validated
-                Object.keys(errors).forEach((errorField) => {
-                    const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
+	const handleSaveEntries = async () => {
+		const duplicateProductIds = entries
+			.map((entry: any) => entry.product)
+			.filter((productId: any, index: any, array: any) => array.indexOf(productId) !== index);
+		if (duplicateProductIds.length > 0) {
+			toast.error('You have selected the same product more than once');
+			return;
+		}
+		const finalValues = {
+			vendor: vendorId,
+			products: formik.values.entries,
+			po_number: purchaseOrderNum,
+		};
 
-                    if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
-                        // Recursive call for nested errors
-                        handleNestedErrors(errors[errorField], fieldName);
-                    } else {
-                        // Set the field as touched and set the error
-                        formik.setFieldTouched(fieldName, true, false);
-                        formik.setFieldError(fieldName, errors[errorField]);
-                    }
-                });
-            };
+		try {
+			const check = await formik.validateForm();
 
-            if (Object.keys(check).length > 0) {
-                handleNestedErrors(check);
+			const handleNestedErrors = (errors: any, prefix = '') => {
+				//  logic to touch the field which are not validated
+				Object.keys(errors).forEach((errorField) => {
+					const fieldName = prefix ? `${prefix}.${errorField}` : errorField;
 
-                toast.error(`Please fill all the mandatory fields and check all formats`);
-                return;
-            }
-          
-          const { data } = await post("/purchase-order", finalValues);
-          toast.success('Purchase Order Created Successfully!');
-          navigate(PathRoutes.purchase_order);
-        } catch (error: any) {
-          toast.error(error.response.data.message, error);
-        }
-    
-      };
+					if (typeof errors[errorField] === 'object' && errors[errorField] !== null) {
+						// Recursive call for nested errors
+						handleNestedErrors(errors[errorField], fieldName);
+					} else {
+						// Set the field as touched and set the error
+						formik.setFieldTouched(fieldName, true, false);
+						formik.setFieldError(fieldName, errors[errorField]);
+					}
+				});
+			};
 
-  const handleDeleteProduct = (index: number) => {
-    const newEntries = [...entries];
-    newEntries.splice(index, 1);
-    setEntries(newEntries);
-  };
+			if (Object.keys(check).length > 0) {
+				handleNestedErrors(check);
 
-  return (
-    <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-      <Card>
-        <CardBody>
-          <div className='flex'>
-            <div className='bold w-full'>
-              <Button
-                variant='outlined'
-                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-              >
-                Add Purchase Order
-              </Button>
-            </div>
-          </div>
-          <form onSubmit={formik.handleSubmit}>
-            <div>
-              <div className='mt-2 flex gap-1'>
-                <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
-                  <Label htmlFor='vendor'>
-                    Vendor
-                    <span className='ml-1 text-red-500'>*</span>
-                  </Label>
-                  <SelectReact
-                    options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
-                    value={vendorId ? { value: vendorId, label: vendorData.find((vendor: any) => vendor._id === vendorId)?.name } : null}
-                    onChange={(selectedOption: any) => {
-                      setVendorId(selectedOption.value);
-                      formik.setFieldValue('vendor', selectedOption.value);
-                    }}
-                    onBlur={formik.handleBlur}
-                    name='vendor'
-                  />
-                  {formik.errors.vendor && formik.touched.vendor && (
-                    <div className='text-red-500'>{formik.errors.vendor}</div>
-                  )}
-                  </div>
-                  
-                  <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
-                  <Label htmlFor='po-number'>
-                    PO-Number
-                    <span className='ml-1 text-red-500'>*</span>
-                  </Label>
-                  <Input
-                    value={purchaseOrderNum}
-                    name='po-number'
-                    id='po-number'
-                    disabled
-                  />
-                </div>
-              </div>
-              
-              
-              {entries.map((entry: any, index: number) => (
-                <div key={index} className='mt-2 grid grid-cols-4 gap-1'>
-                  <div className='col-span-12 lg:col-span-2'>
-                    <Label htmlFor={`product-${index}`}>
-                      Products
-                      <span className='ml-1 text-red-500'>*</span>
-                    </Label>
-                    <SelectReact
-                      options={productListData.map((product: any) => ({
-                        value: product._id,
-                        label: `${product.name} (${product.productCode}) (L ${product.length}) (T ${product?.thickness})`,
-                      }))}
-                      value={entry.product ? { value: entry.product, label: showProductDetails(productListData,entry.product) } : null}
-                      onChange={(selectedOption: any) => {
-                        const updatedEntries = [...entries];
-                        updatedEntries[index].product = selectedOption.value;
-                        formik.setFieldValue(`entries[${index}].product`, selectedOption.value);
-                        setEntries(updatedEntries);
-                      }}
-                      name={`entries[${index}].product`}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].product && (
-                      <div className='text-red-500'>{formik.errors.entries[index].product}</div>
-                    )}
+				toast.error(`Please fill all the mandatory fields and check all formats`);
+				return;
+			}
 
-                  </div>
-                  <div className='col-span-12 lg:col-span-2'>
-                    <Label htmlFor={`hsn-${index}`}>
-                      Quantity
-                      <span className='ml-1 text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      type='number'
-                      id={`hsn-${index}`}
-                      name={`hsn-${index}`}
-                      value={entry.requiredQuantity}
-                      onChange={(e) => {
-                        const updatedEntries = [...entries];
-                        updatedEntries[index].requiredQuantity = e.target.value;
-                        formik.setFieldValue(`entries[${index}].requiredQuantity`, e.target.value);
-                        setEntries(updatedEntries);
-                      }}
-                    />
-                     {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].requiredQuantity && (
-                      <div className='text-red-500'>{formik.errors.entries[index].requiredQuantity}</div>
-                    )}
+			const { data } = await post('/purchase-order', finalValues);
+			toast.success('Purchase Order Created Successfully!');
+			navigate(PathRoutes.purchase_order);
+		} catch (error: any) {
+			toast.error(error.response.data.message, error);
+		}
+	};
 
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className='flex mt-2 gap-2 '>
-              <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
-                Add Entry
-              </Button>
-              <Button variant='solid' color='blue' onClick={handleSaveEntries}>
-                Save Entries
-              </Button>
-            </div>
-          </form>
-        </CardBody>
-      </Card>
-    </div>
-  );
+	const handleDeleteProduct = (index: number) => {
+		const newEntries = [...entries];
+		newEntries.splice(index, 1);
+		setEntries(newEntries);
+	};
+
+	return (
+		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
+			<Card>
+				<CardBody>
+					<div className='flex'>
+						<div className='bold w-full'>
+							<Button
+								variant='outlined'
+								className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'>
+								Add Purchase Order
+							</Button>
+						</div>
+					</div>
+					<form onSubmit={formik.handleSubmit}>
+						<div>
+							<div className='mt-2 flex gap-1'>
+								<div className='col-span-4 mt-5 flex-1 lg:col-span-4'>
+									<Label htmlFor='vendor'>
+										Vendor
+										<span className='ml-1 text-red-500'>*</span>
+									</Label>
+									<SelectReact
+										options={vendorData.map((vendor: any) => ({
+											value: vendor._id,
+											label: vendor.name,
+										}))}
+										value={
+											vendorId
+												? {
+														value: vendorId,
+														label: vendorData.find(
+															(vendor: any) =>
+																vendor._id === vendorId,
+														)?.name,
+												  }
+												: null
+										}
+										onChange={(selectedOption: any) => {
+											setVendorId(selectedOption.value);
+											formik.setFieldValue('vendor', selectedOption.value);
+										}}
+										onBlur={formik.handleBlur}
+										name='vendor'
+									/>
+									{formik.errors.vendor && formik.touched.vendor && (
+										<div className='text-red-500'>{formik.errors.vendor}</div>
+									)}
+								</div>
+
+								<div className='col-span-4 mt-5 flex-1 lg:col-span-4'>
+									<Label htmlFor='po-number'>
+										PO-Number
+										<span className='ml-1 text-red-500'>*</span>
+									</Label>
+									<Input
+										value={purchaseOrderNum}
+										name='po-number'
+										id='po-number'
+										disabled
+									/>
+								</div>
+							</div>
+
+							{entries.map((entry: any, index: number) => (
+                <>
+									<div className='mt-2 flex items-end justify-end'>
+										{entries.length > 1 && (
+											<div className='flex items-end justify-end'>
+												<Button
+													type='button'
+													onClick={() => handleDeleteProduct(index)}
+													variant='outlined'
+													color='red'>
+													<svg
+														xmlns='http://www.w3.org/2000/svg'
+														fill='none'
+														viewBox='0 0 24 24'
+														strokeWidth='1.5'
+														stroke='currentColor'
+														data-slot='icon'
+														className='h-6 w-6'>
+														<path
+															strokeLinecap='round'
+															strokeLinejoin='round'
+															d='M6 18 18 6M6 6l12 12'
+														/>
+													</svg>
+												</Button>
+											</div>
+										)}
+									</div>
+								<div key={index} className='mt-2 grid grid-cols-4 gap-1'>
+									<div className='col-span-12 lg:col-span-2'>
+										<Label htmlFor={`product-${index}`}>
+											Products
+											<span className='ml-1 text-red-500'>*</span>
+										</Label>
+										<SelectReact
+											options={productListData.map((product: any) => ({
+												value: product._id,
+												label: `${product.name} (${product.productCode}) (L ${product.length}) (T ${product?.thickness})`,
+											}))}
+											value={
+												entry.product
+													? {
+															value: entry.product,
+															label: showProductDetails(
+																productListData,
+																entry.product,
+															),
+													  }
+													: null
+											}
+											onChange={(selectedOption: any) => {
+												const updatedEntries = [...entries];
+												updatedEntries[index].product =
+													selectedOption.value;
+												formik.setFieldValue(
+													`entries[${index}].product`,
+													selectedOption.value,
+												);
+												setEntries(updatedEntries);
+											}}
+											name={`entries[${index}].product`}
+											onBlur={formik.handleBlur}
+										/>
+										{formik.touched.entries &&
+											formik.touched.entries[index] &&
+											formik.errors.entries &&
+											formik.errors.entries[index] &&
+											formik.errors.entries[index].product && (
+												<div className='text-red-500'>
+													{formik.errors.entries[index].product}
+												</div>
+											)}
+									</div>
+									<div className='col-span-12 lg:col-span-2'>
+										<Label htmlFor={`hsn-${index}`}>
+											Quantity
+											<span className='ml-1 text-red-500'>*</span>
+										</Label>
+										<Input
+											type='number'
+											id={`hsn-${index}`}
+											name={`hsn-${index}`}
+											value={entry.requiredQuantity}
+											onChange={(e) => {
+												const updatedEntries = [...entries];
+												updatedEntries[index].requiredQuantity =
+													e.target.value;
+												formik.setFieldValue(
+													`entries[${index}].requiredQuantity`,
+													e.target.value,
+												);
+												setEntries(updatedEntries);
+											}}
+										/>
+										{formik.touched.entries &&
+											formik.touched.entries[index] &&
+											formik.errors.entries &&
+											formik.errors.entries[index] &&
+											formik.errors.entries[index].requiredQuantity && (
+												<div className='text-red-500'>
+													{formik.errors.entries[index].requiredQuantity}
+												</div>
+											)}
+									</div>
+								</div>
+                </>
+							))}
+						</div>
+						<div className='mt-2 flex gap-2 '>
+							<Button
+								variant='solid'
+								color='blue'
+								type='button'
+								onClick={handleAddEntry}>
+								Add Entry
+							</Button>
+							<Button variant='solid' color='blue' onClick={handleSaveEntries}>
+								Save Entries
+							</Button>
+						</div>
+					</form>
+				</CardBody>
+			</Card>
+		</div>
+	);
 };
 
 export default AddPurchaseOrderForm;

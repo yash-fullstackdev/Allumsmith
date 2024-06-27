@@ -14,47 +14,59 @@ const shouldRedirectOrShowLoader = (
 	);
 };
 
+
+
 const togglePermissionAndUpdateInnerPages = (
 	pageId: any,
 	prevPermissions: any,
 	appPages: any,
-	permission:any,
-	writeRemove?:any
+	permission: any,
+	writeRemove?: any
 ) => {
-	let updatedPermissions:any = {
+	let updatedPermissions: any = {
 		...prevPermissions
+	};
+
+	switch (permission) {
+		case "read":
+			updatedPermissions = {
+				...prevPermissions,
+				[pageId.to]: !prevPermissions[pageId.to],
+			};
+			break;
+
+		case "write":
+			if (!writeRemove) {
+				const pagesToUpdate = getAllInnerPages(pageId, appPages);
+				pagesToUpdate.forEach((page: any) => {
+					updatedPermissions = {
+						...updatedPermissions,
+						[page]: true,
+					};
+				});
+			}
+			break;
+
+		case "delete":
+			updatedPermissions = {
+				...prevPermissions,
+				[pageId.to]: true,
+			};
+			break;
+
+		default:
+			break;
 	}
 
-	if(permission === "read"){
-		 updatedPermissions = {
-			...prevPermissions,
-			[pageId.to]: !prevPermissions[pageId.to],
-		};
-	}
- 
-    if( updatedPermissions[pageId.to] && writeRemove){
+	if (writeRemove) {
 		const pagesToUpdate = getAllInnerPages(pageId, appPages);
 		pagesToUpdate.forEach((page: any) => {
-			// console.log(page !== updatedPermissions[pageId.to],page ,updatedPermissions[pageId.to],)
-			if(page !== pageId.to){
+			if (page !== pageId.to) {
 				updatedPermissions = {
 					...updatedPermissions,
 					[page]: false,
 				};
 			}
-		});
-	}
-
-	// Allow all inner routes if the parent route is allowed
-	if ( permission === "write"&& !writeRemove) {
-		const pagesToUpdate = getAllInnerPages(pageId, appPages);
-		pagesToUpdate.forEach((page: any) => {
-			// if(page !== updatedPermissions[pageId.to]){
-				updatedPermissions = {
-					...updatedPermissions,
-					[page]: true,
-				};
-			// }
 		});
 	}
 

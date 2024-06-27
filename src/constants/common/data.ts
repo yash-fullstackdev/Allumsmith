@@ -66,4 +66,5 @@ const pagesToCheck = [
 	'/add-payment',
 ];
 
-export { admins, userInitialPermission, pagesToCheck };
+const permissionsTypes = ['read', 'write', 'delete'];
+export { admins, userInitialPermission, pagesToCheck, permissionsTypes };

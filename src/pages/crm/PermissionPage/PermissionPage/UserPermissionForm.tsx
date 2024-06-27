@@ -18,8 +18,12 @@ import Input from '../../../../components/form/Input';
 import Icon from '../../../../components/icon/Icon';
 import { toast } from 'react-toastify';
 import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
-import { pagesToCheck, userInitialPermission } from '../../../../constants/common/data';
-import { useLocation } from 'react-router-dom';
+import {
+	pagesToCheck,
+	permissionsTypes,
+	userInitialPermission,
+} from '../../../../constants/common/data';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { userInitialValues } from '../../../../utils/initialValues';
 import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 import { get, post, put } from '../../../../utils/api-helper.util';
@@ -31,10 +35,11 @@ const UserPermissionForm = () => {
 	const [permissions, setPermissions] = useState<any>({});
 	const [isAllPermissions, setIsAllPermissions] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [permissionCred,setPermissionsCred] = useState<any>({})
+	const [permissionCred, setPermissionsCred] = useState<any>({});
 
 	// Extracting userId from query params
 	const location = useLocation();
+	const navigate = useNavigate();
 	const searchParams = new URLSearchParams(location.search);
 	const userId = searchParams.get('id');
 
@@ -75,6 +80,7 @@ const UserPermissionForm = () => {
 					userRole: permission.userRole,
 				});
 				setPermissions(permission.permissions);
+				setPermissionsCred(permission?.permissionsCred);
 			}
 		};
 
@@ -96,7 +102,7 @@ const UserPermissionForm = () => {
 				publicMetadata: {
 					permissions: filterPermissions(permissions),
 					userRole: values?.userRole,
-					permissionsCred: permissionCred
+					permissionsCred: permissionCred,
 				},
 			};
 
@@ -112,6 +118,7 @@ const UserPermissionForm = () => {
 			setPermissions({});
 			setIsAllPermissions(false);
 			resetForm();
+			navigate('/users');
 
 			toast.success(!userId ? 'User created successfully' : 'User updated successfully');
 		} catch (error: any) {
@@ -137,37 +144,46 @@ const UserPermissionForm = () => {
 	};
 
 	// Function to toggle individual permissions
-	const togglePermission = (pageId: any, type: any,writeRemove:any) => {
-		
+	const togglePermission = (pageId: any, type: any, writeRemove: any) => {
 		setPermissionsCred((prevPermissions: any) => {
 			const updatedPermissions = {
 				...prevPermissions,
 				[pageId?.to]: {
-					...(prevPermissions[pageId?.to] || { read: false, write: false, delete: false }),
+					...(prevPermissions[pageId?.to] || {
+						read: false,
+						write: false,
+						delete: false,
+					}),
 					[type]: !prevPermissions[pageId?.to]?.[type],
 				},
 			};
-	
+
 			// Ensure 'read' is true if 'write' or 'delete' is being toggled on
 			if ((type === 'write' || type === 'delete') && updatedPermissions[pageId?.to][type]) {
 				updatedPermissions[pageId?.to].read = true;
 			}
-	
+
 			// Ensure 'write' and 'delete' are false if 'read' is set to false
 			if (type === 'read' && !updatedPermissions[pageId?.to].read) {
 				updatedPermissions[pageId?.to].write = false;
 				updatedPermissions[pageId?.to].delete = false;
 			}
-	
+
 			return updatedPermissions;
 		});
 
 		setPermissions((prevPermissions: any) => {
-			return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, appPages, type ,writeRemove);
+			return togglePermissionAndUpdateInnerPages(
+				pageId,
+				prevPermissions,
+				appPages,
+				type,
+				writeRemove,
+			);
 		});
 	};
 
-	console.log(permissions,permissionCred, 'ASdsd');
+	console.log(permissions, permissionCred, 'ASdsd');
 
 	// Helper function to conditionally render elements based on userId presence
 	const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
@@ -183,14 +199,12 @@ const UserPermissionForm = () => {
 		return permissions[page] === true;
 	});
 
-	const permissionsTypes = ['write', 'delete'];
-
 	// useEffect to set isAllPermissions based on permissions changes
 	useEffect(() => {
 		setIsAllPermissions(allPermissionsTrue);
 	}, [permissions]);
 
-	console.log(permissions,permissionCred, 'Asdasdd');
+	console.log(permissions, permissionCred, 'Asdasdd');
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
@@ -331,7 +345,7 @@ const UserPermissionForm = () => {
 
 												{/* Permission section */}
 
-												<div className='rounded-lg bg-white p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]'>
+												<div className='rounded-lg bg-white p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] dark:bg-[#09090b]'>
 													<CardTitle>
 														<div className='flex flex-col  gap-2'>
 															<div>Add Privileges</div>
@@ -346,39 +360,23 @@ const UserPermissionForm = () => {
 															</div>
 														</div>
 													</CardTitle>
-													{/* <div className='mb-4 flex w-fit items-center rounded-lg border border-gray-300 bg-white p-2 shadow-sm'>
-														<Checkbox
-															id='Add Access Permission'
-															checked={isAllPermissions}
-															onClick={() => {
-																checkAllPermission(
-																	!isAllPermissions,
-																);
-															}}
-															className='mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-														/>
-														<Label
-															htmlFor='Add Access Permission'
-															className='font-medium text-gray-700'>
-															Select All Permissions
-														</Label>
-													</div> */}
-													<div className='mt-4 overflow-x-auto'>
-														<table className='min-w-full bg-white'>
-															<thead className='bg-gray-200'>
+
+													<div className='mt-4 w- overflow-x-auto'>
+														<table className='min-w-full  bg-white dark:bg-[#27272a]'>
+															<thead className='bg-gray-200  dark:bg-[#27272a]'>
 																<tr>
-																	<th className='px-4 py-2'>
+																	<th className='px-4 py-2 '>
 																		Module
 																	</th>
-																	<th className='px-4 py-2'>
-																		Read
-																	</th>
-																	<th className='px-4 py-2'>
-																		Write
-																	</th>
-																	<th className='px-4 py-2'>
-																		Delete
-																	</th>
+																	{permissionsTypes.map(
+																		(value: string) => (
+																			<th
+																				className='px-4 py-2 capitalize '
+																				key={value}>
+																				{value}
+																			</th>
+																		),
+																	)}
 																</tr>
 															</thead>
 															<tbody>
@@ -386,102 +384,85 @@ const UserPermissionForm = () => {
 																	.slice(1)
 																	.map((appKey) => {
 																		const app =
-																			appPages[appKey];
+																			appPages?.[appKey];
 																		return Object.values(
 																			app,
-																		).map((page: any) => {
+																		)?.map((page: any) => {
 																			if (
 																				page.id &&
 																				page.to &&
 																				page.text &&
 																				page.icon
 																			) {
-																				const permissionsTypes =
-																					[   "read",
-																						'write',
-																						'delete',
-																					];
 																				return (
 																					<tr
 																						key={
 																							page.to
 																						}
-																						className='border-b'>
+																						className='border-x border-b transition-colors hover:bg-gray-300 dark:border-x-0 dark:bg-[#101011] dark:hover:bg-[#15151e]'>
 																						<td className='px-4 py-2'>
-																							<span className='font-medium text-blue-600'>
+																							<span className='text-xl font-medium text-blue-600'>
 																								{
-																									page.text
+																									page?.text
 																								}
 																							</span>
 																						</td>
-																						{/* <td className='px-4 py-2'>
-																							<div className='flex items-center justify-center'>
-																								<Checkbox
-																									id={
-																										page.to
-																									}
-																									name={
-																										page.to
-																									}
-																									checked={
-																										permissions[
-																											page
-																												.to
-																										] ||
-																										false
-																									}
-																									onChange={(
-																										e,
-																									) => {
-																										const target =
-																											e.target as HTMLInputElement;
-																										togglePermission(
-																											{
-																												...page,
-																												appKey,
-																												checked:
-																													target.checked,
-																											},
-																											'read',
-																										);
-																									}}
-																									className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
-																								/>
-																							</div>
-																						</td> */}
+
 																						{permissionsTypes.map(
 																							(
 																								permissionType,
 																							) => (
 																								<td
-																									key={`${page.to}-${permissionType}`}
+																									key={`${page?.to}-${permissionType}`}
 																									className='px-4 py-2'>
 																									<div className='flex items-center justify-center'>
-																										<Checkbox
-																											id={`${page.to}-${permissionType}`}
-																											name={`${page.to}-${permissionType}`}
-																											checked={
-																												permissionCred[page.to]?.[permissionType] || false
-																											}
-																											onChange={(
-																												e,
-																											) => {
-																												const target =
-																													e.target as HTMLInputElement;
-																												togglePermission(
-																													{
-																														...page,
-																														appKey,
+																										{!(
+																											page?.to ===
+																												'/add-payment' &&
+																											permissionType !==
+																												'read'
+																										) && (
+																											<Checkbox
+																												id={`${page?.to}-${permissionType}`}
+																												name={`${page?.to}-${permissionType}`}
+																												inputClassName='ml-4'
+																												checked={
+																													permissionCred[
+																														page?.to
+																													]?.[
+																														permissionType
+																													] ||
+																													false
+																												}
+																												onChange={(
+																													e,
+																												) => {
+																													const target =
+																														e.target as HTMLInputElement;
+																													togglePermission(
+																														{
+																															...page,
+																															appKey,
+																															permissionType,
+																															checked:
+																																target.checked,
+																														},
 																														permissionType,
-																														checked:
-																															target.checked,
-																													},
-																													permissionType,
-																													permissionCred[page.to]?.[permissionType] && permissionType === "write" 
-																												);
-																											}}
-																											className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
-																										/>
+																														permissionCred[
+																															page
+																																.to
+																														]?.[
+																															permissionType
+																														] &&
+																															(permissionType ===
+																																'write' ||
+																																permissionType ===
+																																	'read'),
+																													);
+																												}}
+																												className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
+																											/>
+																										)}
 																									</div>
 																								</td>
 																							),
@@ -495,137 +476,6 @@ const UserPermissionForm = () => {
 															</tbody>
 														</table>
 													</div>
-													{/* <div className=' mt-4 flex flex-col gap-4'>
-														<div>
-															<Label htmlFor=''>Module</Label>
-															<Label htmlFor=''>Read</Label>
-															<Label htmlFor=''>Write</Label>
-															<Label htmlFor=''>Edit</Label>
-														</div>
-														{Object.keys(appPages)
-															.slice(1)
-															.map((appKey) => {
-																const app = appPages[appKey];
-																return Object.values(app).map(
-																	(page: any) => {
-																		if (
-																			page.id &&
-																			page.to &&
-																			page.text &&
-																			page.icon
-																		) {
-																			return (
-																				<div>
-																					<div
-																						key={
-																							page.to
-																						}
-																						className='flex w-fit items-center gap-8 rounded-lg  bg-white p-2 px-4 '>
-																						<div className='flex items-center'>
-																							<Label
-																								htmlFor=''
-																								className='font-medium text-blue-600'>
-																								{
-																									page.text
-																								}
-																							</Label>
-																							<Checkbox
-																								id={
-																									page.to
-																								}
-																								name={
-																									page.to
-																								}
-																								checked={
-																									permissions[
-																										page
-																											.to
-																									] ||
-																									false
-																								}
-																								onChange={(
-																									e,
-																								) => {
-																									const target =
-																										e.target as HTMLInputElement;
-																									togglePermission(
-																										{
-																											...page,
-																											appKey,
-																											checked:
-																												target.checked,
-																										},
-																									);
-																								}}
-																								className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
-																							/>
-																							<Label
-																								htmlFor={
-																									page.to
-																								}
-																								className='font-medium text-gray-700'>
-																								Read
-																							</Label>
-																						</div>
-																						{permissionsTypes.map(
-																							(
-																								permissionType,
-																							) => (
-																								<div
-																									key={`${page.to}-${permissionType}`}
-																									className='flex items-center'>
-																									<Checkbox
-																										id={`${page.to}-${permissionType}`}
-																										name={`${page.to}-${permissionType}`}
-																										checked={
-																											permissions[
-																												`${page.to}-${permissionType}`
-																											] ||
-																											false
-																										}
-																										onChange={(
-																											e,
-																										) => {
-																											const target =
-																												e.target as HTMLInputElement;
-																											togglePermission(
-																												{
-																													...page,
-																													appKey,
-																													permissionType,
-																													checked:
-																														target.checked,
-																												},
-																											);
-																										}}
-																										className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
-																									/>
-																									<Label
-																										htmlFor={`${page.to}-${permissionType}`}
-																										className='font-medium text-gray-700'>
-																										{`${
-																											permissionType
-																												.charAt(
-																													0,
-																												)
-																												.toUpperCase() +
-																											permissionType.slice(
-																												1,
-																											)
-																										}`}
-																									</Label>
-																								</div>
-																							),
-																						)}
-																					</div>
-																				</div>
-																			);
-																		}
-																		return null;
-																	},
-																);
-															})}
-													</div> */}
 												</div>
 
 												<div className='flex gap-2'>
