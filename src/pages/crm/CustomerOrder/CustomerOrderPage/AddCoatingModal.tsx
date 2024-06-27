@@ -29,7 +29,6 @@ const AddCoatingModal = ({ isOpen, setIsOpen, defaultValue, fetchData, entries, 
     initialValues,
     validationSchema: CoatingSchema,
     onSubmit: async (value) => {
-      console.log('value :>> ', value);
       try {
         const response: any = await post('/coatings', value);
         fetchData(response?.data?._id, defaultValue?.index as number);

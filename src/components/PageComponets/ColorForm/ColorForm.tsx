@@ -15,7 +15,7 @@ const ColorForm = ({ formik }: props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       {formik.values.entries.map((entry: any, index: any) => (
-        <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
+        <div key={index} className='mt-2 grid grid-cols-12 gap-3'>
           <div className='col-span-12 lg:col-span-4'>
             <Label htmlFor={`name-${index}`}>
               Name

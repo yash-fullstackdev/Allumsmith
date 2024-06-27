@@ -24,7 +24,7 @@ const ProductForm = ({ formik }: props) => {
 									</div>
 								)}
 							</div>
-							<div className='mt-2 grid grid-cols-12 gap-1'>
+							<div className='mt-2 grid grid-cols-12 gap-3'>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor={`name-${index}`}>
 										Name <span className='text-red-500'>*</span>
@@ -42,7 +42,6 @@ const ProductForm = ({ formik }: props) => {
 											formik.setFieldValue('entries', newEntries);
 										}}
 									/>
-
 
 									{formik.touched.entries?.[index]?.name &&
 											formik.errors.entries?.[index]?.name ? (

@@ -32,6 +32,7 @@ import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '..
 import { toast } from 'react-toastify';
 import EditWorkerModal from '../WorkerPage/EditWorkerModal';
 import AssociatedJobsModal from './AssociatedJobsModal';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 
 const columnHelper = createColumnHelper<any>();
@@ -289,26 +290,14 @@ const WorkerListPage = () => {
                     <AssociatedJobsModal associatedJobs={associatedJobs} setAssociatedJobsModal={setAssociatedJobsModal} />
                 </ModalBody>
             </Modal>
-            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleDeleteWorker(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>        
+
+            {deleteModal ? (
+                <DeleteConformationModal
+                    isOpen={deleteModal}
+                    setIsOpen={setDeleteModal}
+                    handleConform={() => handleDeleteWorker(deleteId)}
+                />
+            ) : null}     
         </PageWrapper>
     )
 

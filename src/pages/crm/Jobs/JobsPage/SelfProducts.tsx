@@ -265,9 +265,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                                             {color.name}
                                                         </option>
                                                     )
-                                                }
-
-                                                )}
+                                                })}
                                             </Select>
 
                                         </div>
@@ -301,7 +299,7 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                         </>
                     ))}
                     <div className='flex mt-2 gap-2 '>
-                        <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+                        <Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
                             Add Entry
                         </Button>
 

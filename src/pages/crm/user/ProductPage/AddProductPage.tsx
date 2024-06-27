@@ -1,5 +1,4 @@
 import React from 'react'
-import InHouseComponentPage from '../../components/in-house-components/InHouseComponentPage/InHouseComponent.page'
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader'
 import Button from '../../../../components/ui/Button'

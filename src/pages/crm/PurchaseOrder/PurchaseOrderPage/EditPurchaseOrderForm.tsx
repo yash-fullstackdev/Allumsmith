@@ -97,7 +97,7 @@ const EditPurchaseOrderForm = () => {
                         </div>
                         <PurchaseOrderForm formik={formik} />
                         <div className='flex mt-2 gap-2 '>
-                            <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+                            <Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
                                 Add Entry
                             </Button>
                             <Button variant='solid' color='blue' onClick={formik.handleSubmit}>

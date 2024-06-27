@@ -39,6 +39,7 @@ import Modal, {
 	ModalHeader,
 } from '../../../../../components/ui/Modal';
 import Icon from '../../../../../components/icon/Icon';
+import DeleteConformationModal from '../../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 const columnHelper = createColumnHelper<any>();
 const listLinkPath = `../${appPages.crmAppPages.subPages.componentsPage.subPages.conversionsPage.editPageLink.to}/`;
@@ -263,25 +264,13 @@ const ConversionsListPage = () => {
 					<TableCardFooterTemplate table={table} />
 				</Card>
 			</Container>
-			<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button
-							onClick={() => setDeleteModal(false)}
-							color='blue'
-							variant='outlined'>
-							Cancel
-						</Button>
-						<Button onClick={handleDeleteComponent} color='red' variant='solid'>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+			{deleteModal ? (
+				<DeleteConformationModal
+					isOpen={deleteModal}
+					setIsOpen={setDeleteModal}
+					handleConform={handleDeleteComponent}
+				/>
+			) : null}
 		</PageWrapper>
 	) : (
 		<div className='flex h-screen items-center justify-center font-bold'>

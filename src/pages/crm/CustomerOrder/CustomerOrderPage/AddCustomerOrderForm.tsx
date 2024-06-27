@@ -414,7 +414,7 @@ const AddCustomerOrderForm = () => {
             </div>
           </div>
           <div>
-            <div className='mt-2 grid grid-cols-12 gap-1'>
+            <div className='mt-2 grid grid-cols-12 gap-3'>
               <div className='col-span-4 lg:col-span-4 mt-5'>
                 <Label htmlFor='customerName'>
                   Customer
@@ -483,7 +483,7 @@ const AddCustomerOrderForm = () => {
                         </div>
                       )}
                     </div>
-                    <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
+                    <div key={index} className='mt-2 grid grid-cols-12 gap-3'>
                       {!productTransfer ? (<>
                         <div className='col-span-12 lg:col-span-3'>
                           <Label htmlFor={`name-${index}`}>
@@ -700,26 +700,6 @@ const AddCustomerOrderForm = () => {
                           }}
                         />
                       </div>
-                      {/* <div className='col-span-12 lg:col-span-2'>
-                        <Label htmlFor='finish_inventory'>
-                          Finish Inventory
-                          <span className='ml-1 text-red-500'>*</span>
-                        </Label>
-                        <Checkbox
-                          label='Finish Inventory'
-                          id='finish_inventory'
-                          name='finish_inventory'
-                          checked={entries[index].finish_inventory} // Assuming entries is an array of objects
-                          onChange={(e) => {
-                            const target = e.target as HTMLInputElement; // Cast e.target to HTMLInputElement
-                            const updatedEntries = [...entries];
-                            updatedEntries[index].finish_inventory = target.checked; // Update with the checked value
-                            setEntries(updatedEntries);
-                          }}
-                          inputClassName='disabled:bg-zinc-200 disabled:dark:bg-zinc-800 disabled:cursor-not-allowed'
-                          disabled={!(entry.color || selectedColor[index]) || !(entry.coating || selectedCoatings[index])}
-                        />
-                      </div> */}
                       {coatingData.find((coating: any) => coating._id === entry.coating)?.type === 'anodize' && (<div className='col-span-12 lg:col-span-2'>
                         <Label htmlFor={`anodize-${index}`}>
                           Anodize Thickness
@@ -746,7 +726,7 @@ const AddCustomerOrderForm = () => {
                   </>
                 ))}
                 <div className='flex mt-2 gap-2 '>
-                  <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+                  <Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
                     Add Entry
                   </Button>
                 </div>
@@ -769,9 +749,9 @@ const AddCustomerOrderForm = () => {
               </div>
             </div>
             <div>
-              <div className='mt-2 grid grid-cols-12 gap-1'>
+              <div className='mt-2 grid grid-cols-12 gap-3'>
                 <div className='col-span-12 lg:col-span-12'>
-                  <div className='mt-2 grid grid-cols-6 gap-2' >
+                  <div className='mt-2 grid grid-cols-6 gap-3' >
                     <div className='col-span-4 lg:col-span-2 mt-5'>
                       <Label htmlFor='discount'>
                         Coating Discount(%)

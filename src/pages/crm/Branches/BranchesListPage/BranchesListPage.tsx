@@ -31,6 +31,7 @@ import EditBranchModal from '../BranchesPage/EditBranchModal';
 import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import { toast } from 'react-toastify';
 import BranchDetailCanvas from './BranchDetailCanvas';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 
 
@@ -267,26 +268,13 @@ const BranchesListPage = () => {
                 </ModalBody>
             </Modal>
 
-            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleDeleteBranch(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+            {deleteModal ? (
+				<DeleteConformationModal
+					isOpen={deleteModal}
+					setIsOpen={setDeleteModal}
+					handleConform={()=> handleDeleteBranch(deleteId)} 
+				/>
+			) : null}
             <OffCanvas isOpen={branchDetailModal} setIsOpen={setBranchDetailModal}>
 				<OffCanvasHeader>Product Detail</OffCanvasHeader>
 				<OffCanvasBody><BranchDetailCanvas branchDetails = {branchDetail}/></OffCanvasBody>

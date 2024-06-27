@@ -37,6 +37,7 @@ import VendorProductList from './ProductList/ProductList';
 import { toast } from 'react-toastify';
 import PurchaseEntryDetail from './PurchaseEntryDetail';
 import Tooltip from '../../../../components/ui/Tooltip';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -293,29 +294,13 @@ const PurchaseOrderListPage = () => {
 						<PurchaseEntryDetail branchesData={branchesData} poId={vendorId} />
 					</ModalBody>
 				</Modal>
-				<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-					<ModalHeader>Are you sure?</ModalHeader>
-					<ModalFooter>
-						<ModalFooterChild>
-							Do you really want to delete these records? This cannot be undone.
-						</ModalFooterChild>
-						<ModalFooterChild>
-							<Button
-								onClick={() => setDeleteModal(false)}
-								color='blue'
-								variant='outlined'>
-								Cancel
-							</Button>
-							<Button
-								variant='solid'
-								onClick={() => {
-									handlePurchaseOrderDelete(deleteId);
-								}}>
-								Delete
-							</Button>
-						</ModalFooterChild>
-					</ModalFooter>
-				</Modal>
+				{deleteModal ? (
+					<DeleteConformationModal
+						isOpen={deleteModal}
+						setIsOpen={setDeleteModal}
+						handleConform={() => handlePurchaseOrderDelete(deleteId)}
+					/>
+				) : null}
 			</PageWrapper>
 		</>
 	);

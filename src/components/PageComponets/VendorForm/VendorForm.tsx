@@ -9,7 +9,7 @@ type props = {
 const VendorForm = ({ formik }: props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className='mt-2 grid grid-cols-12 gap-2'>
+      <div className='mt-2 grid grid-cols-12 gap-3'>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='name'>
             Name

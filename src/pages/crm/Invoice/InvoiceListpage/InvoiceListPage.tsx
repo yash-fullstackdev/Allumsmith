@@ -35,6 +35,7 @@ import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const InvoiceListPage = () => {
@@ -44,13 +45,13 @@ const InvoiceListPage = () => {
     const [productInfo, setProductInfo] = useState<any>()
     const [customerId, setCustomerId] = useState()
     const [globalFilter, setGlobalFilter] = useState<string>('');
-    const [deleteModal,setDeleteModal] = useState<boolean>(false);
-    const [deleteId,setDeleteId] = useState<string>('');
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string>('');
     console.log('JobList', jobsList)
     const getInvoiceList = async () => {
         try {
             const { data } = await get('/invoice')
-            data.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(data);
         } catch (error) {
 
@@ -84,13 +85,13 @@ const InvoiceListPage = () => {
     }
 
     const handleClickDelete = (id: any) => {
-		setDeleteModal(true);
-		setDeleteId(id);
-	};
+        setDeleteModal(true);
+        setDeleteId(id);
+    };
 
-	const handleDeleteInvoice= async (id: any) => {
+    const handleDeleteInvoice = async (id: any) => {
         try {
-            const {data} = await deleted(`/invoice/${id}`)
+            const { data } = await deleted(`/invoice/${id}`)
             toast.success('Invoice deleted Successfully');
         } catch (error: any) {
             console.error('Error deleted Invoice:', error);
@@ -101,8 +102,8 @@ const InvoiceListPage = () => {
             getInvoiceList();
             setDeleteModal(false)
         }
-	};
- 
+    };
+
     const columns = [
 
         columnHelper.accessor('customerName.name', {
@@ -145,7 +146,7 @@ const InvoiceListPage = () => {
             ),
             header: 'Phone',
         }),
-       
+
         columnHelper.display({
             cell: (info) => (
                 <div className='font-bold'>
@@ -168,7 +169,7 @@ const InvoiceListPage = () => {
                         }}
                         icon='DuoFile'
                     >
-                        
+
 
                     </Button>
                     <Button
@@ -202,7 +203,7 @@ const InvoiceListPage = () => {
         data: jobsList,
         columns,
         state: {
-            
+
             globalFilter,
         },
         // onSortingChange: setSorting,
@@ -216,30 +217,30 @@ const InvoiceListPage = () => {
     return (
         <PageWrapper name='Invoice List'>
             <Subheader>
-				<SubheaderLeft>
-					<FieldWrap
-						firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-						lastSuffix={
-							globalFilter && (
-								<Icon
-									icon='HeroXMark'
-									color='red'
-									className='mx-2 cursor-pointer'
-									onClick={() => setGlobalFilter('')}
-								/>
-							)
-						}>
-						<Input
-							className='pl-8'
-							id='searchBar'
-							name='searchBar'
-							placeholder='Search...'
-							value={globalFilter ?? ''}
-							onChange={(e) => setGlobalFilter(e.target.value)}
-						/>
-					</FieldWrap>
-				</SubheaderLeft>
-			</Subheader>
+                <SubheaderLeft>
+                    <FieldWrap
+                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+                        lastSuffix={
+                            globalFilter && (
+                                <Icon
+                                    icon='HeroXMark'
+                                    color='red'
+                                    className='mx-2 cursor-pointer'
+                                    onClick={() => setGlobalFilter('')}
+                                />
+                            )
+                        }>
+                        <Input
+                            className='pl-8'
+                            id='searchBar'
+                            name='searchBar'
+                            placeholder='Search...'
+                            value={globalFilter ?? ''}
+                            onChange={(e) => setGlobalFilter(e.target.value)}
+                        />
+                    </FieldWrap>
+                </SubheaderLeft>
+            </Subheader>
             <Container>
                 <Card>
                     <CardHeader>
@@ -256,21 +257,21 @@ const InvoiceListPage = () => {
 
                     </CardHeader>
                     {isLoading ? <div className='flex justify-center'>
-                                    {isLoading && <LoaderDotsCommon />}
-                                </div>: (
-                         <CardBody>
-                        {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
-                            <TableTemplate
-                                className='table-fixed max-md:min-w-[70rem]'
-                                table={table}
-                            />
-                        ) : (
-                            !isLoading && <p className="text-center text-gray-500">No records found</p>
-                        )}
-                        
-                    </CardBody>
+                        {isLoading && <LoaderDotsCommon />}
+                    </div> : (
+                        <CardBody>
+                            {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
+                                <TableTemplate
+                                    className='table-fixed max-md:min-w-[70rem]'
+                                    table={table}
+                                />
+                            ) : (
+                                !isLoading && <p className="text-center text-gray-500">No records found</p>
+                            )}
+
+                        </CardBody>
                     )}
-                   
+
                     {!isLoading && table.getFilteredRowModel().rows.length > 0 &&
                         <TableCardFooterTemplate table={table} />
                     }
@@ -289,26 +290,13 @@ const InvoiceListPage = () => {
                     <InvoiceCustomerDetail productInfo={productInfo} />
                 </ModalBody>
             </Modal>
-            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleDeleteInvoice(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+            {deleteModal ? (
+                <DeleteConformationModal
+                    isOpen={deleteModal}
+                    setIsOpen={setDeleteModal}
+                    handleConform={() => handleDeleteInvoice(deleteId)}
+                />
+            ) : null}
         </PageWrapper>
     )
 }

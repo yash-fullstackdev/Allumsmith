@@ -25,10 +25,9 @@ const CoatingForm = ({ formik }: props) => {
   }, []);
 
 
-  console.log('colorData :>> ', colorData);
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className='mt-2 grid grid-cols-12 gap-1'>
+      <div className='mt-2 grid grid-cols-12 gap-3'>
         <div className='col-span-12  lg:col-span-3'>
           <Label htmlFor='name'>
             Name

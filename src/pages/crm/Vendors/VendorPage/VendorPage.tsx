@@ -57,7 +57,7 @@ const VendorPage = () => {
                 </SubheaderLeft>
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
-                <Card className='m-5'>
+                <Card>
                     <CardBody>
                         <div
                             className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'

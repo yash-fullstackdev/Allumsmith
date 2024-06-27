@@ -34,6 +34,7 @@ import CoatingColors from './CoatingColors';
 import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import { Switch } from '@mui/material';
 import Label from '../../../../components/form/Label';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 
 
@@ -296,26 +297,13 @@ const CoatingListPage = () => {
                     <CoatingColors colors={colors} />
                 </ModalBody>
             </Modal>
-            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleDeleteCoating(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+            {deleteModal ? (
+				<DeleteConformationModal
+					isOpen={deleteModal}
+					setIsOpen={setDeleteModal}
+					handleConform={()=> handleDeleteCoating(deleteId)} 
+				/>
+			) : null}
         </PageWrapper>
     )
 

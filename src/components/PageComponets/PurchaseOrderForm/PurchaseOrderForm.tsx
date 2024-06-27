@@ -9,7 +9,6 @@ type props = {
   formik: any,
 };
 const PurchaseOrderForm = ({ formik }: props) => {
-  console.log('formik?.values :>> ', formik?.values);
   const [vendorData, setVendorData] = useState<any>([]);
   const [productListData, setProductListData] = useState<any>([]);
   const fetchVendorData = async () => {
@@ -59,7 +58,7 @@ const PurchaseOrderForm = ({ formik }: props) => {
 
   return (
     <form>
-      <div className='mt-2 flex gap-1'>
+      <div className='mt-2 flex gap-3'>
         <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
           <Label htmlFor='vendor'>
             Vendor
@@ -96,7 +95,7 @@ const PurchaseOrderForm = ({ formik }: props) => {
       </div>
       {formik.values.entries.map((entry: any, index: number) => {
         return (
-          <div key={index} className='mt-2 grid grid-cols-4 gap-1 relative'>
+          <div key={index} className='mt-2 grid grid-cols-4 gap-3 relative'>
             <div className='absolute right-0 top-0'>
               {formik.values.entries.length > 1 && (
                 <div className='flex items-end justify-end'>

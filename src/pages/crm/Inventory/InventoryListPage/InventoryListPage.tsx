@@ -34,7 +34,6 @@ const InventoryListPage = () => {
             const groupedData = _.groupBy(inventoryList, (item: any) => item?.product?._id);
             const resultArray = Object.keys(groupedData).map((productId) => {
                 const productData = groupedData[productId];
-                console.log('productData :>> ', productData);
                 if (!productData[0]?.product) return null;
 
                 const branches = productData.map((item) => {
@@ -177,7 +176,6 @@ const InventoryListPage = () => {
         )
     }
 
-    console.log('productsArray :>> ', productsArray);
     const table = useReactTable({
         data: productsArray || [],
         columns,

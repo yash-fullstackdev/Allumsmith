@@ -45,7 +45,8 @@ import OffCanvas, {
 	OffCanvasHeader,
 } from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
-import _, { debounce } from 'lodash';
+import _, { debounce } from "lodash"
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -96,8 +97,7 @@ const ProductListPage = () => {
 			const pageSizeValue = pageSize || 10;
 			const pageValue = page || 1;
 			const { data: allUsers } = await get(
-				`/products?page=${pageValue}&limit=${pageSizeValue}${
-					!!(globalFilter || search) ? `&name=${search || globalFilter}` : ''
+				`/products?page=${pageValue}&limit=${pageSizeValue}${!!(globalFilter || search) ? `&name=${search || globalFilter}` : ''
 				} `,
 			);
 			allUsers?.data.sort(
@@ -326,7 +326,7 @@ const ProductListPage = () => {
 			<Modal isOpen={editModal} setIsOpen={setEditModal} isScrollable fullScreen='2xl'>
 				<ModalHeader
 					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-					// onClick={() => formik.resetForm()}
+				// onClick={() => formik.resetForm()}
 				>
 					Edit Product
 				</ModalHeader>
@@ -338,29 +338,13 @@ const ProductListPage = () => {
 					/>
 				</ModalBody>
 			</Modal>
-			<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button
-							onClick={() => setDeleteModal(false)}
-							color='blue'
-							variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleProductDelete(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+			{deleteModal ? (
+				<DeleteConformationModal
+					isOpen={deleteModal}
+					setIsOpen={setDeleteModal}
+					handleConform={() => handleProductDelete(deleteId)}
+				/>
+			) : null}
 			<OffCanvas isOpen={productDetailModal} setIsOpen={setProductDetailModal}>
 				<OffCanvasHeader>Product Detail</OffCanvasHeader>
 				<OffCanvasBody>

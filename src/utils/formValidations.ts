@@ -189,6 +189,84 @@ const AddRawMaterialQuantitySchema = Yup.object().shape({
 	quantity: Yup.string().required('Quantity is required'),
 })
 
+const jobWithMaterialSchema = Yup.object().shape({
+
+	name: Yup.string()
+		.required('Name is required'),
+
+	branch: Yup.string()
+		.required('To Branch is required'),
+	batch: Yup.array().of(
+		Yup.object().shape({
+			cp_id: Yup.string(),
+			products: Yup.array().of(
+				Yup.object().shape({
+					pickQuantity: Yup.string()
+						.test('not-same', 'Please Pick QTY less then or equal to Pending QTY', function (value) {
+							return (
+								!value ||
+								(this.parent?.itemSummary?.pendingQuantity !== undefined &&
+									Number(value) <= this.parent?.itemSummary?.pendingQuantity) ||
+								(this.parent?.itemSummary?.pendingQuantity === undefined &&
+									this.parent?.quantity &&
+									Number(value) <= this.parent?.quantity)
+							)
+						})
+						.test('Positive', 'Please Enter positive number', function (value) {
+							return (
+								!value || Number(value) >= 0
+							)
+						})
+						.when(['itemSummary', 'quantity'], {
+							is: (val: any, val2: any) => {
+								console.log('val2 :>> ', val2);
+								return Boolean(val?.pendingQuantity);
+							},
+							then: (schema) => schema.required('Pick Quantity is required'),
+							otherwise: (schema) => schema.notRequired(),
+						})
+						.notRequired(),
+				})
+			),
+		})
+	),
+	self_products: Yup.array().of(
+		Yup.object().shape({
+			pickQuantity: Yup.string()
+				.test('Positive', 'Please Enter positive number', function (value) {
+					return (
+						!value || Number(value) >= 0
+					)
+				})
+				.when('value', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Pick Quantity is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+			coating: Yup.string()
+				.when('value', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Coating is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+			color: Yup.string()
+				.when('coating', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Color is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+		})
+	),
+});
 
 export {
 	productsSchema,
@@ -204,5 +282,6 @@ export {
 	addCustomerModalSchema,
 	colorsSchema,
 	AddRawMaterialSchema,
-	AddRawMaterialQuantitySchema
+	AddRawMaterialQuantitySchema,
+	jobWithMaterialSchema
 };

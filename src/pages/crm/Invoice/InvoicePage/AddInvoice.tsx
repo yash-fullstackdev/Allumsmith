@@ -66,7 +66,6 @@ const AddInvoice = () => {
             setPurchaseOrderData(allPurchaseOrderById);
             setAlluminiumRate(allPurchaseOrderById?.alluminium_rate)
             setEntries({ ...entries, gst: allPurchaseOrderById?.gst })
-            console.log('allPurchaseOrderById :>> ', allPurchaseOrderById?.entries);
             const deliverQTY = [] as any[]
             const total = [] as any[]
             const productCoatingRate = [] as any[]

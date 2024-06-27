@@ -37,6 +37,7 @@ import EditVendorModal from '../VendorPage/EditVendorModal';
 import { toast } from 'react-toastify';
 import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import VendorDetailCanvas from './VendorDetailCanvas';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 
 
@@ -49,10 +50,10 @@ const VendorListPage = () => {
     const [vendorsList, setVendorsList] = useState<any[]>([]);
     const [vendorId, setVendorId] = useState('')
     const [isEditModal, setIsEditModal] = useState<boolean>(false);
-    const [deleteModal,setDeleteModal] = useState<boolean>(false);
-    const [deleteId,setDeleteId] = useState<string>('');
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string>('');
     const [vendorDetailModal, setVendorDetailModal] = useState<boolean>(false);
-    const [vendorDetails,setVendorDetails] = useState<any>()
+    const [vendorDetails, setVendorDetails] = useState<any>()
 
     const navigate = useNavigate();
     const fetchData = async () => {
@@ -60,7 +61,7 @@ const VendorListPage = () => {
         try {
             const { data: vendorList } = await get(`/vendors`);
             console.log('VendorList', vendorList)
-            vendorList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            vendorList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setVendorsList(vendorList);
             setIsLoading(false);
         } catch (error: any) {
@@ -76,12 +77,12 @@ const VendorListPage = () => {
     }, [])
 
     const handleClickDelete = (id: any) => {
-		setDeleteModal(true);
-		setDeleteId(id);
-	};
+        setDeleteModal(true);
+        setDeleteId(id);
+    };
 
-	const handleProductDelete = async (id: any) => {
-		try {
+    const handleProductDelete = async (id: any) => {
+        try {
             const { data: vendor } = await deleted(`/vendors/${id}`);
             console.log("vendor", vendor);
             toast.success(`Vendor deleted successfully!`);
@@ -94,9 +95,9 @@ const VendorListPage = () => {
             fetchData();
             setDeleteModal(false);
         }
-	};
+    };
 
-    
+
 
     const columns = [
 
@@ -173,14 +174,15 @@ const VendorListPage = () => {
                         </svg>
 
                     </Button>
-                    <Button icon='HeroInformationCircle' onClick={() =>{
-						setVendorDetails(info.row.original)
-						setVendorDetailModal(true)}}
-						>
-					
-					
-						
-					</Button>
+                    <Button icon='HeroInformationCircle' onClick={() => {
+                        setVendorDetails(info.row.original)
+                        setVendorDetailModal(true)
+                    }}
+                    >
+
+
+
+                    </Button>
                     <Button
                         onClick={() => {
                             handleClickDelete(info.row.original._id);
@@ -262,9 +264,9 @@ const VendorListPage = () => {
                             {isLoading && <LoaderDotsCommon />}
                         </div>
                     </CardBody>
-                   { table.getFilteredRowModel().rows.length > 0 &&
-                   <TableCardFooterTemplate table={table} />
-                   }
+                    {table.getFilteredRowModel().rows.length > 0 &&
+                        <TableCardFooterTemplate table={table} />
+                    }
                 </Card>
 
             </Container>
@@ -279,31 +281,18 @@ const VendorListPage = () => {
                     <EditVendorModal vendorId={vendorId} setIsEditModal={setIsEditModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
-            <Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleProductDelete(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+            {deleteModal ? (
+                <DeleteConformationModal
+                    isOpen={deleteModal}
+                    setIsOpen={setDeleteModal}
+                    handleConform={() => handleProductDelete(deleteId)}
+                />
+            ) : null}
             <OffCanvas isOpen={vendorDetailModal} setIsOpen={setVendorDetailModal}>
-				<OffCanvasHeader>Product Detail</OffCanvasHeader>
-				<OffCanvasBody><VendorDetailCanvas vendorDetails = {vendorDetails}/></OffCanvasBody>
-				
-			</OffCanvas>       
+                <OffCanvasHeader>Product Detail</OffCanvasHeader>
+                <OffCanvasBody><VendorDetailCanvas vendorDetails={vendorDetails} /></OffCanvasBody>
+
+            </OffCanvas>
         </PageWrapper>
     )
 

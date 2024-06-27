@@ -182,7 +182,7 @@ const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetch
                             </div>
                         ))}
                         <div className='flex justify-between mt-3'>
-                            <Button variant='outline'  type='button' onClick={handleAddEntry}>
+                            <Button variant='outline'  type='button' icon='HeroPlus' onClick={handleAddEntry}>
                                 Add Entry
                             </Button>
                         </div>

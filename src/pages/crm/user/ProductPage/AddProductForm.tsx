@@ -24,7 +24,6 @@ const initialValues = {
 	}],
 }
 
-
 const AddproductForm = () => {
 	const navigate = useNavigate();
 	// const [dropDownValues, setDropDownValues] = useState<any>({});
@@ -80,7 +79,7 @@ const AddproductForm = () => {
 	});
 
 	return (
-		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6 m-5'>
+		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
 			<Card>
 				<CardBody>
 					<div
@@ -90,7 +89,7 @@ const AddproductForm = () => {
 					</div>
 					<ProductForm formik={formik} />
 					<div className='flex mt-2 gap-2'>
-						<Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+						<Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
 							Add Entry
 						</Button>
 						<Button variant='solid' color='blue' type='submit' onClick={formik.handleSubmit}>

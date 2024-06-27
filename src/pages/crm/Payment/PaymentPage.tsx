@@ -36,7 +36,6 @@ const PaymentPage = () => {
 		validationSchema: PaymentSchema,
 		onSubmit: () => { },
 	});
-console.log('formik?.valyues :>> ', formik?.values);
 	const getCustomerDetails = async () => {
 		try {
 			const { data } = await get('/customers');

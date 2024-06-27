@@ -24,7 +24,6 @@ const ColorsPage = () => {
         validationSchema: colorsSchema,
         onSubmit: async (values) => {
             try {
-                console.log('88989 :>> ', 88989);
                 const promises = values.entries.map(async (entry: any) => {
                     const { data } = await post("/colors", { ...entry, type: values?.type });
                     return data;
@@ -78,7 +77,7 @@ const ColorsPage = () => {
                         </div>
                         <ColorForm formik={formik} />
                         <div className='flex mt-2 gap-2'>
-                            <Button variant='solid' color='blue' type='button' onClick={handleAddEntry}>
+                            <Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
                                 Add Entry
                             </Button>
                             <Button variant='solid' color='blue' onClick={formik.handleSubmit}>
