@@ -27,16 +27,13 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
-import { toast } from 'react-toastify';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+
 
 
 
 const TransactionListPage = ({customerId}:any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [data, setData] = useState<any>([]);
     const [transactionDetail, setTransactionDetails] = useState<any>([]);
     const fetchData = async () => {
 		setIsLoading(true);
@@ -56,9 +53,6 @@ const TransactionListPage = ({customerId}:any) => {
 	useEffect(() => {
 		fetchData();
 	}, [])
-
-    console.log('Transaction Details', transactionDetail)
-
 
    
     const columns = [

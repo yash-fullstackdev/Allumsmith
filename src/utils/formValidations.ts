@@ -1,7 +1,113 @@
 import * as Yup from 'yup';
-
+const getCharacterValidationError = (str: string) => {
+	return `Your password must have at least 1 ${str} character`;
+};
 const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VehicleRegexFormat = [
+	/^[A-Za-z]{2}\s[0-9]{1,2}\s[A-Za-z]{1,2}\s[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[0-9]{1,2}[A-Za-z]{1,2}[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[-][0-9]{1,2}[-][A-Za-z]{1,2}[-][0-9]{1,4}$/,
+	/^[A-Za-z]{2}\s[0-9]{2}\s[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[0-9]{2}[0-9]{1,4}$/,
+	/^[0-9]{2}\s[A-Za-z]{2}\s[0-9]{1,4}\s[A-Za-z]{1,2}$/,
+	/^[0-9]{2}[A-Za-z]{2}[0-9]{1,4}[A-Za-z]{1,2}$/,
+];
+
+const createUserSchema = Yup.object().shape({
+	firstName: Yup.string().min(2, 'Too Short!').required('Required'),
+	lastName: Yup.string().min(2, 'Too Short!').required('Required'),
+	roleName: Yup.string().min(2, 'Too Short!').required('Required'),
+	email: Yup.string()
+		.email('Invalid Email')
+		.required('Required')
+		.test('valid-email', 'Inavlid Email format', (value) => {
+			return emailRegex.test(value);
+		}),
+	password: Yup.string()
+		.required('Please enter a Password')
+		// check minimum characters
+		.min(8, 'Password must have at least 8 characters')
+		.max(15, 'Password must not be greater than 15 characters')
+		// different error messages for different requirements
+		.matches(/[0-9]/, getCharacterValidationError('digit'))
+		.matches(/[a-z]/, getCharacterValidationError('lowercase'))
+		.matches(/[A-Z]/, getCharacterValidationError('uppercase')),
+	// .test('special', 'Password must contain at least one special character', (value) => {
+	// 	return /[!@#$%^&*(),.?":{}|<>]/.test(value);
+	// }),
+});
+
+const rawMaterialDataSchema = Yup.object().shape({
+	componentID: Yup.string().required('Component ID is Required'),
+	description1: Yup.string().required('Description is Required'),
+	sterileNonSterile: Yup.string().required('Sterile/Non Sterile is Required'),
+	status: Yup.string().required('Status is Required'),
+});
+
+const inHouseComponentDataSchema = Yup.object().shape({
+	componentID: Yup.string().required('Component ID is Required'),
+	description1: Yup.string().required('Description is Required'),
+	status: Yup.string().required('Status is Required'),
+	sterileNonSterile: Yup.string().required('Sterile/Non Sterile is Required'),
+	inHouseComponentType: Yup.string().required('Component Type is Required'),
+});
+
+const vendorModalDataSchema = Yup.object().shape({
+	vendorName: Yup.string().required('Vendor Name is Required'),
+	procurementUOM: Yup.array().of(
+		Yup.object().shape({
+			uom: Yup.string().required('Procurement UOM is Required'),
+			quantity: Yup.string().required('Procurement Quantity is Required'),
+		}),
+	),
+	pricingUOM: Yup.string().required('Pricing UOM is Required'),
+	pricingCost: Yup.string().required('Pricing Cost is Required'),
+	pricingQuantity: Yup.string().required('Pricing Quantity is Required'),
+});
+
+const shippingDetailsSchema = Yup.object().shape({
+	SCshippingLocation: Yup.string().required('Shipping Location is Required'),
+	SClocationContactPerson: Yup.string().required('Contact Person is Required'),
+	SCcontactAddress1: Yup.string().required('Address is Required'),
+	SCcity: Yup.string().required('City is Required'),
+	SCstate: Yup.string().required('State is Required'),
+	SCzipcode: Yup.string()
+		.matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code')
+		.required('Zip Code is Required'),
+	SCcountry: Yup.string().required('Country is Required'),
+	SCressComm: Yup.string().required('Res / Comm Address is Required'),
+	SCshipMethod: Yup.string().required('Shipping Method is Required'),
+	SCemail: Yup.string().test('validate-emails', 'Inavlid Email format', (value) => {
+		if (!value || value.trim() === '') {
+			return true;
+		}
+		const emails = value?.split(',').map((email) => email.trim());
+		return emails?.every((email) => emailRegex.test(email));
+	}),
+	SCphone: Yup.string()
+		.min(14, 'Enter valid Contact')
+		.max(15, 'Enter valid Contact')
+		.required('Phone is Required'),
+});
+
+const updateUserSchema = Yup.object().shape({
+	firstName: Yup.string().min(2, 'Too Short!').required('Required'),
+	lastName: Yup.string().min(2, 'Too Short!').required('Required'),
+	roleName: Yup.string().min(2, 'Too Short!').required('Required'),
+	email: Yup.string().email('Invalid Email address').required('Required'),
+});
+
+const conversionComponentSchema = Yup.object().shape({
+	componentID: Yup.string().required('Component ID is Required'),
+	description1: Yup.string().required('Description is Required'),
+	sterileNonSterile: Yup.string().required('Sterile/Non Sterile is Required'),
+	status: Yup.string().required('Status is Required'),
+	originalComponent: Yup.string().required('Original Component is Required'),
+	originalComponentQuantity: Yup.string().required('Original Quantity is Required'),
+	convertedQuantity: Yup.string().required('Converted Quantity is Required'),
+});
 const productsSchema = Yup.object().shape({
 	entries: Yup.array().of(
 		Yup.object().shape({
@@ -114,6 +220,64 @@ const branchSchema = Yup.object().shape({
 		}),
 	contact_name: Yup.string().required('Contact Name is required'),
 	contact_phone: Yup.string().required('Contact Phone is required'),
+});
+
+const transportSchema = Yup.object().shape({
+	dispatch_date: Yup.date()
+		.required('Date is required')
+		.min(new Date('2015-01-01') as any, 'Date must be after or equal to January 1, 2015')
+		.max(new Date('2035-01-01') as any, 'Date must be before or equal to January 1, 2035'),
+	vehicle_no: Yup.string()
+		.required('Vehicle No is required')
+		.test('vehicleNumber', "Invalid Vehicle number.", function (value) {
+			return VehicleRegexFormat?.some((pattern) => pattern.test(value));
+		}),
+
+	from_branch: Yup.string()
+		.required('From Branch is required')
+		.test('not-same', 'From and To Branches cannot be the same', function (value) {
+			return value !== this?.parent?.to_branch;
+		}),
+	to_branch: Yup.string()
+		.required('To Branch is required')
+		.test('not-same', 'From and To Branches cannot be the same', function (value) {
+			return value !== this?.parent?.from_branch;
+		}),
+	batch: Yup.array().of(
+		Yup.object().shape({
+			cp_id: Yup.string(),
+			products: Yup.array().of(
+				Yup.object().shape({
+					pickQuantity: Yup.string()
+						.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
+							return !value || Number(value) <= this.parent?.itemSummary?.coatingQuantity;
+						})
+						.when('itemSummary', {
+							is: (val: any) => {
+								return Boolean(val);
+							},
+							then: (schema) => schema.required('Pick Quantity is required'),
+							otherwise: (schema) => schema.notRequired(),
+						})
+						.notRequired(),
+				})
+			),
+		})
+	),
+	self_products: Yup.array().of(
+		Yup.object().shape({
+			pickQuantity: Yup.string()
+				.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
+					return !value || Number(value) <= this.parent?.quantity;
+				}),
+		})
+	),
+});
+
+const updateTransportStatusSchema = Yup.object().shape({
+	status: Yup.string()
+		.required('Required is required'),
+
 });
 
 const addCustomerModalSchema = Yup.object()
@@ -277,6 +441,8 @@ export {
 	purchaseOrderSchema,
 	CoatingSchema,
 	PaymentSchema,
+	transportSchema,
+	updateTransportStatusSchema,
 	userCreateSchema,
 	userEditSchema,
 	addCustomerModalSchema,
