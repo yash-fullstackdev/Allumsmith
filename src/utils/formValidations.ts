@@ -5,6 +5,15 @@ const getCharacterValidationError = (str: string) => {
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VehicleRegexFormat = [
+	/^[A-Za-z]{2}\s[0-9]{1,2}\s[A-Za-z]{1,2}\s[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[0-9]{1,2}[A-Za-z]{1,2}[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[-][0-9]{1,2}[-][A-Za-z]{1,2}[-][0-9]{1,4}$/,
+	/^[A-Za-z]{2}\s[0-9]{2}\s[0-9]{1,4}$/,
+	/^[A-Za-z]{2}[0-9]{2}[0-9]{1,4}$/,
+	/^[0-9]{2}\s[A-Za-z]{2}\s[0-9]{1,4}\s[A-Za-z]{1,2}$/,
+	/^[0-9]{2}[A-Za-z]{2}[0-9]{1,4}[A-Za-z]{1,2}$/,
+];
 
 const createUserSchema = Yup.object().shape({
 	firstName: Yup.string().min(2, 'Too Short!').required('Required'),
@@ -192,6 +201,64 @@ const branchSchema = Yup.object().shape({
 	contact_phone: Yup.string().required('Contact Phone is required'),
 });
 
+const transportSchema = Yup.object().shape({
+	dispatch_date: Yup.date()
+		.required('Date is required')
+		.min(new Date('2015-01-01') as any, 'Date must be after or equal to January 1, 2015')
+		.max(new Date('2035-01-01') as any, 'Date must be before or equal to January 1, 2035'),
+	vehicle_no: Yup.string()
+		.required('Vehicle No is required')
+		.test('vehicleNumber', "Invalid Vehicle number.", function (value) {
+			return VehicleRegexFormat?.some((pattern) => pattern.test(value));
+		}),
+
+	from_branch: Yup.string()
+		.required('From Branch is required')
+		.test('not-same', 'From and To Branches cannot be the same', function (value) {
+			return value !== this?.parent?.to_branch;
+		}),
+	to_branch: Yup.string()
+		.required('To Branch is required')
+		.test('not-same', 'From and To Branches cannot be the same', function (value) {
+			return value !== this?.parent?.from_branch;
+		}),
+	batch: Yup.array().of(
+		Yup.object().shape({
+			cp_id: Yup.string(),
+			products: Yup.array().of(
+				Yup.object().shape({
+					pickQuantity: Yup.string()
+						.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
+							return !value || Number(value) <= this.parent?.itemSummary?.coatingQuantity;
+						})
+						.when('itemSummary', {
+							is: (val: any) => {
+								return Boolean(val);
+							},
+							then: (schema) => schema.required('Pick Quantity is required'),
+							otherwise: (schema) => schema.notRequired(),
+						})
+						.notRequired(),
+				})
+			),
+		})
+	),
+	self_products: Yup.array().of(
+		Yup.object().shape({
+			pickQuantity: Yup.string()
+				.test('not-same', 'Please Pick QTY less then or equal to Available QTY', function (value) {
+					return !value || Number(value) <= this.parent?.quantity;
+				}),
+		})
+	),
+});
+
+const updateTransportStatusSchema = Yup.object().shape({
+	status: Yup.string()
+		.required('Required is required'),
+
+});
+
 const addCustomerModalSchema = Yup.object()
 	.shape({
 		name: Yup.string().required('Name is required'),
@@ -264,6 +331,8 @@ export {
 	purchaseOrderSchema,
 	CoatingSchema,
 	PaymentSchema,
+	transportSchema,
+	updateTransportStatusSchema,
 	userCreateSchema,
 	userEditSchema,
 	addCustomerModalSchema,

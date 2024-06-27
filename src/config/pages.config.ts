@@ -42,7 +42,7 @@ export const appPages: any = {
 		},
 		addPageLink: {
 			id: 'addPageLink',
-			to: '/add-purchase-order',
+			to: '/add-purchase-order'
 		},
 		editPageLink: {
 			id: 'editPageLink',
@@ -110,6 +110,19 @@ export const appPages: any = {
 			icon: 'DuoOption',
 		},
 		identifier: 'raw-material',
+	},
+	transportPage: {
+		listPage: {
+			id: 'transportPage',
+			to: '/transport',
+			text: 'Transport',
+			icon: 'HeroTruck',
+		},
+		addPageLink: {
+			id: 'addPageLink',
+			to: '/add-transport',
+		},
+		identifier: 'transport'
 	},
 	branchesPage: {
 		listPage: {
