@@ -94,7 +94,7 @@ const CustomerPage = () => {
 		const selectedNames: string[] = [];
 		let fileData: any = [];
 
-		for (let i = 0; i < files.length; i++) {
+		for (let i = 0; i < files?.length; i++) {
 			const file = files[i];
 			// Object.assign(file, { fieldname: 'file' });
 			fileData.push(file);
@@ -104,7 +104,7 @@ const CustomerPage = () => {
 			}
 		}
 
-		if (errors.length > 0) {
+		if (errors?.length > 0) {
 			setFileErrors(errors);
 		} else {
 			setFileErrors([]);
@@ -300,15 +300,16 @@ const CustomerPage = () => {
 												</Label>
 												<div className='flex flex-col  gap-2'>
 													<div className='flex items-center gap-2 '>
-														<Input
-															name='file'
-															type='file'
-															multiple
-															className='w-[107px]'
-															accept='.pdf,.jpeg,.png'
-															onChange={handleFileChange}
-															id='file-upload'
-														/>
+														<div className='w-[108px]'>
+															<Input
+																name='file'
+																type='file'
+																multiple
+																accept='.pdf,.jpeg,.png,.doc,.docx,.pages'
+																onChange={handleFileChange}
+																id='file-upload'
+															/>
+														</div>
 
 														{selectedFileNames !== 'No file chosen' && (
 															<Button
@@ -326,7 +327,7 @@ const CustomerPage = () => {
 														</label>
 													</div>
 												</div>
-												{fileErrors.length > 0 && (
+												{fileErrors?.length > 0 && (
 													<ul className='text-red-500'>
 														{fileErrors.map((error, index) => (
 															<li key={index}>{error}</li>
