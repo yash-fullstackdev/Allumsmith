@@ -165,6 +165,28 @@ const vendorSchema = Yup.object().shape({
 		return true;
 	},
 });
+const CustomerSchema = Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+
+	phone: Yup.number().required('Phone is required')
+		.test('valid-phone', 'Invalid Phone number', (value) => {
+			return phoneRegex.test(value.toString());
+		}),
+	email: Yup.string().email('Invalid email address'),
+	address_line1: Yup.string().nullable(),
+	address_line2: Yup.string().nullable(),
+}).test({
+	test(value) {
+		const { address_line1, address_line2 } = value;
+		if (!address_line1 && !address_line2) {
+			throw this.createError({
+				message: 'At least one of address is required',
+				path: 'address_line1',
+			});
+		}
+		return true;
+	},
+});
 
 const userCreateSchema = Yup.object().shape({
 	email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -449,5 +471,6 @@ export {
 	colorsSchema,
 	AddRawMaterialSchema,
 	AddRawMaterialQuantitySchema,
-	jobWithMaterialSchema
+	jobWithMaterialSchema,
+	CustomerSchema
 };
