@@ -14,6 +14,7 @@ import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { wrokersSchema } from "../../../../utils/formValidations";
+import ErrorMessage from "../../../../components/layouts/common/ErrorMessage";
 
 
 const WorkerPage = () => {
@@ -140,7 +141,7 @@ const WorkerPage = () => {
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
 
-                <Card className="m-5">
+                <Card>
                     <CardBody>
                         <div
                             className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
@@ -160,10 +161,11 @@ const WorkerPage = () => {
                                     onChange={handleChange} // Use custom handleChange
                                     onBlur={formik.handleBlur}
                                 />
-                                {formik.errors.name && typeof formik.errors.name === 'string' && (
-                                    <div className="text-red-500">{formik.errors.name}</div>
-                                )}
-                                {/* ... Error handling for name field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`name`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='email'>
@@ -176,10 +178,12 @@ const WorkerPage = () => {
                                     onChange={handleChange}
                                     onBlur={formik.handleBlur}
                                 />
-                                {formik.errors.email && typeof formik.errors.email === 'string' && (
-                                    <div className="text-red-500">{formik.errors.email}</div>
-                                )}
-                                {/* ... Error handling for email field */}
+
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`email`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='phone'>
@@ -191,10 +195,11 @@ const WorkerPage = () => {
                                     value={formik.values.phone}
                                     onChange={handleChange}
                                 />
-                                {formik.errors.phone && typeof formik.errors.phone === 'string' && (
-                                    <div className="text-red-500">{formik.errors.phone}</div>
-                                )}
-                                {/* ... Error handling for phone field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`phone`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='company'>
@@ -206,7 +211,11 @@ const WorkerPage = () => {
                                     value={formik.values.company}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for company field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`company`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='address_line1'>
@@ -218,7 +227,11 @@ const WorkerPage = () => {
                                     value={formik.values.address_line1}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for address_line1 field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`address_line1`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='address_line2'>Address Line 2</Label>
@@ -228,7 +241,11 @@ const WorkerPage = () => {
                                     value={formik.values.address_line2}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for address_line2 field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`address_line2`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='city'>
@@ -240,7 +257,11 @@ const WorkerPage = () => {
                                     value={formik.values.city}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for city field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`city`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='state'>
@@ -252,7 +273,11 @@ const WorkerPage = () => {
                                     value={formik.values.state}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for state field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`state`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='zipcode'>
@@ -264,7 +289,11 @@ const WorkerPage = () => {
                                     value={formik.values.zipcode}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for zipcode field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`zipcode`}
+                                />
                             </div>
                             <div className='col-span-12 lg:col-span-3'>
                                 <Label htmlFor='pancard'>
@@ -276,7 +305,11 @@ const WorkerPage = () => {
                                     value={formik.values.pancard}
                                     onChange={handleChange}
                                 />
-                                {/* ... Error handling for zipcode field */}
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`pancard`}
+                                />
                             </div>
 
                         </div>

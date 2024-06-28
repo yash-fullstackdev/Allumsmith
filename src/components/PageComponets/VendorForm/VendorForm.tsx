@@ -2,6 +2,7 @@ import React from "react";
 import Label from "../../form/Label";
 import Textarea from "../../form/Textarea";
 import Input from "../../form/Input";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -22,9 +23,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <div className='text-red-500'>{formik.errors.name}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`name`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='phone'>
@@ -38,9 +41,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.phone && formik.errors.phone ? (
-            <div className='text-red-500'>{formik.errors.phone}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`phone`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='email'>
@@ -53,9 +58,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.email && formik.errors.email ? (
-            <div className='text-red-500'>{formik.errors.email}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`email`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-4'>
@@ -69,9 +76,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.gstNumber && formik.errors.gstNumber ? (
-            <div className='text-red-500'>{formik.errors.gstNumber}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`gstNumber`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='company'>
@@ -84,9 +93,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.company && formik.errors.company ? (
-            <div className='text-red-500'>{formik.errors.company}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`company`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-4'>
@@ -100,9 +111,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.city && formik.errors.city ? (
-            <div className='text-red-500'>{formik.errors.city}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`city`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='state'>
@@ -115,9 +128,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.state && formik.errors.state ? (
-            <div className='text-red-500'>{formik.errors.state}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`state`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='zipcode'>
@@ -130,9 +145,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.zipcode && formik.errors.zipcode ? (
-            <div className='text-red-500'>{formik.errors.zipcode}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`zipcode`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-6'>
           <Label htmlFor='addressLine1'>
@@ -147,9 +164,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.addressLine1 && formik.errors.addressLine1 ? (
-            <div className='text-red-500'>{formik.errors.addressLine1}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`addressLine1`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-6'>
           <Label htmlFor='addressLine2'>
@@ -162,9 +181,11 @@ const VendorForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.addressLine2 && formik.errors.addressLine2 ? (
-            <div className='text-red-500'>{formik.errors.addressLine2}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`addressLine2`}
+          />
         </div>
       </div>
 

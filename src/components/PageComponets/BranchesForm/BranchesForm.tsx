@@ -1,5 +1,6 @@
 import Label from "../../form/Label";
 import Input from "../../form/Input";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 
 type props = {
@@ -22,9 +23,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <div className='text-red-500'>{formik.errors.name}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`name`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='address_line1'>
@@ -38,9 +41,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.address_line1 && formik.errors.address_line1 ? (
-            <div className='text-red-500'>{formik.errors.address_line1}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`address_line1`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='address_line2'>
@@ -53,9 +58,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.address_line2 && formik.errors.address_line2 ? (
-            <div className='text-red-500'>{formik.errors.address_line2}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`address_line2`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='city'>
@@ -69,9 +76,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.city && formik.errors.city ? (
-            <div className='text-red-500'>{formik.errors.city}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`city`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='state'>
@@ -85,9 +94,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.state && formik.errors.state ? (
-            <div className='text-red-500'>{formik.errors.state}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`state`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='zipcode'>
@@ -101,9 +112,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.zipcode && formik.errors.zipcode ? (
-            <div className='text-red-500'>{formik.errors.zipcode}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`zipcode`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='phone'>
@@ -117,9 +130,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.phone && formik.errors.phone ? (
-            <div className='text-red-500'>{formik.errors.phone}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`phone`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='contact_name'>
@@ -133,9 +148,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.contact_name && formik.errors.contact_name ? (
-            <div className='text-red-500'>{formik.errors.contact_name}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`contact_name`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-4'>
           <Label htmlFor='contact_phone'>
@@ -149,9 +166,11 @@ const BranchesForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.contact_phone && formik.errors.contact_phone ? (
-            <div className='text-red-500'>{formik.errors.contact_phone}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`contact_phone`}
+          />
         </div>
 
       </div>

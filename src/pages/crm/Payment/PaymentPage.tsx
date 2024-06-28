@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../utils/routes/enum';
 import renderAmount from '../../../utils/renderAmount';
 import PermissionGuard from '../../../components/buttons/CheckPermission';
+import ErrorMessage from '../../../components/layouts/common/ErrorMessage';
 
 const initialValues = {
 	customer_id: '',
@@ -121,7 +122,7 @@ const PaymentPage = () => {
 	return (
 		<PageWrapper>
 			<Container>
-				<Card className='px-4 m-5'>
+				<Card>
 					<CardBody>
 						<div
 							className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
@@ -168,12 +169,11 @@ const PaymentPage = () => {
 										onChange={formik.handleChange}
 										max={today}
 									/>
-									{formik.touched.todayDate &&
-										formik.errors.todayDate ? (
-										<div className='text-red-500'>
-											{formik.errors.todayDate}
-										</div>
-									) : null}
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`todayDate`}
+									/>
 								</div>
 								<div className='col-span-12 lg:col-span-4'>
 									<Label htmlFor='Amount'>Amount</Label>
@@ -218,13 +218,11 @@ const PaymentPage = () => {
 											)
 										}
 									/>
-
-									{formik.touched.payment_mode &&
-										formik.errors.payment_mode ? (
-										<div className='text-red-500'>
-											{formik.errors.payment_mode}
-										</div>
-									) : null}
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`payment_mode`}
+									/>
 								</div>
 
 								{formik &&
@@ -276,12 +274,11 @@ const PaymentPage = () => {
 										value={formik.values.amount_payable}
 										onChange={formik.handleChange}
 									/>
-									{formik.touched.amount_payable &&
-										formik.errors.amount_payable ? (
-										<div className='text-red-500'>
-											{formik.errors.amount_payable}
-										</div>
-									) : null}
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`amount_payable`}
+									/>
 								</div>
 
 								<div className='col-span-12 lg:col-span-12'>

@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../../ui/Button";
 import Label from "../../form/Label";
 import Input from "../../form/Input";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -28,9 +29,11 @@ const ColorForm = ({ formik }: props) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].name && (
-              <div className='text-red-500'>{formik.errors.entries[index].name}</div>
-            )}
+            <ErrorMessage
+              touched={formik.touched.entries?.[index]}
+              errors={formik.errors.entries?.[index]}
+              fieldName={`name`}
+            />
           </div>
           <div className='col-span-12 lg:col-span-4'>
             <Label htmlFor={`code-${index}`}>
@@ -45,9 +48,11 @@ const ColorForm = ({ formik }: props) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].code && (
-              <div className='text-red-500'>{formik.errors.entries[index].code}</div>
-            )}
+            <ErrorMessage
+              touched={formik.touched.entries?.[index]}
+              errors={formik.errors.entries?.[index]}
+              fieldName={`code`}
+            />
 
           </div>
           <div className='col-span-12 lg:col-span-4 flex items-end justify-end'>

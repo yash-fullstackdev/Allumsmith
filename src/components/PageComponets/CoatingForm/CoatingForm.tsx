@@ -4,6 +4,7 @@ import Input from "../../form/Input";
 import SelectReact from "../../form/SelectReact";
 import Select from "../../form/Select";
 import { get } from "../../../utils/api-helper.util";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -40,9 +41,11 @@ const CoatingForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.errors.name && formik.touched.name && (
-            <div className='text-red-500'>{formik.errors.name}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`name`}
+          />
         </div>
         <div className='col-span-12  lg:col-span-3'>
           <Label htmlFor='name'>
@@ -56,9 +59,11 @@ const CoatingForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.errors.code && formik.touched.code && (
-            <div className='text-red-500'>{formik.errors.code}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`code`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -78,14 +83,16 @@ const CoatingForm = ({ formik }: props) => {
             onChange={(selectedOptions: any) => {
               formik.setFieldValue('colors', selectedOptions.map((option: any) => option.value));
             }}
-            value={formik?.values?.colors?.map((color: any) =>({
+            value={formik?.values?.colors?.map((color: any) => ({
               value: color._id || color,
               label: color.name || colorData?.find((option: any) => option?._id === color)?.name,
             }))}
           />
-          {formik.touched.colors && formik.errors.colors ? (
-            <div className='text-red-500'>{formik.errors.colors}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`colors`}
+          />
         </div>
         <div className='col-span-12 lg:col-span-3'>
           <Label htmlFor='Colors'>
@@ -105,9 +112,11 @@ const CoatingForm = ({ formik }: props) => {
               </option>
             ))}
           </Select>
-          {formik.touched.type && formik.errors.type ? (
-            <div className='text-red-500'>{formik.errors.type}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`type`}
+          />
         </div>
       </div>
 

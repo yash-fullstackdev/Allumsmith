@@ -6,6 +6,7 @@ import Input from '../../../../components/form/Input';
 import { toast } from 'react-toastify';
 import { AddRawMaterialSchema } from '../../../../utils/formValidations';
 import { useFormik } from 'formik';
+import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 
 const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
 
@@ -46,9 +47,11 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
-                        {formik.touched.name && formik.errors.name ? (
-                            <div className='text-red-500'>{formik.errors.name}</div>
-                        ) : null}
+                        <ErrorMessage
+                            touched={formik.touched}
+                            errors={formik.errors}
+                            fieldName={`name`}
+                        />
                     </div>
                     <div className='col-span-12 lg:col-span-6'>
                         <Label htmlFor='code'>
@@ -62,9 +65,11 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
-                        {formik.touched.code && formik.errors.code ? (
-                            <div className='text-red-500'>{formik.errors.code}</div>
-                        ) : null}
+                        <ErrorMessage
+                            touched={formik.touched}
+                            errors={formik.errors}
+                            fieldName={`code`}
+                        />
                     </div>
                     <div className='col-span-12 lg:col-span-12'>
                         <div className='flex mt-2 gap-2 '>

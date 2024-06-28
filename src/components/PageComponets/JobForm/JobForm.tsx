@@ -7,6 +7,7 @@ import Card, { CardBody } from "../../ui/Card";
 import Button from "../../ui/Button";
 import Collapse from "../../utils/Collapse";
 import SelectReact from "../../form/SelectReact";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 type props = {
   formik: any,
 };
@@ -137,9 +138,12 @@ const JobForm = ({ formik }: props) => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.name && formik.errors.name ? (
-                <div className='text-red-500'>{formik.errors.name}</div>
-              ) : null}
+
+              <ErrorMessage
+                touched={formik.touched}
+                errors={formik.errors}
+                fieldName={`name`}
+              />
             </div>
 
             <div className='col-span-12 lg:col-span-6'>
@@ -160,9 +164,11 @@ const JobForm = ({ formik }: props) => {
                   </option>
                 ))}
               </Select>
-              {formik.touched.branch && formik.errors.branch ? (
-                <div className='text-red-500'>{formik.errors.branch}</div>
-              ) : null}
+              <ErrorMessage
+                touched={formik.touched}
+                errors={formik.errors}
+                fieldName={`branch`}
+              />
             </div>
           </div>
         </CardBody>
@@ -249,9 +255,12 @@ const JobForm = ({ formik }: props) => {
                             );
                           })}
                         </Select>
-                        {formik.touched.batch && formik.touched.batch[index] && formik.errors.batch && formik.errors.batch[index] && formik.errors.batch[index].co_id && (
-                          <div className='text-red-500'>{formik.errors.batch[index].co_id}</div>
-                        )}
+
+                        <ErrorMessage
+                          touched={formik?.touched?.batch?.[index]}
+                          errors={formik?.errors?.batch?.[index]}
+                          fieldName={`co_id`}
+                        />
                       </div>
                       {batch?.products?.length > 0 ? batch?.products
                         ?.filter((item: any) => item?.coating?.name && item?.color?.name)
@@ -298,14 +307,11 @@ const JobForm = ({ formik }: props) => {
                                   }}
                                   min={0}
                                 />
-                                {formik?.touched?.batch?.[index]?.products?.[productIndex]?.pickQuantity && formik?.errors?.batch?.[index]?.products?.[productIndex]?.pickQuantity && (
-                                  <div className='text-red-500'>
-                                    {formik?.errors?.batch?.[index]?.products?.[productIndex]?.pickQuantity}
-                                  </div>
-                                )}
-                                {formik?.touched[`batch[${index}].products[${productIndex}].pickQuantity`] && formik?.errors[`batch[${index}].products[${productIndex}].pickQuantity`] && (
-                                  <div className="error">{formik?.errors[`batch[${index}].products[${productIndex}].pickQuantity`]}</div>
-                                )}
+                                <ErrorMessage
+                                  touched={formik?.touched?.batch?.[index]?.products?.[productIndex]}
+                                  errors={formik?.errors?.batch?.[index]?.products?.[productIndex]}
+                                  fieldName={`pickQuantity`}
+                                />
                               </div>
                               <div className='col-span-12 lg:col-span-2'>
 
@@ -417,7 +423,13 @@ const JobForm = ({ formik }: props) => {
                         name={`self_products.[${index}].product_id`}
 
                         onChange={(e) => {
-                          formik?.setFieldValue(`self_products.[${index}]`, e);
+                          console.log('e :>> ', e);
+                          const data = {
+                            ...e,
+                            coating: "",
+                            pickQuantity: "",
+                          }
+                          formik?.setFieldValue(`self_products.[${index}]`, data);
                         }}
                       />
                     </div>
@@ -437,9 +449,12 @@ const JobForm = ({ formik }: props) => {
                         }}
                         min={0}
                       />
-                      {formik.touched.self_products && formik.touched.self_products[index] && formik.errors.self_products && formik.errors.self_products[index] && formik.errors.self_products[index].pickQuantity && (
-                        <div className='text-red-500'>{formik.errors.self_products[index].pickQuantity}</div>
-                      )}
+
+                      <ErrorMessage
+                        touched={formik?.touched?.self_products?.[index]}
+                        errors={formik?.errors?.self_products?.[index]}
+                        fieldName={`pickQuantity`}
+                      />
                     </div>
 
                     <div className='col-span-12 lg:col-span-3'>
@@ -453,6 +468,7 @@ const JobForm = ({ formik }: props) => {
                         value={entry?.coating?.id}
                         onChange={(e) => {
                           formik?.setFieldValue(`self_products[${index}].coating`, e.target.value);
+                          formik?.setFieldValue(`self_products[${index}].color`, '');
                           updateColorOptions(e.target.value, index);
                         }}
                       >
@@ -466,9 +482,11 @@ const JobForm = ({ formik }: props) => {
 
                         )}
                       </Select>
-                      {formik.touched.self_products && formik.touched.self_products[index] && formik.errors.self_products && formik.errors.self_products[index] && formik.errors.self_products[index].coating && (
-                        <div className='text-red-500'>{formik.errors.self_products[index].coating}</div>
-                      )}
+                      <ErrorMessage
+                        touched={formik?.touched?.self_products?.[index]}
+                        errors={formik?.errors?.self_products?.[index]}
+                        fieldName={`coating`}
+                      />
                     </div>
                     {entry.coating ? (
                       <div className='col-span-12 lg:col-span-3'>
@@ -490,9 +508,11 @@ const JobForm = ({ formik }: props) => {
                             )
                           })}
                         </Select>
-                        {formik.touched.self_products && formik.touched.self_products[index] && formik.errors.self_products && formik.errors.self_products[index] && formik.errors.self_products[index].color && (
-                        <div className='text-red-500'>{formik.errors.self_products[index].color}</div>
-                      )}
+                        <ErrorMessage
+                          touched={formik?.touched?.self_products?.[index]}
+                          errors={formik?.errors?.self_products?.[index]}
+                          fieldName={`color`}
+                        />
                       </div>
                     ) : null}
 

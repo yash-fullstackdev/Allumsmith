@@ -4,6 +4,7 @@ import SelectReact from "../../form/SelectReact";
 import { get } from "../../../utils/api-helper.util";
 import Input from "../../form/Input";
 import Button from "../../ui/Button";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -55,7 +56,7 @@ const PurchaseOrderForm = ({ formik }: props) => {
     newEntries.splice(index, 1);
     formik.setFieldValue('entries', newEntries);
   };
-
+  console.log('formik :>> ', formik);
   return (
     <form>
       <div className='mt-2 flex gap-3'>
@@ -73,9 +74,11 @@ const PurchaseOrderForm = ({ formik }: props) => {
             onBlur={formik.handleBlur}
             name='vendor'
           />
-          {formik.errors.vendor && formik.touched.vendor && (
-            <div className='text-red-500'>{formik.errors.vendor}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`vendor`}
+          />
         </div>
 
         <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
@@ -88,6 +91,11 @@ const PurchaseOrderForm = ({ formik }: props) => {
             name='po_number'
             id='po_number'
             disabled
+          />
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`po_number`}
           />
         </div>
 
@@ -120,9 +128,11 @@ const PurchaseOrderForm = ({ formik }: props) => {
                 name={`entries[${index}].product`}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].product && (
-                <div className='text-red-500'>{formik.errors.entries[index].product}</div>
-              )}
+              <ErrorMessage
+                touched={formik?.touched?.entries?.[index]}
+                errors={formik?.errors?.entries?.[index]}
+                fieldName={`product`}
+              />
 
             </div>
             <div className='col-span-12 lg:col-span-2'>
@@ -139,9 +149,11 @@ const PurchaseOrderForm = ({ formik }: props) => {
                   formik.setFieldValue(`entries[${index}].requiredQuantity`, e.target.value);
                 }}
               />
-              {formik.touched.entries && formik.touched.entries[index] && formik.errors.entries && formik.errors.entries[index] && formik.errors.entries[index].requiredQuantity && (
-                <div className='text-red-500'>{formik.errors.entries[index].requiredQuantity}</div>
-              )}
+              <ErrorMessage
+                touched={formik?.touched?.entries?.[index]}
+                errors={formik?.errors?.entries?.[index]}
+                fieldName={`requiredQuantity`}
+              />
 
             </div>
           </div>

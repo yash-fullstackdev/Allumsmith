@@ -85,7 +85,6 @@ const CreateSelectReact: FC<ISelectReactProps> = (props) => {
         {
           '!border-zinc-300 dark:!border-zinc-800': isValid,
         },
-        '!bg-transparent dark:!bg-transparent',
       ),
       validation: classNames({
         '!border-red-500 ring-4 ring-red-500/30': !isValid && isTouched && invalidFeedback,

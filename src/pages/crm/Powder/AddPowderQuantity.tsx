@@ -9,6 +9,7 @@ import Button from "../../../components/ui/Button";
 import Select from "../../../components/form/Select";
 import { useFormik } from "formik";
 import { AddRawMaterialQuantitySchema } from "../../../utils/formValidations";
+import ErrorMessage from "../../../components/layouts/common/ErrorMessage";
 
 const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
     const [branchData, setBranchData] = useState<any>([]);
@@ -88,9 +89,11 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                     </option>
                                 ))}
                             </Select>
-                            {formik.touched.utility && formik.errors.utility ? (
-                                <div className='text-red-500'>{formik.errors.utility}</div>
-                            ) : null}
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`utility`}
+                            />
                         </div>
                         {formik?.values?.utility && (
                             <div className='col-span-12 lg:col-span-6'>
@@ -104,6 +107,11 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                     name={`code`}
                                     value={formik?.values?.powderCode}
                                     readOnly
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`code`}
                                 />
 
                             </div>
@@ -121,9 +129,11 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {formik.touched.quantity && formik.errors.quantity ? (
-                                <div className='text-red-500'>{formik.errors.quantity}</div>
-                            ) : null}
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`quantity`}
+                            />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
                             <Label htmlFor='branch'>
@@ -144,9 +154,11 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                     </option>
                                 ))}
                             </Select>
-                            {formik.touched.branch && formik.errors.branch ? (
-                                <div className='text-red-500'>{formik.errors.branch}</div>
-                            ) : null}
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`branch`}
+                            />
                         </div>
                     </div>
                 </div>

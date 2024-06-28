@@ -6,6 +6,7 @@ import Textarea from "../../form/Textarea";
 import Icon from "../../icon/Icon";
 import UploadFile from "../../form/UploadFile";
 import Tooltip from "../../ui/Tooltip";
+import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -74,12 +75,12 @@ const CustomerForm = ({ formik }: props) => {
   }
 
   const removeFiles = () => {
-		setSelectedFileNames([]);
-		formik.setValues((prevState: any) => ({
-			...prevState,
-			file: [],
-		}));
-	};
+    setSelectedFileNames([]);
+    formik.setValues((prevState: any) => ({
+      ...prevState,
+      file: [],
+    }));
+  };
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-2 grid grid-cols-12 gap-3'>
@@ -95,9 +96,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.errors.name && formik.touched.name && (
-            <div className='text-red-500'>{formik.errors.name}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`name`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -112,9 +115,12 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.phone && formik.errors.phone ? (
-            <div className='text-red-500'>{formik.errors.phone}</div>
-          ) : null}
+
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`phone`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -128,9 +134,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.email && formik.errors.email ? (
-            <div className='text-red-500'>{formik.errors.email}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`email`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -144,9 +152,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.gstNumber && formik.errors.gstNumber ? (
-            <div className='text-red-500'>{formik.errors.gstNumber}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`gstNumber`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -160,9 +170,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.company && formik.errors.company ? (
-            <div className='text-red-500'>{formik.errors.company}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`company`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -176,9 +188,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.city && formik.errors.city ? (
-            <div className='text-red-500'>{formik.errors.city}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`city`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -192,9 +206,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.state && formik.errors.state ? (
-            <div className='text-red-500'>{formik.errors.state}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`state`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
@@ -208,9 +224,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.zipcode && formik.errors.zipcode ? (
-            <div className='text-red-500'>{formik.errors.zipcode}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`zipcode`}
+          />
         </div>
 
         <div className='col-span-12  lg:col-span-4'>
@@ -227,9 +245,11 @@ const CustomerForm = ({ formik }: props) => {
             min={0}
             max={100}
           />
-          {formik.errors.premium_discount && formik.touched.premium_discount && (
-            <div className='text-red-500'>{formik.errors.premium_discount}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`premium_discount`}
+          />
         </div>
 
         <div className='col-span-12  lg:col-span-4'>
@@ -246,9 +266,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.errors.anodize_discount && formik.touched.anodize_discount && (
-            <div className='text-red-500'>{formik.errors.anodize_discount}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`anodize_discount`}
+          />
         </div>
 
         <div className='col-span-12  lg:col-span-4'>
@@ -265,9 +287,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.errors.commercial_discount && formik.touched.commercial_discount && (
-            <div className='text-red-500'>{formik.errors.commercial_discount}</div>
-          )}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`commercial_discount`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-6'>
@@ -283,9 +307,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.address_line1 && formik.errors.address_line1 ? (
-            <div className='text-red-500'>{formik.errors.address_line1}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`address_line1`}
+          />
         </div>
 
         <div className='col-span-12 lg:col-span-6'>
@@ -299,9 +325,11 @@ const CustomerForm = ({ formik }: props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.address_line2 && formik.errors.address_line2 ? (
-            <div className='text-red-500'>{formik.errors.address_line2}</div>
-          ) : null}
+          <ErrorMessage
+            touched={formik.touched}
+            errors={formik.errors}
+            fieldName={`address_line2`}
+          />
         </div>
 
         <div className='col-span-12 mt-2'>
