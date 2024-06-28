@@ -53,17 +53,6 @@ const ColorsPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
-
-                    <div className='flex items-center justify-center ml-4' >
-                        <h4>Coating</h4>
-                        <Switch {...Label} checked={formik?.type === "anodize" ? true : false}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                const value = e.target.checked ? "anodize" : 'coating'
-                                formik.setFieldValue('type', value,);
-                            }}
-                        />
-                        <h4>Anodize</h4>
-                    </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
             </Subheader>
