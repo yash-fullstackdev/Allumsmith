@@ -16,7 +16,7 @@ const ConfirmDelete = ({ isOpen, setIsOpen, selectStatusId, setSelectStatusId, g
       const response = await deleted(`/transport/${selectStatusId}`);
       setSelectStatusId('')
       getTransportDetails();
-      toast.success("Product deleted");
+      toast.success("Transport entry deleted");
       setIsOpen(false);
     } catch (error: any) {
       toast.error( error.response?.data?.message || error.message);
