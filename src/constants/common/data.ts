@@ -69,4 +69,5 @@ const pagesToCheck = [
 	'/transport'
 ];
 
-export { admins, userInitialPermission, pagesToCheck };
+const permissionsTypes = ['read', 'write', 'delete'];
+export { admins, userInitialPermission, pagesToCheck, permissionsTypes };

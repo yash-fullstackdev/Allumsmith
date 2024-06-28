@@ -76,7 +76,7 @@ const EditBulkProductPage = () => {
 			const updateDataIdList = removedItems.map((item) => item._id);
 
 			if (updateDataIdList.length === 0) {
-				toast.error('Please select products to update.');
+				toast.error('Please Select Products To Update.');
 				return;
 			}
 
@@ -89,13 +89,21 @@ const EditBulkProductPage = () => {
 				}
 			}
 
+			
+			if (Object.keys(convertedValues).length === 0) {
+				toast.error('Please Input Rate To Update!');
+				return;
+			  }
+
+		
+
 			const dataToUpdate = {
 				products: updateDataIdList,
 				...convertedValues,
 			};
 
 			// Perform the API call to update the products
-			await put('/products/bulk-update', dataToUpdate);
+			// await put('/products/bulk-update', dataToUpdate);
 			console.log(dataToUpdate, 'Updated data');
 			navigate('/product');
 			toast.success('Product Updated Successfully!');

@@ -51,7 +51,7 @@ const DefaultAsideTemplate = () => {
 			</AsideBody>
 
 			<AsideFooter>
-				<div className='hover:black my-3 ml-3 flex  cursor-pointer items-center gap-3 overflow-hidden p-2  text-zinc-500 '>
+				<div className='hover:black my-3  flex  cursor-pointer items-center gap-3 overflow-hidden p-2  text-zinc-500 '>
 					<UserButton afterSignOutUrl='/sign-in' />
 					<span onClick={() => openUserProfile()}>{user?.fullName}</span>
 				</div>

@@ -14,6 +14,7 @@ import { PaymentSchema } from '../../../utils/formValidations';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../utils/routes/enum';
 import renderAmount from '../../../utils/renderAmount';
+import PermissionGuard from '../../../components/buttons/CheckPermission';
 
 const PaymentPage = () => {
 	const [customer, setCustomer] = useState<any>([]);
@@ -299,6 +300,7 @@ const PaymentPage = () => {
 												</div>
 											</div>
 										</div>
+										<PermissionGuard permissionType='read'>
 										<div className='col-span-1 mt-2 flex items-end justify-end'>
 											<Button
 												variant='solid'
@@ -308,6 +310,7 @@ const PaymentPage = () => {
 												Payment
 											</Button>
 										</div>
+										</PermissionGuard>
 									</CardBody>
 								</Card>
 							</div>

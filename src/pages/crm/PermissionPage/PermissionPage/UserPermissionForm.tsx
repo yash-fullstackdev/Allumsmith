@@ -18,8 +18,12 @@ import Input from '../../../../components/form/Input';
 import Icon from '../../../../components/icon/Icon';
 import { toast } from 'react-toastify';
 import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
-import { pagesToCheck, userInitialPermission } from '../../../../constants/common/data';
-import { useLocation } from 'react-router-dom';
+import {
+	pagesToCheck,
+	permissionsTypes,
+	userInitialPermission,
+} from '../../../../constants/common/data';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { userInitialValues } from '../../../../utils/initialValues';
 import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 import { get, post, put } from '../../../../utils/api-helper.util';
@@ -31,9 +35,11 @@ const UserPermissionForm = () => {
 	const [permissions, setPermissions] = useState<any>({});
 	const [isAllPermissions, setIsAllPermissions] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [permissionCred, setPermissionsCred] = useState<any>({});
 
 	// Extracting userId from query params
 	const location = useLocation();
+	const navigate = useNavigate();
 	const searchParams = new URLSearchParams(location.search);
 	const userId = searchParams.get('id');
 
@@ -74,6 +80,7 @@ const UserPermissionForm = () => {
 					userRole: permission.userRole,
 				});
 				setPermissions(permission.permissions);
+				setPermissionsCred(permission?.permissionsCred);
 			}
 		};
 
@@ -95,6 +102,7 @@ const UserPermissionForm = () => {
 				publicMetadata: {
 					permissions: filterPermissions(permissions),
 					userRole: values?.userRole,
+					permissionsCred: permissionCred,
 				},
 			};
 
@@ -110,6 +118,7 @@ const UserPermissionForm = () => {
 			setPermissions({});
 			setIsAllPermissions(false);
 			resetForm();
+			navigate('/users');
 
 			toast.success(!userId ? 'User created successfully' : 'User updated successfully');
 		} catch (error: any) {
@@ -135,11 +144,46 @@ const UserPermissionForm = () => {
 	};
 
 	// Function to toggle individual permissions
-	const togglePermission = (pageId: any) => {
+	const togglePermission = (pageId: any, type: any, writeRemove: any) => {
+		setPermissionsCred((prevPermissions: any) => {
+			const updatedPermissions = {
+				...prevPermissions,
+				[pageId?.to]: {
+					...(prevPermissions[pageId?.to] || {
+						read: false,
+						write: false,
+						delete: false,
+					}),
+					[type]: !prevPermissions[pageId?.to]?.[type],
+				},
+			};
+
+			// Ensure 'read' is true if 'write' or 'delete' is being toggled on
+			if ((type === 'write' || type === 'delete') && updatedPermissions[pageId?.to][type]) {
+				updatedPermissions[pageId?.to].read = true;
+			}
+
+			// Ensure 'write' and 'delete' are false if 'read' is set to false
+			if (type === 'read' && !updatedPermissions[pageId?.to].read) {
+				updatedPermissions[pageId?.to].write = false;
+				updatedPermissions[pageId?.to].delete = false;
+			}
+
+			return updatedPermissions;
+		});
+
 		setPermissions((prevPermissions: any) => {
-			return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, appPages);
+			return togglePermissionAndUpdateInnerPages(
+				pageId,
+				prevPermissions,
+				appPages,
+				type,
+				writeRemove,
+			);
 		});
 	};
+
+	console.log(permissions, permissionCred, 'ASdsd');
 
 	// Helper function to conditionally render elements based on userId presence
 	const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
@@ -159,6 +203,8 @@ const UserPermissionForm = () => {
 	useEffect(() => {
 		setIsAllPermissions(allPermissionsTrue);
 	}, [permissions]);
+
+	console.log(permissions, permissionCred, 'Asdasdd');
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
@@ -298,95 +344,137 @@ const UserPermissionForm = () => {
 												</div>
 
 												{/* Permission section */}
-												<div className='mt-8 flex items-center gap-2'>
-													<Label htmlFor='Add Access Permission'>
-														Add Access Permission
-													</Label>
-												</div>
 
-												<div className='rounded-lg bg-white p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]'>
-													<div className='mb-4 flex w-fit items-center rounded-lg border border-gray-300 bg-white p-2 shadow-sm'>
-														<Checkbox
-															id='Add Access Permission'
-															checked={isAllPermissions}
-															onClick={() => {
-																checkAllPermission(
-																	!isAllPermissions,
-																);
-															}}
-															className='mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-														/>
-														<Label
-															htmlFor='Add Access Permission'
-															className='font-medium text-gray-700'>
-															Select All Permissions
-														</Label>
-													</div>
-													<div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-														{Object.keys(appPages)
-															.slice(1)
-															.map((appKey) => {
-																const app = appPages[appKey];
-																return Object.values(app).map(
-																	(page: any) => {
-																		if (
-																			page.id &&
-																			page.to &&
-																			page.text &&
-																			page.icon
-																		) {
-																			return (
-																				<div
-																					key={page.to}
-																					className='flex items-center rounded-lg border border-gray-200 bg-white p-2 shadow-sm'>
-																					<div className='flex items-center'>
-																						<Checkbox
-																							id={
-																								page.to
-																							}
-																							name={
-																								page.to
-																							}
-																							checked={
-																								permissions[
-																									page
-																										.to
-																								] ||
-																								false
-																							}
-																							onChange={(
-																								e,
-																							) => {
-																								const target =
-																									e.target as HTMLInputElement;
-																								togglePermission(
-																									{
-																										...page,
-																										appKey,
-																										checked:
-																											target.checked,
-																									},
-																								);
-																							}}
-																							className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
-																						/>
-																						<Label
-																							htmlFor={
-																								page.to
-																							}
-																							className='font-medium text-gray-700'>
-																							{
-																								page.text
-																							}
-																						</Label>
-																					</div>
-																				</div>
-																			);
-																		}
-																		return null;
-																	},
-																);
-															})}
+												<div className='rounded-lg bg-white p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] dark:bg-[#09090b]'>
+													<CardTitle>
+														<div className='flex flex-col  gap-2'>
+															<div>Add Privileges</div>
+															<div className='text-lg font-normal text-zinc-500'>
+																Here you can
+																{checkUserId(
+																	userId,
+																	' create ',
+																	' edit ',
+																)}
+																users Privileges
+															</div>
+														</div>
+													</CardTitle>
+
+													<div className='mt-4 w- overflow-x-auto'>
+														<table className='min-w-full  bg-white dark:bg-[#27272a]'>
+															<thead className='bg-gray-200  dark:bg-[#27272a]'>
+																<tr>
+																	<th className='px-4 py-2 '>
+																		Module
+																	</th>
+																	{permissionsTypes.map(
+																		(value: string) => (
+																			<th
+																				className='px-4 py-2 capitalize '
+																				key={value}>
+																				{value}
+																			</th>
+																		),
+																	)}
+																</tr>
+															</thead>
+															<tbody>
+																{Object.keys(appPages)
+																	.slice(1)
+																	.map((appKey) => {
+																		const app =
+																			appPages?.[appKey];
+																		return Object.values(
+																			app,
+																		)?.map((page: any) => {
+																			if (
+																				page.id &&
+																				page.to &&
+																				page.text &&
+																				page.icon
+																			) {
+																				return (
+																					<tr
+																						key={
+																							page.to
+																						}
+																						className='border-x border-b transition-colors hover:bg-gray-300 dark:border-x-0 dark:bg-[#101011] dark:hover:bg-[#15151e]'>
+																						<td className='px-4 py-2'>
+																							<span className='text-xl font-medium text-blue-600'>
+																								{
+																									page?.text
+																								}
+																							</span>
+																						</td>
+
+																						{permissionsTypes.map(
+																							(
+																								permissionType,
+																							) => (
+																								<td
+																									key={`${page?.to}-${permissionType}`}
+																									className='px-4 py-2'>
+																									<div className='flex items-center justify-center'>
+																										{!(
+																											page?.to ===
+																												'/add-payment' &&
+																											permissionType !==
+																												'read'
+																										) && (
+																											<Checkbox
+																												id={`${page?.to}-${permissionType}`}
+																												name={`${page?.to}-${permissionType}`}
+																												inputClassName='ml-4'
+																												checked={
+																													permissionCred[
+																														page?.to
+																													]?.[
+																														permissionType
+																													] ||
+																													false
+																												}
+																												onChange={(
+																													e,
+																												) => {
+																													const target =
+																														e.target as HTMLInputElement;
+																													togglePermission(
+																														{
+																															...page,
+																															appKey,
+																															permissionType,
+																															checked:
+																																target.checked,
+																														},
+																														permissionType,
+																														permissionCred[
+																															page
+																																.to
+																														]?.[
+																															permissionType
+																														] &&
+																															(permissionType ===
+																																'write' ||
+																																permissionType ===
+																																	'read'),
+																													);
+																												}}
+																												className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
+																											/>
+																										)}
+																									</div>
+																								</td>
+																							),
+																						)}
+																					</tr>
+																				);
+																			}
+																			return null;
+																		});
+																	})}
+															</tbody>
+														</table>
 													</div>
 												</div>
 

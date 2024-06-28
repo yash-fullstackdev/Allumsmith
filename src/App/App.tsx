@@ -28,6 +28,9 @@ const App = () => {
 					routerPush={(to) => navigate(to)}
 					routerReplace={(to) => navigate(to, { replace: true })}
 					appearance={{
+						elements: {
+							footer: 'hidden',
+						},
 						variables: {
 							colorPrimary: 'hsl(263.4, 70%, 50.4%)',
 						},

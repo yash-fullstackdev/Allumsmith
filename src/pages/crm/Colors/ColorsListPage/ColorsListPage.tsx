@@ -42,6 +42,7 @@ import Subheader, {
 } from '../../../../components/layouts/Subheader/Subheader';
 import { Switch } from '@mui/material';
 import Label from '../../../../components/form/Label';
+import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -127,7 +128,8 @@ const ColorsListPage = () => {
 
 		columnHelper.display({
 			cell: (info) => (
-				<div className='font-bold'>
+				<div className='font-bold flex justify-center'>
+					<PermissionGuard permissionType='write'>
 					<Button
 						// onClick={() => {
 						//     setIsEditModal(true)
@@ -150,6 +152,8 @@ const ColorsListPage = () => {
 							/>
 						</svg>
 					</Button>
+					</PermissionGuard>
+					<PermissionGuard permissionType='delete'>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -168,6 +172,7 @@ const ColorsListPage = () => {
 							/>
 						</svg>
 					</Button>
+					</PermissionGuard>
 				</div>
 			),
 			header: 'Actions',
@@ -217,14 +222,15 @@ const ColorsListPage = () => {
 								{table.getFilteredRowModel().rows.length} items
 							</Badge>
 						</CardHeaderChild>
-
-						<CardHeaderChild>
-							<Link to={`${PathRoutes.add_colors}`}>
-								<Button variant='solid' icon='HeroPlus'>
-									New Color
-								</Button>
-							</Link>
-						</CardHeaderChild>
+						<PermissionGuard permissionType='write'>
+							<CardHeaderChild>
+								<Link to={`${PathRoutes.add_colors}`}>
+									<Button variant='solid' icon='HeroPlus'>
+										New Color
+									</Button>
+								</Link>
+							</CardHeaderChild>
+						</PermissionGuard>
 					</CardHeader>
 					<CardBody className='overflow-auto'>
 						{!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
