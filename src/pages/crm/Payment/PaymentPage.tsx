@@ -15,6 +15,13 @@ import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../utils/routes/enum';
 import renderAmount from '../../../utils/renderAmount';
 import PermissionGuard from '../../../components/buttons/CheckPermission';
+import ErrorMessage from '../../../components/layouts/common/ErrorMessage';
+
+const initialValues = {
+	customer_id: '',
+	todayDate: new Date().toISOString().split('T')[0],
+	amount_payable: 0,
+}
 
 const PaymentPage = () => {
 	const [customer, setCustomer] = useState<any>([]);
@@ -26,16 +33,11 @@ const PaymentPage = () => {
 		{ value: 'UPI', label: 'UPI' },
 	];
 	const formik: any = useFormik({
-		initialValues: {
-			customer_id: '',
-			todayDate: new Date().toISOString().split('T')[0],
-			amount_payable: 0,
-		},
+		initialValues,
 		enableReinitialize: true,
 		validationSchema: PaymentSchema,
-		onSubmit: () => {},
+		onSubmit: () => { },
 	});
-
 	const getCustomerDetails = async () => {
 		try {
 			const { data } = await get('/customers');
@@ -61,7 +63,7 @@ const PaymentPage = () => {
 			console.log('Pending Amount', pendingAmount);
 			formik.setFieldValue('creditedAmount', parseFloat(creditedAmount.toFixed(2)) || 0);
 			formik.setFieldValue('pendingAmount', parseFloat(pendingAmount.toFixed(2)) || 0);
-		} catch (error) {}
+		} catch (error) { }
 	};
 	useEffect(() => {
 		fetchAmount();
@@ -120,203 +122,191 @@ const PaymentPage = () => {
 	return (
 		<PageWrapper>
 			<Container>
-				<div className='flex h-full flex-wrap content-start'>
-					<div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
-						<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-							<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-								<Card className='px-4'>
-									<CardBody>
-										<div className='flex'>
-											<div className='bold w-full'>
-												<Button
-													variant='outlined'
-													className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'>
-													Payment
-												</Button>
-											</div>
+				<Card>
+					<CardBody>
+						<div
+							className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+						>
+							Payment
+						</div>
+						<div>
+							<div className='mt-2 grid grid-cols-12 gap-1'>
+								<div className='col-span-12 lg:col-span-4'>
+									<Label htmlFor='name'>
+										Customer Name
+										<span className='ml-1 text-red-500'>*</span>
+									</Label>
+									<SelectReact
+										id={`name`}
+										name={`name`}
+										options={customer.map((customer: any) => ({
+											value: customer._id,
+											label: customer.name,
+										}))}
+										onChange={(value: any) => {
+											formik.setFieldValue(
+												'customer_id',
+												value.value,
+											);
+											getCustomerDetails();
+										}}
+									/>
+
+									{formik.touched.customer_id &&
+										formik.errors.customer_id ? (
+										<div className='text-red-500'>
+											{formik.errors.customer_id}
 										</div>
-										<div>
-											<div className='mt-2 grid grid-cols-12 gap-1'>
-												<div className='col-span-12 lg:col-span-4'>
-													<Label htmlFor='name'>
-														Customer Name
-														<span className='ml-1 text-red-500'>*</span>
-													</Label>
-													<SelectReact
-														id={`name`}
-														name={`name`}
-														options={customer.map((customer: any) => ({
-															value: customer._id,
-															label: customer.name,
-														}))}
-														onChange={(value: any) => {
-															formik.setFieldValue(
-																'customer_id',
-																value.value,
-															);
-															getCustomerDetails();
-														}}
-														// onChange ={handleCustomerSelect}
-													/>
+									) : null}
+								</div>
+								<div className='col-span-12 lg:col-span-4'>
+									<Label htmlFor='todayDate'>Date</Label>
+									<Input
+										id='todayDate'
+										type='date'
+										name='todayDate'
+										value={formik.values.todayDate}
+										onChange={formik.handleChange}
+										max={today}
+									/>
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`todayDate`}
+									/>
+								</div>
+								<div className='col-span-12 lg:col-span-4'>
+									<Label htmlFor='Amount'>Amount</Label>
+									<Input
+										id='Amount'
+										type='text'
+										disabled={true}
+										name='Amount'
+										value={
+											renderAmount(
+												formik.values.pendingAmount,
+												formik.values.creditedAmount,
+											).text
+										}
+										style={{
+											color: renderAmount(
+												formik.values.pendingAmount,
+												formik.values.creditedAmount,
+											).color,
+										}}
+									/>
+								</div>
+								<div className='col-span-12 lg:col-span-6'>
+									<Label htmlFor='payment_mode'>
+										Payment Mode
+										<span className='ml-1 text-red-500'>*</span>
+									</Label>
+									<SelectReact
+										id={`payment_mode`}
+										name={`payment_mode`}
+										options={OptionPaymentMode.map(
+											(payment_mode: any) => ({
+												value: payment_mode.value,
+												label: `${payment_mode.label} `,
+											}),
+										)}
+										// value={{ value: formData.payment_mode, label: formData.payment_mode }}
+										onChange={(value: any) =>
+											formik.setFieldValue(
+												'payment_mode',
+												value.value,
+											)
+										}
+									/>
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`payment_mode`}
+									/>
+								</div>
 
-													{formik.touched.customer_id &&
-													formik.errors.customer_id ? (
-														<div className='text-red-500'>
-															{formik.errors.customer_id}
-														</div>
-													) : null}
-												</div>
-												<div className='col-span-12 lg:col-span-4'>
-													<Label htmlFor='todayDate'>Date</Label>
-													<Input
-														id='todayDate'
-														type='date'
-														name='todayDate'
-														value={formik.values.todayDate}
-														onChange={formik.handleChange}
-														max={today}
-													/>
-												</div>
-												<div className='col-span-12 lg:col-span-4'>
-													<Label htmlFor='Amount'>Amount</Label>
-													<Input
-														id='Amount'
-														type='text'
-														disabled={true}
-														name='Amount'
-														value={
-															renderAmount(
-																formik.values.pendingAmount,
-																formik.values.creditedAmount,
-															).text
-														}
-														style={{
-															color: renderAmount(
-																formik.values.pendingAmount,
-																formik.values.creditedAmount,
-															).color,
-														}}
-													/>
-												</div>
-												<div className='col-span-12 lg:col-span-6'>
-													<Label htmlFor='payment_mode'>
-														Payment Mode
-														<span className='ml-1 text-red-500'>*</span>
-													</Label>
-													<SelectReact
-														id={`payment_mode`}
-														name={`payment_mode`}
-														options={OptionPaymentMode.map(
-															(payment_mode: any) => ({
-																value: payment_mode.value,
-																label: `${payment_mode.label} `,
-															}),
-														)}
-														// value={{ value: formData.payment_mode, label: formData.payment_mode }}
-														onChange={(value: any) =>
-															formik.setFieldValue(
-																'payment_mode',
-																value.value,
-															)
-														}
-													/>
-
-													{formik.touched.payment_mode &&
-													formik.errors.payment_mode ? (
-														<div className='text-red-500'>
-															{formik.errors.payment_mode}
-														</div>
-													) : null}
-												</div>
-
-												{formik &&
-													formik?.values?.payment_mode === 'Cheque' && (
-														<div className='col-span-12 lg:col-span-6'>
-															<Label htmlFor='chequeNumber'>
-																Cheque Number
-																<span className='ml-1 text-red-500'>
-																	*
-																</span>
-															</Label>
-															<Input
-																type='text'
-																id={`chequeNumber`}
-																name={`chequeNumber`}
-																value={formik.values.chequeNumber}
-																onChange={formik.handleChange}
-															/>
-														</div>
-													)}
-												{formik &&
-													formik?.values?.payment_mode === 'UPI' && (
-														<div className='col-span-12 lg:col-span-6'>
-															<Label htmlFor='upi'>
-																UPI ID
-																<span className='ml-1 text-red-500'>
-																	*
-																</span>
-															</Label>
-															<Input
-																type='text'
-																id={`upi`}
-																name={`upi`}
-																value={formik.values.upi}
-																onChange={formik.handleChange}
-															/>
-														</div>
-													)}
-												<div className='col-span-12 lg:col-span-6'>
-													<Label htmlFor='amount_payable'>
-														Amount Payable(rs)
-														<span className='ml-1 text-red-500'>*</span>
-													</Label>
-													<Input
-														type='number'
-														min={0}
-														id={`amount_payable`}
-														name={`amount_payable`}
-														value={formik.values.amount_payable}
-														onChange={formik.handleChange}
-													/>
-													{formik.touched.amount_payable &&
-													formik.errors.amount_payable ? (
-														<div className='text-red-500'>
-															{formik.errors.amount_payable}
-														</div>
-													) : null}
-												</div>
-
-												<div className='col-span-12 lg:col-span-12'>
-													<Label htmlFor='description'>
-														Description
-														<span className='ml-1 text-red-500'>*</span>
-													</Label>
-													<Textarea
-														id='description'
-														name='description'
-														value={formik.values.description}
-														onChange={formik.handleChange}
-													/>
-												</div>
-											</div>
+								{formik &&
+									formik?.values?.payment_mode === 'Cheque' && (
+										<div className='col-span-12 lg:col-span-6'>
+											<Label htmlFor='chequeNumber'>
+												Cheque Number
+												<span className='ml-1 text-red-500'>
+													*
+												</span>
+											</Label>
+											<Input
+												type='text'
+												id={`chequeNumber`}
+												name={`chequeNumber`}
+												value={formik.values.chequeNumber}
+												onChange={formik.handleChange}
+											/>
 										</div>
-										<PermissionGuard permissionType='read'>
-										<div className='col-span-1 mt-2 flex items-end justify-end'>
-											<Button
-												variant='solid'
-												color='blue'
-												type='button'
-												onClick={savePaymentDetail}>
-												Payment
-											</Button>
+									)}
+								{formik &&
+									formik?.values?.payment_mode === 'UPI' && (
+										<div className='col-span-12 lg:col-span-6'>
+											<Label htmlFor='upi'>
+												UPI ID
+												<span className='ml-1 text-red-500'>
+													*
+												</span>
+											</Label>
+											<Input
+												type='text'
+												id={`upi`}
+												name={`upi`}
+												value={formik.values.upi}
+												onChange={formik.handleChange}
+											/>
 										</div>
-										</PermissionGuard>
-									</CardBody>
-								</Card>
+									)}
+								<div className='col-span-12 lg:col-span-6'>
+									<Label htmlFor='amount_payable'>
+										Amount Payable(rs)
+										<span className='ml-1 text-red-500'>*</span>
+									</Label>
+									<Input
+										type='number'
+										min={0}
+										id={`amount_payable`}
+										name={`amount_payable`}
+										value={formik.values.amount_payable}
+										onChange={formik.handleChange}
+									/>
+									<ErrorMessage
+										touched={formik?.touched}
+										errors={formik?.errors}
+										fieldName={`amount_payable`}
+									/>
+								</div>
+
+								<div className='col-span-12 lg:col-span-12'>
+									<Label htmlFor='description'>
+										Description
+									</Label>
+									<Textarea
+										id='description'
+										name='description'
+										value={formik.values.description}
+										onChange={formik.handleChange}
+									/>
+								</div>
 							</div>
 						</div>
-					</div>
-				</div>
+						<PermissionGuard permissionType='read'>
+							<div className='col-span-1 mt-2 flex items-end justify-end'>
+								<Button
+									variant='solid'
+									color='blue'
+									type='button'
+									onClick={savePaymentDetail}>
+									Payment
+								</Button>
+							</div>
+						</PermissionGuard>
+					</CardBody>
+				</Card>
 			</Container>
 		</PageWrapper>
 	);

@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
-
 const getCharacterValidationError = (str: string) => {
 	return `Your password must have at least 1 ${str} character`;
 };
+const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VehicleRegexFormat = [
@@ -145,7 +145,47 @@ const wrokersSchema = Yup.object().shape({
 
 const vendorSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
-	email: Yup.string().email('Invalid email address').required('Email is required'),
+
+	phone: Yup.number().required('Phone is required')
+		.test('valid-phone', 'Invalid Phone number', (value) => {
+			return phoneRegex.test(value.toString());
+		}),
+	email: Yup.string().email('Invalid email address'),
+	addressLine1: Yup.string().nullable(),
+	addressLine2: Yup.string().nullable(),
+}).test({
+	test(value) {
+		const { addressLine1, addressLine2 } = value;
+		if (!addressLine1 && !addressLine2) {
+			throw this.createError({
+				message: 'At least one of address is required',
+				path: 'addressLine1',
+			});
+		}
+		return true;
+	},
+});
+const CustomerSchema = Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+
+	phone: Yup.number().required('Phone is required')
+		.test('valid-phone', 'Invalid Phone number', (value) => {
+			return phoneRegex.test(value.toString());
+		}),
+	email: Yup.string().email('Invalid email address'),
+	address_line1: Yup.string().nullable(),
+	address_line2: Yup.string().nullable(),
+}).test({
+	test(value) {
+		const { address_line1, address_line2 } = value;
+		if (!address_line1 && !address_line2) {
+			throw this.createError({
+				message: 'At least one of address is required',
+				path: 'address_line1',
+			});
+		}
+		return true;
+	},
 });
 
 const userCreateSchema = Yup.object().shape({
@@ -196,7 +236,10 @@ const branchSchema = Yup.object().shape({
 	city: Yup.string().required('City is required'),
 	state: Yup.string().required('State is required'),
 	zipcode: Yup.string().required('Zipcode is required'),
-	phone: Yup.string().required('Phone is required'),
+	phone: Yup.string().required('Phone is required')
+		.test('valid-phone', 'Invalid Phone number', (value) => {
+			return phoneRegex.test(value.toString());
+		}),
 	contact_name: Yup.string().required('Contact Name is required'),
 	contact_phone: Yup.string().required('Contact Phone is required'),
 });
@@ -317,9 +360,98 @@ const colorsSchema = Yup.object().shape({
 const PaymentSchema = Yup.object().shape({
 	payment_mode: Yup.string().required('Payment Mode is required'),
 	customer_id: Yup.string().required('Customer Name is Required'),
-	amount_payable: Yup.number()
-		.required('Payable Amount is Required')
-		.positive('Amount Must be greated than 0'),
+	amount_payable: Yup.number().required('Payable Amount is Required').positive('Amount Must be greated than 0'),
+	todayDate: Yup.string().required('Date is Required'),
+})
+
+const AddRawMaterialSchema = Yup.object().shape({
+	name: Yup.string().required('Name is required'),
+	code: Yup.string().required('Code is Required'),
+});
+
+const AddRawMaterialQuantitySchema = Yup.object().shape({
+	utility: Yup.string().required('Powder is required'),
+	branch: Yup.string().required('Branch is required'),
+	quantity: Yup.string().required('Quantity is required'),
+})
+
+const jobWithMaterialSchema = Yup.object().shape({
+
+	name: Yup.string()
+		.required('Name is required'),
+
+	branch: Yup.string()
+		.required('To Branch is required'),
+	batch: Yup.array().of(
+		Yup.object().shape({
+			cp_id: Yup.string(),
+			products: Yup.array().of(
+				Yup.object().shape({
+					pickQuantity: Yup.string()
+						.test('not-same', 'Please Pick QTY less then or equal to Pending QTY', function (value) {
+							return (
+								!value ||
+								(this.parent?.itemSummary?.pendingQuantity !== undefined &&
+									Number(value) <= this.parent?.itemSummary?.pendingQuantity) ||
+								(this.parent?.itemSummary?.pendingQuantity === undefined &&
+									this.parent?.quantity &&
+									Number(value) <= this.parent?.quantity)
+							)
+						})
+						.test('Positive', 'Please Enter positive number', function (value) {
+							return (
+								!value || Number(value) >= 0
+							)
+						})
+						.when(['itemSummary', 'quantity'], {
+							is: (val: any, val2: any) => {
+								console.log('val2 :>> ', val2);
+								return Boolean(val?.pendingQuantity);
+							},
+							then: (schema) => schema.required('Pick Quantity is required'),
+							otherwise: (schema) => schema.notRequired(),
+						})
+						.notRequired(),
+				})
+			),
+		})
+	),
+	self_products: Yup.array().of(
+		Yup.object().shape({
+			pickQuantity: Yup.string()
+				.test('Positive', 'Please Enter positive number', function (value) {
+					return (
+						!value || Number(value) >= 0
+					)
+				})
+				.when('value', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Pick Quantity is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+			coating: Yup.string()
+				.when('value', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Coating is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+			color: Yup.string()
+				.when('coating', {
+					is: (val: any) => {
+						return Boolean(val);
+					},
+					then: (schema) => schema.required('Color is required'),
+					otherwise: (schema) => schema.notRequired(),
+				})
+				.notRequired(),
+		})
+	),
 });
 
 export {
@@ -337,4 +469,8 @@ export {
 	userEditSchema,
 	addCustomerModalSchema,
 	colorsSchema,
+	AddRawMaterialSchema,
+	AddRawMaterialQuantitySchema,
+	jobWithMaterialSchema,
+	CustomerSchema
 };

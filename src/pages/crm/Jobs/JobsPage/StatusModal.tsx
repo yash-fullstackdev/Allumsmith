@@ -183,7 +183,7 @@ const StatusModal = ({ status, setStatus,jobId, setStatusModal, fetchData}: any)
                             </div>
                         ))}
                         <div className='flex justify-between mt-3'>
-                            <Button variant='outline'  type='button' onClick={handleAddEntry}>
+                            <Button variant='outline'  type='button' icon='HeroPlus' onClick={handleAddEntry}>
                                 Add Entry
                             </Button>
                         </div>

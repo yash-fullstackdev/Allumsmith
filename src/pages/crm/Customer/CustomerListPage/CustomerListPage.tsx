@@ -36,6 +36,7 @@ import { toast } from 'react-toastify';
 import EditCustomerModal from '../CustomerPage/EditVendorModal';
 import OffCanvas, { OffCanvasBody, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
 import CustomerDetailsCanvas from '../CustomerPage/CustomerDetailsCanvas';
+import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();
@@ -123,24 +124,13 @@ const CustomerListPage = () => {
 					<PermissionGuard permissionType='write'>
 						<Button
 							size='small'
-							className='px-1'
 							onClick={() => {
 								navigate(`${PathRoutes.edit_customer}/${info.row.original._id}`);
-							}}>
-							<svg
-								xmlns='http://www.w3.org/2000/svg'
-								fill='none'
-								viewBox='0 0 24 24'
-								strokeWidth='1.5'
-								stroke='currentColor'
-								className='h-6 w-6'>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-								/>
-							</svg>
-						</Button>
+							}}
+							icon='HeroPencil'
+							className='px-2.5'
+
+						/>
 					</PermissionGuard>
 					<Button
 						size='small'
@@ -257,7 +247,7 @@ const CustomerListPage = () => {
 			<Modal isOpen={isEditModal} setIsOpen={setIsEditModal} isScrollable fullScreen='2xl'>
 				<ModalHeader
 					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-					// onClick={() => formik.resetForm()}
+				// onClick={() => formik.resetForm()}
 				>
 					Edit Customer
 				</ModalHeader>
@@ -276,29 +266,13 @@ const CustomerListPage = () => {
 				</OffCanvasBody>
 			</OffCanvas>
 
-			<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button
-							onClick={() => setDeleteModal(false)}
-							color='blue'
-							variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								handleDeleteCustomer(deleteId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+			{deleteModal ? (
+				<DeleteConformationModal
+					isOpen={deleteModal}
+					setIsOpen={setDeleteModal}
+					handleConform={() => handleDeleteCustomer(deleteId)}
+				/>
+			) : null}
 		</PageWrapper>
 	);
 };

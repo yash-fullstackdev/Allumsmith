@@ -77,9 +77,7 @@ const PowderInventoryListPage = () => {
         const aggregatedData = [] as any[];
         powderInventoryList.forEach(item => {
             const { name: productName } = item.utility;
-            console.log('productName :>> ', productName);
             const existingProduct = aggregatedData.find(product => product.name === productName);
-            console.log('existingProduct :>> ', existingProduct);
             const subDataEntry = {
                 branch: item?.branch?.name,
                 quantity: item?.quantity

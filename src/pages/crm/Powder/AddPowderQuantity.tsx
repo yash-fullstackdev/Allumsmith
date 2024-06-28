@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { get, post } from "../../../utils/api-helper.util";
 import { toast } from "react-toastify";
-import { PathRoutes } from "../../../utils/routes/enum";
 import Card, { CardBody } from "../../../components/ui/Card";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/Input";
 import Button from "../../../components/ui/Button";
 import Select from "../../../components/form/Select";
+import { useFormik } from "formik";
+import { AddRawMaterialQuantitySchema } from "../../../utils/formValidations";
+import ErrorMessage from "../../../components/layouts/common/ErrorMessage";
 
 const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
-    const navigate = useNavigate();
     const [branchData, setBranchData] = useState<any>([]);
     const [powderData, setPowderData] = useState<any>([]);
-    const [selectedPowder, setSelectedPowder] = useState<any>(null);
-    const [branchId, setBranchId] = useState('');
-    const [quantity, setQuantity] = useState('');
 
     const getBranchDetails = async () => {
         try {
@@ -40,27 +38,27 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
         getPowderDetails();
     }, []);
 
-    const handleSaveItems = async () => {
-        const formData = {
-            utility: selectedPowder._id,
-            powderName: selectedPowder.name,
-            powderCode: selectedPowder.code,
-            branch: branchId,
-            quantity,
-        }
-        console.log('Form Data', formData);
-
-        try {
-            const powder = await post('/utility_inventory/stockaction', formData);
-            toast.success('Powder added Successfully!')
-            setPowderQuantityModal(false);
-            getPowderList();
-        } catch (error: any) {
-            console.error("Error Saving Powder", error)
-            toast.error(error.response.data.message, error)
-        }
-        
-    }
+    const formik: any = useFormik({
+        initialValues: {
+            utility: '',
+            powderName: '',
+            powderCode: '',
+            branch: '',
+            quantity: '',
+        },
+        validationSchema: AddRawMaterialQuantitySchema,
+        onSubmit: async (values) => {
+            try {
+                await post('/utility_inventory/stockaction', values);
+                toast.success('Powder added Successfully!')
+                setPowderQuantityModal(false);
+                getPowderList();
+            } catch (error: any) {
+                console.error("Error Saving Powder", error)
+                toast.error(error.response.data.message, error)
+            }
+        },
+    });
 
     return (
         <Card>
@@ -75,21 +73,29 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                             <Select
                                 id={`name`}
                                 name={`name`}
-                                value={selectedPowder ? selectedPowder.name : ''}
+                                value={formik?.values?.utility}
                                 onChange={(e) => {
-                                    const powder = powderData.find((item: any) => item.name === e.target.value);
-                                    setSelectedPowder(powder);
+                                    const powder = powderData.find((item: any) => item._id === e.target.value);
+                                    formik.setFieldValue('utility', e.target.value);
+                                    formik.setFieldValue('powderName', powder?.name);
+                                    formik.setFieldValue('powderCode', powder?.code);
                                 }}
+                                onBlur={formik.handleBlur}
                             >
                                 <option value="">Select Powder</option>
                                 {powderData.map((powder: any) => (
-                                    <option key={powder._id} value={powder.name}>
+                                    <option key={powder._id} value={powder._id}>
                                         {powder.name}
                                     </option>
                                 ))}
                             </Select>
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`utility`}
+                            />
                         </div>
-                        {selectedPowder && (
+                        {formik?.values?.utility && (
                             <div className='col-span-12 lg:col-span-6'>
                                 <Label htmlFor='code'>
                                     Code
@@ -99,9 +105,15 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                     type='number'
                                     id={`code`}
                                     name={`code`}
-                                    value={selectedPowder.code}
+                                    value={formik?.values?.powderCode}
                                     readOnly
                                 />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`code`}
+                                />
+
                             </div>
                         )}
                         <div className='col-span-12 lg:col-span-6'>
@@ -111,10 +123,16 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                             </Label>
                             <Input
                                 type='number'
-                                id={`number`}
-                                name={`number`}
-                                value={quantity}
-                                onChange={(e) => setQuantity(e.target.value)}
+                                id={`quantity`}
+                                name={`quantity`}
+                                value={formik.values.quantity}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`quantity`}
                             />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
@@ -125,8 +143,9 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                             <Select
                                 id={`branch`}
                                 name={`branch`}
-                                value={branchId}
-                                onChange={(e) => setBranchId(e.target.value)}
+                                value={formik.values.branch}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             >
                                 <option value="">Select Branch</option>
                                 {branchData.map((branch: any) => (
@@ -135,12 +154,17 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                                     </option>
                                 ))}
                             </Select>
+                            <ErrorMessage
+                                touched={formik.touched}
+                                errors={formik.errors}
+                                fieldName={`branch`}
+                            />
                         </div>
                     </div>
                 </div>
                 <div className='col-span-12 lg:col-span-12'>
                     <div className='flex mt-2 gap-2 '>
-                        <Button variant='solid' color='blue' type='button' onClick={handleSaveItems}>
+                        <Button variant='solid' color='blue' type='button' onClick={formik.handleSubmit}>
                             Save Entries
                         </Button>
                     </div>

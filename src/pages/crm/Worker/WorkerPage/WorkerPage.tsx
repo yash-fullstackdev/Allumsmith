@@ -14,6 +14,7 @@ import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { wrokersSchema } from "../../../../utils/formValidations";
+import ErrorMessage from "../../../../components/layouts/common/ErrorMessage";
 
 
 const WorkerPage = () => {
@@ -139,171 +140,191 @@ const WorkerPage = () => {
 
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
-                <div className='flex h-full flex-wrap content-start'>
-                    <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
-                        <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                            <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                                <Card>
-                                    <CardBody>
-                                        <div className='flex'>
-                                            <div className='bold w-full'>
-                                                <Button
-                                                    variant='outlined'
-                                                    className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
 
-                                                >
-                                                    Add Worker
-                                                </Button>
-                                            </div>
-                                        </div>
-                                        {/* <form onSubmit={formik.handleSubmit}> */}
-                                        <div className='mt-2 grid grid-cols-12 gap-2'>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='name'>
-                                                    Name
-                                                </Label>
-                                                <Input
-                                                    id="name"
-                                                    name="name"
-                                                    value={formik.values.name}
-                                                    onChange={handleChange} // Use custom handleChange
-                                                    onBlur={formik.handleBlur}
-                                                />
-                                                {formik.errors.name && typeof formik.errors.name === 'string' && (
-                                                    <div className="text-red-500">{formik.errors.name}</div>
-                                                )}
-                                                {/* ... Error handling for name field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='email'>
-                                                    Email
-                                                </Label>
-                                                <Input
-                                                    id="email"
-                                                    name="email"
-                                                    value={formik.values.email}
-                                                    onChange={handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                />
-                                                {formik.errors.email && typeof formik.errors.email === 'string' && (
-                                                    <div className="text-red-500">{formik.errors.email}</div>
-                                                )}
-                                                {/* ... Error handling for email field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='phone'>
-                                                    Phone
-                                                </Label>
-                                                <Input
-                                                    id="phone"
-                                                    name="phone"
-                                                    value={formik.values.phone}
-                                                    onChange={handleChange}
-                                                />
-                                                {formik.errors.phone && typeof formik.errors.phone === 'string' && (
-                                                    <div className="text-red-500">{formik.errors.phone}</div>
-                                                )}
-                                                {/* ... Error handling for phone field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='company'>
-                                                    Company
-                                                </Label>
-                                                <Input
-                                                    id="company"
-                                                    name="company"
-                                                    value={formik.values.company}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for company field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='address_line1'>
-                                                    Address Line 1
-                                                </Label>
-                                                <Input
-                                                    id="address_line1"
-                                                    name="address_line1"
-                                                    value={formik.values.address_line1}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for address_line1 field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='address_line2'>Address Line 2</Label>
-                                                <Input
-                                                    id="address_line2"
-                                                    name="address_line2"
-                                                    value={formik.values.address_line2}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for address_line2 field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='city'>
-                                                    City
-                                                </Label>
-                                                <Input
-                                                    id="city"
-                                                    name="city"
-                                                    value={formik.values.city}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for city field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='state'>
-                                                    State
-                                                </Label>
-                                                <Input
-                                                    id="state"
-                                                    name="state"
-                                                    value={formik.values.state}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for state field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='zipcode'>
-                                                    Zipcode
-                                                </Label>
-                                                <Input
-                                                    id="zipcode"
-                                                    name="zipcode"
-                                                    value={formik.values.zipcode}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for zipcode field */}
-                                            </div>
-                                            <div className='col-span-12 lg:col-span-3'>
-                                                <Label htmlFor='pancard'>
-                                                    Pan Card
-                                                </Label>
-                                                <Input
-                                                    id="pancard"
-                                                    name="pancard"
-                                                    value={formik.values.pancard}
-                                                    onChange={handleChange}
-                                                />
-                                                {/* ... Error handling for zipcode field */}
-                                            </div>
-
-                                        </div>
-
-
-                                        <div className='flex mt-2 gap-2'>
-
-                                            <Button variant='solid' color='blue' type='button' onClick={createWorker}>
-                                                Save Worker
-                                            </Button>
-                                        </div>
-                                        {/* </form> */}
-                                    </CardBody>
-                                </Card>
-                            </div>
+                <Card>
+                    <CardBody>
+                        <div
+                            className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                        >
+                            Add Worker
                         </div>
-                    </div>
-                </div>
+                        {/* <form onSubmit={formik.handleSubmit}> */}
+                        <div className='mt-2 grid grid-cols-12 gap-2'>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='name'>
+                                    Name
+                                </Label>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    value={formik.values.name}
+                                    onChange={handleChange} // Use custom handleChange
+                                    onBlur={formik.handleBlur}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`name`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='email'>
+                                    Email
+                                </Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    value={formik.values.email}
+                                    onChange={handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`email`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='phone'>
+                                    Phone
+                                </Label>
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    value={formik.values.phone}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`phone`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='company'>
+                                    Company
+                                </Label>
+                                <Input
+                                    id="company"
+                                    name="company"
+                                    value={formik.values.company}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`company`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='address_line1'>
+                                    Address Line 1
+                                </Label>
+                                <Input
+                                    id="address_line1"
+                                    name="address_line1"
+                                    value={formik.values.address_line1}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`address_line1`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='address_line2'>Address Line 2</Label>
+                                <Input
+                                    id="address_line2"
+                                    name="address_line2"
+                                    value={formik.values.address_line2}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`address_line2`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='city'>
+                                    City
+                                </Label>
+                                <Input
+                                    id="city"
+                                    name="city"
+                                    value={formik.values.city}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`city`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='state'>
+                                    State
+                                </Label>
+                                <Input
+                                    id="state"
+                                    name="state"
+                                    value={formik.values.state}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`state`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='zipcode'>
+                                    Zipcode
+                                </Label>
+                                <Input
+                                    id="zipcode"
+                                    name="zipcode"
+                                    value={formik.values.zipcode}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`zipcode`}
+                                />
+                            </div>
+                            <div className='col-span-12 lg:col-span-3'>
+                                <Label htmlFor='pancard'>
+                                    Pan Card
+                                </Label>
+                                <Input
+                                    id="pancard"
+                                    name="pancard"
+                                    value={formik.values.pancard}
+                                    onChange={handleChange}
+                                />
+                                <ErrorMessage
+                                    touched={formik.touched}
+                                    errors={formik.errors}
+                                    fieldName={`pancard`}
+                                />
+                            </div>
+
+                        </div>
+
+
+                        <div className='flex mt-2 gap-2'>
+
+                            <Button variant='solid' color='blue' type='button' onClick={createWorker}>
+                                Save Worker
+                            </Button>
+                        </div>
+                        {/* </form> */}
+                    </CardBody>
+                </Card>
+
             </Container>
         </PageWrapper >
     );

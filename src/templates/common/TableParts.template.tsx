@@ -244,7 +244,7 @@ export const TableCardFooterTemplate: FC<ITableCardFooterTemplateProps> = ({
 					className='!w-fit'
 					name='pageSize'>
 					{pageSizeOptions.map((pageSize) => (
-						<option key={pageSize} value={pageSize} className='text-neutral-950'>
+						<option key={pageSize} value={pageSize} className='text-neutral-950 dark:text-neutral-50'>
 							{pageSize === 'All' ? 'Show All' : `Show ${pageSize}`}
 						</option>
 					))}

@@ -217,6 +217,8 @@ export { default as HeroPauseCircle } from './PauseCircle';
 export { default as HeroPause } from './Pause';
 export { default as HeroPencilSquare } from './PencilSquare';
 export { default as HeroPencil } from './Pencil';
+export { default as HeroDelete } from './Delete';
+export { default as HeroAction } from './ActionIcon';
 export { default as HeroPhoneArrowDownLeft } from './PhoneArrowDownLeft';
 export { default as HeroPhoneArrowUpRight } from './PhoneArrowUpRight';
 export { default as HeroPhoneXMark } from './PhoneXMark';

@@ -35,6 +35,7 @@ import Modal, {
 	ModalHeader,
 } from '../../../../../components/ui/Modal';
 import VendorModal from './VendorModal';
+import DeleteConformationModal from '../../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 
 const columnHelper = createColumnHelper<any>();
 const listLinkPath = `../${appPages.crmAppPages.subPages.componentsPage.subPages.rawMaterialsPage.editPageLink.to}/`;
@@ -231,27 +232,13 @@ const VendorTable = ({
 					/>
 				</ModalBody>
 			</Modal>
-			<Modal isOpen={exModal} setIsOpen={setExModal}>
-				<ModalHeader>Are you sure?</ModalHeader>
-				<ModalFooter>
-					<ModalFooterChild>
-						Do you really want to delete these records? This cannot be undone.
-					</ModalFooterChild>
-					<ModalFooterChild>
-						<Button onClick={() => setExModal(false)} color='blue' variant='outlined'>
-							Cancel
-						</Button>
-						<Button
-							variant='solid'
-							onClick={() => {
-								// console.log(605)
-								handleDeleteVendor(helperId);
-							}}>
-							Delete
-						</Button>
-					</ModalFooterChild>
-				</ModalFooter>
-			</Modal>
+			{exModal ? (
+				<DeleteConformationModal
+					isOpen={exModal}
+					setIsOpen={setExModal}
+					handleConform={() => handleDeleteVendor(helperId)}
+				/>
+			) : null}
 		</PageWrapper>
 	) : (
 		<div className='flex h-screen items-center justify-center font-bold'>

@@ -15,6 +15,7 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
+import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 
 
 const AddPurchaseOrderForm = () => {
@@ -225,15 +226,10 @@ const AddPurchaseOrderForm = () => {
       <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
         <Card>
           <CardBody>
-            <div className='flex'>
-              <div className='bold w-full'>
-                <Button
-                  variant='outlined'
-                  className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                >
-                  Transport Details
-                </Button>
-              </div>
+            <div
+              className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+            >
+              Transport Details
             </div>
             <form onSubmit={formik.handleSubmit}>
               <div >
@@ -253,9 +249,11 @@ const AddPurchaseOrderForm = () => {
                       min={minDate}
                       max={maxDate}
                     />
-                    {formik.errors.dispatch_date && formik.touched.dispatch_date && (
-                      <div className='text-red-500'>{formik.errors.dispatch_date}</div>
-                    )}
+                    <ErrorMessage
+                      touched={formik.touched}
+                      errors={formik.errors}
+                      fieldName={`dispatch_date`}
+                    />
                   </div>
 
                   <div className='col-span-12 lg:col-span-4'>
@@ -271,9 +269,11 @@ const AddPurchaseOrderForm = () => {
                       onBlur={formik.handleBlur}
                       name='from_branch'
                     />
-                    {formik.errors.from_branch && formik.touched.from_branch && (
-                      <div className='text-red-500'>{formik.errors.from_branch}</div>
-                    )}
+                    <ErrorMessage
+                      touched={formik.touched}
+                      errors={formik.errors}
+                      fieldName={`from_branch`}
+                    />
                   </div>
 
                   <div className='col-span-12 lg:col-span-4'>
@@ -289,9 +289,11 @@ const AddPurchaseOrderForm = () => {
                       onBlur={formik.handleBlur}
                       name='to_branch'
                     />
-                    {formik.errors.to_branch && formik.touched.to_branch && (
-                      <div className='text-red-500'>{formik.errors.to_branch}</div>
-                    )}
+                    <ErrorMessage
+                      touched={formik.touched}
+                      errors={formik.errors}
+                      fieldName={`to_branch`}
+                    />
                   </div>
                   <div className='col-span-12 lg:col-span-4'>
                     <Label htmlFor='vehicle_no'>
@@ -306,9 +308,11 @@ const AddPurchaseOrderForm = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                     />
-                    {formik.errors.vehicle_no && formik.touched.vehicle_no && (
-                      <div className='text-red-500'>{formik.errors.vehicle_no}</div>
-                    )}
+                    <ErrorMessage
+                      touched={formik.touched}
+                      errors={formik.errors}
+                      fieldName={`vehicle_no`}
+                    />
                   </div>
 
                 </div>
@@ -398,9 +402,11 @@ const AddPurchaseOrderForm = () => {
                               );
                             })}
                           </Select>
-                          {formik.touched.batch && formik.touched.batch[index] && formik.errors.batch && formik.errors.batch[index] && formik.errors.batch[index].co_id && (
-                            <div className='text-red-500'>{formik.errors.batch[index].co_id}</div>
-                          )}
+                          <ErrorMessage
+                            touched={formik?.touched?.batch?.[index]}
+                            errors={formik?.errors?.batch?.[index]}
+                            fieldName={`to_branch`}
+                          />
                         </div>
                         {batch?.products?.length > 0 ? batch?.products
                           ?.filter((item: any) => item?.coating?.name && item?.color?.name)
@@ -447,14 +453,12 @@ const AddPurchaseOrderForm = () => {
                                     }}
                                     min={0}
                                   />
-                                  {formik?.touched?.batch?.[index]?.products?.[productIndex]?.pickQuantity && formik?.errors?.batch?.[index]?.products?.[productIndex]?.pickQuantity && (
-                                    <div className='text-red-500'>
-                                      {formik?.errors?.batch?.[index]?.products?.[productIndex]?.pickQuantity}
-                                    </div>
-                                  )}
-                                  {formik?.touched[`batch[${index}].products[${productIndex}].pickQuantity`] && formik?.errors[`batch[${index}].products[${productIndex}].pickQuantity`] && (
-                                    <div className="error">{formik?.errors[`batch[${index}].products[${productIndex}].pickQuantity`]}</div>
-                                  )}
+
+                                  <ErrorMessage
+                                    touched={formik?.touched?.batch?.[index]?.products?.[productIndex]}
+                                    errors={formik?.errors?.batch?.[index]?.products?.[productIndex]}
+                                    fieldName={`pickQuantity`}
+                                  />
                                 </div>
                                 <div className='col-span-12 lg:col-span-2'>
 
@@ -527,15 +531,10 @@ const AddPurchaseOrderForm = () => {
         </Card>
         <Card className='mt-5'>
           <CardBody>
-            <div className='flex'>
-              <div className='bold w-full'>
-                <Button
-                  variant='outlined'
-                  className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                >
-                  Self Products
-                </Button>
-              </div>
+            <div
+              className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+            >
+              Self Products
             </div>
             <div>
               <div>
@@ -598,9 +597,11 @@ const AddPurchaseOrderForm = () => {
                             }}
                             min={0}
                           />
-                          {formik.touched.self_products && formik.touched.self_products[index] && formik.errors.self_products && formik.errors.self_products[index] && formik.errors.self_products[index].pickQuantity && (
-                            <div className='text-red-500'>{formik.errors.self_products[index].pickQuantity}</div>
-                          )}
+                          <ErrorMessage
+                            touched={formik?.touched?.self_products?.[index]}
+                            errors={formik?.errors?.self_products?.[index]}
+                            fieldName={`pickQuantity`}
+                          />
                         </div>
                         {entry?.coating?.name ? (
                           <div className='col-span-12 lg:col-span-3'>

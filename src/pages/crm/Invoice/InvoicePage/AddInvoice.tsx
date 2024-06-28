@@ -46,7 +46,7 @@ const AddInvoice = () => {
     const [finalCoatingPrice, setFinalCoatingPrice] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [amountBeforeTaxAndGst, setAmountBeforeTaxAndGst] = useState<number>(0);
-    
+
     const getCustomerName = async () => {
         setIsLoading(true);
         try {
@@ -66,7 +66,6 @@ const AddInvoice = () => {
             setPurchaseOrderData(allPurchaseOrderById);
             setAlluminiumRate(allPurchaseOrderById?.alluminium_rate)
             setEntries({ ...entries, gst: allPurchaseOrderById?.gst })
-            console.log('allPurchaseOrderById :>> ', allPurchaseOrderById?.entries);
             const deliverQTY = [] as any[]
             const total = [] as any[]
             const productCoatingRate = [] as any[]
@@ -342,15 +341,10 @@ const AddInvoice = () => {
                             <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
                                 <Card>
                                     <CardBody>
-                                        <div className='flex'>
-                                            <div className='bold w-full'>
-                                                <Button
-                                                    variant='outlined'
-                                                    className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                                                >
-                                                    Add Invoice
-                                                </Button>
-                                            </div>
+                                        <div
+                                            className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                        >
+                                            Add Invoice
                                         </div>
                                         <div>
                                             <div className='mt-2 grid grid-cols-12 gap-1'>
@@ -685,15 +679,10 @@ const AddInvoice = () => {
                                 <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
                                     <Card>
                                         <CardBody>
-                                            <div className='flex'>
-                                                <div className='bold w-full'>
-                                                    <Button
-                                                        variant='outlined'
-                                                        className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-                                                    >
-                                                        Other Detail
-                                                    </Button>
-                                                </div>
+                                            <div
+                                                className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+                                            >
+                                                Other Detail
                                             </div>
                                             <div>
                                                 <div className='mt-2 grid grid-cols-12 gap-1'>

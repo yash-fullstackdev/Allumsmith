@@ -9,25 +9,7 @@ import AddCustomerOrderForm from "./AddCustomerOrderForm";
 
 
 const AddCustomerOrderPage = () => {
-
     const navigation = useNavigate();
-
-    const handleFiles = async (event: any) => {
-        try {
-            const files = event.target.files;
-            const formData = new FormData();
-            formData.append("csvFile", files[0]);
-
-            const { data } = await post("/products/uploadcsv", formData);
-            console.log("data", data);
-
-            // Handle success or additional logic if needed
-
-        } catch (error) {
-            console.error("Error uploading CSV file:", error);
-            // Handle error
-        }
-    };
 
     return (
         <PageWrapper name='ADD PRODUCTS' isProtectedRoute={true}>
@@ -45,13 +27,7 @@ const AddCustomerOrderPage = () => {
 
             </Subheader>
             <Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
-                <div className='flex h-full flex-wrap content-start'>
-                    <div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
-                        <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-                            <AddCustomerOrderForm />
-                        </div>
-                    </div>
-                </div>
+                <AddCustomerOrderForm />
             </Container>
         </PageWrapper>
     );

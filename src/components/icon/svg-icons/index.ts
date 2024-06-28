@@ -4,6 +4,7 @@ export { default as CustomGithub } from './CustomGithub'
 export { default as CustomGoogle } from './CustomGoogle'
 export { default as CustomNpm } from './CustomNpm'
 export { default as CustomSaudiArabia } from './CustomSaudiArabia'
+export { default as CrossIcon } from './CrossIcon';
 export { default as CustomSpain } from './CustomSpain'
 export { default as CustomTurkey } from './CustomTurkey'
 export { default as CustomUsa } from './CustomUsa'
