@@ -46,26 +46,27 @@ const EditCustomerPage = () => {
 		validationSchema: CustomerSchema,
 		onSubmit: async (values) => {
 			const formDataValue: any = new FormData();
-			console.log('values :>> ', values);
 			Object.entries(values).forEach(([key, value]: any) => {
-				if (key !== 'file' && key !== 'savedFiles') {
-					formDataValue.append(key, value);
-				}
-				if (key === 'file') {
-					values?.file?.forEach((item: any) => {
-						formDataValue.append('file', item);
-					});
-				};
-
-				if (key === 'savedFiles') {
-					values?.savedFiles
-						?.filter((item: any) => !item.add)
-						.map(({ add, ...fileWithoutAdd }: any) => {
-							return JSON.stringify(fileWithoutAdd);
-						})
-						?.forEach((item) => {
-							formDataValue.append('deletedFiles', item);
+				if(value) {
+					if (key !== 'file' && key !== 'savedFiles') {
+						formDataValue.append(key, value);
+					}
+					if (key === 'file') {
+						values?.file?.forEach((item: any) => {
+							formDataValue.append('file', item);
 						});
+					};
+	
+					if (key === 'savedFiles') {
+						values?.savedFiles
+							?.filter((item: any) => !item.add)
+							.map(({ add, ...fileWithoutAdd }: any) => {
+								return JSON.stringify(fileWithoutAdd);
+							})
+							?.forEach((item) => {
+								formDataValue.append('deletedFiles', item);
+							});
+					}
 				}
 			});
 
