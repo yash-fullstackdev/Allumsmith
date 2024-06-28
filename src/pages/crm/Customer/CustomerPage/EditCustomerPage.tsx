@@ -15,9 +15,12 @@ import Subheader, {
 	SubheaderSeparator,
 } from '../../../../components/layouts/Subheader/Subheader';
 import Textarea from '../../../../components/form/Textarea';
+import Tooltip from '../../../../components/ui/Tooltip';
+import Icon from '../../../../components/icon/Icon';
+import UploadFile from '../../../../components/form/UploadFile';
 
 const EditCustomerPage = () => {
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<any>({
 		name: '',
 		email: '',
 		phone: '',
@@ -34,9 +37,9 @@ const EditCustomerPage = () => {
 	});
 	const [files, setFiles] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [newFiles, setNewFiles] = useState([]);
+	const [newFiles, setNewFiles] = useState<any[]>([]);
 	const [fileErrors, setFileErrors] = useState<string[]>([]);
-	const [selectedFileNames, setSelectedFileNames] = useState<any>('No file chosen');
+	const [selectedFileNames, setSelectedFileNames] = useState<any>([]);
 
 	const navigate = useNavigate();
 
@@ -103,7 +106,7 @@ const EditCustomerPage = () => {
 			// Append existing formData values
 			Object.entries(formData).forEach(([key, value]) => {
 				if (value) {
-					formDataValue.append(key, value);
+					formDataValue.append(key, value as any);
 				}
 			});
 
@@ -124,7 +127,7 @@ const EditCustomerPage = () => {
 				formDataValue.append('deletedFiles', item);
 			});
 
-			await put(`https://e073-122-179-153-131.ngrok-free.app/customers/${id}`, formDataValue);
+			await put(`/customers/${id}`, formDataValue);
 
 			toast.success('Customer edited Successfully!');
 		} catch (error: any) {
@@ -146,28 +149,30 @@ const EditCustomerPage = () => {
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX files (Microsoft Word)
 			'application/vnd.apple.pages', // Apple Pages documents
 		];
-
 		const errors: string[] = [];
 		const selectedNames: string[] = [];
 		let fileData: any = [];
 
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
-			// Object.assign(file, { fieldname: 'file' });
-			fileData.push(file);
-			selectedNames.push(file.name);
-			if (!allowedTypes.includes(file.type)) {
-				errors.push(`${file.name} is not a valid file type.`);
+			if (!selectedFileNames?.includes(file.name)) {
+				fileData.push(file);
+				selectedNames.push(file.name);
+				if (!allowedTypes.includes(file.type)) {
+					errors.push(`${file.name} is not a valid file type.`);
+				}
 			}
 		}
 
+		const selectedFilesDate = [...newFiles, ...fileData];
+		const selectedFilesName = [...selectedFileNames, ...selectedNames];
+		console.log('selectedFilesDate :>> ', selectedFilesDate);
 		if (errors.length > 0) {
 			setFileErrors(errors);
 		} else {
 			setFileErrors([]);
-			setSelectedFileNames(selectedNames);
-			// Update formData with selected files
-			setNewFiles(Array.from(fileData));
+			setSelectedFileNames(selectedFilesName);
+			setNewFiles(Array.from(selectedFilesDate));
 		}
 	};
 
@@ -179,7 +184,7 @@ const EditCustomerPage = () => {
 	};
 
 	const removeFiles = () => {
-		setSelectedFileNames('No file chosen');
+		setSelectedFileNames('');
 		setNewFiles([]);
 	};
 
@@ -198,6 +203,18 @@ const EditCustomerPage = () => {
 			console.error(`File with name '${fileNameToUpdate}' not found.`);
 		}
 	};
+
+	const handleRemoveFile = (index?: number | null) => {
+		if (index !== null) {
+			const fileArray = formData?.file?.filter((_: any, idx: number) => idx !== index)
+			const removeFileNames = selectedFileNames?.filter((_: any, idx: number) => idx !== index)
+			setSelectedFileNames(removeFileNames)
+			setFormData((prevState: any) => ({
+				...prevState,
+				file: fileArray,
+			}));
+		}
+	}
 
 	return (
 		<PageWrapper name='Edit Customer' isProtectedRoute={true}>
@@ -341,37 +358,29 @@ const EditCustomerPage = () => {
 							</div>
 						</div>
 
-						<div className='col-span-12 my-2'>
-							<Label htmlFor='upload Documents'>Upload Documents</Label>
-							<div className='flex flex-col  gap-2'>
-								<div className='flex items-center gap-2 '>
-									<Input
-										name='file'
-										type='file'
-										multiple
-										className='w-[107px]'
-										accept='.pdf,.jpeg,.png'
-										onChange={handleFileChange}
-										id='file-upload'
-									/>
-
-									{selectedFileNames !== 'No file chosen' && (
-										<Button
-											variant='solid'
-											color='red'
-											className='border-1 h-fit w-fit px-2 py-1'
-											onClick={removeFiles}>
-											Remove Files
-										</Button>
-									)}
-									<label
-										htmlFor='file-upload'
-										className='flex cursor-pointer items-center gap-1'>
-										<span>{selectedFileNames}</span>
-									</label>
-								</div>
+						<div className='col-span-12 mt-2'>
+							<div className='flex items-center justify-between'>
+								<Label htmlFor='upload Documents'>
+									Upload Documents
+								</Label>
+								{selectedFileNames?.length > 0 ? (
+									<Tooltip text={"Remove All Files"} placement='left'>
+										<Icon
+											className='mx-2 cursor-pointer w-8 h-8'
+											icon={'CrossIcon'}
+											onClick={removeFiles}
+										/>
+									</Tooltip>
+								) : null}
 							</div>
-							{fileErrors.length > 0 && (
+							<UploadFile
+								handleFileChange={handleFileChange}
+								multiple
+								value={selectedFileNames}
+								handleRemoveFile={handleRemoveFile}
+							/>
+
+							{fileErrors?.length > 0 && (
 								<ul className='text-red-500'>
 									{fileErrors.map((error, index) => (
 										<li key={index}>{error}</li>
@@ -379,43 +388,34 @@ const EditCustomerPage = () => {
 								</ul>
 							)}
 						</div>
-
 						{files.length > 0 && (
-							<div className='col-span-12 flex flex-col gap-2'>
+							<div className='col-span-12 flex flex-col gap-2 mt-2'>
 								<Label htmlFor=''>Edit upload documents</Label>
-								<div className='flex flex-col gap-2'>
+								<div className='flex gap-2 flex-wrap'>
 									{files?.map((file: any) => (
-										<div className='flex items-center gap-2'>
-											<span>file Name : {file?.fileName?.split('-')[1]}</span>
-											{file?.add ? (
-												<Button
-													size='sm'
-													icon='HeroMinus'
-													variant='solid'
+										<div className='w-fit p-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-600 flex items-center gap-2'>
+											{file?.fileName?.split('-')[1]}
+											<Tooltip text={"View File"} placement='top'>
+												<Link
+													to={file?.fileUrl}
+													className='font-medium'
+													target='_blank'
+												>
+													<Icon
+														className='cursor-pointer w-6 h-6 text-blue-500'
+														icon={'HeroEye'}
+													/>
+												</Link>
+											</Tooltip>
+											<Tooltip text={file?.add ? "Remove File" : "Add File"} placement='top'>
+												<Icon
+													className={`cursor-pointer w-6 h-6 ${file?.add ? "text-red-500" : "text-green-500"}`}
+													icon={file?.add ? 'CrossIcon' : 'HeroPlus'}
 													onClick={() => {
 														editFiles(file?.fileName);
 													}}
-													color='red'
-													className='h-fit w-fit  '>
-													Remove
-												</Button>
-											) : (
-												<Button
-													size='sm'
-													icon='HeroPlus'
-													variant='solid'
-													onClick={() => {
-														editFiles(file?.fileName);
-													}}
-													className='h-fit w-fit'>
-													Add
-												</Button>
-											)}
-											<Link
-												to={file?.fileUrl}
-												className='font-medium underline'>
-												view File
-											</Link>
+												/>
+											</Tooltip>
 										</div>
 									))}
 								</div>

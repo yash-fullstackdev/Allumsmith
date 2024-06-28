@@ -17,6 +17,7 @@ import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import StockActionModal from '../StockActionModal/StockActionModal';
 import { createColumnHelper, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable, type ExpandedState } from '@tanstack/react-table';
 import TableTemplate from '../../../../templates/common/TableParts.template';
+import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -199,9 +200,11 @@ const InventoryListPage = () => {
                         <CardHeaderChild>
                             <CardTitle><h1>All Inventory</h1></CardTitle>
                         </CardHeaderChild>
+                        <PermissionGuard permissionType="write">
                         <Button variant='solid' icon='HeroPlus' onClick={() => setStockActionModal(true)}>
                             Stock Action
                         </Button>
+                        </PermissionGuard>
 
                     </CardHeader>
                     <CardBody>

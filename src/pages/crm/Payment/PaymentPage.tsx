@@ -14,8 +14,9 @@ import { PaymentSchema } from '../../../utils/formValidations';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../utils/routes/enum';
 import renderAmount from '../../../utils/renderAmount';
+import PermissionGuard from '../../../components/buttons/CheckPermission';
 
-const initialValues =  {
+const initialValues = {
 	customer_id: '',
 	todayDate: new Date().toISOString().split('T')[0],
 	amount_payable: 0,
@@ -296,15 +297,17 @@ const PaymentPage = () => {
 								</div>
 							</div>
 						</div>
-						<div className='col-span-1 mt-2 flex items-end justify-end'>
-							<Button
-								variant='solid'
-								color='blue'
-								type='button'
-								onClick={savePaymentDetail}>
-								Payment
-							</Button>
-						</div>
+						<PermissionGuard permissionType='read'>
+							<div className='col-span-1 mt-2 flex items-end justify-end'>
+								<Button
+									variant='solid'
+									color='blue'
+									type='button'
+									onClick={savePaymentDetail}>
+									Payment
+								</Button>
+							</div>
+						</PermissionGuard>
 					</CardBody>
 				</Card>
 			</Container>

@@ -45,8 +45,10 @@ import OffCanvas, {
 	OffCanvasHeader,
 } from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
-import _, { debounce } from "lodash"
+import _, { debounce } from 'lodash';
+import PermissionGuard from '../../../../components/buttons/CheckPermission';
 import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
+
 
 const columnHelper = createColumnHelper<any>();
 
@@ -161,7 +163,8 @@ const ProductListPage = () => {
 		}),
 		columnHelper.display({
 			cell: (info) => (
-				<div className='flex font-bold'>
+				<div className='flex font-bold justify-center'>
+					<PermissionGuard permissionType='write'>
 					<Button
 						onClick={() => {
 							navigate(`${PathRoutes.edit_product}/${info.row.original._id}`);
@@ -180,12 +183,14 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
+					</PermissionGuard>
 					<Button
 						icon='HeroInformationCircle'
 						onClick={() => {
 							setProductDetails(info.row.original);
 							setProductDetailModal(true);
 						}}></Button>
+						<PermissionGuard permissionType='delete'>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -204,6 +209,7 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
+					</PermissionGuard>
 				</div>
 			),
 			header: 'Actions',
@@ -285,16 +291,20 @@ const ProductListPage = () => {
 						</CardHeaderChild>
 
 						<CardHeaderChild>
+							<PermissionGuard permissionType='write'>
 							<Link to={`${PathRoutes.multiple_edit_product}`}>
 								<Button variant='solid' icon='DuoPen'>
 									Bulk Product Update
 								</Button>
 							</Link>
+							</PermissionGuard>
+							<PermissionGuard permissionType="write">
 							<Link to={`${PathRoutes.add_product}`}>
 								<Button variant='solid' icon='HeroPlus'>
 									New Product
 								</Button>
 							</Link>
+							</PermissionGuard>
 						</CardHeaderChild>
 					</CardHeader>
 					<CardBody className='overflow-auto'>
