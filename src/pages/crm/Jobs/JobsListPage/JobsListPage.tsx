@@ -63,15 +63,15 @@ const JobsListPage = () => {
     const navigate = useNavigate();
     const [collapsible, setCollapsible] = useState<boolean[]>(jobsList.map(() => false));
     const [withoutbatchModal, setWithOutBatchModal] = useState<boolean>(false);
-    const [deleteModal,setDeleteModal] = useState<boolean>(false);
-    
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+
 
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
             const { data: jobList } = await get(`/jobs`);
-            jobList.sort((a:any,b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            jobList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             setJobsList(jobList);
             setIsLoading(false);
         } catch (error: any) {
@@ -98,22 +98,22 @@ const JobsListPage = () => {
 
 
 
-    const generateReceipt  = async(id:any) =>{
-        try{
-        setIsLoading(true)    
-        const response = await post(`/jobs/generateJobReceipt/${id}`,{});
-        if (response && response.status === 201 && response.data && response.data.data) {
-            const pdfData = response.data.data;
-            console.log('PDF DATA', pdfData);
+    const generateReceipt = async (id: any) => {
+        try {
+            setIsLoading(true)
+            const response = await post(`/jobs/generateJobReceipt/${id}`, {});
+            if (response && response.status === 201 && response.data && response.data.data) {
+                const pdfData = response.data.data;
+                console.log('PDF DATA', pdfData);
 
-            const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
+                const url = window.URL.createObjectURL(new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }));
 
-            window.open(url, '_blank');
-        } else {
-            console.error('Error: PDF data not found in response');
-        }
-        setIsLoading(false)
-        }catch(error){
+                window.open(url, '_blank');
+            } else {
+                console.error('Error: PDF data not found in response');
+            }
+            setIsLoading(false)
+        } catch (error) {
             toast.error('Error Generating Receipt')
         }
 
@@ -183,75 +183,40 @@ const JobsListPage = () => {
             cell: (info) => (
                 <div className='font-bold flex justify-center'>
                     <PermissionGuard permissionType="write">
-                    <Button onClick={() => {
-                        setStatusModal(true)
-                        setStatus(info.row.original.status)
-                        setJobId(info.row.original._id)
-                    }}
-                        isDisable={info.row.original.status === 'completed'}
-                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                            <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm5.03 4.72a.75.75 0 0 1 0 1.06l-1.72 1.72h10.94a.75.75 0 0 1 0 1.5H10.81l1.72 1.72a.75.75 0 1 1-1.06 1.06l-3-3a.75.75 0 0 1 0-1.06l3-3a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
-                        </svg>
-                    </Button>
+                        <Button onClick={() => {
+                            setStatusModal(true)
+                            setStatus(info.row.original.status)
+                            setJobId(info.row.original._id)
+                        }}
+                            isDisable={info.row.original.status === 'completed'}
+                            icon={'HeroAction'}
+                            className='px-2.5'
+
+                        />
                     </PermissionGuard>
                     <Button
                         onClick={() => {
                             setBatchModal(true);
                             setJobId(info.row.original._id)
                         }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
+                        icon={'HeroEye'}
+                        className='px-2.5'
 
-                    </Button>
-                    <Button
-                     icon='DuoFile'  
-                     onClick={() => {generateReceipt(info.row.original._id)}} 
                     />
-                    {/* <Button
-                        onClick={() => {
-                            // setIsEditModal(true)
-                            // setJobId(info.row.original._id);
-                            navigate(`${PathRoutes.edit_jobs}/${info.row.original._id}`)
-                        }}
-                        isDisable={info.row.original.status === 'in_progress' || info.row.original.status === 'completed'}
-                    >
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'>
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-                            />
-                        </svg>
-
-                    </Button> */}
-                    <PermissionGuard permissionType='delete'>
                     <Button
-                        onClick={() => {
-                            handleClickDelete(info.row.original._id, false);
-                        }}>
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'>
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                            />
-                        </svg>
-                    </Button>
+                        icon='DuoFile'
+                        onClick={() => { generateReceipt(info.row.original._id) }}
+                        className='px-2.5'
+
+                    />
+                    <PermissionGuard permissionType='delete'>
+                        <Button
+                            onClick={() => {
+                                handleClickDelete(info.row.original._id, false);
+                            }}
+							className='px-2.5'
+                            icon={'HeroDelete'}
+                        />
                     </PermissionGuard>
                 </div>
             ),
@@ -307,65 +272,29 @@ const JobsListPage = () => {
                         setWithOutStatus(info.row.original.status)
                         setJobId(info.row.original._id)
                     }}
-                        isDisable={info.row.original.status === 'completed'}
-                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                            <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm5.03 4.72a.75.75 0 0 1 0 1.06l-1.72 1.72h10.94a.75.75 0 0 1 0 1.5H10.81l1.72 1.72a.75.75 0 1 1-1.06 1.06l-3-3a.75.75 0 0 1 0-1.06l3-3a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
-                        </svg>
-                    </Button>
+                        icon={'HeroAction'}
+                        className='px-2.5'
+
+                    />
                     <Button
                         onClick={() => {
                             setWithOutBatchModal(true);
                             setJobId(info.row.original._id)
                         }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
+                        icon={'HeroEye'}
+                        className='px-2.5'
 
-                    </Button>
-                    {/* <Button
-                        onClick={() => {
-                            // setIsEditModal(true)
-                            // setJobId(info.row.original._id);
-                            navigate(`${PathRoutes.ediwihtoutmaterial_jobs}/${info.row.original._id}`)
-                        }}
-                        isDisable={info.row.original.status === 'in_progress' || info.row.original.status === 'completed'}
-                    >
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'>
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-                            />
-                        </svg>
+                    />
 
-                    </Button> */}
                     <PermissionGuard permissionType='delete'>
-                    <Button
-                        onClick={() => {
-                            handleClickDelete(info.row.original._id, true);
-                        }}>
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'>
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                            />
-                        </svg>
-                    </Button>
+                        <Button
+                            onClick={() => {
+                                handleClickDelete(info.row.original._id, true);
+                            }}
+                            icon={'HeroDelete'}
+                            className='px-2.5'
+
+                        />
                     </PermissionGuard>
                 </div>
             ),
@@ -400,13 +329,13 @@ const JobsListPage = () => {
         <PageWrapper name='Jobs List'>
             <Subheader>
                 <PermissionGuard permissionType='write'>
-                <SubheaderRight>
-                    <Link to={`${PathRoutes.add_jobs}`}>
-                        <Button variant='solid' icon='HeroPlus'>
-                            New Job
-                        </Button>
-                    </Link>
-                </SubheaderRight>
+                    <SubheaderRight>
+                        <Link to={`${PathRoutes.add_jobs}`}>
+                            <Button variant='solid' icon='HeroPlus'>
+                                New Job
+                            </Button>
+                        </Link>
+                    </SubheaderRight>
                 </PermissionGuard>
             </Subheader>
             <Container>
@@ -446,27 +375,27 @@ const JobsListPage = () => {
                         <div>
                             <CardHeader>
                                 <CardHeaderChild>
-                                <FieldWrap
-                                            firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-                                            lastSuffix={
-                                                globalFilter && (
-                                                    <Icon
-                                                        icon='HeroXMark'
-                                                        color='red'
-                                                        className='mx-2 cursor-pointer'
-                                                        onClick={() => setGlobalFilter('')}
-                                                    />
-                                                )
-                                            }>
-                                            <Input
-                                                className='pl-8 w-[285px]'
-                                                id='searchBar'
-                                                name='searchBar'
-                                                placeholder='Search...'
-                                                value={globalFilter ?? ''}
-                                                onChange={(e) => setGlobalFilter(e.target.value)}
-                                            />
-                                        </FieldWrap>
+                                    <FieldWrap
+                                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+                                        lastSuffix={
+                                            globalFilter && (
+                                                <Icon
+                                                    icon='HeroXMark'
+                                                    color='red'
+                                                    className='mx-2 cursor-pointer'
+                                                    onClick={() => setGlobalFilter('')}
+                                                />
+                                            )
+                                        }>
+                                        <Input
+                                            className='pl-8 w-[285px]'
+                                            id='searchBar'
+                                            name='searchBar'
+                                            placeholder='Search...'
+                                            value={globalFilter ?? ''}
+                                            onChange={(e) => setGlobalFilter(e.target.value)}
+                                        />
+                                    </FieldWrap>
                                 </CardHeaderChild>
                             </CardHeader>
                             <CardBody className='overflow-auto'>
@@ -517,7 +446,7 @@ const JobsListPage = () => {
                                             {withoutdata.getFilteredRowModel().rows.length} items
                                         </Badge>
                                     </CardHeaderChild>
-                                    
+
                                 </CardHeader>
                             </Button>
                         </div>
@@ -525,29 +454,29 @@ const JobsListPage = () => {
                     <Collapse isOpen={!collapsible[withoutdata.getFilteredRowModel().rows.length]}>
                         <div>
                             <CardHeader>
-                            <CardHeaderChild>
-                                        <FieldWrap
-                                            firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
-                                            lastSuffix={
-                                                withoutglobalFilter && (
-                                                    <Icon
-                                                        icon='HeroXMark'
-                                                        color='red'
-                                                        className='mx-2 cursor-pointer'
-                                                        onClick={() => setWithOutGlobalFilter('')}
-                                                    />
-                                                )
-                                            }>
-                                            <Input
-                                                className='pl-8 w-[285px]'
-                                                id='searchBar'
-                                                name='searchBar'
-                                                placeholder='Search...'
-                                                value={withoutglobalFilter ?? ''}
-                                                onChange={(e) => setWithOutGlobalFilter(e.target.value)}
-                                            />
-                                        </FieldWrap>
-                                    </CardHeaderChild>
+                                <CardHeaderChild>
+                                    <FieldWrap
+                                        firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
+                                        lastSuffix={
+                                            withoutglobalFilter && (
+                                                <Icon
+                                                    icon='HeroXMark'
+                                                    color='red'
+                                                    className='mx-2 cursor-pointer'
+                                                    onClick={() => setWithOutGlobalFilter('')}
+                                                />
+                                            )
+                                        }>
+                                        <Input
+                                            className='pl-8 w-[285px]'
+                                            id='searchBar'
+                                            name='searchBar'
+                                            placeholder='Search...'
+                                            value={withoutglobalFilter ?? ''}
+                                            onChange={(e) => setWithOutGlobalFilter(e.target.value)}
+                                        />
+                                    </FieldWrap>
+                                </CardHeaderChild>
                             </CardHeader>
                             <CardBody className='overflow-auto'>
                                 {!isLoading && withoutdata.getFilteredRowModel().rows.length > 0 ? (
@@ -568,7 +497,7 @@ const JobsListPage = () => {
                         </div>
                     </Collapse>
                 </Card>
-                
+
             </Container>
 
             {/* end of without material */}
@@ -612,7 +541,7 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData}  />
+                    <StatusModal status={status} setStatus={setStatus} jobId={jobId} setStatusModal={setStatusModal} fetchData={fetchData} />
                 </ModalBody>
             </Modal>
             <Modal isOpen={withoutstatusModal} setIsOpen={setWithOutStatusModal} isScrollable fullScreen="lg">
@@ -623,11 +552,11 @@ const JobsListPage = () => {
                     Status
                 </ModalHeader>
                 <ModalBody>
-                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId = {jobId} setStatusModal={setWithOutStatusModal} fetchDatajobwm={fetchDatajobwm}/>
+                    <WithoutMaterialStatus status={withoutstatus} setStatus={setWithOutStatus} jobId={jobId} setStatusModal={setWithOutStatusModal} fetchDatajobwm={fetchDatajobwm} />
                     {/* <WithoutMaterialStatus withoutstatus={withoutstatus} setWithOutStatus={setWithOutStatus} jobId={jobId} setWithOutStatusModal={setWithOutStatusModal} fetchData={fetchData} /> */}
                 </ModalBody>
             </Modal>
-            
+
 
         </PageWrapper >
     )
