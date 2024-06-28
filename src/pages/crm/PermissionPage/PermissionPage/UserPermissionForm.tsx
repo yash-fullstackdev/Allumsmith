@@ -1,3 +1,4 @@
+
 import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/Button';
 import Card, {
@@ -10,8 +11,14 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { appPages } from '../../../../config/pages.config';
 import {
+	allReadPermissionsTrueData,
+	extractInnerRoutes,
 	filterPermissions,
+	getAllInnerPages,
+	handleSelectAllPermission,
+	isSelectedAll,
 	togglePermissionAndUpdateInnerPages,
+	updateCredPermissions,
 } from '../../../../utils/common.util';
 import Container from '../../../../components/layouts/Container/Container';
 import Input from '../../../../components/form/Input';
@@ -20,6 +27,7 @@ import { toast } from 'react-toastify';
 import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
 import {
 	pagesToCheck,
+	permissionCredAll,
 	permissionsTypes,
 	userInitialPermission,
 } from '../../../../constants/common/data';
@@ -33,9 +41,14 @@ const UserPermissionForm = () => {
 	// State variables
 	const [passwordShowStatus, setPasswordShowStatus] = useState(false);
 	const [permissions, setPermissions] = useState<any>({});
-	const [isAllPermissions, setIsAllPermissions] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [permissionCred, setPermissionsCred] = useState<any>({});
+	const [selectAllValues, setSelectAllValues] = useState<any>({
+		read: false,
+		write: false,
+		delete: false,
+		selectedAll: false,
+	});
 
 	// Extracting userId from query params
 	const location = useLocation();
@@ -115,8 +128,7 @@ const UserPermissionForm = () => {
 
 			!userId ? await post(apiUrl, userData) : await put(apiUrl, userData);
 
-			setPermissions({});
-			setIsAllPermissions(false);
+			
 			resetForm();
 			navigate('/users');
 
@@ -135,16 +147,37 @@ const UserPermissionForm = () => {
 
 	// Function to toggle all permissions
 	const checkAllPermission = (permissionValue: boolean) => {
-		setIsAllPermissions(permissionValue);
-		if (permissionValue) {
-			setPermissions(userInitialPermission);
-		} else {
-			setPermissions({});
-		}
-	};
+		setSelectAllValues((prevSelectAllValues:any) => ({
+		  ...prevSelectAllValues,
+		  selectedAll: permissionValue,
+		}));
+	
+		  if (permissionValue) {
+			setPermissions(extractInnerRoutes(appPages, true));
+			setPermissionsCred(createPermissionsData(appPages, true));
+			setSelectAllValues({
+				read: true,
+				write: true,
+				delete: true,
+				selectedAll: true,
+			})
+		  } else {
+			setPermissions(extractInnerRoutes(appPages, false));
+			setPermissionsCred(createPermissionsData(appPages, false));
+			setSelectAllValues({
+				read: false,
+				write: false,
+				delete: false,
+				selectedAll: false,
+			})
+		  }
+	
+	  };
 
-	// Function to toggle individual permissions
+	  console.log(permissionCred,permissions,"chejcdhs")
+
 	const togglePermission = (pageId: any, type: any, writeRemove: any) => {
+
 		setPermissionsCred((prevPermissions: any) => {
 			const updatedPermissions = {
 				...prevPermissions,
@@ -171,7 +204,6 @@ const UserPermissionForm = () => {
 
 			return updatedPermissions;
 		});
-
 		setPermissions((prevPermissions: any) => {
 			return togglePermissionAndUpdateInnerPages(
 				pageId,
@@ -183,7 +215,49 @@ const UserPermissionForm = () => {
 		});
 	};
 
-	console.log(permissions, permissionCred, 'ASdsd');
+	const createPermissionsData = (pages: any, value:any) => {
+		const permissions: any = {};
+
+		const addPermissions = (route: any) => {
+			permissions[route] = {
+				read: value,
+				write: value,
+				delete: value,
+			};
+		};
+
+		Object.values(pages).forEach((pageGroup: any) => {
+			addPermissions(pageGroup?.listPage?.to);
+		});
+
+		return permissions;
+	};
+
+	useEffect(() => {
+		setPermissionsCred(createPermissionsData(appPages,false));
+	}, []);
+
+	const handleCheckboxChange = (actionType: string, value: boolean) => {
+		setSelectAllValues((prevState: any) => ({
+			...prevState,
+			[actionType]: value,
+		}));
+
+		handleSelectAll(actionType, value);
+	};
+
+	const handleSelectAll = (actionType: string, value: boolean) => {
+		handleSelectAllPermission(
+			actionType,
+			value,
+			pagesToCheck,
+			appPages,
+			setPermissionsCred,
+			setPermissions,
+			setSelectAllValues,
+			selectAllValues,
+		);
+	};
 
 	// Helper function to conditionally render elements based on userId presence
 	const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
@@ -194,17 +268,14 @@ const UserPermissionForm = () => {
 		}
 	};
 
-	// Function to check if all permissions are true
-	const allPermissionsTrue = pagesToCheck.every((page) => {
-		return permissions[page] === true;
-	});
+
 
 	// useEffect to set isAllPermissions based on permissions changes
 	useEffect(() => {
-		setIsAllPermissions(allPermissionsTrue);
-	}, [permissions]);
+		setSelectAllValues({...selectAllValues,selectedAll:isSelectedAll(appPages,permissions)});
+	}, []);
 
-	console.log(permissions, permissionCred, 'Asdasdd');
+
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
@@ -361,19 +432,61 @@ const UserPermissionForm = () => {
 														</div>
 													</CardTitle>
 
-													<div className='mt-4 w- overflow-x-auto'>
+													<div className='w- mt-4 overflow-x-auto'>
 														<table className='min-w-full  bg-white dark:bg-[#27272a]'>
 															<thead className='bg-gray-200  dark:bg-[#27272a]'>
 																<tr>
-																	<th className='px-4 py-2 '>
-																		Module
+																	<th className='px-4 py-2'>
+																		<td className='flex items-center  w-full'>
+																			<span className='w-1/1'>
+																				<Checkbox
+																					checked={
+																						selectAllValues?.selectedAll
+																					}
+																					onClick={() => {
+																						checkAllPermission(
+																							!selectAllValues?.selectedAll,
+																						);
+																					
+																					}}
+																					className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
+																				/>
+																			</span>
+																			<span className='w-full text-center'>
+																				Module
+																			</span>
+																		</td>
 																	</th>
+
 																	{permissionsTypes.map(
 																		(value: string) => (
 																			<th
 																				className='px-4 py-2 capitalize '
 																				key={value}>
-																				{value}
+																				<td className='flex items-center justify-center'>
+																					<Checkbox
+																						id={value}
+																						name={value}
+																						inputClassName=''
+																						checked={
+																							selectAllValues[
+																								value
+																							]
+																						}
+																						onChange={(
+																							e: any,
+																						) =>
+																							handleCheckboxChange(
+																								value,
+																								e
+																									.target
+																									.checked,
+																							)
+																						}
+																						className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
+																					/>
+																					{value}
+																				</td>
 																			</th>
 																		),
 																	)}
@@ -425,7 +538,7 @@ const UserPermissionForm = () => {
 																											<Checkbox
 																												id={`${page?.to}-${permissionType}`}
 																												name={`${page?.to}-${permissionType}`}
-																												inputClassName='ml-4'
+																												inputClassName='ml-14'
 																												checked={
 																													permissionCred[
 																														page?.to
@@ -507,3 +620,4 @@ const UserPermissionForm = () => {
 };
 
 export default UserPermissionForm;
+

@@ -49,6 +49,94 @@ const userInitialPermission = {
 	'/worker': true,
 };
 
+const permissionCredAll ={
+	"/jobs": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/colors": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/vendor": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/worker": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/coating": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/product": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/branches": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/customer": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/cuo-order": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/inventory": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/transport": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/add-payment": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/ledger-list": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/invoice-list": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/raw-material": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/finish-storage": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/purchase-order": {
+		"read": true,
+		"write": true,
+		"delete": true
+	}
+}
+
 const pagesToCheck = [
 	'/product',
 	'/purchase-order',
@@ -66,8 +154,10 @@ const pagesToCheck = [
 	'/invoice-list',
 	'/ledger-list',
 	'/add-payment',
-	'/transport'
+	'/transport',
+	"/add-payment"
 ];
 
+
 const permissionsTypes = ['read', 'write', 'delete'];
-export { admins, userInitialPermission, pagesToCheck, permissionsTypes };
+export { admins, userInitialPermission, pagesToCheck, permissionsTypes,permissionCredAll };

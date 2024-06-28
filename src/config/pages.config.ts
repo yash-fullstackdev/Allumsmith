@@ -308,20 +308,20 @@ export const appPages: any = {
 		},
 	},
 
-	mailAppPages: {
-		// id: 'mailApp',
-		// to: '/mail',
-		// text: 'Mail',
-		// icon: 'HeroEnvelope',
-		subPages: {
-			inboxPages: {
-				id: 'inboxPages',
-				to: '/mail/inbox',
-				text: 'Inbox',
-				icon: 'HeroEnvelope',
-			},
-		},
-	},
+	// mailAppPages: {
+	// 	// id: 'mailApp',
+	// 	// to: '/mail',
+	// 	// text: 'Mail',
+	// 	// icon: 'HeroEnvelope',
+	// 	subPages: {
+	// 		inboxPages: {
+	// 			id: 'inboxPages',
+	// 			to: '/mail/inbox',
+	// 			text: 'Inbox',
+	// 			icon: 'HeroEnvelope',
+	// 		},
+	// 	},
+	// },
 };
 
 export const authPages = {
