@@ -4,7 +4,6 @@ const userInitialValues = {
 	lastName: '',
 	phoneNo: '',
 	password: '',
-	userName: '',
 	userRole: '',
 };
 

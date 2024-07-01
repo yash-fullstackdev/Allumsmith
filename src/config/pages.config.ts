@@ -6,11 +6,19 @@ export const appPages: any = {
 			text: 'Users',
 			icon: 'DuoKey',
 		},
+		rolesListPage:{
+          id:'rolesListPage',
+          to:'/roles',
+		},
 		userPermissionPage: {
-			id: 'add-users-Page',
+			id: 'userPermissionPage',
 			to: '/add-users-permissions',
 		},
-		identifier: 'user-permissions',
+		addRolesPage:{
+			id:'addRolesPage',
+			to: '/add-roles'
+		},
+		identifier: 'users-permissions' ,
 	},
 	productPage: {
 		listPage: {
