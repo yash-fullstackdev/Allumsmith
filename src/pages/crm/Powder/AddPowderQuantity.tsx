@@ -106,7 +106,7 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
                         )}
                         <div className='col-span-12 lg:col-span-6'>
                             <Label htmlFor='quantity'>
-                                Quantity
+                                Quantity(kg)
                                 <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input

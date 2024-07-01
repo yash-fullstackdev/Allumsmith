@@ -1,4 +1,4 @@
-const admins = ['allumsmith2023@yopmail.com'];
+const admins = ['allumsmith2023@yopmail.com',"yuvrajsinh.borasiya@bitontree.com"];
 const userInitialPermission = {
 	'/add-branches': true,
 	'/add-coating': true,

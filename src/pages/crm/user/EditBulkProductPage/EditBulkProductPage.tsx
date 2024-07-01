@@ -103,7 +103,7 @@ const EditBulkProductPage = () => {
 			};
 
 			// Perform the API call to update the products
-			// await put('/products/bulk-update', dataToUpdate);
+			await put('/products/bulk-update', dataToUpdate);
 			console.log(dataToUpdate, 'Updated data');
 			navigate('/product');
 			toast.success('Product Updated Successfully!');
