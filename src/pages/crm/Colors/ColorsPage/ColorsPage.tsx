@@ -93,10 +93,6 @@ const ColorsPage = () => {
                     >
                         {`${window.innerWidth > 425 ? 'Back to List' : ''}`}
                     </Button>
-
-                    <div className='flex items-center justify-center ml-4' >
-                        <h4>Coating</h4>  <Switch {...Label} checked={colorState} onClick={() => setColorState(!colorState)} /><h4>Anodize</h4>
-                    </div>
                     <SubheaderSeparator />
                 </SubheaderLeft>
             </Subheader>

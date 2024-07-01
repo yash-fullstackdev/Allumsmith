@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-
 	createColumnHelper,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -28,40 +27,49 @@ import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
+import Modal, {
+	ModalBody,
+	ModalFooter,
+	ModalFooterChild,
+	ModalHeader,
+} from '../../../../components/ui/Modal';
 import EditProductPage from '../ProductPage/EditProductModal';
 import { toast } from 'react-toastify';
 import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
 import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
-import OffCanvas, { OffCanvasBody, OffCanvasFooter, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
+import OffCanvas, {
+	OffCanvasBody,
+	OffCanvasFooter,
+	OffCanvasHeader,
+} from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
-import _, { debounce } from "lodash"
+import _, { debounce } from 'lodash';
+import usePermissions from '../../../../hooks/usePermission';
+import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();
 
 const ProductListPage = () => {
-
-
-
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [apiData, setApiData] = useState<any[]>([]);
 	const [tableCount, setTableCount] = useState<number>(0);
 	const [pageSize, setPageSize] = useState(10);
 	const [editModal, setEditModal] = useState<boolean>(false);
-	const [editProductId, setEditProductId] = useState<any>('')
+	const [editProductId, setEditProductId] = useState<any>('');
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 	const [deleteModal, setDeleteModal] = useState<boolean>(false);
 	const [deleteId, setDeleteId] = useState<string>('');
 	const [productDetailModal, setProductDetailModal] = useState<boolean>(false);
 	const [productDetails, setProductDetails] = useState<any>('');
-	const [searchTerm, setSearchTerm] = useState<any>('');
+	const permission = usePermissions()
+
+
+	console.log(permission,"Adssadsa")
 
 	const navigate = useNavigate();
-
-
 
 	const handleClickDelete = (id: any) => {
 		setDeleteModal(true);
@@ -69,10 +77,10 @@ const ProductListPage = () => {
 	};
 
 	const handleProductDelete = async (id: any) => {
-		console.log("id", id)
+		console.log('id', id);
 		try {
 			const { data: products } = await deleted(`/products/${id}`);
-			console.log("products", products);
+			console.log('products', products);
 			toast.success('Product deleted Successfully !');
 		} catch (error: any) {
 			console.error('Error deleting product:', error.message);
@@ -84,15 +92,26 @@ const ProductListPage = () => {
 			setDeleteModal(false);
 		}
 	};
-	const fetchData = async (pageSize: number | null = null, page: number | null = null, search = "") => {
+	const fetchData = async (
+		pageSize: number | null = null,
+		page: number | null = null,
+		search = '',
+	) => {
 		setIsLoading(true);
 		try {
 			const pageSizeValue = pageSize || 10;
-			const pageValue = page || 1
-			const { data: allUsers } = await get(`/products?page=${pageValue}&limit=${pageSizeValue}${!!(globalFilter || search) ? `&name=${search || globalFilter}` : ""} `);
-			allUsers?.data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			const pageValue = page || 1;
+			const { data: allUsers } = await get(
+				`/products?page=${pageValue}&limit=${pageSizeValue}${
+					!!(globalFilter || search) ? `&name=${search || globalFilter}` : ''
+				} `,
+			);
+			allUsers?.data.sort(
+				(a: any, b: any) =>
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			);
 			setApiData(allUsers?.data);
-			setTableCount(allUsers?.count)
+			setTableCount(allUsers?.count);
 			setIsLoading(false);
 			table.setPageIndex(pageValue - 1);
 		} catch (error: any) {
@@ -104,11 +123,14 @@ const ProductListPage = () => {
 
 	useEffect(() => {
 		fetchData();
-	}, [])
+	}, []);
 
-	const debouncedFetchData = useCallback(debounce((query: string) => {
-		fetchData(table?.getState().pagination.pageSize, 1, query)
-	}, 1000), []);
+	const debouncedFetchData = useCallback(
+		debounce((query: string) => {
+			fetchData(table?.getState().pagination.pageSize, 1, query);
+		}, 1000),
+		[],
+	);
 
 	useEffect(() => {
 		if (globalFilter) {
@@ -118,68 +140,39 @@ const ProductListPage = () => {
 		}
 	}, [globalFilter]);
 
-
 	const columns = [
 		columnHelper.accessor('name', {
-			cell: (info) => (
-
-				<div className=''>{`${info.getValue()}`}</div>
-
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Name',
-
 		}),
 		columnHelper.accessor('hsn', {
-			cell: (info) => (
-
-				<div className=''>
-					{`${info.getValue()}`}
-				</div>
-
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'HSN',
 		}),
 		columnHelper.accessor('productCode', {
-			cell: (info) => (
-
-				<div className=''>
-					{`${info.getValue()}`}
-				</div>
-
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Product Code',
 		}),
 		columnHelper.accessor('length', {
-			cell: (info) => (
-
-				<div className=''>
-					{`${info.getValue()}`}
-				</div>
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Length',
-
 		}),
 		columnHelper.accessor('thickness', {
-			cell: (info) => (
-
-				<div className=''>{`${info.getValue()}`}</div>
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Thickness',
 		}),
 		columnHelper.accessor('weight', {
-			cell: (info) => (
-
-				<div className=''>{`${info.getValue()}`}</div>
-			),
+			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
 			header: 'Weight',
 		}),
 		columnHelper.display({
 			cell: (info) => (
-				<div className='font-bold flex'>
-					<Button onClick={() => {
-						navigate(`${PathRoutes.edit_product}/${info.row.original._id}`)
-					}
-					}>
+				<div className='flex font-bold justify-center'>
+					<PermissionGuard permissionType='write'>
+					<Button
+						onClick={() => {
+							navigate(`${PathRoutes.edit_product}/${info.row.original._id}`);
+						}}>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							fill='none'
@@ -194,15 +187,14 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
-					<Button icon='HeroInformationCircle' onClick={() => {
-						setProductDetails(info.row.original)
-						setProductDetailModal(true)
-					}}
-					>
-
-
-
-					</Button>
+					</PermissionGuard>
+					<Button
+						icon='HeroInformationCircle'
+						onClick={() => {
+							setProductDetails(info.row.original);
+							setProductDetailModal(true);
+						}}></Button>
+						<PermissionGuard permissionType='delete'>
 					<Button
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
@@ -221,13 +213,12 @@ const ProductListPage = () => {
 							/>
 						</svg>
 					</Button>
-
+					</PermissionGuard>
 				</div>
 			),
 			header: 'Actions',
 			size: 120,
 		}),
-
 	];
 
 	const table = useReactTable({
@@ -243,20 +234,25 @@ const ProductListPage = () => {
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		manualPagination: true
+		manualPagination: true,
 	});
 
 	const handleChangePageSize = (pageSize: number) => {
-		fetchData(pageSize, 1)
-		setPageSize(pageSize)
+		fetchData(pageSize, 1);
+		setPageSize(pageSize);
 	};
-	const handleDebouncedFetchData = useCallback(debounce((pageSize, page, query: string) => {
-		fetchData(pageSize, page, query)
-	}, 700), []);
+	const handleDebouncedFetchData = useCallback(
+		debounce((pageSize, page, query: string) => {
+			fetchData(pageSize, page, query);
+		}, 700),
+		[],
+	);
 
 	const handleChangePage = (page: number, isDebounce: boolean = false) => {
-		isDebounce ? handleDebouncedFetchData(pageSize, page, globalFilter) : fetchData(table?.getState().pagination.pageSize, page)
-	}
+		isDebounce
+			? handleDebouncedFetchData(pageSize, page, globalFilter)
+			: fetchData(table?.getState().pagination.pageSize, page);
+	};
 
 	return (
 		<PageWrapper name='Product List'>
@@ -299,13 +295,21 @@ const ProductListPage = () => {
 						</CardHeaderChild>
 
 						<CardHeaderChild>
+							<PermissionGuard permissionType='write'>
+							<Link to={`${PathRoutes.multiple_edit_product}`}>
+								<Button variant='solid' icon='DuoPen'>
+									Bulk Product Update
+								</Button>
+							</Link>
+							</PermissionGuard>
+							<PermissionGuard permissionType="write">
 							<Link to={`${PathRoutes.add_product}`}>
 								<Button variant='solid' icon='HeroPlus'>
 									New Product
 								</Button>
 							</Link>
+							</PermissionGuard>
 						</CardHeaderChild>
-
 					</CardHeader>
 					<CardBody className='overflow-auto'>
 						{!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
@@ -314,13 +318,15 @@ const ProductListPage = () => {
 								table={table}
 							/>
 						) : (
-							!isLoading && <p className="text-center text-gray-500">No records found</p>
+							!isLoading && (
+								<p className='text-center text-gray-500'>No records found</p>
+							)
 						)}
 						<div className='flex justify-center'>
 							{isLoading && <LoaderDotsCommon />}
 						</div>
 					</CardBody>
-					{table.getFilteredRowModel().rows.length > 0 &&
+					{table.getFilteredRowModel().rows.length > 0 && (
 						<TableCardFooterTemplate
 							table={table}
 							onChangesPageSize={handleChangePageSize}
@@ -328,18 +334,22 @@ const ProductListPage = () => {
 							count={tableCount}
 							pageSize={pageSize}
 						/>
-					}
+					)}
 				</Card>
 			</Container>
 			<Modal isOpen={editModal} setIsOpen={setEditModal} isScrollable fullScreen='2xl'>
 				<ModalHeader
 					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-				// onClick={() => formik.resetForm()}
+					// onClick={() => formik.resetForm()}
 				>
 					Edit Product
 				</ModalHeader>
 				<ModalBody>
-					<EditProductPage editProductId={editProductId} setEditModal={setEditModal} fetchData={fetchData} />
+					<EditProductPage
+						editProductId={editProductId}
+						setEditModal={setEditModal}
+						fetchData={fetchData}
+					/>
 				</ModalBody>
 			</Modal>
 			<Modal isOpen={deleteModal} setIsOpen={setDeleteModal}>
@@ -349,7 +359,10 @@ const ProductListPage = () => {
 						Do you really want to delete these records? This cannot be undone.
 					</ModalFooterChild>
 					<ModalFooterChild>
-						<Button onClick={() => setDeleteModal(false)} color='blue' variant='outlined'>
+						<Button
+							onClick={() => setDeleteModal(false)}
+							color='blue'
+							variant='outlined'>
 							Cancel
 						</Button>
 						<Button
@@ -364,12 +377,12 @@ const ProductListPage = () => {
 			</Modal>
 			<OffCanvas isOpen={productDetailModal} setIsOpen={setProductDetailModal}>
 				<OffCanvasHeader>Product Detail</OffCanvasHeader>
-				<OffCanvasBody><ProductDetailCanvas productDetails={productDetails} /></OffCanvasBody>
-
+				<OffCanvasBody>
+					<ProductDetailCanvas productDetails={productDetails} />
+				</OffCanvasBody>
 			</OffCanvas>
 		</PageWrapper>
-	)
-
+	);
 };
 
 export default ProductListPage;

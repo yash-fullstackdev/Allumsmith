@@ -1,13 +1,46 @@
 import React, { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import contentRoutes from '../../routes/contentRoutes';
 import PageWrapper from '../layouts/PageWrapper/PageWrapper';
 import Container from '../layouts/Container/Container';
 import Subheader, { SubheaderLeft, SubheaderRight } from '../layouts/Subheader/Subheader';
 import Header, { HeaderLeft, HeaderRight } from '../layouts/Header/Header';
 import Card from '../ui/Card';
+import useAllowedRoutes from '../../hooks/useAllowedRoutes';
+import NotFoundPage from '../../pages/NotFound.page';
+import UsersPermissionPage from '../../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
+import { useUser } from '@clerk/clerk-react';
+import { admins } from '../../constants/common/data';
+import UserListPage from '../../pages/crm/PermissionPage/UserListPage/UserListPage';
 
 const ContentRouter = () => {
+	let allowedRoutes: any = useAllowedRoutes(contentRoutes, true);
+	const { pathname }: any = useLocation();
+	const { user }: any = useUser();
+	localStorage.setItem('userId', user?.id);
+
+	if (admins.includes(user?.emailAddresses[0]?.emailAddress)) {
+		allowedRoutes?.unshift({
+			path: '/add-users-permissions',
+			element: <UsersPermissionPage />,
+		});
+		allowedRoutes?.unshift({
+			path: '/users',
+			element: <UserListPage />,
+		});
+	}
+
+	// Determine if the current route matches any allowed route
+	const isCurrentRouteAllowed = allowedRoutes.some((route: any) => {
+		const pathRegex = new RegExp(`^${route.path.replace(/:[^\s/]+/g, '[^/]+')}`);
+		return pathRegex.test(pathname);
+	});
+
+	// If current route is not allowed, redirect to NotFoundPage
+	if (!isCurrentRouteAllowed) {
+		return <NotFoundPage />;
+	}
+
 	return (
 		<Suspense
 			fallback={
@@ -78,7 +111,7 @@ const ContentRouter = () => {
 				</>
 			}>
 			<Routes>
-				{contentRoutes.map((routeProps, index) => (
+				{allowedRoutes.map((routeProps: any, index: any) => (
 					<Route key={`${routeProps.path}-${index}`} {...routeProps} />
 				))}
 			</Routes>

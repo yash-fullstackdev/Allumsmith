@@ -10,7 +10,7 @@ import Icon from '../icon/Icon';
 import { TBorderWidth } from '../../types/borderWidth.type';
 
 export type TButtonVariants = 'solid' | 'outline' | 'default' | 'outlined';
-export type TButtonSize = 'xs' | 'sm' | 'default' | 'lg' | 'xl';
+export type TButtonSize = 'xs' | 'sm' | 'default' | 'lg' | 'xl' | 'small';
 
 export interface IButtonProps extends HTMLAttributes<HTMLButtonElement> {
 	borderWidth?: TBorderWidth;
@@ -179,6 +179,18 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>((props, ref) => {
 			icon: classNames({ 'ltr:mr-2.5 rtl:ml-2.5': HAS_CHILDREN }, 'text-[1.75rem]'),
 			rightIcon: classNames('ltr:ml-2.5', 'rtl:mr-2.5'),
 		},
+		small: {
+			general: classNames(
+				{
+					'px-0': HAS_CHILDREN,
+					'px-2.5': !HAS_CHILDREN,
+				},
+				'py-2.5',
+				'text-xl',
+			),
+			icon: classNames({ 'ltr:mr-2.5 rtl:ml-2.5': HAS_CHILDREN }, 'text-[1.75rem]'),
+			rightIcon: classNames('ltr:ml-2.5', 'rtl:mr-2.5'),
+		},
 	};
 	const btnSizeClasses = btnSizes[size as TButtonSize].general;
 	const btnIconClasses = btnSizes[size as TButtonSize].icon;
@@ -226,7 +238,7 @@ Button.defaultProps = {
 	rounded: themeConfig.rounded,
 	size: 'default',
 	variant: 'default',
-	type: "button"
+	type: 'button',
 };
 Button.displayName = 'Button';
 
