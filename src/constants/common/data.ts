@@ -139,5 +139,7 @@ const permissionCredAll ={
 
 
 
+const userPageRoutes = ["/add-users-permissions","/roles","/add-roles"]
+
 const permissionsTypes = ['read', 'write', 'delete'];
-export { admins, userInitialPermission, permissionsTypes,permissionCredAll };
+export { admins, userInitialPermission, permissionsTypes,permissionCredAll,userPageRoutes };

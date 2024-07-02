@@ -375,8 +375,7 @@ const JobsPage = () => {
                                                                                 type='text'
                                                                                 id={`quantity${productIndex}`}
                                                                                 name={`quantity${productIndex}`}
-                                                                                value={product.pendingQuantity || product.quantity}
-
+                                                                                value={product?.itemSummary?.pendingQuantity ?? product?.quantity}
                                                                             />
                                                                         </div>
                                                                         <div className='col-span-12 lg:col-span-2'>
