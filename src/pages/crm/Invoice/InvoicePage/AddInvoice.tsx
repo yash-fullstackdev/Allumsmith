@@ -95,12 +95,51 @@ const AddInvoice = () => {
         getCustomerName()
         getPurchaseOrderByid()
     }, [customerId])
+    
+    const calculateTotals = (updatedTotalWeights: number[], updatedTotalCoatingRate: number[]) => {
+        const gst = entries.gst;
+        const tax = entries.tax;
+
+        const totalCoatingPrice = updatedTotalCoatingRate.reduce((acc, item) => acc + item, 0) * (1 - discount / 100);
+        setFinalCoatingPrice(totalCoatingPrice || 0);
+
+        const totalProductWeight = updatedTotalWeights.reduce((acc, weight) => acc + weight, 0);
+        setTotalProducWeight(totalProductWeight);
+
+        const totalProductPrice = alluminiumRate * totalProductWeight;
+        setTotalProductPrice(parseFloat(totalProductPrice.toFixed(2)));
+
+        const estimateGrandTotal = totalCoatingPrice + totalProductPrice;
+        setAmountBeforeTaxAndGst(estimateGrandTotal);
+
+        const amountAfterGst = estimateGrandTotal * (gst / 100);
+        const amountAfterTax = estimateGrandTotal * (tax / 100);
+
+        const grandTotal = parseFloat((estimateGrandTotal + amountAfterGst + amountAfterTax).toFixed(2));
+        setTotalAmount(grandTotal);
+    };
 
     const handleDeleteProduct = (index: number) => {
         const updatedEntries = [...purchaseOrderData.entries];
         updatedEntries.splice(index, 1);
         setPurchaseOrderData({ ...purchaseOrderData, entries: updatedEntries });
+
+        const updatedDeliveredQuantities = [...deliveredQuantities];
+        updatedDeliveredQuantities.splice(index, 1);
+        setDeliveredQuantities(updatedDeliveredQuantities);
+
+        const updatedTotalWeights = [...totalWeights];
+        updatedTotalWeights.splice(index, 1);
+        setTotalWeights(updatedTotalWeights);
+
+        const updatedTotalCoatingRate = [...totalCoatingRate];
+        updatedTotalCoatingRate.splice(index, 1);
+        setTotalCoatingRate(updatedTotalCoatingRate);
+
+        calculateTotals(updatedTotalWeights, updatedTotalCoatingRate);
     };
+
+
 
 
     const handleSendMailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,6 +218,7 @@ const AddInvoice = () => {
         estimateCoatingPrice = (estimateCoatingPrice) * (1 - (discount / 100));
         setFinalCoatingPrice(estimateCoatingPrice || 0)
     }
+    
     useEffect(() => {
         calculateTotalCoatingPrice();
     }, [discount])
