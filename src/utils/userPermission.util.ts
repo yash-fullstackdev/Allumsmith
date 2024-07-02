@@ -1,13 +1,12 @@
-import { appPages } from "../config/pages.config";
+import { appPages } from '../config/pages.config';
 
 const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
-    if (!userId) {
-        return trueValue;
-    } else {
-        return falseValue;
-    }
+	if (!userId) {
+		return trueValue;
+	} else {
+		return falseValue;
+	}
 };
-
 
 const updateRoutePermissions = (route: string, value: boolean, prevPermissions: any) => {
 	return {
@@ -25,44 +24,45 @@ const updateRoutePermissions = (route: string, value: boolean, prevPermissions: 
 	};
 };
 
+const getAllMainRoute = () => {
+    const routes = Object.keys(appPages)
+        .map((route: string) => appPages[route]?.listPage?.to)
+        .filter((route) => route !== undefined); 
 
+    return routes;
+};
 
 const initializePermissions = (pageId: any, prevPermissions: any) => {
-    return {
-        ...prevPermissions,
-        [pageId]: {
-            ...(prevPermissions[pageId] || {
-                read: false,
-                write: false,
-                delete: false,
-            }),
-        },
-    };
+	return {
+		...prevPermissions,
+		[pageId]: {
+			...(prevPermissions[pageId] || {
+				read: false,
+				write: false,
+				delete: false,
+			}),
+		},
+	};
 };
 
 const updatePermissions = (pageId: any, type: any, prevPermissions: any) => {
-    const updatedPermissions = initializePermissions(pageId, prevPermissions);
-    updatedPermissions[pageId][type] = !prevPermissions[pageId]?.[type];
+	const updatedPermissions = initializePermissions(pageId, prevPermissions);
+	updatedPermissions[pageId][type] = !prevPermissions[pageId]?.[type];
 
-    if ((type === 'write' || type === 'delete') && updatedPermissions[pageId][type]) {
-        updatedPermissions[pageId].read = true;
-    }
+	if ((type === 'write' || type === 'delete') && updatedPermissions[pageId][type]) {
+		updatedPermissions[pageId].read = true;
+	}
 
-    if (type === 'read' && !updatedPermissions[pageId].read) {
-        updatedPermissions[pageId].write = false;
-        updatedPermissions[pageId].delete = false;
-    }
+	if (type === 'read' && !updatedPermissions[pageId].read) {
+		updatedPermissions[pageId].write = false;
+		updatedPermissions[pageId].delete = false;
+	}
 
-    return updatedPermissions;
+	return updatedPermissions;
 };
 
-
-
-
-
-
 const getAllInnerPages = (pageId: any, appPages: any) => {
-	const page = appPages[pageId.appKey];
+	const page = appPages[pageId];
 	if (page) {
 		const innerPages = Object.values(page).reduce((acc: string[], childRoutes: any) => {
 			if (typeof childRoutes === 'object' && childRoutes.to) {
@@ -78,7 +78,6 @@ const getAllInnerPages = (pageId: any, appPages: any) => {
 const togglePermissionAndUpdateInnerPages = (
 	pageId: any,
 	prevPermissions: any,
-	appPages: any,
 	permission: any,
 	writeRemove?: any,
 ) => {
@@ -96,7 +95,7 @@ const togglePermissionAndUpdateInnerPages = (
 
 		case 'write':
 			if (!writeRemove) {
-				const pagesToUpdate = getAllInnerPages(pageId, appPages);
+				const pagesToUpdate = getAllInnerPages(pageId?.appKey, appPages);
 				pagesToUpdate.forEach((page: any) => {
 					updatedPermissions = {
 						...updatedPermissions,
@@ -118,7 +117,7 @@ const togglePermissionAndUpdateInnerPages = (
 	}
 
 	if (writeRemove) {
-		const pagesToUpdate = getAllInnerPages(pageId, appPages);
+		const pagesToUpdate = getAllInnerPages(pageId?.appKey, appPages);
 		pagesToUpdate.forEach((page: any) => {
 			if (page !== pageId.to) {
 				updatedPermissions = {
@@ -132,23 +131,9 @@ const togglePermissionAndUpdateInnerPages = (
 	return updatedPermissions;
 };
 
-const updateInnerPagePermissions = (
-	pageId: string,
-	value: boolean,
-	prevPermissions: any,
-	appPages: any
-) => {
-	return togglePermissionAndUpdateInnerPages(
-		pageId,
-		prevPermissions,
-		appPages,
-		'write',
-		value
-	);
+const updateInnerPagePermissions = (pageId: string, value: boolean, prevPermissions: any) => {
+	return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, 'write', value);
 };
-
-
-
 
 const updateSelectAllValues = (permissionCred: any) => {
 	const updatedSelectedRawValue: any = {};
@@ -187,7 +172,6 @@ const handelAllSelections = (value: boolean) => ({
 	selectedAll: value,
 });
 
-
 const extractInnerRoutes = (pages: any, value: any) => {
 	let pagesArray: any = [];
 	const traversePages = (pages: any) => {
@@ -214,32 +198,29 @@ const extractInnerRoutes = (pages: any, value: any) => {
 
 const createPermissionsData = (pages: any, value: any) => {
 	const permissions: any = {};
-
 	const addPermissions = (route: any) => {
-		permissions[route] = {
-			read: value,
-			write: value,
-			delete: value,
-		};
+		if (route) {
+			permissions[route] = {
+				read: value,
+				write: value,
+				delete: value,
+			};
+		}
 	};
-
 	Object.values(pages).forEach((pageGroup: any) => {
 		addPermissions(pageGroup?.listPage?.to);
 	});
-
 	return permissions;
 };
 
-const handelSelectAllRawData = (value:boolean) =>{
+const handelSelectAllRawData = (value: boolean) => {
 	const newPermissions = extractInnerRoutes(appPages, value);
-		const newIsSelectedRawValue: any = {};
-		Object.keys(newPermissions).forEach((route: any) => {
-			newIsSelectedRawValue[route] = value;
-		});
-		
-		return newIsSelectedRawValue
-}
-
+	const newIsSelectedRawValue: any = {};
+	Object.keys(newPermissions).forEach((route: any) => {
+		newIsSelectedRawValue[route] = value;
+	});
+	return newIsSelectedRawValue;
+};
 
 const updatePermissionsStates = (
 	value: boolean,
@@ -252,21 +233,15 @@ const updatePermissionsStates = (
 	setIsSelectedRawValue(handelSelectAllRawData(value));
 };
 
-
-
-
 const allReadPermissionsTrueData = (pagesToCheck: any, value: boolean) =>
 	pagesToCheck.reduce((result: any, page: any) => {
 		result[page] = value;
 		return result;
 	}, {});
 
-
 const filterPermissions = (data: any) => {
 	return Object.fromEntries(Object.entries(data).filter(([_, value]) => value === true));
 };
-
-
 
 const updatePermissionsState = (
 	actionType: string,
@@ -308,38 +283,48 @@ const handleSelectAllPermission = (
 	actionType: string,
 	value: boolean,
 	pagesToCheck: string[],
-	appPages: any,
 	setPermissionsCred: React.Dispatch<React.SetStateAction<any>>,
 	setPermissions: React.Dispatch<React.SetStateAction<any>>,
-	// setSelectAllValues: React.Dispatch<React.SetStateAction<any>>,
-	selectAllValues: any
+	permission: any,
+	setSelectAllValues: React.Dispatch<React.SetStateAction<any>>,
 ) => {
 	const allReadPermissions = allReadPermissionsTrueData(pagesToCheck, value);
 	const pagesToUpdate = extractInnerRoutes(appPages, value);
-
 	setPermissionsCred((prevState: any) => {
 		const updatedPermissions = updatePermissionsState(
 			actionType,
 			value,
 			prevState,
-			setPermissions,
+			setSelectAllValues,
 		);
 
 		if (actionType === 'read') {
-			setPermissions(allReadPermissions);
-		} else if (actionType === 'write' && !value && selectAllValues.read) {
-			setPermissions(allReadPermissions);
-		} else {
-			setPermissions({ ...pagesToUpdate, '/add-payment': false });
+			setPermissions({ ...permission, ...allReadPermissions });
+		} else if (actionType === 'write') {
+			if (value) {
+				setPermissions({
+					...permission,
+					...allReadPermissions,
+					...pagesToUpdate,
+					'/add-payment': true,
+				});
+			} else {
+				setPermissions({
+					...allReadPermissionsTrueData(pagesToCheck, true),
+					'/add-payment': true,
+				});
+			}
+		} else if (actionType === 'delete') {
+			if (value) {
+				setPermissions({ ...permission, ...allReadPermissions, '/add-payment': true });
+			} else {
+				setPermissions({ ...permission, '/add-payment': true });
+			}
+			// setPermissions({ ...allReadPermissions, ...pagesToUpdate, '/add-payment': false });
 		}
-
 		return updatedPermissions;
 	});
 };
-
- 
-  
-
 
 const updateCredPermissions = (
 	prevPermissions: any,
@@ -351,46 +336,43 @@ const updateCredPermissions = (
 
 	// Initialize new permissions object if it doesn't exist for the pageId
 	if (!updatedPermissions[pageId]) {
-	  updatedPermissions[pageId] = {
-		read: false,
-		write: false,
-		delete: false,
-	  };
+		updatedPermissions[pageId] = {
+			read: false,
+			write: false,
+			delete: false,
+		};
 	}
-  
+
 	// Toggle the specified type (read, write, delete)
 	updatedPermissions[pageId][type] = !prevPermissions[pageId]?.[type];
-  
+
 	// Ensure 'read' is true if 'write' or 'delete' is being toggled on
 	if ((type === 'write' || type === 'delete') && updatedPermissions[pageId][type]) {
-	  updatedPermissions[pageId].read = true;
+		updatedPermissions[pageId].read = true;
 	}
-  
+
 	// Ensure 'write' and 'delete' are false if 'read' is set to false
 	if (type === 'read' && !updatedPermissions[pageId].read) {
-	  updatedPermissions[pageId].write = false;
-	  updatedPermissions[pageId].delete = false;
+		updatedPermissions[pageId].write = false;
+		updatedPermissions[pageId].delete = false;
 	}
-  
+
 	return updatedPermissions;
 };
 
-
-
-
-
-
 export {
-    updateSelectAllValues,
-    checkUserId,
-    updateInnerPagePermissions,
-    updateRoutePermissions,
-    updatePermissions,
-    updatePermissionsStates,
-    handelAllSelections,
-    updateCredPermissions,
-    handleSelectAllPermission,
-    filterPermissions,
-    togglePermissionAndUpdateInnerPages,
-    createPermissionsData
-}
+	updateSelectAllValues,
+	checkUserId,
+	updateInnerPagePermissions,
+	updateRoutePermissions,
+	updatePermissions,
+	updatePermissionsStates,
+	handelAllSelections,
+	updateCredPermissions,
+	handleSelectAllPermission,
+	filterPermissions,
+	togglePermissionAndUpdateInnerPages,
+	createPermissionsData,
+	extractInnerRoutes,
+    getAllMainRoute
+};

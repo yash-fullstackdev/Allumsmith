@@ -137,27 +137,7 @@ const permissionCredAll ={
 	}
 }
 
-const pagesToCheck = [
-	'/product',
-	'/purchase-order',
-	'/vendor',
-	'/customer',
-	'/worker',
-	'/raw-material',
-	'/branches',
-	'/colors',
-	'/coating',
-	'/jobs',
-	'/cuo-order',
-	'/inventory',
-	'/finish-storage',
-	'/invoice-list',
-	'/ledger-list',
-	'/add-payment',
-	'/transport',
-	"/add-payment"
-];
 
 
 const permissionsTypes = ['read', 'write', 'delete'];
-export { admins, userInitialPermission, pagesToCheck, permissionsTypes,permissionCredAll };
+export { admins, userInitialPermission, permissionsTypes,permissionCredAll };

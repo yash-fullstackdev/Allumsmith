@@ -13,7 +13,7 @@ import Container from '../../../../components/layouts/Container/Container';
 import Input from '../../../../components/form/Input';
 import { toast } from 'react-toastify';
 import { roleSchema } from '../../../../utils/formValidations';
-import { pagesToCheck, permissionsTypes } from '../../../../constants/common/data';
+import { permissionsTypes } from '../../../../constants/common/data';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
 import { get, post, put } from '../../../../utils/api-helper.util';
@@ -21,7 +21,9 @@ import Checkbox from '../../../../components/form/Checkbox';
 import {
 	checkUserId,
 	createPermissionsData,
+	extractInnerRoutes,
 	filterPermissions,
+	getAllMainRoute,
 	handelAllSelections,
 	handleSelectAllPermission,
 	togglePermissionAndUpdateInnerPages,
@@ -44,6 +46,7 @@ const RoleCreationForm = () => {
 		selectedAll: false,
 	});
 	const [isSelectedRawValue, setIsSelectedRawValue] = useState<any>({});
+    const [permissionRoutes,setPermissionsRoutes] = useState<any>([])
 
 	// Extracting userId from query params
 	const location = useLocation();
@@ -101,29 +104,47 @@ const RoleCreationForm = () => {
 
 	// Function to handle save/update Role
 	const handleSaveRole = async (values: any, resetForm: any) => {
-		try {
-			setIsLoading(true);
-			const userData: any = {
-				name: values.roleName,
-				permissions: filterPermissions(permissions),
-				permissionCred: permissionCred,
-			};
+        try {
+            setIsLoading(true);
+            const userData: any = {
+                name: values.roleName,
+                permissions: filterPermissions(permissions),
+                permissionCred: permissionCred,
+            };
+    
+            // Ensure permissions and permissionsCred are properly initialized as objects
+            userData.permissions = userData.permissions || {};
+            userData.permissionsCred = userData.permissionsCred || {};
+    
+            // Extract paths to remove from adminPage
+            const pathsToRemove = Object.values(appPages?.adminPage).map((page: any) => page.to);
+    
+            // Filter out permissions
+            userData.permissions = Object.keys(userData.permissions)
+                .filter((path) => !pathsToRemove.includes(path))
+                .reduce((obj: any, key) => {
+                    obj[key] = userData.permissions[key];
+                    return obj;
+                }, {});
 
-			const apiUrl = true ? '/roles' : `/users/${userId}`;
 
-			!userId ? await post(apiUrl, userData) : await put(apiUrl, userData);
-
-			resetForm();
-			navigate('/roles');
-
-			toast.success(true ? 'Role created successfully' : 'Role updated successfully');
-		} catch (error: any) {
-			console.error('Error saving permissions:', error);
-			toast.error(error.response.data.message);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+            const apiUrl = true ? '/roles' : `/users/${userId}`;
+    
+            // Uncomment when ready to perform API call
+            !userId ? await post(apiUrl, userData) : await put(apiUrl, userData);
+    
+            resetForm();
+            navigate('/roles');
+    
+            toast.success(true ? 'Role created successfully' : 'Role updated successfully');
+        } catch (error: any) {
+            console.error('Error saving permissions:', error);
+            toast.error(error?.response?.data?.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
 
 	// Function to toggle all permissions
 	const checkAllPermission = (permissionValue: boolean) => {
@@ -141,7 +162,6 @@ const RoleCreationForm = () => {
 			const updatedPermissions = updatePermissions(page?.to, permissionType, prevPermissions);
 			return updatedPermissions;
 		});
-
 		setPermissions((prevPermissions: any) => {
 			return togglePermissionAndUpdateInnerPages(
 				page,
@@ -150,20 +170,28 @@ const RoleCreationForm = () => {
 				isWrite,
 			);
 		});
+        if(page?.to === "/add-payment" ){
+            setPermissionsCred({...permissionCred,"/add-payment":{
+                "read":permissions?.[page?.to],
+                "write":permissions?.[page?.to],
+                "delete":permissions?.[page?.to]
+            }})
+        }
 	};
 
 	const handelRoutePermissionSelection = (route: string, value: boolean, pageId: string) => {
 		setPermissionsCred((prevPermissions: any) => {
 			const updatedPermissions = updateRoutePermissions(route, value, prevPermissions);
 			setPermissions((prevPermissions: any) => {
-				return updateInnerPagePermissions(pageId, value, prevPermissions, appPages);
+				return updateInnerPagePermissions(pageId, !value, prevPermissions);
 			});
-
+         
 			return updatedPermissions;
 		});
 	};
-
 	useEffect(() => {
+        setPermissionsRoutes(getAllMainRoute())
+        setPermissions(extractInnerRoutes(appPages, false));
 		setPermissionsCred(createPermissionsData(appPages, false));
 	}, []);
 
@@ -177,14 +205,14 @@ const RoleCreationForm = () => {
 	};
 
 	const handleSelectAll = (actionType: string, value: boolean) => {
-		handleSelectAllPermission(
+		 handleSelectAllPermission(
 			actionType,
 			value,
-			pagesToCheck,
-			appPages,
+			permissionRoutes,
 			setPermissionsCred,
 			setPermissions,
-			setSelectAllValues,
+			permissions,
+            setSelectAllValues
 		);
 	};
 
@@ -192,7 +220,7 @@ const RoleCreationForm = () => {
 		const { updatedSelectedRawValue, selectAllValues } = updateSelectAllValues(permissionCred);
 		setIsSelectedRawValue(updatedSelectedRawValue);
 		setSelectAllValues(selectAllValues);
-	}, [permissionCred, permissions]);
+	}, [permissionCred]);
 
 	return (
 		<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
@@ -392,7 +420,10 @@ const RoleCreationForm = () => {
 																											e
 																												.target
 																												.checked,
-																											appKey,
+                                                                                                                {
+                                                                                                                    ...page,
+                                                                                                                    appKey,
+                                                                                                                },
 																										);
 																									}}
 																									className='mr-2 rounded border-gray-800 text-blue-600 focus:ring-blue-500'
