@@ -12,6 +12,9 @@ import UsersPermissionPage from '../../pages/crm/PermissionPage/UsersPermissionP
 import { useUser } from '@clerk/clerk-react';
 import { admins } from '../../constants/common/data';
 import UserListPage from '../../pages/crm/PermissionPage/UserListPage/UserListPage';
+import { appPages } from '../../config/pages.config';
+import RolesListPage from '../../pages/crm/PermissionPage/RolesListPage/RolesListPage';
+import RoleCreationPage from '../../pages/crm/PermissionPage/RolesCreationPage/RolesCreationPage';
 
 const ContentRouter = () => {
 	let allowedRoutes: any = useAllowedRoutes(contentRoutes, true);
@@ -28,6 +31,14 @@ const ContentRouter = () => {
 			path: '/users',
 			element: <UserListPage />,
 		});
+		allowedRoutes?.unshift({
+			path: appPages?.adminPage?.rolesListPage?.to,
+			element: <RolesListPage/>
+		})
+		allowedRoutes?.unshift({
+			path:appPages?.adminPage?.addRolesPage?.to,
+			element: <RoleCreationPage/>
+		})
 	}
 
 	// Determine if the current route matches any allowed route

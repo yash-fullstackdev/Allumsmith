@@ -196,7 +196,7 @@ const ColorsListPage = () => {
 
 	return (
 		<PageWrapper name='Inventory List'>
-			{/* <Subheader>
+			<Subheader>
 				<SubheaderLeft>
 					<div className='ml-4 flex items-center justify-center'>
 						<h4>Coating</h4>{' '}
@@ -209,7 +209,7 @@ const ColorsListPage = () => {
 					</div>
 					<SubheaderSeparator />
 				</SubheaderLeft>
-			</Subheader> */}
+			</Subheader>
 			<Container>
 				<Card className='h-full'>
 					<CardHeader>
