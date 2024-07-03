@@ -342,9 +342,10 @@ const JobsPage = () => {
                                                                 >
                                                                     {customerOrderData?.map((co: any) => {
                                                                         return (
+                                                                            co?.status !== "completed" ?
                                                                             <option key={co._id} value={co._id}>
                                                                                 {co.customer.name} ({co.customerOrderNumber})
-                                                                            </option>
+                                                                            </option> : ""
                                                                         );
                                                                     })}
                                                                 </Select>
