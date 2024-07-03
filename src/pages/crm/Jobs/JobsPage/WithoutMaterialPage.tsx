@@ -176,9 +176,8 @@ const WithoutMaterialPage = () => {
                                     <div>
                                         <div className='mt-2 grid grid-cols-12 gap-1'>
                                             <div className='col-span-12 lg:col-span-6'>
-                                                <Label htmlFor='name'>
+                                                <Label htmlFor='name' require={true}>
                                                     Name
-                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     type='text'
@@ -191,9 +190,8 @@ const WithoutMaterialPage = () => {
 
                                             </div>
                                             <div className='col-span-12 lg:col-span-6'>
-                                                <Label htmlFor='branch'>
+                                                <Label htmlFor='branch' require={true}>
                                                     Branch
-                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Select
                                                     id={`branch`}
@@ -292,9 +290,8 @@ const WithoutMaterialPage = () => {
                                                 <div className='mt-2 grid grid-cols-12 gap-1'>
 
                                                     <div key={index} className='col-span-12 lg:col-span-4'>
-                                                        <Label htmlFor={`customerOrder${index}`}>
+                                                        <Label htmlFor={`customerOrder${index}`} require={true}>
                                                             Customer Order {index + 1}
-                                                            <span className='ml-1 text-red-500'>*</span>
                                                         </Label>
                                                         <Select
                                                             id={`customerOrder${index}`}
@@ -461,9 +458,8 @@ const WithoutMaterialPage = () => {
             </div>
             {/* <div className='mt-2 grid grid-cols-12 gap-1'>
                 <div className='col-span-12 lg:col-span-4'>
-                    <Label htmlFor={`customerOrder`}>
+                    <Label htmlFor={`customerOrder`} require={true}>
                         Customer Order
-                        <span className='ml-1 text-red-500'>*</span>
                     </Label>
                     <Select
                         id={`customerOrder`}
@@ -511,9 +507,8 @@ const WithoutMaterialPage = () => {
                             </div>
                             <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`product`}>
+                                    <Label htmlFor={`product`} require={true}>
                                         Product
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='text'
@@ -528,9 +523,8 @@ const WithoutMaterialPage = () => {
                                     />
                                 </div>
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`length`}>
+                                    <Label htmlFor={`length`} require={true}>
                                         Length
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='number'
@@ -545,9 +539,8 @@ const WithoutMaterialPage = () => {
                                     />
                                 </div>
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`hsn-${index}`}>
+                                    <Label htmlFor={`hsn-${index}`}require={true}>
                                         Quantity
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='number'
@@ -562,9 +555,8 @@ const WithoutMaterialPage = () => {
                                     />
                                 </div>
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`hsn-${index}`}>
+                                    <Label htmlFor={`hsn-${index}`} require={true}>
                                         Coating
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         placeholder='Select Coating'
@@ -595,9 +587,8 @@ const WithoutMaterialPage = () => {
                                 </div>
                                 {entry.coating &&
                                     (<div className='col-span-12 lg:col-span-3'>
-                                        <Label htmlFor={`hsn-${index}`}>
+                                        <Label htmlFor={`hsn-${index}`} require={true}>
                                             Color
-                                            <span className='ml-1 text-red-500'>*</span>
                                         </Label>
                                         <Select
                                             placeholder='Select Color'

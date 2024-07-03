@@ -125,9 +125,8 @@ const RawMaterialForm = ({
 					<Collapse isOpen={!accordionStates.rawMaterialInfo}>
 						<div className='mt-4 grid grid-cols-12 gap-1'>
 							<div className='col-span-12 lg:col-span-6'>
-								<Label htmlFor='componentID'>
+								<Label htmlFor='componentID' require={true}>
 									Component ID
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Input
 									id='componentID'

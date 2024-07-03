@@ -66,9 +66,8 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
 				<div>
 					<div className='mt-2 grid grid-cols-12 gap-1'>
 						<div className='col-span-12 lg:col-span-6'>
-							<Label htmlFor='name'>
+							<Label htmlFor='name' require={true}>
 								Powder
-								<span className='ml-1 text-red-500'>*</span>
 							</Label>
 							<Select
 								id={`name`}
@@ -98,9 +97,8 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
 						</div>
 						{formik?.values?.utility && (
 							<div className='col-span-12 lg:col-span-6'>
-								<Label htmlFor='code'>
+								<Label htmlFor='code' require={true}>
 									Code
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Input
 									type='number'
@@ -117,9 +115,8 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
 							</div>
 						)}
 						<div className='col-span-12 lg:col-span-6'>
-							<Label htmlFor='quantity'>
+							<Label htmlFor='quantity' require={true}>
 								Quantity(kg)
-								<span className='ml-1 text-red-500'>*</span>
 							</Label>
 							<Input
 								type='number'
@@ -136,9 +133,8 @@ const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
 							/>
 						</div>
 						<div className='col-span-12 lg:col-span-6'>
-							<Label htmlFor='branch'>
+							<Label htmlFor='branch' require={true}>
 								Branch
-								<span className='ml-1 text-red-500'>*</span>
 							</Label>
 							<Select
 								id={`branch`}

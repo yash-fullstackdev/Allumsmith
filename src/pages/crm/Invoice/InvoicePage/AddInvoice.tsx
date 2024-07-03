@@ -433,9 +433,8 @@ const AddInvoice = () => {
 										<div>
 											<div className='mt-2 grid grid-cols-12 gap-1'>
 												<div className='col-span-4 mt-5 lg:col-span-3'>
-													<Label htmlFor='customerName'>
+													<Label htmlFor='customerName' require={true}>
 														Customer Order
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 
 													<SelectReact
@@ -474,9 +473,8 @@ const AddInvoice = () => {
 													/>
 												</div>
 												<div className='col-span-4 mt-5 lg:col-span-3'>
-													<Label htmlFor='customerName'>
+													<Label htmlFor='customerName' require={true}>
 														Inovice Number
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 													<Input
 														id='invoiceNumber'
@@ -931,9 +929,8 @@ const AddInvoice = () => {
 																			</div>
 																			{/* {!entry?.coating?.name ? (
                                                                     <div className='col-span-12 lg:col-span-3'>
-                                                                        <Label htmlFor={`total_rate${index}`} className='!text-sm'>
+                                                                        <Label htmlFor={`total_rate${index}`} className='!text-sm' require={true}>
                                                                             Branch
-                                                                            <span className='ml-1 text-red-500'>*</span>
                                                                         </Label>
                                                                         <Select
                                                                             id='originPoint'

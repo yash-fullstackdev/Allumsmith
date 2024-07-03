@@ -34,9 +34,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
 			<CardBody>
 				<div className='mt-2 grid grid-cols-12 gap-1'>
 					<div className='col-span-12 lg:col-span-6'>
-						<Label htmlFor='name'>
+						<Label htmlFor='name' require={true}>
 							Name
-							<span className='ml-1 text-red-500'>*</span>
 						</Label>
 						<Input
 							id='name'
@@ -52,9 +51,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
 						/>
 					</div>
 					<div className='col-span-12 lg:col-span-6'>
-						<Label htmlFor='code'>
+						<Label htmlFor='code' require={true}>
 							Code
-							<span className='ml-1 text-red-500'>*</span>
 						</Label>
 						<Input
 							id='name'

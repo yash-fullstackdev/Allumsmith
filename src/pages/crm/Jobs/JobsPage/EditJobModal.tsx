@@ -171,9 +171,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                     <div>
                                         <div className='mt-2 grid grid-cols-12 gap-1'>
                                             <div className='col-span-12 lg:col-span-6'>
-                                                <Label htmlFor='name'>
+                                                <Label htmlFor='name' require={true}>
                                                     Name
-                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Input
                                                     type='text'
@@ -186,9 +185,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
 
                                             </div>
                                             <div className='col-span-12 lg:col-span-6'>
-                                                <Label htmlFor='branch'>
+                                                <Label htmlFor='branch' require={true}>
                                                     Branch
-                                                    <span className='ml-1 text-red-500'>*</span>
                                                 </Label>
                                                 <Select
                                                     id={`branch`}
@@ -240,9 +238,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                                         <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
 
                                                             <div className='col-span-12 lg:col-span-3'>
-                                                                <Label htmlFor={`name-${index}`}>
+                                                                <Label htmlFor={`name-${index}`} require={true}>
                                                                     Products
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Select
                                                                     placeholder='Select Product'
@@ -264,9 +261,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
 
                                                             </div>
                                                             <div className='col-span-12 lg:col-span-3'>
-                                                                <Label htmlFor={`hsn-${index}`}>
+                                                                <Label htmlFor={`hsn-${index}`} require={true}>
                                                                     Quantity
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Input
                                                                     type='number'
@@ -281,9 +277,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                                                 />
                                                             </div>
                                                             <div className='col-span-12 lg:col-span-3'>
-                                                                <Label htmlFor={`hsn-${index}`}>
+                                                                <Label htmlFor={`hsn-${index}`} require={true}>
                                                                     Coating
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
                                                                 <Select
                                                                     placeholder='Select Coating'
@@ -307,9 +302,8 @@ const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {
                                                                 </Select>
                                                             </div>
                                                             <div className='col-span-12 lg:col-span-3'>
-                                                                <Label htmlFor={`hsn-${index}`}>
+                                                                <Label htmlFor={`hsn-${index}`} require={true}>
                                                                     Color
-                                                                    <span className='ml-1 text-red-500'>*</span>
                                                                 </Label>
 
                                                                 <Select

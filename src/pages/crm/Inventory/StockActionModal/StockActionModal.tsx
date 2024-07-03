@@ -110,9 +110,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                         {!branchTransfer ? (
                             <div>
                                 <div className='col-span-4 lg:col-span-4 mt-5'>
-                                    <Label htmlFor='fromBranch'>
+                                    <Label htmlFor='fromBranch' require={true}>
                                         From Branch
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         id='fromBranch'
@@ -135,9 +134,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
 
                                 </div>
                                 <div className='col-span-4 lg:col-span-4 mt-5'>
-                                    <Label htmlFor='toBranch'>
+                                    <Label htmlFor='toBranch' require={true}>
                                         To Branch
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         id='toBranch'
@@ -163,9 +161,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                         ) : (
                             <>
                                 <div className='col-span-4 lg:col-span-4 mt-5'>
-                                    <Label htmlFor='toBranch'>
+                                    <Label htmlFor='toBranch' require={true}>
                                         Branch
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         id='toBranch'
@@ -188,9 +185,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
 
                                 </div>
                                 <div className='col-span-4 lg:col-span-4 mt-5'>
-                                    <Label htmlFor='actionType'>
+                                    <Label htmlFor='actionType' require={true}>
                                         Action Type
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         id='actionType'
@@ -245,9 +241,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
                                 <div key={index} className='mt-2 grid grid-cols-4 gap-1'>
 
                                     <div className='col-span-12 lg:col-span-2'>
-                                        <Label htmlFor={`name-${index}`}>
+                                        <Label htmlFor={`name-${index}`} require={true}>
                                             Products
-                                            <span className='ml-1 text-red-500'>*</span>
                                         </Label>
                                         {/* <Select
                                             placeholder='Select Product'
@@ -292,9 +287,8 @@ const StockActionModal = ({ SetStockActionModal }: any) => {
 
                                     </div>
                                     <div className='col-span-12 lg:col-span-2'>
-                                        <Label htmlFor={`hsn-${index}`}>
+                                        <Label htmlFor={`hsn-${index}`} require={true}>
                                             Quantity
-                                            <span className='ml-1 text-red-500'>*</span>
                                         </Label>
                                         <Input
                                             type='number'

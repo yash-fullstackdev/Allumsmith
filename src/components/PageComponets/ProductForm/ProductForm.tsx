@@ -50,9 +50,8 @@ const ProductForm = ({ formik }: props) => {
 							/>
 						</div>
 						<div className='col-span-12 lg:col-span-4'>
-							<Label htmlFor={`hsn-${index}`}>
+							<Label htmlFor={`hsn-${index}`} require={true}>
 								HSN
-								<span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id={`hsn-${index}`}

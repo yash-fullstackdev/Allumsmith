@@ -91,9 +91,8 @@ const LedgerDetailModal = () => {
                 <div>
                     <div className='mt-2 grid grid-cols-12 gap-1'>
                         <div className='col-span-12 lg:col-span-6'>
-                            <Label htmlFor='name'>
+                            <Label htmlFor='name' require={true}>
                                 Customer Name
-                                <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <SelectReact
                                 id={`name`}
@@ -107,9 +106,8 @@ const LedgerDetailModal = () => {
                             />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
-                            <Label htmlFor='todayDate'>
+                            <Label htmlFor='todayDate' require={true}>
                                 Date
-                                <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input
                                 id='todayDate'
@@ -120,9 +118,8 @@ const LedgerDetailModal = () => {
                             />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
-                            <Label htmlFor='creditedAmount'>
+                            <Label htmlFor='creditedAmount' require={true}>
                                 Credited Amount
-                                <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input
                                 id='creditedAmount'
@@ -134,9 +131,8 @@ const LedgerDetailModal = () => {
                             />
                         </div>
                         <div className='col-span-12 lg:col-span-6'>
-                            <Label htmlFor='pendingAmount'>
+                            <Label htmlFor='pendingAmount' require={true}>
                                 Pending Amount
-                                <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <Input
                                 id='pendingAmount'
@@ -149,9 +145,8 @@ const LedgerDetailModal = () => {
                         </div>
 
                         <div className='col-span-12 lg:col-span-6'>
-                            <Label htmlFor='payment_mode'>
+                            <Label htmlFor='payment_mode' require={true}>
                                 Payment Mode
-                                <span className='ml-1 text-red-500'>*</span>
                             </Label>
                             <SelectReact
                                 id={`payment_mode`}
@@ -168,9 +163,8 @@ const LedgerDetailModal = () => {
                         {
                             formik && formik?.values?.payment_mode === 'Cheque' && (
                                 <div className='col-span-12 lg:col-span-6'>
-                                    <Label htmlFor='chequeNumber'>
+                                    <Label htmlFor='chequeNumber' require={true}>
                                         Cheque Number
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='text'
@@ -185,9 +179,8 @@ const LedgerDetailModal = () => {
                         {
                             formik && formik?.values?.payment_mode === 'UPI' && (
                                 <div className='col-span-12 lg:col-span-6'>
-                                    <Label htmlFor='upi'>
+                                    <Label htmlFor='upi' require={true}>
                                         UPI ID
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='text'
@@ -200,9 +193,8 @@ const LedgerDetailModal = () => {
                             )
                         }
                         <div className='col-span-12 lg:col-span-6'>
-                          <Label htmlFor='amount_payable'>
+                          <Label htmlFor='amount_payable' require={true}>
                             Amount Payable(rs)
-                            <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Input
                             type="number"
@@ -215,9 +207,8 @@ const LedgerDetailModal = () => {
                         </div>
 
                         <div className='col-span-12 lg:col-span-12'>
-                          <Label htmlFor='description'>
+                          <Label htmlFor='description' require={true}>
                            Description
-                            <span className='ml-1 text-red-500'>*</span>
                           </Label>
                           <Textarea
                             id='description'

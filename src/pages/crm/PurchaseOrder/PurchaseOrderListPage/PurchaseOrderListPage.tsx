@@ -105,10 +105,13 @@ const PurchaseOrderListPage = () => {
 			setDeleteModal(false);
 		}
 	};
+
 	useEffect(() => {
-		fetchData();
-		fetchBranchData();
-	}, []);
+		if (!vedorProductModal) {
+			fetchData();
+			fetchBranchData();
+		}
+	}, [vedorProductModal]);
 
 	const columns = [
 		columnHelper.accessor('createdAt', {

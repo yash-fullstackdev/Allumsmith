@@ -30,9 +30,8 @@ const CoatingForm = ({ formik }: props) => {
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-2 grid grid-cols-12 gap-3'>
         <div className='col-span-12  lg:col-span-3'>
-          <Label htmlFor='name'>
+          <Label htmlFor='name' require={true}>
             Name
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             name='name'
@@ -48,9 +47,8 @@ const CoatingForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12  lg:col-span-3'>
-          <Label htmlFor='name'>
+          <Label htmlFor='name' require={true}>
             code
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             name='code'
@@ -67,9 +65,8 @@ const CoatingForm = ({ formik }: props) => {
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
-          <Label htmlFor='Colors'>
+          <Label htmlFor='Colors' require={true}>
             Colors
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <SelectReact
             name='colors'
@@ -95,9 +92,8 @@ const CoatingForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-3'>
-          <Label htmlFor='Colors'>
+          <Label htmlFor='Colors'require={true}>
             Coating Type
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Select
             id='type'

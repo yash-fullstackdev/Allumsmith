@@ -136,9 +136,8 @@ const PaymentPage = () => {
 						<div>
 							<div className='mt-2 grid grid-cols-12 gap-1'>
 								<div className='col-span-12 lg:col-span-4'>
-									<Label htmlFor='name'>
+									<Label htmlFor='name' require={true}>
 										Customer Name
-										<span className='ml-1 text-red-500'>*</span>
 									</Label>
 									<SelectReact
 										id={`name`}
@@ -201,9 +200,8 @@ const PaymentPage = () => {
 									/>
 								</div>
 								<div className='col-span-12 lg:col-span-6'>
-									<Label htmlFor='payment_mode'>
+									<Label htmlFor='payment_mode' require={true}>
 										Payment Mode
-										<span className='ml-1 text-red-500'>*</span>
 									</Label>
 									<SelectReact
 										id={`payment_mode`}
@@ -266,9 +264,8 @@ const PaymentPage = () => {
 										</div>
 									)}
 								<div className='col-span-12 lg:col-span-6'>
-									<Label htmlFor='amount_payable'>
+									<Label htmlFor='amount_payable' require={true}>
 										Amount Payable(rs)
-										<span className='ml-1 text-red-500'>*</span>
 									</Label>
 									<Input
 										type='number'

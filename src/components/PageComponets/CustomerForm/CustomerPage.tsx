@@ -85,9 +85,8 @@ const CustomerForm = ({ formik }: props) => {
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-2 grid grid-cols-12 gap-3'>
         <div className='col-span-12  lg:col-span-3'>
-          <Label htmlFor='name'>
+          <Label htmlFor='name' require={true}>
             Name
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             name='name'
@@ -104,9 +103,8 @@ const CustomerForm = ({ formik }: props) => {
         </div>
 
         <div className='col-span-12 lg:col-span-3'>
-          <Label htmlFor='phone'>
+          <Label htmlFor='phone' require={true}>
             Phone
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="phone"
@@ -295,10 +293,8 @@ const CustomerForm = ({ formik }: props) => {
         </div>
 
         <div className='col-span-12 lg:col-span-6'>
-          <Label htmlFor='address_line1'>
+          <Label htmlFor='address_line1' require={true}>
             Address 1
-            <span className='ml-1 text-red-500'>*</span>
-
           </Label>
           <Textarea
             id="address_line1"

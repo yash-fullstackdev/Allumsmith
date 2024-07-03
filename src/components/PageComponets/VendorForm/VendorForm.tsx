@@ -12,9 +12,8 @@ const VendorForm = ({ formik }: props) => {
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-2 grid grid-cols-12 gap-3'>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='name'>
+          <Label htmlFor='name' require={true}>
             Name
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="name"
@@ -30,9 +29,8 @@ const VendorForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='phone'>
+          <Label htmlFor='phone' require={true}>
             phone
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="phone"
@@ -152,10 +150,8 @@ const VendorForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-6'>
-          <Label htmlFor='addressLine1'>
+          <Label htmlFor='addressLine1' require={true}>
             Address 1
-            <span className='ml-1 text-red-500'>*</span>
-
           </Label>
           <Textarea
             id="addressLine1"

@@ -12,9 +12,8 @@ const BranchesForm = ({ formik }: props) => {
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-1 grid grid-cols-12 gap-3 '>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='name'>
+          <Label htmlFor='name' require={true}>
             Name
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="name"
@@ -30,9 +29,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='address_line1'>
+          <Label htmlFor='address_line1' require={true}>
             Address Line 1
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="address_line1"
@@ -65,9 +63,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='city'>
+          <Label htmlFor='city' require={true}>
             City
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="city"
@@ -83,9 +80,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='state'>
+          <Label htmlFor='state' require={true}>
             State
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="state"
@@ -101,9 +97,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='zipcode'>
+          <Label htmlFor='zipcode' require={true}>
             Zipcode
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="zipcode"
@@ -119,9 +114,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='phone'>
+          <Label htmlFor='phone' require={true}>
             Phone
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="phone"
@@ -137,9 +131,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='contact_name'>
+          <Label htmlFor='contact_name' require={true}>
             Contact Name
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="contact_name"
@@ -155,9 +148,8 @@ const BranchesForm = ({ formik }: props) => {
           />
         </div>
         <div className='col-span-12 lg:col-span-4'>
-          <Label htmlFor='contact_phone'>
+          <Label htmlFor='contact_phone' require={true}>
             Contact Phone
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             id="contact_phone"

@@ -253,9 +253,8 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 					<div>
 						<div className='mt-4 grid grid-cols-12 gap-1'>
 							<div className='col-span-12 lg:col-span-6'>
-								<Label htmlFor='vendorName'>
+								<Label htmlFor='vendorName' require={true}>
 									Vendor Name
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Select
 									id='vendorName'
@@ -657,9 +656,8 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 
 							<div className='col-span-12 row-span-6 lg:col-span-6 '>
 								{/* Render additionalFields div structure */}
-								<Label htmlFor='procurmentUOM'>
+								<Label htmlFor='procurmentUOM' require={true}>
 									Procurement UOM
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								{formik?.values?.procurementUOM?.map((field: any, index: any) => (
 									<div key={index} className='mt-2 flex gap-2'>
@@ -745,9 +743,8 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 							</div>
 
 							<div className='col-span-12 lg:col-span-2'>
-								<Label htmlFor='pricingUOM'>
+								<Label htmlFor='pricingUOM' require={true}>
 									Pricing UOM
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Select
 									id='pricingUOM'
@@ -769,9 +766,8 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 							</div>
 
 							<div className='col-span-12 lg:col-span-2'>
-								<Label htmlFor='pricingQuantity'>
+								<Label htmlFor='pricingQuantity' require={true}>
 									Quantity
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Input
 									type='number'
@@ -788,10 +784,9 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									</div>
 								) : null}
 							</div>
-							<div className='col-span-12 lg:col-span-2'>
-								<Label htmlFor='pricingCost'>
+							<div className='col-span-12 lg:col-span-2' >
+								<Label htmlFor='pricingCost' require={true}>
 									Cost
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<FieldWrap firstSuffix={<div className='mx-2'>$</div>}>
 									<Input

@@ -250,9 +250,8 @@ const AddPurchaseOrderForm = () => {
 							<div>
 								<div className='mt-2 grid grid-cols-12 gap-1'>
 									<div className='col-span-12 lg:col-span-4'>
-										<Label htmlFor='date'>
+										<Label htmlFor='date'require={true}>
 											Date
-											<span className='ml-1 text-red-500'>*</span>
 										</Label>
 										<Input
 											id='dispatch_date'
@@ -272,9 +271,8 @@ const AddPurchaseOrderForm = () => {
 									</div>
 
 									<div className='col-span-12 lg:col-span-4'>
-										<Label htmlFor='fromBranch'>
+										<Label htmlFor='fromBranch' require={true}>
 											From Branch
-											<span className='ml-1 text-red-500'>*</span>
 										</Label>
 										<SelectReact
 											options={branchData?.map((branch: any) => ({
@@ -298,9 +296,8 @@ const AddPurchaseOrderForm = () => {
 									</div>
 
 									<div className='col-span-12 lg:col-span-4'>
-										<Label htmlFor='fromBranch'>
+										<Label htmlFor='fromBranch'require={true}>
 											To Branch
-											<span className='ml-1 text-red-500'>*</span>
 										</Label>
 										<SelectReact
 											options={branchData?.map((branch: any) => ({
@@ -323,9 +320,8 @@ const AddPurchaseOrderForm = () => {
 										/>
 									</div>
 									<div className='col-span-12 lg:col-span-4'>
-										<Label htmlFor='vehicle_no'>
+										<Label htmlFor='vehicle_no' require={true}>
 											Vehicle No
-											<span className='ml-1 text-red-500'>*</span>
 										</Label>
 										<Input
 											name='vehicle_no'

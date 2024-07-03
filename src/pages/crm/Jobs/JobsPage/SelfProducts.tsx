@@ -129,9 +129,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                             <div key={index} className='mt-2 grid grid-cols-12 gap-1'>
                                 {!productTransfer ? (<>
                                     <div className='col-span-12 lg:col-span-2'>
-                                        <Label htmlFor={`name-${index}`}>
+                                        <Label htmlFor={`name-${index}`} require={true}>
                                             Products
-                                            <span className='ml-1 text-red-500'>*</span>
                                         </Label>
 
                                         <SelectReact
@@ -163,9 +162,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                 )
                                     : (<>
                                         <div className='col-span-12 lg:col-span-2'>
-                                            <Label htmlFor={`product`}>
+                                            <Label htmlFor={`product`} require={true}>
                                                 Product
-                                                <span className='ml-1 text-red-500'>*</span>
                                             </Label>
                                             <Input
                                                 type='text'
@@ -182,9 +180,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
 
                                     </>)}
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`hsn-${index}`}>
+                                    <Label htmlFor={`hsn-${index}`} require={true}>
                                         Quantity
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Input
                                         type='number'
@@ -199,9 +196,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                     />
                                 </div>
                                 <div className='col-span-12 lg:col-span-2'>
-                                    <Label htmlFor={`hsn-${index}`}>
+                                    <Label htmlFor={`hsn-${index}`} require={true}>
                                         Coating
-                                        <span className='ml-1 text-red-500'>*</span>
                                     </Label>
                                     <Select
                                         placeholder='Select Coating'
@@ -239,9 +235,8 @@ const SelfProducts = ({ entries, setEntries }: any) => {
                                 {entry.coating &&
                                     (
                                         <div className='col-span-12 lg:col-span-2'>
-                                            <Label htmlFor={`hsn-${index}`}>
+                                            <Label htmlFor={`hsn-${index}`} require={true}>
                                                 Color
-                                                <span className='ml-1 text-red-500'>*</span>
                                             </Label>
                                             <Select
                                                 placeholder='Select Color'

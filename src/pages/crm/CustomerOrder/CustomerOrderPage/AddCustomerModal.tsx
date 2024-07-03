@@ -65,9 +65,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
         <form onSubmit={formik.handleSubmit}>
           <div className='mt-2 grid grid-cols-12 gap-1'>
             <div className='col-span-12  lg:col-span-3'>
-              <Label htmlFor='name'>
+              <Label htmlFor='name' require={true}>
                 Name
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 name='name'
@@ -81,9 +80,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
               )}
             </div>
             <div className='col-span-12  lg:col-span-3'>
-              <Label htmlFor='Phone'>
+              <Label htmlFor='Phone' require={true}>
                 Phone
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 name='phone'
@@ -98,9 +96,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
             </div>
 
             <div className='col-span-12  lg:col-span-3'>
-              <Label htmlFor='Email'>
+              <Label htmlFor='Email' require={true}>
                 Email
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 name='email'
@@ -145,9 +142,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
               )}
             </div>
             <div className='col-span-12  lg:col-span-3'>
-              <Label htmlFor='City'>
+              <Label htmlFor='City' require={true}>
                 City
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 name='city'
@@ -161,9 +157,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
               )}
             </div>
             <div className='col-span-12  lg:col-span-3'>
-              <Label htmlFor='state'>
+              <Label htmlFor='state' require={true}>
                 State
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 name='state'
@@ -247,9 +242,8 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
             </div>
 
             <div className='col-span-12 lg:col-span-6'>
-              <Label htmlFor='address_line1'>
+              <Label htmlFor='address_line1' require={true}>
                 Address Line 1
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Textarea
                 name='address_line1'

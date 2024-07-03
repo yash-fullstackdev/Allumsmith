@@ -336,9 +336,8 @@ const EditJobPage = () => {
                                         <div>
                                             <div className='mt-2 grid grid-cols-12 gap-1'>
                                                 <div className='col-span-12 lg:col-span-6'>
-                                                    <Label htmlFor='name'>
+                                                    <Label htmlFor='name' require={true}>
                                                         Name
-                                                        <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
                                                     <Input
                                                         type='text'
@@ -351,9 +350,8 @@ const EditJobPage = () => {
 
                                                 </div>
                                                 <div className='col-span-12 lg:col-span-6'>
-                                                    <Label htmlFor='branch'>
+                                                    <Label htmlFor='branch' require={true}>
                                                         Branch
-                                                        <span className='ml-1 text-red-500'>*</span>
                                                     </Label>
                                                     <Select
                                                         id={`branch`}
@@ -452,10 +450,9 @@ const EditJobPage = () => {
                                                 </div>
                                                 <div className='mt-2 grid grid-cols-12 gap-1'>
 
-                                                    <div key={index} className='col-span-12 lg:col-span-4'>
-                                                        <Label htmlFor={`customerOrder${index}`}>
+                                                    <div key={index} className='col-span-12 lg:col-span-4' >
+                                                        <Label htmlFor={`customerOrder${index}`} require={true}>
                                                             Customer Order {index + 1}
-                                                            <span className='ml-1 text-red-500'>*</span>
                                                         </Label>
                                                         
                                                         <Select

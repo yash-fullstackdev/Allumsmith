@@ -78,9 +78,8 @@ const UpdateStatusModal = ({ isOpen, setIsOpen, selectStatusId, getTransportDeta
         <div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
           <Card>
             <div className='col-span-6 lg:col-span-3'>
-              <Label htmlFor='status'>
+              <Label htmlFor='status' require={true}>
                 Status
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Select
                 id='status'

@@ -445,9 +445,8 @@ const AddCustomerOrderForm = () => {
 					<div>
 						<div className='mt-2 grid grid-cols-12 gap-3'>
 							<div className='col-span-4 mt-5 lg:col-span-4'>
-								<Label htmlFor='customerName'>
+								<Label htmlFor='customerName' require={true}>
 									Customer
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<CreateSelectReact
 									id={`name`}
@@ -470,9 +469,8 @@ const AddCustomerOrderForm = () => {
 								/>
 							</div>
 							<div className='col-span-4 mt-5 lg:col-span-4'>
-								<Label htmlFor='customerOrderNumber'>
+								<Label htmlFor='customerOrderNumber' require={true}>
 									Order Number
-									<span className='ml-1 text-red-500'>*</span>
 								</Label>
 								<Input
 									id='customerOrderNumber'
@@ -637,9 +635,8 @@ const AddCustomerOrderForm = () => {
 													</>
 												)}
 												<div className='col-span-12 lg:col-span-2'>
-													<Label htmlFor={`hsn-${index}`}>
+													<Label htmlFor={`hsn-${index}`} require={true}>
 														Quantity(Pcs)
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 													<Input
 														type='number'
@@ -683,9 +680,8 @@ const AddCustomerOrderForm = () => {
 													)}
 												</div>
 												<div className='col-span-12 lg:col-span-2'>
-													<Label htmlFor={`hsn-${index}`}>
+													<Label htmlFor={`hsn-${index}`} require={true}>
 														Coating
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 													<CreateSelectReact
 														placeholder='Select Coating'
@@ -752,9 +748,8 @@ const AddCustomerOrderForm = () => {
 												)}
 
 												<div className='col-span-12 lg:col-span-2'>
-													<Label htmlFor={`hsn-${index}`}>
+													<Label htmlFor={`hsn-${index}`} require={true}>
 														Coating Rate(rs)
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 													<Input
 														type='number'
@@ -819,9 +814,8 @@ const AddCustomerOrderForm = () => {
 												</div>
 
 												<div className='col-span-12 lg:col-span-2'>
-													<Label htmlFor='withoutMaterial'>
+													<Label htmlFor='withoutMaterial' require={true}>
 														Without Material
-														<span className='ml-1 text-red-500'>*</span>
 													</Label>
 													<Checkbox
 														label='Without Material'
@@ -912,9 +906,8 @@ const AddCustomerOrderForm = () => {
 								<div className='col-span-12 lg:col-span-12'>
 									<div className='mt-2 grid grid-cols-6 gap-3'>
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='discount'>
+											<Label htmlFor='discount' require={true}>
 												Coating Discount(%)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -928,9 +921,8 @@ const AddCustomerOrderForm = () => {
 										</div>
 
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='gst'>
+											<Label htmlFor='gst' require={true}>
 												GST(%)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -944,9 +936,8 @@ const AddCustomerOrderForm = () => {
 										</div>
 
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='alluminiumRate'>
+											<Label htmlFor='alluminiumRate' require={true}>
 												Alluminium Rate(rs/kg)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -959,9 +950,8 @@ const AddCustomerOrderForm = () => {
 											/>
 										</div>
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='estimatedWeight'>
+											<Label htmlFor='estimatedWeight' require={true}>
 												Estimated Weight(kg)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -974,9 +964,8 @@ const AddCustomerOrderForm = () => {
 											/>
 										</div>
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='estimatedRate'>
+											<Label htmlFor='estimatedRate' require={true}>
 												Total Product Rate(rs)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -990,9 +979,8 @@ const AddCustomerOrderForm = () => {
 										</div>
 
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='coatingCharges'>
+											<Label htmlFor='coatingCharges' require={true}>
 												Coating Charges(rs)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'
@@ -1006,9 +994,8 @@ const AddCustomerOrderForm = () => {
 										</div>
 
 										<div className='col-span-4 mt-5 lg:col-span-2'>
-											<Label htmlFor='grandTotal'>
+											<Label htmlFor='grandTotal' require={true}>
 												Grand Total(rs)
-												<span className='ml-1 text-red-500'>*</span>
 											</Label>
 											<Input
 												type='number'

@@ -61,9 +61,8 @@ const PurchaseOrderForm = ({ formik }: props) => {
     <form>
       <div className='mt-2 flex gap-3'>
         <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
-          <Label htmlFor='vendor'>
+          <Label htmlFor='vendor' require={true}>
             Vendor
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <SelectReact
             options={vendorData.map((vendor: any) => ({ value: vendor._id, label: vendor.name }))}
@@ -82,9 +81,8 @@ const PurchaseOrderForm = ({ formik }: props) => {
         </div>
 
         <div className='col-span-4 lg:col-span-4 mt-5 flex-1'>
-          <Label htmlFor='po-number'>
+          <Label htmlFor='po-number' require={true}>
             PO-Number2
-            <span className='ml-1 text-red-500'>*</span>
           </Label>
           <Input
             value={formik?.values?.po_number}
@@ -112,9 +110,8 @@ const PurchaseOrderForm = ({ formik }: props) => {
               )}
             </div>
             <div className='col-span-12 lg:col-span-2'>
-              <Label htmlFor={`product-${index}`}>
+              <Label htmlFor={`product-${index}`} require={true}>
                 Products
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <SelectReact
                 options={productListData.map((product: any) => ({
@@ -136,9 +133,8 @@ const PurchaseOrderForm = ({ formik }: props) => {
 
             </div>
             <div className='col-span-12 lg:col-span-2'>
-              <Label htmlFor={`hsn-${index}`}>
+              <Label htmlFor={`hsn-${index}`} require={true}>
                 Quantity
-                <span className='ml-1 text-red-500'>*</span>
               </Label>
               <Input
                 type='number'
