@@ -281,7 +281,7 @@ const AddCustomerModal = ({ isOpen, setIsOpen, customerName, fetchVendorData, se
           </div>
 
           <div className='flex mt-2 gap-2'>
-            <Button variant='solid' color='blue' isDisable={formik.values.name === ''} onClick={() => formik.handleSubmit()}>
+            <Button variant='solid' color='blue' isLoading={formik?.isSubmitting} isDisable={formik.values.name === '' || formik?.isSubmitting} onClick={() => formik.handleSubmit()}>
               Save Customer
             </Button>
           </div>

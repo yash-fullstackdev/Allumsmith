@@ -29,7 +29,7 @@ const initialValues = {
 	anodize_discount: '',
 	commercial_discount: '',
 	file: [],
-}
+};
 const CustomerPage = () => {
 	const navigate = useNavigate();
 	const formik: any = useFormik({
@@ -50,22 +50,19 @@ const CustomerPage = () => {
 			});
 
 			try {
-				await post('/customers', formDataValue,
-					{
-						headers: {
-							'Content-Type': 'multipart/form-data',
-						},
+				await post('/customers', formDataValue, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
 					},
-				);
+				});
 
 				toast.success('customer added Successfully!');
 				navigate(PathRoutes.customer);
-
 			} catch (error: any) {
 				console.error('Error Saving customer', error);
 				toast.error(error.response.data.message, error);
 			}
-		}
+		},
 	});
 
 	return (
@@ -84,9 +81,7 @@ const CustomerPage = () => {
 			<Container className='flex shrink-0 grow basis-auto flex-col pb-0'>
 				<Card>
 					<CardBody>
-						<div
-							className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-						>
+						<div className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'>
 							Add Customer
 						</div>
 
@@ -96,9 +91,10 @@ const CustomerPage = () => {
 							<Button
 								variant='solid'
 								color='blue'
+								isLoading={formik?.isSubmitting}
+								isDisable={formik?.isSubmitting}
 								type='button'
-								onClick={formik.handleSubmit}
-							>
+								onClick={formik.handleSubmit}>
 								Save Customer
 							</Button>
 						</div>

@@ -31,8 +31,8 @@ interface ICheckboxProps extends HTMLAttributes<HTMLInputElement>, Partial<IVali
 	rounded?: TRounded;
 	dimension?: TCheckboxDimension;
 	variant?: TCheckboxVariants;
-	disabled?: boolean,
-	borderClass?:string
+	disabled?: boolean;
+	borderClass?: string;
 }
 const Checkbox = forwardRef<HTMLInputElement, ICheckboxProps>((props, ref) => {
 	const {
@@ -66,9 +66,12 @@ const Checkbox = forwardRef<HTMLInputElement, ICheckboxProps>((props, ref) => {
 		default: {
 			general: classNames(
 				// border
-				[`${borderClass}`],
-				'border-zinc-100 dark:border-zinc-800',
-				'border-zinc-100 dark:border-zinc-800',
+				borderClass
+					? [`${borderClass}`]
+					: [
+							'border-zinc-100 dark:border-zinc-800',
+							'border-zinc-100 dark:border-zinc-800',
+					  ],
 				// hover:border
 				[`hover:border-${color as TColors}-${colorIntensity as TColorIntensity}`],
 				[`dark:hover:border-${color as TColors}-${colorIntensity as TColorIntensity}`],

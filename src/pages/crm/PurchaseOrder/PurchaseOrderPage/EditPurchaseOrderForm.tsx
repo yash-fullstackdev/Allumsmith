@@ -24,8 +24,9 @@ const EditPurchaseOrderForm = () => {
             entries: [{ product: '', requiredQuantity: '' }],
         },
         validationSchema: purchaseOrderSchema,
-        onSubmit: async (value) => {
+        onSubmit: async (value,{setSubmitting}) => {
             try {
+                setSubmitting(true)
                 const duplicateProductIds = value?.entries
                     .map((entry: any) => entry.product)
                     .filter((productId: any, index: any, array: any) => array.indexOf(productId) !== index);
@@ -45,6 +46,8 @@ const EditPurchaseOrderForm = () => {
                 navigate(PathRoutes.purchase_order);
             } catch (error: any) {
                 toast.error('Error Creating Purchase Order', error);
+            } finally {
+                setSubmitting(false)
             }
         }
     });
@@ -100,7 +103,7 @@ const EditPurchaseOrderForm = () => {
                             <Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
                                 Add Entry
                             </Button>
-                            <Button variant='solid' color='blue' onClick={formik.handleSubmit}>
+                            <Button variant='solid' color='blue'  isLoading={formik?.isSubmitting} isDisable={formik?.isSubmitting} onClick={formik.handleSubmit}>
                                 Save Entries
                             </Button>
                         </div>

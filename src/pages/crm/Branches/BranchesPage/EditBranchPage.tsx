@@ -84,7 +84,7 @@ const EditBranchPage = () => {
                     <CardBody>
                         <BranchesForm formik={formik} />
                         <div className='flex mt-4 gap-2'>
-                            <Button variant='solid' color='blue' type='button' onClick={formik.handleSubmit}>
+                            <Button variant='solid' color='blue' isLoading={formik?.isSubmitting} isDisable={formik?.isSubmitting}  type='button' onClick={formik.handleSubmit}>
                                 Update Branch
                             </Button>
                         </div>

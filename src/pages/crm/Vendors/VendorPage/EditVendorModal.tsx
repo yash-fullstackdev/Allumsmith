@@ -182,7 +182,7 @@ const EditProductModal = ({ vendorId, setIsEditModal, fetchData }: any) => {
             </div>
 
             <div className='flex mt-4 gap-2'>
-              <Button variant='solid' color='blue' type='button' onClick={editVendor}>
+              <Button variant='solid' color='blue'  type='button' onClick={editVendor}>
                 Update Vendor
               </Button>
             </div>

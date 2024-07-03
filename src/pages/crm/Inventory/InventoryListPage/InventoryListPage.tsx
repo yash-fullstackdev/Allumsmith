@@ -201,9 +201,9 @@ const InventoryListPage = () => {
                             <CardTitle><h1>All Inventory</h1></CardTitle>
                         </CardHeaderChild>
                         <PermissionGuard permissionType="write">
-                        <Button variant='solid' icon='HeroPlus' onClick={() => setStockActionModal(true)}>
+                        {/* <Button variant='solid' icon='HeroPlus' onClick={() => setStockActionModal(true)}>
                             Stock Action
-                        </Button>
+                        </Button> */}
                         </PermissionGuard>
 
                     </CardHeader>

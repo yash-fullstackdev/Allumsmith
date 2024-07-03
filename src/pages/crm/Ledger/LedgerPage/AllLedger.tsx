@@ -46,7 +46,6 @@ import Collapse from '../../../../components/utils/Collapse';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const AllLedger = ({
-	handleGeneratePdf,
 	associatedLedger,
 	formik,
 	fetchLedgerDetails,
@@ -55,18 +54,49 @@ const AllLedger = ({
 	setAccordionStates,
 	resetFilters,
 }: any) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [jobsList, setJobsList] = useState<any>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isEditModal, setIsEditModal] = useState(false);
 	const [productInfo, setProductInfo] = useState<any>();
 	const [customerId, setCustomerId] = useState();
 
-	console.log('JobList', jobsList);
 	const getInvoiceList = async () => {
 		try {
 			const { data } = await get('/invoice');
 			setJobsList(data);
 		} catch (error) {}
+	};
+
+	const handleGeneratePdf = async () => {
+		try {
+			setIsLoading(true);
+			const payload = {
+				ledgerData: associatedLedger,
+				from: formik.values.startDate,
+				to: formik.values.endDate,
+			};
+			console.log('payload', payload);
+			toast.success('Please Wait Pdf is being generated...');
+			const response = await post(`/ledger/pdf`, payload);
+
+			console.log(response.data.data);
+			if (response && response.status === 201 && response.data && response.data.data) {
+				const pdfData = response.data.data;
+				console.log('PDF DATA', pdfData);
+
+				const url = window.URL.createObjectURL(
+					new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }),
+				);
+
+				window.open(url, '_blank');
+			} else {
+				console.error('Error: PDF data not found in response');
+			}
+		} catch (error) {
+			toast.error('Error Generating PDF');
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -215,6 +245,8 @@ const AllLedger = ({
 												variant='solid'
 												color='blue'
 												type='submit'
+												isLoading={isLoading}
+												isDisable={isLoading}
 												onClick={handleGeneratePdf}>
 												Generate PDF
 											</Button>

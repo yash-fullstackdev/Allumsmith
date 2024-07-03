@@ -39,7 +39,6 @@ const initialValues = {
 const EditCustomerPage = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const [isLoading, setIsLoading] = useState(false);
 
 	const formik: any = useFormik({
 		initialValues: initialValues,
@@ -73,10 +72,8 @@ const EditCustomerPage = () => {
 			try {
 				await put(`/customers/${id}`, formDataValue,);
 				toast.success('Customer edited Successfully!');
-				setIsLoading(false);
 				navigate(PathRoutes.customer);
 			} catch (error: any) {
-				setIsLoading(false);
 				console.error('Error Updating Customer', error);
 				toast.error('Error Updating Customer', error);
 			}
@@ -183,9 +180,9 @@ const EditCustomerPage = () => {
 							<Button
 								variant='solid'
 								color='blue'
-								isLoading={isLoading}
+								isLoading={formik?.isSubmitting}
+								isDisable={formik?.isSubmitting}
 								type='button'
-								isDisable={isLoading}
 								onClick={formik.handleSubmit}>
 								Update Customer
 							</Button>

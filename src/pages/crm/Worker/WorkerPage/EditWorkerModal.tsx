@@ -182,7 +182,7 @@ const EditWorkerModal = ({ workerId, setIsEditModal, fetchData }: any) => {
             </div>
 
             <div className='flex mt-4 gap-2'>
-              <Button variant='solid' color='blue' type='button' onClick={editWorker}>
+              <Button variant='solid'  color='blue' type='button' onClick={editWorker}>
                 Update Worker
               </Button>
             </div>

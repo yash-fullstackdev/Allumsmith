@@ -62,8 +62,9 @@ const AddproductForm = () => {
 	const formik: any = useFormik({
 		initialValues,
 		validationSchema: productsSchema,
-		onSubmit: async (value) => {
+		onSubmit: async (value,{setSubmitting}) => {
 			try {
+				setSubmitting(true)
 				const promises = value.entries.map(async (entry: any) => {
 					const { data } = await post("/products", entry);
 					return data;
@@ -74,6 +75,8 @@ const AddproductForm = () => {
 			} catch (error: any) {
 				console.error("Error Adding Product", error);
 				toast.error("Error Adding Products", error);
+			}finally{
+				setSubmitting(false)
 			}
 		},
 	});
@@ -92,7 +95,7 @@ const AddproductForm = () => {
 						<Button variant='solid' color='blue' type='button' icon='HeroPlus' onClick={handleAddEntry}>
 							Add Entry
 						</Button>
-						<Button variant='solid' color='blue' type='submit' onClick={formik.handleSubmit}>
+						<Button variant='solid' isLoading={formik?.isSubmitting} isDisable={formik?.isSubmitting} color='blue' type='submit' onClick={formik.handleSubmit}>
 							Save Entries
 						</Button>
 					</div>

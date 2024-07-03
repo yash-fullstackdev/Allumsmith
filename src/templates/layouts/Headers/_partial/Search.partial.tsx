@@ -93,7 +93,7 @@ const SearchPartial = () => {
 				ref={ref}
 				firstSuffix={leftContent}
 				lastSuffix={rightContent}
-				className='z-20 max-sm:hidden'>
+				className='z-20 max-sm:hidden invisible'>
 				<Input
 					ref={inputRef}
 					name='searchField'

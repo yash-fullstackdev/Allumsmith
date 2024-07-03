@@ -25,6 +25,7 @@ const initialValues = {
 
 const PaymentPage = () => {
 	const [customer, setCustomer] = useState<any>([]);
+	const [isSubmitting,setIsSubmitting] = useState<any>(false)
 	const navigate = useNavigate();
 	const OptionPaymentMode = [
 		{ value: 'Cheque', label: 'Cheque' },
@@ -74,6 +75,7 @@ const PaymentPage = () => {
 	}, []);
 	const savePaymentDetail = async () => {
 		try {
+			setIsSubmitting(true)
 			const check = await formik.validateForm();
 
 			const handleNestedErrors = (errors: any, prefix = '') => {
@@ -115,6 +117,8 @@ const PaymentPage = () => {
 			navigate(PathRoutes.ledger_list);
 		} catch (error: any) {
 			toast.error(error.response.data.message);
+		} finally {
+			setIsSubmitting(false)
 		}
 	};
 	const today = new Date().toISOString().split('T')[0];
@@ -300,6 +304,8 @@ const PaymentPage = () => {
 									variant='solid'
 									color='blue'
 									type='button'
+									isDisable={isSubmitting}
+									isLoading={isSubmitting}
 									onClick={savePaymentDetail}>
 									Payment
 								</Button>

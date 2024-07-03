@@ -135,7 +135,7 @@ const wrokersSchema = Yup.object().shape({
 	email: Yup.string().optional(),
 	phone: Yup.number().required('Phone is required'),
 	company: Yup.string().optional(),
-	address_line1: Yup.string().optional(),
+	address_line1: Yup.string().required('Address Line 1 is required'),
 	address_line2: Yup.string().optional(),
 	city: Yup.string().optional(),
 	state: Yup.string().optional(),

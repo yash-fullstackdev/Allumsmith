@@ -85,6 +85,8 @@ const JobsPage = () => {
                     {withMaterial ? <Button
                         variant='solid'
                         color='blue'
+                        isLoading={formik?.isSubmitting} 
+                        isDisable={formik?.isSubmitting} 
                         onClick={formik.handleSubmit}
                     >
                         Review Process

@@ -52,7 +52,7 @@ const LedgerListPage = () => {
 		},
 		enableReinitialize: true,
 
-		onSubmit: () => { },
+		onSubmit: () => {},
 	});
 
 	const fetchLedgerDetails = async () => {
@@ -177,7 +177,6 @@ const LedgerListPage = () => {
 							onClick={() => setCustomerId(info.row.original)}
 							icon={'HeroEye'}
 							className='px-2.5'
-
 						/>
 					</Link>
 				</div>
@@ -233,12 +232,12 @@ const LedgerListPage = () => {
 				<Card>
 					<CardBody>
 						<div className='mb-2 mt-4 grid grid-cols-12 gap-1'>
-							<div className='col-span-12 lg:col-span-2 '>
+							<div className='col-span-12 lg:col-span-2'>
 								<Label htmlFor='startDate'>Start Date</Label>
 								<Input
 									type='date'
-									id={`startDate`}
-									name={`startDate`}
+									id='startDate'
+									name='startDate'
 									value={formik.values.startDate}
 									onChange={formik.handleChange}
 									max={formik.values.endDate}
@@ -248,35 +247,37 @@ const LedgerListPage = () => {
 								<Label htmlFor='endDate'>End Date</Label>
 								<Input
 									type='date'
-									id={`endDate`}
-									name={`endDate`}
+									id='endDate'
+									name='endDate'
 									value={formik.values.endDate}
 									onChange={formik.handleChange}
 									min={formik.values.startDate}
 								/>
 							</div>
-
-							<div className='col-span-12 mt-5 w-[200px] sm:col-span-7 lg:col-span-2 '>
+							<div className='col-span-12 mt-5 w-[150px] sm:col-span-4 lg:col-span-2 lg:ml-2'>
 								<Button
-									className='mt-2'
+									className='mt-2 w-full'
 									variant='solid'
 									color='blue'
-									type='submit'
+									type='button'
 									onClick={resetFilters}>
-									Reset Pdf Filter
+									Reset PDF Filter
 								</Button>
 							</div>
-							<div className='col-span-12 mt-5 w-[200px] justify-items-end sm:col-span-4 lg:col-span-6 lg:ml-5'>
+							<div className='col-span-12 mt-5 flex md:justify-end sm:col-span-4 lg:col-span-6'>
 								<Button
-									className='mt-2 h-[33px] w-[130px]'
+									className='mt-2 h-[33px] w-[150px]'
 									variant='solid'
 									color='blue'
-									type='submit'
+									type='button'
+									isLoading={isPdfLoading}
+									isDisable={isPdfLoading}
 									onClick={fetchLedgerDetails}>
-									{isPdfLoading ? <LoaderDotsCommon /> : 'Generate PDF'}
+									Generate PDF
 								</Button>
 							</div>
 						</div>
+
 						{!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
 							<TableTemplate
 								className='table-fixed max-md:min-w-[70rem]'

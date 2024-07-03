@@ -83,7 +83,7 @@ const EditVendorPage = () => {
                     <CardBody>
                         <VendorForm formik={formik}/>
                         <div className='flex mt-4 gap-2'>
-                            <Button variant='solid' color='blue' type='button' onClick={formik.handleSubmit} >
+                            <Button variant='solid' isLoading={formik?.isSubmitting} isDisable={formik?.isSubmitting} color='blue' type='button' onClick={formik.handleSubmit} >
                                 Update Vendor
                             </Button>
                         </div>

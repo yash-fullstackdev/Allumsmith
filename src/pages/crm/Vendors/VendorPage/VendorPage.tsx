@@ -66,7 +66,7 @@ const VendorPage = () => {
                         </div>
                         <VendorForm formik={formik} />
                         <div className='flex mt-2 gap-2'>
-                            <Button variant='solid' color='blue' type='button' onClick={formik.handleSubmit}>
+                            <Button variant='solid' color='blue'  isLoading={formik?.isSubmitting} isDisable={formik?.isSubmitting} type='button' onClick={formik.handleSubmit}>
                                 Save Vendor
                             </Button>
                         </div>

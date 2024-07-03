@@ -59,7 +59,6 @@ const LedgerPage = () => {
 		invoiceDetails: false,
 		ledgerDetails: false,
 	});
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { id } = useParams();
 	const getCustomerDetails = async () => {
 		try {
@@ -130,41 +129,12 @@ const LedgerPage = () => {
 		} catch (error) {}
 	};
 
-	const handleGeneratePdf = async () => {
-		try {
-			setIsLoading(true);
-			const payload = {
-				ledgerData: associatedLedger,
-				from: formik.values.startDate,
-				to: formik.values.endDate,
-			};
-			console.log('payload', payload);
-			toast.success('Please Wait Pdf is being generated...');
-			const response = await post(`/ledger/pdf`, payload);
 
-			console.log(response.data.data);
-			if (response && response.status === 201 && response.data && response.data.data) {
-				const pdfData = response.data.data;
-				console.log('PDF DATA', pdfData);
-
-				const url = window.URL.createObjectURL(
-					new Blob([new Uint8Array(pdfData).buffer], { type: 'application/pdf' }),
-				);
-
-				window.open(url, '_blank');
-			} else {
-				console.error('Error: PDF data not found in response');
-			}
-			setIsLoading(false);
-		} catch (error) {
-			toast.error('Error Generating PDF');
-		}
-	};
 
 	useEffect(() => {
 		handleLedgerData();
 	}, []);
-	console.log('data', associatedLedger);
+
 
 	const collapseAllAccordians = () => {
 		setAccordionStates({
@@ -181,170 +151,161 @@ const LedgerPage = () => {
 
 	return (
 		<PageWrapper name='LEDGER' isProtectedRoute={true}>
-			{isLoading ? (
-				<div className='flex h-[80vh] items-center justify-center'>
-					<LoaderDotsCommon />
-				</div>
-			) : (
-				<>
-					<Subheader>
-						<SubheaderLeft>
+			<>
+				<Subheader>
+					<SubheaderLeft>
+						<Button
+							icon='HeroArrowLeft'
+							className='!px-0'
+							onClick={() => navigate(`${PathRoutes.ledger_list}`)}>
+							{`${window.innerWidth > 425 ? 'Back to List' : ''}`}
+						</Button>
+						<SubheaderSeparator />
+					</SubheaderLeft>
+					<SubheaderRight>
+						<div className='col-span-1'>
 							<Button
-								icon='HeroArrowLeft'
-								className='!px-0'
-								onClick={() => navigate(`${PathRoutes.ledger_list}`)}>
-								{`${window.innerWidth > 425 ? 'Back to List' : ''}`}
+								variant='solid'
+								color='emerald'
+								className='mr-5'
+								onClick={() => collapseAllAccordians()}>
+								{!collapseAll
+									? 'Collapse All Information'
+									: 'Expand All Information'}
 							</Button>
-							<SubheaderSeparator />
-						</SubheaderLeft>
-						<SubheaderRight>
-							<div className='col-span-1'>
-								<Button
-									variant='solid'
-									color='emerald'
-									className='mr-5'
-									onClick={() => collapseAllAccordians()}>
-									{!collapseAll
-										? 'Collapse All Information'
-										: 'Expand All Information'}
-								</Button>
-							</div>
-						</SubheaderRight>
-					</Subheader>
+						</div>
+					</SubheaderRight>
+				</Subheader>
 
-					<Container>
-						<div className='flex h-full flex-wrap content-start'>
-							<div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
+				<Container>
+					<div className='flex h-full flex-wrap content-start'>
+						<div className='m-5 mb-4 grid w-full grid-cols-6 gap-1'>
+							<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
 								<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-									<div className='col-span-12 flex flex-col gap-1 xl:col-span-6'>
-										<Card>
-											<CardBody>
-												<div className='flex'>
-													<div className='bold w-full'>
-														<Button
-															variant='outlined'
-															className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
-															onClick={() =>
-																setAccordionStates({
-																	...accordionStates,
-																	customerInfo:
-																		!accordionStates.customerInfo,
-																})
-															}
-															rightIcon={
-																!accordionStates.customerInfo
-																	? 'HeroChevronUp'
-																	: 'HeroChevronDown'
-															}>
-															Customer Details
-														</Button>
+									<Card>
+										<CardBody>
+											<div className='flex'>
+												<div className='bold w-full'>
+													<Button
+														variant='outlined'
+														className='flex w-full items-center justify-between rounded-none border-b px-[2px] py-[0px] text-start text-lg font-bold'
+														onClick={() =>
+															setAccordionStates({
+																...accordionStates,
+																customerInfo:
+																	!accordionStates.customerInfo,
+															})
+														}
+														rightIcon={
+															!accordionStates.customerInfo
+																? 'HeroChevronUp'
+																: 'HeroChevronDown'
+														}>
+														Customer Details
+													</Button>
+												</div>
+											</div>
+											<Collapse isOpen={!accordionStates.customerInfo}>
+												<div className='mt-2 grid grid-cols-12 gap-[10px] '>
+													<div className='col-span-12 lg:col-span-4'>
+														<Label
+															htmlFor='name'
+															className='flex gap-1 whitespace-nowrap text-sm font-medium '>
+															Customer Name
+															<span>
+																<h5>
+																	:
+																	<span className='mx-[2px]   font-normal'>
+																		{formik.values.customerName}
+																	</span>
+																</h5>
+															</span>
+														</Label>
+													</div>
+
+													<div className='col-span-12 lg:col-span-4'>
+														<Label
+															htmlFor='name'
+															className='flex gap-1 text-sm font-medium'>
+															Phone :
+															<span>
+																<h5 className='font-normal'>
+																	{formik.values.phone}
+																</h5>
+															</span>
+														</Label>
+													</div>
+													<div className='col-span-12 lg:col-span-4'>
+														<Label
+															htmlFor='email'
+															className='flex gap-1 text-sm font-medium '>
+															Email
+															<span>
+																<h5>
+																	:
+																	<span className='mx-[2px]  font-normal'>
+																		{formik.values.email}
+																	</span>
+																</h5>
+															</span>
+														</Label>
+													</div>
+
+													<div className='col-span-12'>
+														<Label
+															htmlFor='name'
+															className='flex gap-1 text-sm font-medium '>
+															Address
+															<span>
+																<h5>
+																	:
+																	<span className='mx-[2px]  font-normal'>
+																		{formik.values.address_line1?.toUpperCase()}
+																	</span>
+																</h5>
+															</span>
+														</Label>
+													</div>
+
+													<div className='col-span-12 '>
+														<Label
+															htmlFor='name'
+															className='flex gap-1 text-sm font-medium'>
+															Address Line 2
+															<span>
+																<h5>
+																	:
+																	<span className='mx-[2px] font-normal'>
+																		{formik?.values.address_line2?.toUpperCase() ||
+																			'NA'}
+																	</span>
+																</h5>
+															</span>
+														</Label>
 													</div>
 												</div>
-												<Collapse isOpen={!accordionStates.customerInfo}>
-													<div className='mt-2 grid grid-cols-12 gap-[10px] '>
-														<div className='col-span-12 lg:col-span-4'>
-															<Label
-																htmlFor='name'
-																className='flex gap-1 whitespace-nowrap text-sm font-medium '>
-																Customer Name
-																<span>
-																	<h5>
-																		:
-																		<span className='mx-[2px]   font-normal'>
-																			{
-																				formik.values
-																					.customerName
-																			}
-																		</span>
-																	</h5>
-																</span>
-															</Label>
-														</div>
-
-														<div className='col-span-12 lg:col-span-4'>
-															<Label
-																htmlFor='name'
-																className='flex gap-1 text-sm font-medium'>
-																Phone :
-																<span>
-																	<h5 className='font-normal'>
-																		{formik.values.phone}
-																	</h5>
-																</span>
-															</Label>
-														</div>
-														<div className='col-span-12 lg:col-span-4'>
-															<Label
-																htmlFor='email'
-																className='flex gap-1 text-sm font-medium '>
-																Email
-																<span>
-																	<h5>
-																		:
-																		<span className='mx-[2px]  font-normal'>
-																			{formik.values.email}
-																		</span>
-																	</h5>
-																</span>
-															</Label>
-														</div>
-
-														<div className='col-span-12'>
-															<Label
-																htmlFor='name'
-																className='flex gap-1 text-sm font-medium '>
-																Address
-																<span>
-																	<h5>
-																		:
-																		<span className='mx-[2px]  font-normal'>
-																			{formik.values.address_line1?.toUpperCase()}
-																		</span>
-																	</h5>
-																</span>
-															</Label>
-														</div>
-
-														<div className='col-span-12 '>
-															<Label
-																htmlFor='name'
-																className='flex gap-1 text-sm font-medium'>
-																Address Line 2
-																<span>
-																	<h5>
-																		:
-																		<span className='mx-[2px] font-normal'>
-																			{formik?.values.address_line2?.toUpperCase() ||
-																				'NA'}
-																		</span>
-																	</h5>
-																</span>
-															</Label>
-														</div>
-													</div>
-												</Collapse>
-											</CardBody>
-										</Card>
-									</div>
+											</Collapse>
+										</CardBody>
+									</Card>
 								</div>
 							</div>
 						</div>
-					</Container>
+					</div>
+				</Container>
 
-					<AllLedger
-						associatedLedger={associatedLedger}
-						formik={formik}
-						fetchLedgerDetails={fetchLedgerDetails}
-						id={id}
-						setAssociatedLedger={setAssociatedLedger}
-						accordionStates={accordionStates}
-						setAccordionStates={setAccordionStates}
-						handleLedgerData={handleLedgerData}
-						handleGeneratePdf={handleGeneratePdf}
-						resetFilters={resetFilters}
-					/>
-				</>
-			)}
+				<AllLedger
+					associatedLedger={associatedLedger}
+					formik={formik}
+					fetchLedgerDetails={fetchLedgerDetails}
+					id={id}
+					setAssociatedLedger={setAssociatedLedger}
+					accordionStates={accordionStates}
+					setAccordionStates={setAccordionStates}
+					handleLedgerData={handleLedgerData}
+					// handleGeneratePdf={handleGeneratePdf}
+					resetFilters={resetFilters}
+				/>
+			</>
 		</PageWrapper>
 	);
 };
