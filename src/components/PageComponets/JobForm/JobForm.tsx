@@ -249,9 +249,10 @@ const JobForm = ({ formik }: props) => {
                         >
                           {customerOrderData?.map((co: any) => {
                             return (
+                              co?.status !== "completed" ?
                               <option key={co._id} value={co._id}>
-                                {co.customer.name} ({co.customerOrderNumber})
-                              </option>
+                                  {co.customer.name} ({co.customerOrderNumber})
+                              </option> : ""
                             );
                           })}
                         </Select>

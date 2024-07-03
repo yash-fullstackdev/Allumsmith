@@ -68,7 +68,7 @@ const ReviewJobProcess = ({ formik, isOpen, setIsOpen }: props) => {
       branch: value?.branch,
       batch
     }
-    if (selfProducts?.length) {
+    if (selfProducts[0]?.product) {
       body.selfProducts = selfProducts
     }
 

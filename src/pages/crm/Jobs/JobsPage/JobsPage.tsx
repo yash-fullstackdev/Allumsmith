@@ -31,7 +31,6 @@ const JobsPage = () => {
                 products: [{}]
             }],
             self_products: [{}],
-
         },
         validationSchema: jobWithMaterialSchema,
         onSubmit: async () => {
@@ -47,13 +46,13 @@ const JobsPage = () => {
             try {
                 const reviewProducts = await post('/inventory/findQuantity', body);
                 formik?.values?.batch.forEach((mainItem: any) => {
-                    const matchedSubvalue = reviewProducts.data.find((subItem: any) => subItem.product._id === mainItem.products[0].product._id);
+                    const matchedSubvalue = reviewProducts.data.find((subItem: any) => subItem?.product?._id === mainItem?.products[0]?.product?._id);
                     if (matchedSubvalue) {
                         mainItem.products[0].quantityInBranch = matchedSubvalue?.quantity || 0;
                     }
                 });
                 formik?.values?.self_products.forEach((mainItem: any) => {
-                    const matchedSubvalue = reviewProducts.data.find((subItem: any) => subItem.product._id === mainItem?.value);
+                    const matchedSubvalue = reviewProducts.data.find((subItem: any) => subItem?.product?._id === mainItem?.value);
                     if (mainItem?.value) {
                         mainItem.quantityInBranch = matchedSubvalue?.quantity || 0;
                     }
