@@ -1,6 +1,3 @@
-import { permission } from 'process';
-import { pagesToCheck } from '../constants/common/data';
-
 const shouldRedirectOrShowLoader = (
 	isSignedIn: boolean | undefined,
 	isLoading: boolean,
@@ -15,85 +12,6 @@ const shouldRedirectOrShowLoader = (
 };
 
 
-
-const togglePermissionAndUpdateInnerPages = (
-	pageId: any,
-	prevPermissions: any,
-	appPages: any,
-	permission: any,
-	writeRemove?: any
-) => {
-	let updatedPermissions: any = {
-		...prevPermissions
-	};
-
-	switch (permission) {
-		case "read":
-			updatedPermissions = {
-				...prevPermissions,
-				[pageId.to]: !prevPermissions[pageId.to],
-			};
-			break;
-
-		case "write":
-			if (!writeRemove) {
-				const pagesToUpdate = getAllInnerPages(pageId, appPages);
-				pagesToUpdate.forEach((page: any) => {
-					updatedPermissions = {
-						...updatedPermissions,
-						[page]: true,
-					};
-				});
-			}
-			break;
-
-		case "delete":
-			updatedPermissions = {
-				...prevPermissions,
-				[pageId.to]: true,
-			};
-			break;
-
-		default:
-			break;
-	}
-
-	if (writeRemove) {
-		const pagesToUpdate = getAllInnerPages(pageId, appPages);
-		pagesToUpdate.forEach((page: any) => {
-			if (page !== pageId.to) {
-				updatedPermissions = {
-					...updatedPermissions,
-					[page]: false,
-				};
-			}
-		});
-	}
-
-	return updatedPermissions;
-};
-
-const getAllInnerPages = (pageId: any, appPages: any) => {
-	const page = appPages[pageId.appKey];
-	if (page) {
-		const innerPages = Object.values(page).reduce((acc: string[], childRoutes: any) => {
-			if (typeof childRoutes === 'object' && childRoutes.to) {
-				acc.push(childRoutes.to);
-			}
-			return acc;
-		}, []);
-		return innerPages;
-	}
-	return [];
-};
-
-const filterPermissions = (data: any) => {
-	return Object.fromEntries(Object.entries(data).filter(([_, value]) => value === true));
-};
-
 export {
-	togglePermissionAndUpdateInnerPages,
-	filterPermissions,
-	getAllInnerPages,
 	shouldRedirectOrShowLoader,
 };

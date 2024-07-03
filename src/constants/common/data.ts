@@ -1,4 +1,4 @@
-const admins = ['allumsmith2023@yopmail.com'];
+const admins = ['allumsmith2023@yopmail.com',"yuvrajsinh.borasiya@bitontree.com"];
 const userInitialPermission = {
 	'/add-branches': true,
 	'/add-coating': true,
@@ -49,25 +49,97 @@ const userInitialPermission = {
 	'/worker': true,
 };
 
-const pagesToCheck = [
-	'/product',
-	'/purchase-order',
-	'/vendor',
-	'/customer',
-	'/worker',
-	'/raw-material',
-	'/branches',
-	'/colors',
-	'/coating',
-	'/jobs',
-	'/cuo-order',
-	'/inventory',
-	'/finish-storage',
-	'/invoice-list',
-	'/ledger-list',
-	'/add-payment',
-	'/transport'
-];
+const permissionCredAll ={
+	"/jobs": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/colors": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/vendor": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/worker": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/coating": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/product": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/branches": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/customer": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/cuo-order": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/inventory": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/transport": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/add-payment": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/ledger-list": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/invoice-list": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/raw-material": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/finish-storage": {
+		"read": true,
+		"write": true,
+		"delete": true
+	},
+	"/purchase-order": {
+		"read": true,
+		"write": true,
+		"delete": true
+	}
+}
+
+
+
+const userPageRoutes = ["/add-users-permissions","/roles","/add-roles"]
 
 const permissionsTypes = ['read', 'write', 'delete'];
-export { admins, userInitialPermission, pagesToCheck, permissionsTypes };
+export { admins, userInitialPermission, permissionsTypes,permissionCredAll,userPageRoutes };

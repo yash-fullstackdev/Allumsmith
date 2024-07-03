@@ -43,6 +43,7 @@ const CoatingListPage = () => {
 	const [coatingList, setCoatingList] = useState<any[]>([]);
 	const [colorModal, setColorModal] = useState<boolean>(false);
 	const [colors, setColors] = useState<any>([]);
+
 	const [deleteModal, setDeleteModal] = useState<boolean>(false);
 	const [deleteId, setDeleteId] = useState<string>('');
 
@@ -66,6 +67,8 @@ const CoatingListPage = () => {
 	useEffect(() => {
 		fetchCoatingData();
 	}, []);
+
+
 
 	const handleClickDelete = (id: any) => {
 		setDeleteModal(true);

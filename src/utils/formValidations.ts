@@ -204,11 +204,7 @@ const userCreateSchema = Yup.object().shape({
 		.min(10, 'Phone number must be at least 10 digits')
 		.max(15, 'Phone number cannot be longer than 15 digits')
 		.required('Phone number is required'),
-	userName: Yup.string()
-		.min(3, 'Username must be at least 3 characters')
-		.max(20, 'Username must be at most 20 characters')
-		.required('Username is required'),
-	userRole: Yup.string().required('userRole is required'),
+	userRole: Yup.mixed().required('userRole is required'),
 });
 const userEditSchema = Yup.object().shape({
 	email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -223,12 +219,12 @@ const userEditSchema = Yup.object().shape({
 		.min(10, 'Phone number must be at least 10 digits')
 		.max(15, 'Phone number cannot be longer than 15 digits')
 		.required('Phone number is required'),
-	userName: Yup.string()
-		.min(3, 'Username must be at least 3 characters')
-		.max(20, 'Username must be at most 20 characters')
-		.required('Username is required'),
-	userRole: Yup.string().required('userRole is required'),
+	userRole: Yup.mixed().required('userRole is required'),
 });
+
+const roleSchema = Yup.object().shape({
+	roleName : Yup.string().required('Role name is required')
+})
 
 const branchSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
@@ -472,5 +468,6 @@ export {
 	AddRawMaterialSchema,
 	AddRawMaterialQuantitySchema,
 	jobWithMaterialSchema,
-	CustomerSchema
+	CustomerSchema,
+	roleSchema
 };

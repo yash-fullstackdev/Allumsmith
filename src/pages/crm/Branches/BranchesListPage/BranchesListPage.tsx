@@ -41,8 +41,6 @@ import OffCanvas, {
 import { toast } from 'react-toastify';
 import BranchDetailCanvas from './BranchDetailCanvas';
 import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
-
-
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
 
 const columnHelper = createColumnHelper<any>();

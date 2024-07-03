@@ -10,6 +10,7 @@ import themeConfig from '../../../config/theme.config';
 import Tooltip from '../../ui/Tooltip';
 import Avatar from '../../Avatar';
 import { TColors } from '../../../types/colors.type';
+import { userPageRoutes } from '../../../constants/common/data';
 
 const navItemClasses = {
 	default: classNames(
@@ -301,8 +302,7 @@ export const NavItem: FC<INavItemProps> = (props) => {
     // ? location.pathname.includes(identifier) 
     // : (to && location.pathname.includes(to));
 	// const isActive = (identifier && location.pathname.includes(identifier)) || (to && location.pathname === to);
-	const isActive = (to && location.pathname === to) || (identifier && location.pathname.includes(identifier));
-
+	const isActive = (to && location.pathname === to) || (identifier && location.pathname.includes(identifier)) ||  userPageRoutes.some((route:any) => route === location.pathname) && text === "Users";
 
 
 

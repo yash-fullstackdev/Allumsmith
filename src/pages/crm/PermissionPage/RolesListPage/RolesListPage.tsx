@@ -26,17 +26,22 @@ import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
 import Modal, { ModalFooter, ModalFooterChild, ModalHeader } from '../../../../components/ui/Modal';
 import { toast } from 'react-toastify';
-import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
+import Subheader, {
+	SubheaderLeft,
+	SubheaderRight,
+    SubheaderSeparator,
+} from '../../../../components/layouts/Subheader/Subheader';
 import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
 import Input from '../../../../components/form/Input';
 import _, { debounce } from 'lodash';
+import Select from '../../../../components/form/Select';
 import OffCanvas, { OffCanvasBody, OffCanvasHeader } from '../../../../components/ui/OffCanvas';
-import RoleDetailCanvas from '../RolesListPage/RoleDetailsCanvas';
+import RoleDetailCanvas from './RoleDetailsCanvas';
 
 const columnHelper = createColumnHelper<any>();
 
-const UserListPage = () => {
+const RolesListPage = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [apiData, setApiData] = useState<any[]>([]);
@@ -49,7 +54,7 @@ const UserListPage = () => {
 	const [roleId, setRoleId] = useState();
 	const [roleInfo, setRoleInfo] = useState<any>();
 
-	const router = useNavigate();
+	const navigation = useNavigate();
 
 	const handleClickDelete = (id: any) => {
 		setDeleteModal(true);
@@ -66,7 +71,7 @@ const UserListPage = () => {
 			const pageSizeValue = pageSize || 10;
 			const pageValue = page || 1;
 			const { data } = await get(
-				`/users?page=${pageValue}&limit=${pageSizeValue}
+				`/roles?page=${pageValue}&limit=${pageSizeValue}
                 ${
 					!!(globalFilter.trim() || search.trim())
 						? `&searchTerm=${search.trim() || globalFilter.trim()}`
@@ -84,13 +89,13 @@ const UserListPage = () => {
 		}
 	};
 
-	const handleProductDelete = async (id: any) => {
+	const handleRoleDelete = async (id: any) => {
 		try {
-			await deleted(`/users/${id}`);
-			toast.success('User deleted Successfully !');
+			await deleted(`/roles/${id}`);
+			toast.success('Role deleted Successfully !');
 		} catch (error: any) {
-			console.error('Error deleting User:', error.message);
-			toast.error('Failed to delete userError deleting user');
+			console.error('Error deleting Role:', error.message);
+			toast.error('Failed to delete userError deleting role');
 			setIsLoading(false);
 		} finally {
 			setIsLoading(false);
@@ -119,35 +124,36 @@ const UserListPage = () => {
 	}, [globalFilter]);
 
 	const columns = [
-		columnHelper.accessor('username', {
+		columnHelper.accessor('name', {
 			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
-			header: 'User Name',
+			header: 'Role Name',
 			size: 200,
 		}),
-		columnHelper.accessor('email', {
-			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
-			header: 'Email',
-			size: 300,
+		columnHelper.accessor('permissions', {
+			cell: (info) => {
+				const optionsData = info.getValue() || [];
+				return (
+					<Select placeholder='User Permissions' id={`Permissions`} name={`Permissions`}>
+						{Object.keys(optionsData).length > 0 ? (
+							Object.keys(optionsData)?.map((options: any, index: number) => (
+								<option key={index} disabled value={options}>
+									{options?.split('/')[1]}
+								</option>
+							))
+						) : (
+							<option value='No data' disabled>
+								No Permissions
+							</option>
+						)}
+					</Select>
+				);
+			},
+			header: 'User Permissions',
 		}),
-		columnHelper.accessor('firstName', {
-			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
-			header: 'First Name',
-		}),
-		columnHelper.accessor('lastName', {
-			cell: (info) => <div className=''>{`${info.getValue()}`}</div>,
-			header: 'Last Name',
-		}),
-
-		columnHelper.accessor('role_id', {
-			cell: (info) => <div className=''>{`${info.getValue()?.name}`}</div>,
-			header: 'User Role',
-		}),
-		
 		columnHelper.display({
 			cell: (info) => (
 				<div className='flex justify-center font-bold'>
-					<Button
-					size='xs'
+					{/* <Button
 						onClick={() => {
 							const queryParams = new URLSearchParams();
 							queryParams.set('id', info.row.original['_id']);
@@ -166,13 +172,12 @@ const UserListPage = () => {
 								d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
 							/>
 						</svg>
-					</Button>
+					</Button> */}
 					<Button
-					size='xs'
 						onClick={() => {
 							setRoleModal(true),
 								setRoleId(info?.row?.original?._id),
-								setRoleInfo(info?.row?.original?.role_id);
+								setRoleInfo(info?.row?.original);
 						}}>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
@@ -194,7 +199,6 @@ const UserListPage = () => {
 						</svg>
 					</Button>
 					<Button
-					size='xs'
 						onClick={() => {
 							handleClickDelete(info.row.original._id);
 						}}>
@@ -256,6 +260,14 @@ const UserListPage = () => {
 		<PageWrapper name='Users List'>
 			<Subheader>
 				<SubheaderLeft>
+					<Button
+						icon='HeroArrowLeft'
+						className='!px-0'
+						onClick={() => navigation(`${PathRoutes.users}`)}>
+						{`${window.innerWidth > 425 ? 'Back to List' : ''}`}
+					</Button>
+				</SubheaderLeft>
+				<SubheaderRight>
 					<FieldWrap
 						firstSuffix={<Icon className='mx-2' icon='HeroMagnifyingGlass' />}
 						lastSuffix={
@@ -277,13 +289,13 @@ const UserListPage = () => {
 							onChange={(e) => setGlobalFilter(e.target.value)}
 						/>
 					</FieldWrap>
-				</SubheaderLeft>
+				</SubheaderRight>
 			</Subheader>
 			<Container>
 				<Card className='h-full'>
 					<CardHeader>
 						<CardHeaderChild>
-							<CardTitle>All Users</CardTitle>
+							<CardTitle>All Roles</CardTitle>
 							<Badge
 								variant='outline'
 								className='border-transparent px-4'
@@ -293,15 +305,9 @@ const UserListPage = () => {
 						</CardHeaderChild>
 
 						<CardHeaderChild>
-							<Link to={`${PathRoutes.roles}`}>
-								<Button variant='solid' icon='HeroClipboardDocumentList'>
-									Manage Roles
-								</Button>
-							</Link>
-
-							<Link to={`${PathRoutes.add_users}`}>
+							<Link to={`${PathRoutes.add_roles}`}>
 								<Button variant='solid' icon='HeroPlus'>
-									New User
+									New Roles
 								</Button>
 							</Link>
 						</CardHeaderChild>
@@ -348,7 +354,7 @@ const UserListPage = () => {
 						<Button
 							variant='solid'
 							onClick={() => {
-								handleProductDelete(deleteId);
+								handleRoleDelete(deleteId);
 							}}>
 							Delete
 						</Button>
@@ -365,4 +371,4 @@ const UserListPage = () => {
 	);
 };
 
-export default UserListPage;
+export default RolesListPage;

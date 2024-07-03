@@ -210,6 +210,7 @@ const ProductListPage = () => {
 		getFilteredRowModel: getFilteredRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
+		manualPagination: true,
 	});
 
 	const handleChangePageSize = (pageSize: number) => {
@@ -315,7 +316,7 @@ const ProductListPage = () => {
 			<Modal isOpen={editModal} setIsOpen={setEditModal} isScrollable fullScreen='2xl'>
 				<ModalHeader
 					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-				// onClick={() => formik.resetForm()}
+					// onClick={() => formik.resetForm()}
 				>
 					Edit Product
 				</ModalHeader>
