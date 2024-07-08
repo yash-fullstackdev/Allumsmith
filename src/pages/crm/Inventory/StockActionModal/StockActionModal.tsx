@@ -3,12 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Select from '../../../../components/form/Select';
 import { toast } from 'react-toastify';
 import { Switch } from '@mui/material';
-import SelectReact from '../../../../components/form/SelectReact';
+import { Input, Label, Select, SelectReact } from '../../../../components/form';
+
 
 
 

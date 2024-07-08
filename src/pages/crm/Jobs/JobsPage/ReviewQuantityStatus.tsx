@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Card, { CardBody } from '../../../../components/ui/Card';
-import Input from '../../../../components/form/Input';
-import Label from '../../../../components/form/Label';
 import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Button from '../../../../components/ui/Button';
@@ -9,6 +7,7 @@ import { toast } from 'react-toastify';
 import { post } from '../../../../utils/api-helper.util';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
+import { Input, Label } from '../../../../components/form';
 
 const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, productQuantityDetails, setQuantityStatusModal }: any) => {
     console.log("processReviewData", processReviewData)

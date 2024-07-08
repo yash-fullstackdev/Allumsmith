@@ -1,13 +1,12 @@
 import React, { type Dispatch, type SetStateAction } from "react";
 import Modal, { ModalBody, ModalHeader } from "../../../../components/ui/Modal";
-import Label from "../../../../components/form/Label";
-import Input from "../../../../components/form/Input";
 import { useFormik } from "formik";
 import Textarea from "../../../../components/form/Textarea";
 import Button from "../../../../components/ui/Button";
 import { addCustomerModalSchema } from "../../../../utils/formValidations";
 import { toast } from "react-toastify";
 import { post } from "../../../../utils/api-helper.util";
+import { Input, Label } from "../../../../components/form";
 
 
 type props = {

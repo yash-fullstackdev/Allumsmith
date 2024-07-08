@@ -8,25 +8,15 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-    CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
-} from '../../../../components/ui/Card';
 import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
 import { get, post } from '../../../../utils/api-helper.util';
-import Select from '../../../../components/form/Select';
-import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
-import Input from '../../../../components/form/Input';
-import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
+import { Container, PageWrapper, SubheaderRight } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
+
 
 
 

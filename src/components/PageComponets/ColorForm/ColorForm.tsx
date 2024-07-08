@@ -1,8 +1,5 @@
-import React from "react";
+import { ErrorMessage, Input, Label } from "../../form";
 import Button from "../../ui/Button";
-import Label from "../../form/Label";
-import Input from "../../form/Input";
-import ErrorMessage from "../../layouts/common/ErrorMessage";
 
 type props = {
   formik: any,
@@ -18,9 +15,8 @@ const ColorForm = ({ formik }: props) => {
       {formik.values.entries.map((entry: any, index: any) => (
         <div key={index} className='mt-2 grid grid-cols-12 gap-3'>
           <div className='col-span-12 lg:col-span-4'>
-            <Label htmlFor={`name-${index}`}>
+            <Label htmlFor={`name-${index}`} require={true}>
               Name
-              <span className='ml-1 text-red-500'>*</span>
             </Label>
             <Input
               id={`name-${index}`}
@@ -36,9 +32,8 @@ const ColorForm = ({ formik }: props) => {
             />
           </div>
           <div className='col-span-12 lg:col-span-4'>
-            <Label htmlFor={`code-${index}`}>
+            <Label htmlFor={`code-${index}`} require={true}>
               Code
-              <span className='ml-1 text-red-500'>*</span>
             </Label>
             <Input
               type="text"

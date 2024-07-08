@@ -1,11 +1,9 @@
-import React from 'react'
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
-import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader'
+
 import Button from '../../../../components/ui/Button'
-import Container from '../../../../components/layouts/Container/Container'
 import { useNavigate } from 'react-router-dom'
 import { PathRoutes } from '../../../../utils/routes/enum'
 import AddproductForm from './AddProductForm'
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts'
 
 const AddProductPage = () => {
 	const navigation = useNavigate();

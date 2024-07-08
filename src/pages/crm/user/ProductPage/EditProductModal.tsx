@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { get, post, put } from "../../../../utils/api-helper.util";
+import { get, put } from "../../../../utils/api-helper.util";
 import { PathRoutes } from "../../../../utils/routes/enum";
-import Card, { CardBody } from "../../../../components/ui/Card";
-import Button from "../../../../components/ui/Button";
-import Label from "../../../../components/form/Label";
-import Input from "../../../../components/form/Input";
-import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
-import Container from "../../../../components/layouts/Container/Container";
 import CreatableSelect from 'react-select/creatable';
 import { toast } from "react-toastify";
+import { Input, Label } from "../../../../components/form";
+import { Container, PageWrapper } from "../../../../components/layouts";
+import { Button, Card, CardBody } from "../../../../components/ui";
 
 const EditProductModal = ({ editProductId, setEditModal, fetchData }: any) => {
     const [formData, setFormData] = useState<any>({

@@ -1,14 +1,9 @@
-import Button from '../../../../../components/ui/Button';
-import Card, { CardBody } from '../../../../../components/ui/Card';
+import { FieldWrap, Input, Label, Select, Textarea } from '../../../../../components/form';
+import { Button, Card, CardBody } from '../../../../../components/ui';
 import Collapse from '../../../../../components/utils/Collapse';
-import Label from '../../../../../components/form/Label';
-import Input from '../../../../../components/form/Input';
-import Select from '../../../../../components/form/Select';
 import getUserRights from '../../../../../hooks/useUserRights';
 import { handleInputChange } from '../../../../../utils/capitalizedFunction.util';
-import Textarea from '../../../../../components/form/Textarea';
 import VendorTable from './vendorTable';
-import FieldWrap from '../../../../../components/form/FieldWrap';
 import { useEffect } from 'react';
 
 const RawMaterialForm = ({

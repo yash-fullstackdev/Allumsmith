@@ -345,18 +345,18 @@ export const authPages = {
 		text: 'Profile',
 		icon: 'HeroUser',
 	},
-	resetPage: {
-		id: 'restePage',
-		to: '/reset',
-		text: 'Reset',
-		icon: 'HeroArrowRightOnRectangle',
-	},
-	signUpPage: {
-		id: 'signupPage',
-		to: '/sign-up/*',
-		text: 'signup',
-		icon: 'HeroArrowRightOnRectangle',
-	},
+	// resetPage: {
+	// 	id: 'restePage',
+	// 	to: '/reset',
+	// 	text: 'Reset',
+	// 	icon: 'HeroArrowRightOnRectangle',
+	// },
+	// signUpPage: {
+	// 	id: 'signupPage',
+	// 	to: '/sign-up/*',
+	// 	text: 'signup',
+	// 	icon: 'HeroArrowRightOnRectangle',
+	// },
 };
 
 const pagesConfig = {

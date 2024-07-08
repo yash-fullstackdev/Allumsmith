@@ -1,18 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { post } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
-import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import CustomerForm from '../../../../components/PageComponets/CustomerForm/CustomerPage';
 import { useFormik } from 'formik';
 import { CustomerSchema } from '../../../../utils/formValidations';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
 
 const initialValues = {
 	name: '',

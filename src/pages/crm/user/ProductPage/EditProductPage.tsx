@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from "react-router-dom";
 import { get, put } from "../../../../utils/api-helper.util";
 import { PathRoutes } from "../../../../utils/routes/enum";
-import Card, { CardBody } from "../../../../components/ui/Card";
-import Button from "../../../../components/ui/Button";
-import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
-import Container from "../../../../components/layouts/Container/Container";
 import { toast } from "react-toastify";
-import Subheader, { SubheaderLeft, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import { productsSchema } from "../../../../utils/formValidations";
 import ProductForm from "../../../../components/PageComponets/ProductForm/ProductForm";
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from "../../../../components/layouts";
+import { Button, Card, CardBody } from "../../../../components/ui";
 
 const EditProductPage = () => {
     const navigate = useNavigate();

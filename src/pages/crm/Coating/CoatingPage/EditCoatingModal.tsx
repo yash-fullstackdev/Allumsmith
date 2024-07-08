@@ -1,19 +1,11 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { get, put } from "../../../../utils/api-helper.util";
-import Card, { CardBody } from "../../../../components/ui/Card";
-import Button from "../../../../components/ui/Button";
-import Label from "../../../../components/form/Label";
-import Input from "../../../../components/form/Input";
-import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
-import Container from "../../../../components/layouts/Container/Container";
-import Checkbox from "../../../../components/form/Checkbox";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { PathRoutes } from "../../../../utils/routes/enum";
-import ReactSelect, { MultiValue, ActionMeta } from 'react-select'
-import { color } from "framer-motion";
-import SelectReact from "../../../../components/form/SelectReact";
+import { Input, Label, SelectReact } from "../../../../components/form";
+import { Container, PageWrapper } from "../../../../components/layouts";
+import { Button, Card, CardBody } from "../../../../components/ui";
+
 
 // Define the ColorOption interface
 interface ColorOption {

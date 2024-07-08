@@ -3,9 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { get, post, put } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
@@ -13,6 +10,7 @@ import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper'
 import Subheader, { SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
 import { toast } from 'react-toastify';
 import { use } from 'i18next';
+import { Input, Label, Select } from '../../../../components/form';
 
 
 const EditJobModal = ({ jobId, setIsEditModal, fetchData }: any) => {

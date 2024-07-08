@@ -199,7 +199,7 @@ const JobsListPage = () => {
                             setBatchModal(true);
                             setJobId(info.row.original._id)
                         }}
-                        icon={'HeroEye'}
+                        icon='HeroEye'
                         className='px-2.5'
 
                     />
@@ -215,7 +215,7 @@ const JobsListPage = () => {
                                 handleClickDelete(info.row.original._id, false);
                             }}
 							className='px-2.5'
-                            icon={'HeroDelete'}
+                            icon='HeroDelete'
                         />
                     </PermissionGuard>
                 </div>
@@ -272,7 +272,7 @@ const JobsListPage = () => {
                         setWithOutStatus(info.row.original.status)
                         setJobId(info.row.original._id)
                     }}
-                        icon={'HeroAction'}
+                        icon='HeroAction'
                         className='px-2.5'
 
                     />
@@ -281,7 +281,7 @@ const JobsListPage = () => {
                             setWithOutBatchModal(true);
                             setJobId(info.row.original._id)
                         }}
-                        icon={'HeroEye'}
+                        icon='HeroEye'
                         className='px-2.5'
 
                     />
@@ -291,7 +291,7 @@ const JobsListPage = () => {
                             onClick={() => {
                                 handleClickDelete(info.row.original._id, true);
                             }}
-                            icon={'HeroDelete'}
+                            icon='HeroDelete'
                             className='px-2.5'
 
                         />

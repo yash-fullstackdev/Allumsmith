@@ -1,22 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderRight,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
 import Button from '../../../../components/ui/Button';
-import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Label from '../../../../components/form/Label';
 import { post } from '../../../../utils/api-helper.util';
-import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { Switch } from '@mui/material';
 import { useFormik } from 'formik';
 import ColorForm from '../../../../components/PageComponets/ColorForm/ColorForm';
 import { colorsSchema } from '../../../../utils/formValidations';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
 
 const ColorsPage = () => {
 	const navigate = useNavigate();

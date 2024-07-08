@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { get, post, put } from '../../../../utils/api-helper.util';
+import { get, put } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
 import { useFormik } from 'formik';
 import { CoatingSchema } from '../../../../utils/formValidations';
 import CoatingForm from '../../../../components/PageComponets/CoatingForm/CoatingForm';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
 
 interface ColorOption {
 	value: any;

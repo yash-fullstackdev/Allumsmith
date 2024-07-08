@@ -20,15 +20,13 @@ import {
 } from '@tanstack/react-table';
 import { toast } from 'react-toastify';
 import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
 import renderAmount from '../../../../utils/renderAmount';
 import { useFormik } from 'formik';
-import Label from '../../../../components/form/Label';
 import Select from '../../../../components/form/Select';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { formatDate } from '../../../../utils/date.util';
+import { FieldWrap, Input, Label } from '../../../../components/form';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -175,7 +173,7 @@ const LedgerListPage = () => {
 					<Link to={`${PathRoutes.add_ledger}/${info.row.original._id}`}>
 						<Button
 							onClick={() => setCustomerId(info.row.original)}
-							icon={'HeroEye'}
+							icon='HeroEye'
 							className='px-2.5'
 						/>
 					</Link>

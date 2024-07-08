@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
 import {
 	createColumnHelper,
@@ -10,38 +9,33 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { Link, useNavigate } from 'react-router-dom';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-	CardBody,
-	CardHeader,
-	CardHeaderChild,
-	CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, {
-	ModalBody,
-	ModalFooter,
-	ModalFooterChild,
-	ModalHeader,
-} from '../../../../components/ui/Modal';
 import EditBranchModal from '../BranchesPage/EditBranchModal';
-import OffCanvas, {
-	OffCanvasBody,
-	OffCanvasFooter,
-	OffCanvasHeader,
-} from '../../../../components/ui/OffCanvas';
 import { toast } from 'react-toastify';
 import BranchDetailCanvas from './BranchDetailCanvas';
 import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
+import {
+	Badge,
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	CardHeaderChild,
+	CardTitle,
+	Modal,
+	ModalBody,
+	ModalHeader,
+	OffCanvas,
+	OffCanvasBody,
+	OffCanvasHeader,
+} from '../../../../components/ui';
+import { Container, PageWrapper } from '../../../../components/layouts';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -146,7 +140,7 @@ const BranchesListPage = () => {
 							onClick={() => {
 								handleClickDelete(info.row.original._id);
 							}}
-							icon={'HeroDelete'}
+							icon='HeroDelete'
 							className='px-2.5'
 						/>
 					</PermissionGuard>
@@ -218,7 +212,7 @@ const BranchesListPage = () => {
 			<Modal isOpen={isEditModal} setIsOpen={setIsEditModal} isScrollable fullScreen='2xl'>
 				<ModalHeader
 					className='m-5 flex items-center justify-between rounded-none border-b text-lg font-bold'
-				// onClick={() => formik.resetForm()}
+					// onClick={() => formik.resetForm()}
 				>
 					Edit Branch
 				</ModalHeader>
@@ -230,7 +224,6 @@ const BranchesListPage = () => {
 					/>
 				</ModalBody>
 			</Modal>
-
 
 			{deleteModal ? (
 				<DeleteConformationModal

@@ -1,19 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Card, { CardBody } from '../../../../../components/ui/Card';
-import Button from '../../../../../components/ui/Button';
-import Select from '../../../../../components/form/Select';
+import React from 'react';
 import countryDb from '../../../../../mocks/db/country.db';
-import Label from '../../../../../components/form/Label';
-import Input from '../../../../../components/form/Input';
 import getUserRights from '../../../../../hooks/useUserRights';
-import FieldWrap from '../../../../../components/form/FieldWrap';
-import Textarea from '../../../../../components/form/Textarea';
 import { toast } from 'react-toastify';
 import { handleInputChange } from '../../../../../utils/capitalizedFunction.util';
 import { UomOption } from '../../../../../utils/types/common';
-import { useParams } from 'react-router-dom';
-
-
+import { FieldWrap, Input, Label, Select, Textarea } from '../../../../../components/form';
+import { Button, Card, CardBody } from '../../../../../components/ui';
 
 const uomOptions: UomOption[] = [
 	{ value: 'EA', label: 'EA' },
@@ -201,16 +193,16 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 
 	const handleUOMChange =
 		(index: any, field: string) =>
-			(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-				const target = e.target;
-				const inputValue = target.value;
-				let formattedValue = inputValue.toUpperCase();
-				const cursorPositionRef: any = React.createRef<
-					HTMLTextAreaElement | HTMLInputElement
-				>();
-				cursorPositionRef.current = target;
-				formik.setFieldValue(`procurementUOM[${index}].${field}`, formattedValue);
-			};
+		(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+			const target = e.target;
+			const inputValue = target.value;
+			let formattedValue = inputValue.toUpperCase();
+			const cursorPositionRef: any = React.createRef<
+				HTMLTextAreaElement | HTMLInputElement
+			>();
+			cursorPositionRef.current = target;
+			formik.setFieldValue(`procurementUOM[${index}].${field}`, formattedValue);
+		};
 
 	const handleChangeVendorNotes = (
 		event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -290,7 +282,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									disabled={!privileges.canWrite()}
 								/>
 								{formik.touched.manufacturerName &&
-									formik.errors.manufacturerName ? (
+								formik.errors.manufacturerName ? (
 									<div className='text-red-500'>
 										{formik.errors.manufacturerName}
 									</div>
@@ -343,7 +335,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									disabled={!privileges.canWrite()}
 								/>
 								{formik.touched.manufacturerItemNo &&
-									formik.errors.manufacturerItemNo ? (
+								formik.errors.manufacturerItemNo ? (
 									<div className='text-red-500'>
 										{formik.errors.manufacturerItemNo}
 									</div>
@@ -375,7 +367,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									disabled={!privileges.canWrite()}
 								/>
 								{formik.touched.vendorItemNumber &&
-									formik.errors.vendorItemNumber ? (
+								formik.errors.vendorItemNumber ? (
 									<div className='text-red-500'>
 										{formik.errors.vendorItemNumber}
 									</div>
@@ -397,7 +389,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									disabled={!privileges.canWrite()}
 								/>
 								{formik.touched.manufacturerItemDescription &&
-									formik.errors.manufacturerItemDescription ? (
+								formik.errors.manufacturerItemDescription ? (
 									<div className='text-red-500'>
 										{formik.errors.manufacturerItemDescription}
 									</div>
@@ -430,7 +422,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									disabled={!privileges.canWrite()}
 								/>
 								{formik.touched.vendorProductDescription &&
-									formik.errors.vendorProductDescription ? (
+								formik.errors.vendorProductDescription ? (
 									<div className='text-red-500'>
 										{formik.errors.vendorProductDescription}
 									</div>
@@ -784,7 +776,7 @@ const VendorModal = ({ formik, vendor, vendorData, setVendorData, setScModal, on
 									</div>
 								) : null}
 							</div>
-							<div className='col-span-12 lg:col-span-2' >
+							<div className='col-span-12 lg:col-span-2'>
 								<Label htmlFor='pricingCost' require={true}>
 									Cost
 								</Label>

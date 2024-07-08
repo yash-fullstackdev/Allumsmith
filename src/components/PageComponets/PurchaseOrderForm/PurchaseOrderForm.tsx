@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import Label from "../../form/Label";
-import SelectReact from "../../form/SelectReact";
+import { useEffect, useState } from "react";
 import { get } from "../../../utils/api-helper.util";
-import Input from "../../form/Input";
 import Button from "../../ui/Button";
-import ErrorMessage from "../../layouts/common/ErrorMessage";
+import { ErrorMessage, Input, Label, SelectReact } from "../../form";
 
 type props = {
   formik: any,

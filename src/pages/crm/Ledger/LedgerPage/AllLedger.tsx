@@ -39,10 +39,8 @@ import { deleted } from '../../../../utils/api-helper.util';
 const columnHelper = createColumnHelper<any>();
 import { toast } from 'react-toastify';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Select from '../../../../components/form/Select';
 import Collapse from '../../../../components/utils/Collapse';
+import { Input, Label, Select } from '../../../../components/form';
 // import InvoiceCustomerDetail from './InvoiceCustomerDetail';
 
 const AllLedger = ({

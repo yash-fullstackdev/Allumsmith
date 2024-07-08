@@ -1,7 +1,6 @@
+import { ErrorMessage, Input, Label } from "../../form";
 import Button from "../../ui/Button";
-import Label from "../../form/Label";
-import Input from "../../form/Input";
-import ErrorMessage from "../../layouts/common/ErrorMessage";
+
 
 type props = {
 	formik: any,

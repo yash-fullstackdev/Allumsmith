@@ -1,4 +1,4 @@
-import { post } from '../../../../utils/api-helper.util';
+import { get, post } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
 import Label from '../../../../components/form/Label';
@@ -6,13 +6,32 @@ import Input from '../../../../components/form/Input';
 import { toast } from 'react-toastify';
 import { AddRawMaterialSchema } from '../../../../utils/formValidations';
 import { useFormik } from 'formik';
-import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
+import ErrorMessage from '../../../../components/form/ErrorMessage';
+import { useEffect, useState } from 'react';
+import Select from '../../../../components/form/Select';
 
 const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
+	const [branchData, setBranchData] = useState<any>([]);
+
+	const getBranchDetails = async () => {
+		try {
+			const { data } = await get('/branches');
+			setBranchData(data);
+		} catch (error) {
+			console.error('Error Fetching Branch', error);
+		}
+	};
+
+	useEffect(() => {
+		getBranchDetails();
+	}, []);
+
 	const formik: any = useFormik({
 		initialValues: {
 			name: '',
 			code: '',
+			branch: '',
+			quantity: '',
 		},
 		validationSchema: AddRawMaterialSchema,
 		onSubmit: async (values) => {
@@ -65,6 +84,47 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
 							touched={formik.touched}
 							errors={formik.errors}
 							fieldName={`code`}
+						/>
+					</div>
+					<div className='col-span-12 lg:col-span-6'>
+						<Label htmlFor='branch' require={true}>
+							Branch
+						</Label>
+						<Select
+							id={`branch`}
+							name={`branch`}
+							value={formik.values.branch}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}>
+							<option value=''>Select Branch</option>
+							{branchData.map((branch: any) => (
+								<option key={branch._id} value={branch._id}>
+									{branch.name}
+								</option>
+							))}
+						</Select>
+						<ErrorMessage
+							touched={formik.touched}
+							errors={formik.errors}
+							fieldName={`branch`}
+						/>
+					</div>
+					<div className='col-span-12 lg:col-span-6'>
+						<Label htmlFor='quantity' require={true}>
+							Quantity(kg)
+						</Label>
+						<Input
+							type='number'
+							id={`quantity`}
+							name={`quantity`}
+							value={formik.values.quantity}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+						/>
+						<ErrorMessage
+							touched={formik.touched}
+							errors={formik.errors}
+							fieldName={`quantity`}
 						/>
 					</div>
 					<div className='col-span-12 lg:col-span-12'>

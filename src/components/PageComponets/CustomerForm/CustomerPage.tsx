@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-import Button from "../../ui/Button";
-import Label from "../../form/Label";
-import Input from "../../form/Input";
-import Textarea from "../../form/Textarea";
 import Icon from "../../icon/Icon";
-import UploadFile from "../../form/UploadFile";
 import Tooltip from "../../ui/Tooltip";
-import ErrorMessage from "../../layouts/common/ErrorMessage";
+import { ErrorMessage, Input, Label, Textarea, UploadFile } from "../../form";
 
 type props = {
   formik: any,

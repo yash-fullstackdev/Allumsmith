@@ -23,7 +23,7 @@ const RoleDetailCanvas = ({ RoleDetails }: any) => {
 					Role Permissions
 				</Label>
 				{Object.keys(RoleDetails?.permissionCred || {}).map((key, index) =>
-					index !== 0 ? (
+					// index !== 0 ? (
 						<div key={index} className='mt-3 flex flex-col'>
 							<Label htmlFor=''>{key.split('/')[1]}</Label>
 							<div className='flex gap-7'>
@@ -39,7 +39,7 @@ const RoleDetailCanvas = ({ RoleDetails }: any) => {
 								))}
 							</div>
 						</div>
-					) : null,
+					// ) : null,
 				)}
 			</div>
 		</div>

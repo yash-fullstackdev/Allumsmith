@@ -11,16 +11,12 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-import { collection, deleteDoc, doc, getDocs, orderBy, query, where } from 'firebase/firestore';
-import { toast } from 'react-toastify';
 import { ERPVendor } from '../../../../../mocks/db/users.db';
 import { appPages } from '../../../../../config/pages.config';
 import Button from '../../../../../components/ui/Button';
 import getUserRights from '../../../../../hooks/useUserRights';
 import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
 import Subheader, { SubheaderLeft } from '../../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../../components/form/FieldWrap';
-import Input from '../../../../../components/form/Input';
 import Container from '../../../../../components/layouts/Container/Container';
 import Card, {
 	CardBody,
@@ -40,6 +36,7 @@ import Modal, {
 } from '../../../../../components/ui/Modal';
 import Icon from '../../../../../components/icon/Icon';
 import DeleteConformationModal from '../../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
+import { FieldWrap, Input } from '../../../../../components/form';
 
 const columnHelper = createColumnHelper<any>();
 const listLinkPath = `../${appPages.crmAppPages.subPages.componentsPage.subPages.rawMaterialsPage.editPageLink.to}/`;

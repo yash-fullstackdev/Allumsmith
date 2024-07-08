@@ -1,11 +1,6 @@
 import React, { Suspense } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import contentRoutes from '../../routes/contentRoutes';
-import PageWrapper from '../layouts/PageWrapper/PageWrapper';
-import Container from '../layouts/Container/Container';
-import Subheader, { SubheaderLeft, SubheaderRight } from '../layouts/Subheader/Subheader';
-import Header, { HeaderLeft, HeaderRight } from '../layouts/Header/Header';
-import Card from '../ui/Card';
 import useAllowedRoutes from '../../hooks/useAllowedRoutes';
 import NotFoundPage from '../../pages/NotFound.page';
 import UsersPermissionPage from '../../pages/crm/PermissionPage/UsersPermissionPage/UsersPermissionPage';
@@ -15,6 +10,8 @@ import UserListPage from '../../pages/crm/PermissionPage/UserListPage/UserListPa
 import { appPages } from '../../config/pages.config';
 import RolesListPage from '../../pages/crm/PermissionPage/RolesListPage/RolesListPage';
 import RoleCreationPage from '../../pages/crm/PermissionPage/RolesCreationPage/RolesCreationPage';
+import { Container, Header, HeaderLeft, HeaderRight, PageWrapper, Subheader, SubheaderLeft, SubheaderRight } from '../layouts';
+import { Card } from '../ui';
 
 const ContentRouter = () => {
 	let allowedRoutes: any = useAllowedRoutes(contentRoutes, true);

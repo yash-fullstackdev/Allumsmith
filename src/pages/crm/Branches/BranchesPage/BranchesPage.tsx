@@ -1,22 +1,12 @@
-import React from 'react';
 import { useFormik } from 'formik';
 import { post } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderRight,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
-import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { branchSchema } from '../../../../utils/formValidations';
 import BranchesForm from '../../../../components/PageComponets/BranchesForm/BranchesForm';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
 
 const BranchesPage = () => {
 	const navigate = useNavigate();

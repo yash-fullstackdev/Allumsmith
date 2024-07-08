@@ -162,7 +162,7 @@ const PurchaseOrderListPage = () => {
 								setVenorId(info?.row?.original?._id),
 								setVendorInfo(info?.row?.original);
 						}}
-						icon={'HeroEye'}
+						icon='HeroEye'
 						className='px-2.5'
 					/>
 					<PermissionGuard permissionType='delete'>
@@ -170,7 +170,7 @@ const PurchaseOrderListPage = () => {
 							onClick={() => {
 								handleClickDelete(info?.row?.original?._id);
 							}}
-							icon={'HeroDelete'}
+							icon='HeroDelete'
 							className='px-2.5'
 						/>
 					</PermissionGuard>

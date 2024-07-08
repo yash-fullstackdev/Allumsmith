@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
 import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
@@ -11,6 +9,7 @@ import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { toast } from 'react-toastify';
 import SelectReact from '../../../../components/form/SelectReact';
+import { Input, Label } from '../../../../components/form';
 
 const SelfProducts = ({ entries, setEntries }: any) => {
 

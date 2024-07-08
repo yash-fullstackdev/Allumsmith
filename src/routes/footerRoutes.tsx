@@ -5,8 +5,8 @@ import { authPages } from '../config/pages.config';
 
 const footerRoutes: RouteProps[] = [
 	{ path: authPages.loginPage.to, element: null },
-	{ path: authPages.resetPage.to, element: null },
-	{ path: authPages.signUpPage.to, element: null },
+	// { path: authPages.resetPage.to, element: null },
+	// { path: authPages.signUpPage.to, element: null },
 
 	{ path: '*', element: <DefaultFooterTemplate /> },
 ];

@@ -1,6 +1,5 @@
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
 import { Link } from 'react-router-dom';
+import { Input, Label } from '../../../../components/form';
 
 const CustomerDetailsCanvas = ({ customerDetails }: any) => {
 	return (

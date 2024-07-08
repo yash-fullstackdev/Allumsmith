@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 const getCharacterValidationError = (str: string) => {
 	return `Your password must have at least 1 ${str} character`;
 };
-const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+export const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VehicleRegexFormat = [
@@ -363,6 +363,8 @@ const PaymentSchema = Yup.object().shape({
 const AddRawMaterialSchema = Yup.object().shape({
 	name: Yup.string().required('Name is required'),
 	code: Yup.string().required('Code is Required'),
+	branch: Yup.string().required('Branch is required'),
+	quantity: Yup.string().required('Quantity is required'),
 });
 
 const AddRawMaterialQuantitySchema = Yup.object().shape({

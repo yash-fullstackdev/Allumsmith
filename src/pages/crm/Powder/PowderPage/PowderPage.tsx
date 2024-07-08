@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { inventoryList } from '../../../../mocks/db/inventoryList.db';
@@ -14,6 +12,7 @@ import { createColumnHelper, getCoreRowModel, getExpandedRowModel, useReactTable
 import TableTemplate from '../../../../templates/common/TableParts.template';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
+import { Container, PageWrapper } from '../../../../components/layouts';
 
 const columnHelper = createColumnHelper<any>();
 const PowderInventoryListPage = () => {

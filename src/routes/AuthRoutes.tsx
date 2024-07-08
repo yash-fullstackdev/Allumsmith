@@ -6,7 +6,7 @@ import UsersPermissionPage from '../pages/crm/PermissionPage/UsersPermissionPage
 
 const authRoutes: RouteProps[] = [
 	{ path: authPages.loginPage.to, element: <SignInComponent /> },
-	{ path: authPages.signUpPage.to, element: <SignUpComponent /> },
+	// { path: authPages.signUpPage.to, element: <SignUpComponent /> },
 ];
 
 export default authRoutes;

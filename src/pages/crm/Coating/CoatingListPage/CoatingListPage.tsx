@@ -119,7 +119,7 @@ const CoatingListPage = () => {
 							setColorModal(true);
 							setColors(info.row.original.colors);
 						}}
-						icon={'HeroEye'}
+						icon='HeroEye'
 						className='px-2.5'
 
 					/>
@@ -128,7 +128,7 @@ const CoatingListPage = () => {
 							onClick={() => {
 								handleClickDelete(info.row.original._id);
 							}}
-							icon={'HeroDelete'}
+							icon='HeroDelete'
 							className='px-2.5'
 
 						/>

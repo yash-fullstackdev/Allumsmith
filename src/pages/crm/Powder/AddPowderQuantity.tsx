@@ -9,7 +9,7 @@ import Button from '../../../components/ui/Button';
 import Select from '../../../components/form/Select';
 import { useFormik } from 'formik';
 import { AddRawMaterialQuantitySchema } from '../../../utils/formValidations';
-import ErrorMessage from '../../../components/layouts/common/ErrorMessage';
+import ErrorMessage from '../../../components/form/ErrorMessage';
 
 const AddPowderModal = ({ setPowderQuantityModal, getPowderList }: any) => {
 	const [branchData, setBranchData] = useState<any>([]);

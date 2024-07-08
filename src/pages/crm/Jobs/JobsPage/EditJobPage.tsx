@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Select from '../../../../components/form/Select';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Container from '../../../../components/layouts/Container/Container';
@@ -14,6 +11,7 @@ import Collapse from '../../../../components/utils/Collapse';
 import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import ReviewQuantityStatus from './ReviewQuantityStatus';
 import SelfProducts from './SelfProducts';
+import { Input, Label, Select } from '../../../../components/form';
 
 const EditJobPage = () => {
     const [name, setName] = useState('');

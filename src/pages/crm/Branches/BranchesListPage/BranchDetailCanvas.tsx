@@ -1,7 +1,5 @@
-import React from 'react';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Textarea from '../../../../components/form/Textarea';
+import { Input, Label, Textarea } from "../../../../components/form";
+
 
 const BranchDetailCanvas = ({ branchDetails }: any) => {
 	return (

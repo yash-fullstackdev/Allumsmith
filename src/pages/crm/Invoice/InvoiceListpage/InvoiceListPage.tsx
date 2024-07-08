@@ -149,7 +149,7 @@ const InvoiceListPage = () => {
 							setIsEditModal(true), setCustomerId(info?.row?.original?._id);
 							setProductInfo(info?.row?.original.products);
 						}}
-						icon={'HeroEye'}
+						icon='HeroEye'
 						className='px-2.5'
 
 					/>
@@ -166,7 +166,7 @@ const InvoiceListPage = () => {
 							onClick={() => {
 								handleClickDelete(info.row.original._id);
 							}}
-							icon={'HeroDelete'}
+							icon='HeroDelete'
 							className='px-2.5'
 
 						/>

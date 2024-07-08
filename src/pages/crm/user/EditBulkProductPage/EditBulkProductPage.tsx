@@ -1,25 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderRight,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../../../components/ui/Button';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { useFormik } from 'formik';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-	CardBody,
-	CardHeader,
-	CardHeaderChild,
-	CardTitle,
-} from '../../../../components/ui/Card';
-import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
-import Label from '../../../../components/form/Label';
 import { debounce } from 'lodash';
 import {
 	SortingState,
@@ -34,9 +17,11 @@ import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
 import { toast } from 'react-toastify';
 import { Checkbox } from '@mui/material';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts';
+import { Badge, Button, Card, CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui';
+import { FieldWrap, Input, Label } from '../../../../components/form';
 
 const EditBulkProductPage = () => {
 	const navigate = useNavigate();
@@ -205,6 +190,10 @@ const EditBulkProductPage = () => {
 		} else {
 			clearData();
 		}
+
+		return () => {
+			debouncedFetchData.cancel();
+		};
 	}, [globalFilter]);
 
 	useEffect(() => {

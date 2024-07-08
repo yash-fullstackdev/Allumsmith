@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../utils/routes/enum';
 import renderAmount from '../../../utils/renderAmount';
 import PermissionGuard from '../../../components/buttons/CheckPermission';
-import ErrorMessage from '../../../components/layouts/common/ErrorMessage';
+import ErrorMessage from '../../../components/form/ErrorMessage';
 
 const initialValues = {
 	customer_id: '',

@@ -3,12 +3,11 @@ import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import { get, post } from '../../../../utils/api-helper.util';
 import Container from '../../../../components/layouts/Container/Container';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
 import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { useNavigate } from 'react-router-dom';
+import { Input, Label } from '../../../../components/form';
 type props = {
 	formik: any;
 	isOpen: boolean;
@@ -53,6 +52,7 @@ const ReviewJobProcess = ({ formik, isOpen, setIsOpen }: props) => {
 					}),
 				};
 			});
+			
 			const selfProducts = value?.self_products?.map((item: any) => {
 				return {
 					product: item?.value,
@@ -66,27 +66,46 @@ const ReviewJobProcess = ({ formik, isOpen, setIsOpen }: props) => {
 			const body: any = {
 				name: value?.name,
 				branch: value?.branch,
-				batch,
 			};
 			if (selfProducts[0]?.product) {
 				body.selfProducts = selfProducts;
 			}
 
-			value?.batch.forEach((entry: any) => {
-				entry.products.forEach((item: any) => {
-					if (
-						!item.quantityInBranch ||
-						Number(item.quantityInBranch) < Number(item.pickQuantity)
-					) {
-						toast.error('Quantity can not be greater than pending quantity');
-						throw new Error('Quantity can not be greater than pending quantity');
+			if(value?.batch[0]?.co_id !== ''){
+				body.batch = batch; 
+			}
+
+			if (body?.batch) {
+				value?.batch.forEach((entry: any) => {
+					entry.products.forEach((item: any) => {
+						if (
+							!item.quantityInBranch ||
+							Number(item.quantityInBranch) < Number(item.pickQuantity)
+						) {
+							toast.error('Quantity can not be greater than pending quantity');
+							return
+						}
+						if (!Number(item.pickQuantity)) {
+							toast.error('Please Enter Quantity ');
+							return
+						}
+					});
+				});
+			}
+
+
+			if (body?.selfProducts) {
+				body.selfProducts.forEach((item: any) => {
+					if (!item.quantityInBranch || Number(item.quantityInBranch) < Number(item.quantity)) {
+						toast.error('Quantity cannot be greater than available quantity');
+						return
 					}
-					if (!Number(item.pickQuantity)) {
-						toast.error('Please Enter Quantity ');
-						throw new Error('Please Enter Quantity');
+					if (!Number(item.quantity)) {
+						toast.error('Please Enter Quantity');
+						return
 					}
 				});
-			});
+			}
 			const jobData = await post('/jobs', body);
 			toast.success('Job Created Successfully');
 			navigate(PathRoutes.jobs);

@@ -5,9 +5,9 @@ import { appPages, authPages } from '../config/pages.config';
 
 const headerRoutes: RouteProps[] = [
 	{ path: authPages.loginPage.to, element: null },
-	{ path: authPages.signUpPage.to, element: null },
+	// { path: authPages.signUpPage.to, element: null },
 
-	{ path: authPages.resetPage.to, element: null },
+	// { path: authPages.resetPage.to, element: null },
 
 	{
 		path: appPages.projectAppPages.subPages.projectDashboardPage.to,

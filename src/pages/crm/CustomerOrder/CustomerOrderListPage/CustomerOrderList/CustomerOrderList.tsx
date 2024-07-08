@@ -8,20 +8,12 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-
-import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../../components/layouts/Container/Container';
-import Card, {
-    CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
-} from '../../../../../components/ui/Card';
 import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../../templates/common/TableParts.template';
-import Badge from '../../../../../components/ui/Badge';
 import { get } from '../../../../../utils/api-helper.util';
+import { Container, PageWrapper } from '../../../../../components/layouts';
+import { Badge, Card, CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../../components/ui';
 
 const columnHelper = createColumnHelper<any>();
 

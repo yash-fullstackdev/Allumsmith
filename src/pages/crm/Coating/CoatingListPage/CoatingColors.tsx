@@ -1,7 +1,5 @@
 
-
-import React from 'react'
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import {
     createColumnHelper,
     getCoreRowModel,
@@ -11,27 +9,13 @@ import {
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-    CardBody,
-    CardHeader,
-    CardHeaderChild,
-    CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
 import TableTemplate, {
     TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
 import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
-import { PathRoutes } from '../../../../utils/routes/enum';
-import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
-import { toast } from 'react-toastify';
-import EditColorModal from '../CoatingPage/EditCoatingModal';
-import EditCoatingModal from '../CoatingPage/EditCoatingModal';
+import { Container, PageWrapper } from '../../../../components/layouts';
+import { Card, CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui';
 
 
 
@@ -111,8 +95,6 @@ const CoatingColors = ({ colors }: any) => {
                                 {table.getFilteredRowModel().rows.length} items
                             </Badge>
                         </CardHeaderChild>
-
-
                     </CardHeader>
                     <CardBody className='overflow-auto'>
                         {!isLoading && table.getFilteredRowModel().rows.length > 0 ? (
@@ -131,10 +113,7 @@ const CoatingColors = ({ colors }: any) => {
                         <TableCardFooterTemplate table={table} />
                     }
                 </Card>
-
             </Container>
-
-
         </PageWrapper>
     )
 

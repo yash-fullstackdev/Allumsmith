@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import Select from '../../../../components/form/Select';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 import { PathRoutes } from '../../../../utils/routes/enum';
+import { Input, Label, Select } from '../../../../components/form';
 
 const WithoutMaterialPage = () => {
     const [name, setName] = useState('');

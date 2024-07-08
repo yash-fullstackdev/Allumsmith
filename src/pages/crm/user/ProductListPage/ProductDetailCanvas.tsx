@@ -1,6 +1,5 @@
-import React from 'react'
-import Label from '../../../../components/form/Label'
-import Input from '../../../../components/form/Input'
+import { Input, Label } from "../../../../components/form";
+
 
 const ProductDetailCanvas = ({ productDetails }: any) => {
 	return (

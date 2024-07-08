@@ -11,7 +11,6 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-import { collection, deleteDoc, doc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { ERPVendor } from '../../../../../mocks/db/users.db';
 import { appPages } from '../../../../../config/pages.config';
@@ -33,11 +32,6 @@ import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../../templates/common/TableParts.template';
 import LoaderDotsCommon from '../../../../../components/LoaderDots.common';
-import Modal, {
-	ModalFooter,
-	ModalFooterChild,
-	ModalHeader,
-} from '../../../../../components/ui/Modal';
 import Icon from '../../../../../components/icon/Icon';
 import DeleteConformationModal from '../../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
 

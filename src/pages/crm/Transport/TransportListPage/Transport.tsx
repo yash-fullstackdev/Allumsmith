@@ -1,11 +1,8 @@
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
-import React, { useEffect, useMemo, useState } from 'react';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
+import { useEffect, useState } from 'react';
 import Card, { CardBody, CardHeader, CardHeaderChild, CardTitle } from '../../../../components/ui/Card';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import TableTemplate, { TableCardFooterTemplate } from '../../../../templates/common/TableParts.template';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
 import Button from '../../../../components/ui/Button';
 import { Link } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
@@ -13,6 +10,7 @@ import ViewTransportModal from '../TransportPage/ViewTransportModal';
 import UpdateStatusModal from '../TransportPage/UpdateStatusModal';
 import { get } from '../../../../utils/api-helper.util';
 import ConfirmDelete from '../TransportPage/ConfirmDelete';
+import { Container, PageWrapper } from '../../../../components/layouts';
 
 
 const columnHelper = createColumnHelper<any>();
@@ -106,7 +104,7 @@ const TransportPage = () => {
               setSelectStatusId(info.row.original?._id)
             }}
             isDisable={info.row.original.status === 'completed'}
-            icon={'HeroAction'}
+            icon='HeroAction'
             className='px-2.5'
           />
 
@@ -116,7 +114,7 @@ const TransportPage = () => {
               setIsOpenView(!isOpenView)
               setTransparentViewData(info.row.original)
             }}
-            icon={'HeroEye'}
+            icon='HeroEye'
             className='px-2.5'
           />
 
@@ -127,7 +125,7 @@ const TransportPage = () => {
               setSelectStatusId(info.row.original?._id)
             }}
             className='px-2.5'
-            icon={'HeroDelete'}
+            icon='HeroDelete'
           />
         </div>
       ),

@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import { userCreateSchema, userEditSchema } from '../../../../utils/formValidations';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { userInitialValues } from '../../../../utils/initialValues';
-import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
+import ErrorMessage from '../../../../components/form/ErrorMessage';
 import { get, post, put } from '../../../../utils/api-helper.util';
 import SelectReact from '../../../../components/form/SelectReact';
 

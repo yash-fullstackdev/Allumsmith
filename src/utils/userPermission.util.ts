@@ -1,5 +1,6 @@
 import { appPages } from '../config/pages.config';
 
+// Function to check if a user ID exists and return different values based on the result
 const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
 	if (!userId) {
 		return trueValue;
@@ -8,6 +9,7 @@ const checkUserId = (userId: any, trueValue: any, falseValue: any) => {
 	}
 };
 
+// Function to update route permissions with a new value for read, write, and delete permissions
 const updateRoutePermissions = (route: string, value: boolean, prevPermissions: any) => {
 	return {
 		...prevPermissions,
@@ -24,14 +26,16 @@ const updateRoutePermissions = (route: string, value: boolean, prevPermissions: 
 	};
 };
 
+// Function to get all main routes from appPages configuration
 const getAllMainRoute = () => {
-    const routes = Object.keys(appPages)
-        .map((route: string) => appPages[route]?.listPage?.to)
-        .filter((route) => route !== undefined); 
+	const routes = Object.keys(appPages)
+		.map((route: string) => appPages[route]?.listPage?.to)
+		.filter((route) => route !== undefined);
 
-    return routes;
+	return routes;
 };
 
+// Function to initialize permissions for a given page ID
 const initializePermissions = (pageId: any, prevPermissions: any) => {
 	return {
 		...prevPermissions,
@@ -45,6 +49,7 @@ const initializePermissions = (pageId: any, prevPermissions: any) => {
 	};
 };
 
+// Function to update specific permissions (read, write, delete) for a given page ID
 const updatePermissions = (pageId: any, type: any, prevPermissions: any) => {
 	const updatedPermissions = initializePermissions(pageId, prevPermissions);
 	updatedPermissions[pageId][type] = !prevPermissions[pageId]?.[type];
@@ -61,6 +66,7 @@ const updatePermissions = (pageId: any, type: any, prevPermissions: any) => {
 	return updatedPermissions;
 };
 
+// Function to get all inner pages (child routes) for a given page ID from appPages
 const getAllInnerPages = (pageId: any, appPages: any) => {
 	const page = appPages[pageId];
 	if (page) {
@@ -75,6 +81,7 @@ const getAllInnerPages = (pageId: any, appPages: any) => {
 	return [];
 };
 
+// Function to toggle permissions and update inner pages accordingly
 const togglePermissionAndUpdateInnerPages = (
 	pageId: any,
 	prevPermissions: any,
@@ -131,10 +138,12 @@ const togglePermissionAndUpdateInnerPages = (
 	return updatedPermissions;
 };
 
+// Function to update inner page permissions
 const updateInnerPagePermissions = (pageId: string, value: boolean, prevPermissions: any) => {
 	return togglePermissionAndUpdateInnerPages(pageId, prevPermissions, 'write', value);
 };
 
+// Function to update select all values based on given permission credentials
 const updateSelectAllValues = (permissionCred: any) => {
 	const updatedSelectedRawValue: any = {};
 	let allRead = true;
@@ -165,6 +174,7 @@ const updateSelectAllValues = (permissionCred: any) => {
 	};
 };
 
+// Function to handle all selections for permissions (read, write, delete)
 const handelAllSelections = (value: boolean) => ({
 	read: value,
 	write: value,
@@ -172,6 +182,7 @@ const handelAllSelections = (value: boolean) => ({
 	selectedAll: value,
 });
 
+// Function to extract inner routes from the pages configuration
 const extractInnerRoutes = (pages: any, value: any) => {
 	let pagesArray: any = [];
 	const traversePages = (pages: any) => {
@@ -196,6 +207,7 @@ const extractInnerRoutes = (pages: any, value: any) => {
 	return permissionData;
 };
 
+// Function to create permissions data for all pages
 const createPermissionsData = (pages: any, value: any) => {
 	const permissions: any = {};
 	const addPermissions = (route: any) => {
@@ -213,6 +225,7 @@ const createPermissionsData = (pages: any, value: any) => {
 	return permissions;
 };
 
+// Function to handle raw data selection for all permissions
 const handelSelectAllRawData = (value: boolean) => {
 	const newPermissions = extractInnerRoutes(appPages, value);
 	const newIsSelectedRawValue: any = {};
@@ -222,6 +235,7 @@ const handelSelectAllRawData = (value: boolean) => {
 	return newIsSelectedRawValue;
 };
 
+// Function to update permissions state for multiple permissions
 const updatePermissionsStates = (
 	value: boolean,
 	setPermissions: React.Dispatch<React.SetStateAction<any>>,
@@ -233,16 +247,19 @@ const updatePermissionsStates = (
 	setIsSelectedRawValue(handelSelectAllRawData(value));
 };
 
+// Function to set all read permissions to true for given pages
 const allReadPermissionsTrueData = (pagesToCheck: any, value: boolean) =>
 	pagesToCheck.reduce((result: any, page: any) => {
 		result[page] = value;
 		return result;
 	}, {});
 
+// Function to filter permissions data and return only those with true values
 const filterPermissions = (data: any) => {
 	return Object.fromEntries(Object.entries(data).filter(([_, value]) => value === true));
 };
 
+// Function to update permissions state for a specific action type
 const updatePermissionsState = (
 	actionType: string,
 	value: boolean,
@@ -279,6 +296,7 @@ const updatePermissionsState = (
 	return updatedPermissions;
 };
 
+// Function to handle selecting all permissions for a specific action typ
 const handleSelectAllPermission = (
 	actionType: string,
 	value: boolean,
@@ -326,6 +344,7 @@ const handleSelectAllPermission = (
 	});
 };
 
+// Function to update credential permissions for a specific page ID and permission type
 const updateCredPermissions = (
 	prevPermissions: any,
 	pageId: any,
@@ -374,5 +393,5 @@ export {
 	togglePermissionAndUpdateInnerPages,
 	createPermissionsData,
 	extractInnerRoutes,
-    getAllMainRoute
+	getAllMainRoute,
 };

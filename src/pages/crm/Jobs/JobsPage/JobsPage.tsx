@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import { get, post } from '../../../../utils/api-helper.util';
 import Button from '../../../../components/ui/Button';
 import Label from '../../../../components/form/Label';
-
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Container from '../../../../components/layouts/Container/Container';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts/Subheader/Subheader';
-
 import { Switch } from '@mui/material';
 import WithoutMaterialPage from './WithoutMaterialPage';
 import JobForm from '../../../../components/PageComponets/JobForm/JobForm';
 import { useFormik } from 'formik';
 import ReviewJobProcess from './ReviewJobProcess';
 import { jobWithMaterialSchema } from '../../../../utils/formValidations';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderRight, SubheaderSeparator } from '../../../../components/layouts';
 
 
 const JobsPage = () => {

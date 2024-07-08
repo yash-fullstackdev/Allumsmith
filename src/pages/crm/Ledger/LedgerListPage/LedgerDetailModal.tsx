@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Container from '../../../../components/layouts/Container/Container';
 import Card, { CardBody } from '../../../../components/ui/Card';
 import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import SelectReact from '../../../../components/form/SelectReact';
-import Input from '../../../../components/form/Input';
-import Textarea from '../../../../components/form/Textarea';
 import { useFormik } from 'formik';
 import { get, post } from '../../../../utils/api-helper.util';
 import { toast } from 'react-toastify';
+import { Input, Label, SelectReact, Textarea } from '../../../../components/form';
 
 const LedgerDetailModal = () => {
     const [formData, setFormData] = useState<any>({ customer_id: '', customer_name: '', payment_mode: '', remarks: '', grandTotal: 0, paidAmount: 0, pendingAmount: 0, creditedAmount: 0, amountPayable: 0, chequeNumber: '', upi: '', description:'' })

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { get, put } from '../../../../../utils/api-helper.util';
-import Label from '../../../../../components/form/Label';
 import Card from '../../../../../components/ui/Card';
-import Select from '../../../../../components/form/Select';
 import Button from '../../../../../components/ui/Button';
 import { toast } from 'react-toastify';
-import Input from '../../../../../components/form/Input';
+import { Input, Label, Select } from '../../../../../components/form';
 
 const WithoutMaterialStatus = ({ status, setStatus, jobId, setStatusModal, fetchDatajobwm }: any) => {
 

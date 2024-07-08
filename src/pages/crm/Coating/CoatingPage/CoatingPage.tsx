@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik'; // Importing useFormik
 import { useNavigate } from 'react-router-dom';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
-import Button from '../../../../components/ui/Button';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import { get, post } from '../../../../utils/api-helper.util';
+import { post } from '../../../../utils/api-helper.util';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { toast } from 'react-toastify';
 import { CoatingSchema } from '../../../../utils/formValidations';
 import CoatingForm from '../../../../components/PageComponets/CoatingForm/CoatingForm';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
 
 const CoatingPage = () => {
 	const navigate = useNavigate();

@@ -1,11 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { post } from "../../../../utils/api-helper.util";
-import PageWrapper from "../../../../components/layouts/PageWrapper/PageWrapper";
-import Subheader, { SubheaderLeft, SubheaderRight, SubheaderSeparator } from "../../../../components/layouts/Subheader/Subheader";
 import Button from "../../../../components/ui/Button";
 import { PathRoutes } from "../../../../utils/routes/enum";
-import Container from "../../../../components/layouts/Container/Container";
 import AddCustomerOrderForm from "./AddCustomerOrderForm";
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from "../../../../components/layouts";
 
 
 const AddCustomerOrderPage = () => {

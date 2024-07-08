@@ -550,7 +550,7 @@ const AddInvoice = () => {
 																	<>
 																		<div className='mt-2 flex items-end justify-end'>
 																			<div className='flex items-end justify-end'>
-																				<Button
+																				{purchaseOrderData?.length > 1 && <Button
 																					type='button'
 																					onClick={() =>
 																						handleDeleteProduct(
@@ -573,7 +573,7 @@ const AddInvoice = () => {
 																							d='M6 18 18 6M6 6l12 12'
 																						/>
 																					</svg>
-																				</Button>
+																				</Button>}
 																			</div>
 																		</div>
 																		<div

@@ -1,13 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import Container from '../../../../components/layouts/Container/Container';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import Button from '../../../../components/ui/Button';
 import RoleCreationForm from './RoleCreationForm';
+import { Container ,PageWrapper,Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
 
 const RolesCreationPage = () => {
 	const navigation = useNavigate();

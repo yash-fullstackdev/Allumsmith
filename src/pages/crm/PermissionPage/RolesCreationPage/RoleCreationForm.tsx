@@ -1,4 +1,4 @@
-import Label from '../../../../components/form/Label';
+import { useEffect, useState } from 'react';
 import Button from '../../../../components/ui/Button';
 import Card, {
 	CardBody,
@@ -6,18 +6,16 @@ import Card, {
 	CardHeaderChild,
 	CardTitle,
 } from '../../../../components/ui/Card';
+import { Input,Label,Checkbox } from '../../../../components/form';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
 import { appPages } from '../../../../config/pages.config';
 import Container from '../../../../components/layouts/Container/Container';
-import Input from '../../../../components/form/Input';
 import { toast } from 'react-toastify';
 import { roleSchema } from '../../../../utils/formValidations';
 import { permissionsTypes } from '../../../../constants/common/data';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ErrorMessage from '../../../../components/layouts/common/ErrorMessage';
+import ErrorMessage from '../../../../components/form/ErrorMessage';
 import { get, post, put } from '../../../../utils/api-helper.util';
-import Checkbox from '../../../../components/form/Checkbox';
 import {
 	checkUserId,
 	createPermissionsData,

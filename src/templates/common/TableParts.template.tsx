@@ -2,13 +2,11 @@ import React, { FC, useCallback, useEffect, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { flexRender, Table as TTableProps } from '@tanstack/react-table';
 import { object } from 'yup';
-import Table, { ITableProps, TBody, Td, TFoot, Th, THead, Tr } from '../../components/ui/Table';
 import Icon from '../../components/icon/Icon';
-import { CardFooter, CardFooterChild } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
-import Input from '../../components/form/Input';
-import Select from '../../components/form/Select';
 import { debounce } from 'lodash';
+import { Input, Select } from '../../components/form';
+import { Button, CardFooter, CardFooterChild, TBody, Td, TFoot, Th, THead, Tr } from '../../components/ui';
+import Table, { ITableProps } from '../../components/ui/Table';
 
 interface ITableHeaderTemplateProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

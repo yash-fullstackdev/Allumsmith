@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, post, put } from '../../../../utils/api-helper.util';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import Input from '../../../../components/form/Input';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
-import Checkbox from '../../../../components/form/Checkbox';
 import { toast } from 'react-toastify';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
 import { wrokersSchema } from '../../../../utils/formValidations';
 import { useFormik } from 'formik';
+import { Input, Label } from '../../../../components/form';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody } from '../../../../components/ui';
 
 const EditWorkerPage = () => {
 	const formik = useFormik({

@@ -9,8 +9,6 @@ import {
 	SortingState,
 	useReactTable,
 } from '@tanstack/react-table';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
 import Card, {
 	CardBody,
 	CardHeader,
@@ -27,11 +25,10 @@ import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Collapse from '../../../../components/utils/Collapse';
 import Input from '../../../../components/form/Input';
-import { SubheaderRight } from '../../../../components/layouts/Subheader/Subheader';
-
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { useNavigate } from 'react-router-dom';
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
+import { Container, PageWrapper, SubheaderRight } from '../../../../components/layouts';
 
 const columnHelper = createColumnHelper<any>();
 

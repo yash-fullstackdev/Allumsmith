@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import {
 	CellContext,
 	SortingState,
@@ -11,31 +10,17 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { Link, useParams } from 'react-router-dom';
-import { collection, deleteDoc, doc, getDocs, orderBy, query } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { appPages } from '../../../../../config/pages.config';
-import Button from '../../../../../components/ui/Button';
 import getUserRights from '../../../../../hooks/useUserRights';
-import PageWrapper from '../../../../../components/layouts/PageWrapper/PageWrapper';
-import Card, {
-	CardBody,
-	CardHeader,
-	CardHeaderChild,
-	CardTitle,
-} from '../../../../../components/ui/Card';
-import Badge from '../../../../../components/ui/Badge';
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../../templates/common/TableParts.template';
 import LoaderDotsCommon from '../../../../../components/LoaderDots.common';
-import Modal, {
-	ModalBody,
-	ModalFooter,
-	ModalFooterChild,
-	ModalHeader,
-} from '../../../../../components/ui/Modal';
 import VendorModal from './VendorModal';
 import DeleteConformationModal from '../../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
+import { PageWrapper } from '../../../../../components/layouts';
+import { Badge, Button, Card, CardBody, CardHeader, CardHeaderChild, CardTitle, Modal, ModalBody, ModalHeader } from '../../../../../components/ui';
 
 const columnHelper = createColumnHelper<any>();
 const listLinkPath = `../${appPages.crmAppPages.subPages.componentsPage.subPages.rawMaterialsPage.editPageLink.to}/`;

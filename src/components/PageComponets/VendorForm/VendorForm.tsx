@@ -1,13 +1,11 @@
-import React from "react";
-import Label from "../../form/Label";
-import Textarea from "../../form/Textarea";
-import Input from "../../form/Input";
-import ErrorMessage from "../../layouts/common/ErrorMessage";
+import { ErrorMessage, Input, Label, Textarea } from "../../form";
+
 
 type props = {
   formik: any,
 };
 const VendorForm = ({ formik }: props) => {
+  
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className='mt-2 grid grid-cols-12 gap-3'>

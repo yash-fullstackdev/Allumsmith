@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { get, put } from '../../../../utils/api-helper.util';
-import Card, { CardBody } from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-import Label from '../../../../components/form/Label';
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
 import { toast } from 'react-toastify';
 import { PathRoutes } from '../../../../utils/routes/enum';
-import Subheader, {
-	SubheaderLeft,
-	SubheaderSeparator,
-} from '../../../../components/layouts/Subheader/Subheader';
-import Tooltip from '../../../../components/ui/Tooltip';
 import Icon from '../../../../components/icon/Icon';
 import { CustomerSchema } from '../../../../utils/formValidations';
 import { useFormik } from 'formik';
 import CustomerForm from '../../../../components/PageComponets/CustomerForm/CustomerPage';
+import { Container, PageWrapper, Subheader, SubheaderLeft, SubheaderSeparator } from '../../../../components/layouts';
+import { Button, Card, CardBody, Tooltip } from '../../../../components/ui';
+import { Label } from '../../../../components/form';
 
 const initialValues = {
 	name: '',

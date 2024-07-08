@@ -9,46 +9,36 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { Link, useNavigate } from 'react-router-dom';
-
-import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
-import Container from '../../../../components/layouts/Container/Container';
-import Card, {
-	CardBody,
-	CardHeader,
-	CardHeaderChild,
-	CardTitle,
-} from '../../../../components/ui/Card';
-import Button from '../../../../components/ui/Button';
-
 import TableTemplate, {
 	TableCardFooterTemplate,
 } from '../../../../templates/common/TableParts.template';
-import Badge from '../../../../components/ui/Badge';
 import LoaderDotsCommon from '../../../../components/LoaderDots.common';
 import { PathRoutes } from '../../../../utils/routes/enum';
 import { deleted, get } from '../../../../utils/api-helper.util';
-import Modal, {
-	ModalBody,
-	ModalFooter,
-	ModalFooterChild,
-	ModalHeader,
-} from '../../../../components/ui/Modal';
 import EditProductPage from '../ProductPage/EditProductModal';
 import { toast } from 'react-toastify';
-import Subheader, { SubheaderLeft } from '../../../../components/layouts/Subheader/Subheader';
-import FieldWrap from '../../../../components/form/FieldWrap';
 import Icon from '../../../../components/icon/Icon';
-import Input from '../../../../components/form/Input';
-import OffCanvas, {
-	OffCanvasBody,
-	OffCanvasFooter,
-	OffCanvasHeader,
-} from '../../../../components/ui/OffCanvas';
 import ProductDetailCanvas from './ProductDetailCanvas';
 import _, { debounce } from 'lodash';
 import PermissionGuard from '../../../../components/buttons/CheckPermission';
 import DeleteConformationModal from '../../../../components/PageComponets/DeleteConformationModal/DeleteConformationModal';
-
+import {
+	Badge,
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	CardHeaderChild,
+	CardTitle,
+	Modal,
+	ModalBody,
+	ModalHeader,
+	OffCanvas,
+	OffCanvasBody,
+	OffCanvasHeader,
+} from '../../../../components/ui';
+import { Container, PageWrapper, Subheader, SubheaderLeft } from '../../../../components/layouts';
+import { FieldWrap, Input } from '../../../../components/form';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -99,7 +89,8 @@ const ProductListPage = () => {
 			const pageSizeValue = pageSize || 10;
 			const pageValue = page || 1;
 			const { data: allUsers } = await get(
-				`/products?page=${pageValue}&limit=${pageSizeValue}${!!(globalFilter || search) ? `&name=${search || globalFilter}` : ''
+				`/products?page=${pageValue}&limit=${pageSizeValue}${
+					!!(globalFilter || search) ? `&name=${search || globalFilter}` : ''
 				} `,
 			);
 			allUsers?.data.sort(
@@ -134,6 +125,10 @@ const ProductListPage = () => {
 		} else {
 			fetchData(table?.getState().pagination.pageSize, 1);
 		}
+
+		return () => {
+			debouncedFetchData.cancel();
+		};
 	}, [globalFilter]);
 
 	const columns = [
@@ -164,7 +159,7 @@ const ProductListPage = () => {
 
 		columnHelper.display({
 			cell: (info) => (
-				<div className='flex font-bold justify-center'>
+				<div className='flex justify-center font-bold'>
 					<PermissionGuard permissionType='write'>
 						<Button
 							onClick={() => {
@@ -187,7 +182,7 @@ const ProductListPage = () => {
 							onClick={() => {
 								handleClickDelete(info.row.original._id);
 							}}
-							icon={'HeroDelete'}
+							icon='HeroDelete'
 							className='px-2.5'
 						/>
 					</PermissionGuard>
@@ -278,7 +273,7 @@ const ProductListPage = () => {
 									</Button>
 								</Link>
 							</PermissionGuard>
-							<PermissionGuard permissionType="write">
+							<PermissionGuard permissionType='write'>
 								<Link to={`${PathRoutes.add_product}`}>
 									<Button variant='solid' icon='HeroPlus'>
 										New Product
