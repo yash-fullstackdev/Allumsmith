@@ -16,8 +16,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
     
     const [branchData, setBranchData] = useState<any>([]);
     const [name, setName] = useState('');
-    // const [branchId, setBranchId] = useState('');
-    // const [quantity, setQuantity] = useState('');
+    const [branch,setBranch] = useState('');
+    const [quantity, setQuantity] = useState('');
     const [code, setCode] = useState('');
 
 
@@ -38,8 +38,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
     const handleSaveItems = async () => {
         const formData = {
             name,
-            // branchId,
-            // quantity,
+            branch,
+            quantity,
             code,
         }
         console.log("Form Data:", formData);
@@ -89,7 +89,7 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                                 onChange={(e) => setCode(e.target.value)}
                             />
                         </div>
-                        {/* <div className='col-span-12 lg:col-span-6'>
+                         <div className='col-span-12 lg:col-span-6'>
                             <Label htmlFor='quantity'>
                                 Quantity
                                 <span className='ml-1 text-red-500'>*</span>
@@ -101,8 +101,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}              
                             />
-                        </div> */}
-                        {/* <div className='col-span-12 lg:col-span-6'>
+                        </div> 
+                         <div className='col-span-12 lg:col-span-6'>
                             <Label htmlFor='branch'>
                                 Branch
                                 <span className='ml-1 text-red-500'>*</span>
@@ -110,8 +110,8 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                             <Select
                                 id={`branch`}
                                 name={`branch`}
-                                value={branchId}
-                                onChange={(e) => setBranchId(e.target.value)}
+                                value={branch}
+                                onChange={(e) => setBranch(e.target.value)}
                             >
                                 <option value="">Select Branch</option>
                                 {branchData.map((branch: any) => (
@@ -120,7 +120,7 @@ const AddPowderModal = ({ SetAddPowderModal, getPowderList }: any) => {
                                     </option>
                                 ))}
                             </Select>
-                        </div> */}
+                        </div> 
                         <div className='col-span-12 lg:col-span-12'>
                             <div className='flex mt-2 gap-2 '>
                                 <Button variant='solid' color='blue' type='button' onClick={handleSaveItems}>
