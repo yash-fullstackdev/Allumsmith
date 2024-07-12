@@ -260,7 +260,7 @@ const AddPurchaseOrderForm = () => {
 	const [entries, setEntries] = useState([
 		{
 			product: '',
-			requiredQuantity: '',
+			requiredQuantity: null,
 		},
 	]);
 	const [vendorId, setVendorId] = useState('');
@@ -316,7 +316,7 @@ const AddPurchaseOrderForm = () => {
 			...entries,
 			{
 				product: '',
-				requiredQuantity: '',
+				requiredQuantity: null,
 			},
 		]);
 	};
@@ -530,12 +530,12 @@ const AddPurchaseOrderForm = () => {
 											name={`hsn-${index}`}
 											value={entry.requiredQuantity}
 											onChange={(e) => {
-												const updatedEntries = [...entries];
+												const updatedEntries:any = [...entries];
 												updatedEntries[index].requiredQuantity =
-													e.target.value;
+													parseFloat(e.target.value) as number;
 												formik.setFieldValue(
 													`entries[${index}].requiredQuantity`,
-													e.target.value,
+													parseFloat(e.target.value),
 												);
 												setEntries(updatedEntries);
 											}}
