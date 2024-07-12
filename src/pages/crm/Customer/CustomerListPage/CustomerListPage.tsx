@@ -55,7 +55,7 @@ const CustomerListPage = () => {
 		setIsLoading(true);
 		try {
 			const { data: customerList } = await get(`/customers`);
-			customerList.sort(
+			customerList?.sort(
 				(a: any, b: any) =>
 					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 			);

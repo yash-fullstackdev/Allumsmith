@@ -6,14 +6,18 @@ import Container from '../../../../components/layouts/Container/Container';
 import PageWrapper from '../../../../components/layouts/PageWrapper/PageWrapper';
 import Button from '../../../../components/ui/Button';
 import { toast } from 'react-toastify';
-import { post } from '../../../../utils/api-helper.util';
+import { get, post } from '../../../../utils/api-helper.util';
 import { useNavigate } from 'react-router-dom';
 import { PathRoutes } from '../../../../utils/routes/enum';
+import Checkbox from '../../../../components/form/Checkbox';
 
 const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, productQuantityDetails, setQuantityStatusModal }: any) => {
     console.log("processReviewData", processReviewData)
     const [quantityInSpecificBranch, setQuantityInSpecificBranch] = useState<number>(0);
     const [productQuantities, setProductQuantities] = useState<any>({});
+    const [fromFinishInventory,setFromFinishInventory] = useState<any>({});
+    const [fiQty,setFiQty] = useState<any>({});
+    // const [availableQty,setAvailableQty] = useState<any>({})
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -139,6 +143,34 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
     //         console.error('Error saving data:', error);
     //     }
     // };
+    
+    const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>,batchIndex:number,productIndex:number) => {
+        const newVal = e.target.checked;
+
+        if(!newVal) {
+            setFiQty((prevState:any) => {
+                const newState = {...prevState};
+                delete newState[`${batchIndex}-${productIndex}`];
+                return newState
+            })
+        }
+
+        setFromFinishInventory((prevState:any) => {
+            const newState = {...prevState};
+            newState[`${batchIndex}-${productIndex}`] = newVal;
+            return newState;
+        })
+    }
+
+    const handleFiQtyChange = (e:React.ChangeEvent<HTMLInputElement>,batchIndex:number,productIndex:number) => {
+        const newVal = Number(e.target.value);
+        setFiQty((prevState:any) => {
+            const newState = {...prevState};
+            newState[`${batchIndex}-${productIndex}`] = newVal;
+            return newState;
+        })
+    }
+
     const handleSaveEntries = async () => {
         try {
             // Calculate the total quantity of each product across all batches
@@ -167,17 +199,27 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
              const dataToSave: any = {
                 name: processReviewData.name,
                 branch: processReviewData.branchId.id,
-                batch: processReviewData.batch.map((batch: any) => ({
+                batch: processReviewData.batch.map((batch: any,batchIndex:number) => ({
                     coEntry: batch.coEntry,
                     products: batch.products
                     ?.filter((item: any) => item?.coating?.name && item?.color?.name)
-                    ?.map((product: any) => ({
-                        product: product.product.id,
-                        quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined ? productQuantities[`${batch.name}-${product.product.id}`] : product.quantity,
-                        coating: product.coating.id,
-                        color: product.color.id,
-                        mm:product?.mm || null
-                    }))
+                    ?.map((product: any,productIndex:number) => {
+                        const baseProduct:any = {
+                            product: product.product.id,
+                            quantity: productQuantities[`${batch.name}-${product.product.id}`] !== undefined
+                                ? productQuantities[`${batch.name}-${product.product.id}`]
+                                : (product.quantity - fiQty[`${batchIndex}-${productIndex}`]) || product.quantity,
+                            coating: product.coating.id,
+                            color: product.color.id,
+                            mm: product?.mm || null
+                        };
+        
+                        if (fromFinishInventory[`${batchIndex}-${productIndex}`]) {
+                            baseProduct['fiQty'] = Number(fiQty[`${batchIndex}-${productIndex}`]) || 0;
+                        }
+        
+                        return baseProduct;
+                    })
                 })),
             };
 
@@ -211,7 +253,6 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
         }
         
     };
-
 
     const handleSelfProductQuantityChange = (selfProductIndex: number, newValue: number) => {
         const updatedSelfProducts = [...processReviewData.selfProducts];
@@ -284,11 +325,51 @@ const ReviewQuantityStatus = ({ processReviewData, setProcessReviewData, product
                                                                 type='number'
                                                                 id={`productQuantity-${batchIndex}-${productIndex}`}
                                                                 name={`productQuantity-${batchIndex}-${productIndex}`}
-                                                                value={productQuantities[`${batchIndex}-${productIndex}`] !== undefined ? productQuantities[`${batchIndex}-${productIndex}`] : product.quantity}
+                                                                value={
+                                                                    fromFinishInventory[`${batchIndex}-${productIndex}`]
+                                                                        ? Math.max(
+                                                                            productQuantities[`${batchIndex}-${productIndex}`] !== undefined
+                                                                                ? (productQuantities[`${batchIndex}-${productIndex}`] - (fiQty[`${batchIndex}-${productIndex}`] || 0))
+                                                                                : (product.quantity - (fiQty[`${batchIndex}-${productIndex}`] || 0)),
+                                                                            0
+                                                                        )
+                                                                        : Math.max(
+                                                                            productQuantities[`${batchIndex}-${productIndex}`] !== undefined
+                                                                                ? (productQuantities[`${batchIndex}-${productIndex}`] - (fiQty[`${batchIndex}-${productIndex}`] || 0))
+                                                                                : (product.quantity - (fiQty[`${batchIndex}-${productIndex}`] || 0)),
+                                                                            0
+                                                                        )
+                                                                }
                                                                 onChange={(e) => handleQuantityChange(batchIndex, productIndex, parseInt(e.target.value))}
                                                             />
                                                         </div>
-
+                                                        <div className='mt-2'>
+                                                            <Label htmlFor={'is_fi'}>
+                                                                Select From Finish Inventory
+                                                            </Label>
+                                                            <Checkbox 
+                                                                name={`is_fi-${batchIndex}-${productIndex}`}
+                                                                id='is_fi'
+                                                                checked={fromFinishInventory[`${batchIndex}-${productIndex}`] || false}
+                                                                onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleCheckboxChange(e,batchIndex,productIndex)}
+                                                            />
+                                                        </div>
+                                                        {fromFinishInventory[`${batchIndex}-${productIndex}`] 
+                                                        &&
+                                                        <div className='mt-2'>
+                                                            <Label htmlFor={`productQuantity-${productIndex}`}>
+                                                                FinishInv. Qty
+                                                            </Label>
+                                                            <Input
+                                                                type='number'
+                                                                id={`fiQty-${batchIndex}-${productIndex}`}
+                                                                name={`fiQty-${batchIndex}-${productIndex}`}
+                                                                min={0}
+                                                                value={fiQty[`${batchIndex}-${productIndex}`]}
+                                                                onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleFiQtyChange(e,batchIndex,productIndex)}
+                                                            />
+                                                        </div>
+                                                        }
                                                     </div>
                                                 ))}
                                             </div>

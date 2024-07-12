@@ -632,7 +632,7 @@ const AddInvoice = () => {
                                                                         type='text'
                                                                         id={`coatingQuantity${index}`}
                                                                         name={`coatingQuantity${index}`}
-                                                                        value={entry?.coating?.name ? entry?.itemSummary?.coatingQuantity : entry?.itemSummary?.coatingQuantity ?? entry?.quantity}
+                                                                        value={entry?.coating?.name ? entry?.itemSummary?.coatingQuantity : entry?.itemSummary?.pendingQuantity ?? entry?.quantity}
                                                                         disabled
                                                                         style={{ cursor: 'no-drop' }}
                                                                     />

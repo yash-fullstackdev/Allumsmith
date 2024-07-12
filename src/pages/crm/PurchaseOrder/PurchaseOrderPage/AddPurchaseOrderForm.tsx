@@ -337,6 +337,10 @@ const AddPurchaseOrderForm = () => {
 			toast.error('You have selected the same product more than once');
 			return;
 		}
+		formik.values.entries = formik.values.entries.map((entry:any) => ({
+			...entry,
+			requiredQuantity: Number(entry.requiredQuantity)
+		}))
 		const finalValues = {
 			vendor: vendorId,
 			products: formik.values.entries,
