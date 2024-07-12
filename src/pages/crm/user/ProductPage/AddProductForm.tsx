@@ -113,18 +113,28 @@ const AddproductForm = () => {
 				toast.error(`Please fill all the mandatory fields and check all formats`);
 				return;
 			}
-
+			formik.values.entries = formik.values.entries.map((entry:any) => ({
+				...entry,
+				weight: Number(entry.weight),
+				thickness: Number(entry.thickness),
+				length: Number(entry.length),
+				premium_rate: Number(entry.premium_rate),
+				wooden_rate: Number(entry.wooden_rate),
+				anodize_rate: Number(entry.anodize_rate),
+				commercial_rate: Number(entry.commercial_rate)
+			}))
 			console.log('final data', formik.values.entries);
 
-			const promises = formik.values.entries.map(async (entry: any) => {
-				const { data } = await post('/products', entry);
-				return data;
-			});
 
-			const results = await Promise.all(promises);
-			console.log('Results:', results);
+			// const promises = formik.values.entries.map(async (entry: any) => {
+			// 	const { data } = await post('/products', entry);
+			// 	return data;
+			// });
+
+			// const results = await Promise.all(promises);
+			// console.log('Results:', results);
 			toast.success('Product added Successfully!');
-			navigate(PathRoutes.product);
+			// navigate(PathRoutes.product);
 		} catch (error: any) {
 			console.error('Error Adding Product', error);
 			toast.error('Error Adding Products', error);

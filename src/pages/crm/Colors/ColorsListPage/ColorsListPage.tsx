@@ -61,7 +61,7 @@ const ColorsListPage = () => {
 		try {
 			const { data: colorsList } = await get(`/colors`);
 			setColorsList(colorsList);
-			filterData(colorsList, colorState);
+			// filterData(colorsList, colorState);
 			setIsLoading(false);
 		} catch (error: any) {
 			console.error('Error fetching users:', error.message);
@@ -75,24 +75,26 @@ const ColorsListPage = () => {
 		setColorState((prevState) => !prevState);
 	};
 
-	const filterData = (data: any[], isCoating: boolean) => {
-		let filtered;
-		if (isCoating) {
-			filtered = data.filter((item) => item.type === 'anodize');
-		} else {
-			filtered = data.filter((item) => item.type === 'coating');
-		}
-		setColorsList(filtered);
-	};
-
+	// const filterData = (data: any[], isCoating: boolean) => {
+	// 	let filtered;
+	// 	if (isCoating) {
+	// 		filtered = data.filter((item) => item.type === 'anodize');
+	// 	} else {
+	// 		filtered = data.filter((item) => item.type === 'coating');
+	// 	}
+	// 	setColorsList(filtered);
+	// };
 	useEffect(() => {
-		console.log('coatingState:', colorState);
-		filterData(colorsList, colorState);
-	}, [colorState]);
+		fetchData()
+	},[])
+	// useEffect(() => {
+	// 	console.log('coatingState:', colorState);
+	// 	filterData(colorsList, colorState);
+	// }, [colorState]);
 
-	useEffect(() => {
-		fetchData();
-	}, [colorState]);
+	// useEffect(() => {
+	// 	fetchData();
+	// }, [colorState]);
 
 	const handleClickDelete = (id: any) => {
 		setDeleteModal(true);
