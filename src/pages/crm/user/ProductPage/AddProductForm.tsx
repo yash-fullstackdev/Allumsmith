@@ -126,15 +126,15 @@ const AddproductForm = () => {
 			console.log('final data', formik.values.entries);
 
 
-			// const promises = formik.values.entries.map(async (entry: any) => {
-			// 	const { data } = await post('/products', entry);
-			// 	return data;
-			// });
+			const promises = formik.values.entries.map(async (entry: any) => {
+				const { data } = await post('/products', entry);
+				return data;
+			});
 
-			// const results = await Promise.all(promises);
+			const results = await Promise.all(promises);
 			// console.log('Results:', results);
 			toast.success('Product added Successfully!');
-			// navigate(PathRoutes.product);
+			navigate(PathRoutes.product);
 		} catch (error: any) {
 			console.error('Error Adding Product', error);
 			toast.error('Error Adding Products', error);
